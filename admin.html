@@ -712,6 +712,238 @@ async function reuploadSeedRecipes(){
   }
 }
 
+// ═══════ SPOONACULAR + ÜCRETSİZ ÇEVİRİ ═══════
+const SPOON_KEY='52e4de4aa76842608887b493d66ea15a';
+let _spoonResults=[];
+
+// Ücretsiz Google Translate (unofficial)
+async function translateText(text,from,to){
+  if(!text||!text.trim())return text;
+  try{
+    var url='https://translate.googleapis.com/translate_a/single?client=gtx&sl='+from+'&tl='+to+'&dt=t&q='+encodeURIComponent(text);
+    var resp=await fetch(url);
+    var data=await resp.json();
+    if(data&&data[0]){
+      return data[0].map(function(s){return s[0]||'';}).join('');
+    }
+    return text;
+  }catch(e){
+    console.warn('Çeviri hatası:',e);
+    return text;
+  }
+}
+
+// Toplu çeviri — array'deki tüm string'leri çevir
+async function translateArray(arr,from,to){
+  var results=[];
+  for(var i=0;i<arr.length;i++){
+    results.push(await translateText(arr[i],from,to));
+    // Rate limit: 200ms bekle
+    await new Promise(function(r){setTimeout(r,200);});
+  }
+  return results;
+}
+
+// Spoonacular kategori → bizim kategori mapping
+var SPOON_CAT_MAP={
+  'main course':'klasik',
+  'soup':'corba',
+  'salad':'fit',
+  'dessert':'tatli',
+  'breakfast':'hizli',
+  'side dish':'sebze',
+  'appetizer':'klasik',
+  'snack':'hizli',
+  'drink':'icecek',
+  'bread':'hamur',
+  'sauce':'sos',
+  'beverage':'icecek',
+  'fingerfood':'hizli'
+};
+
+// FitSofra kategori → Spoonacular type mapping
+var FS_TO_SPOON={
+  'klasik':'main course',
+  'corba':'soup',
+  'fit':'salad',
+  'tatli':'dessert',
+  'hizli':'breakfast',
+  'sebze':'side dish',
+  'vegan':'salad',
+  'hamur':'bread'
+};
+
+async function fetchSpoonRecipes(){
+  var st=document.getElementById('spoonStatus');
+  var preview=document.getElementById('spoonPreview');
+  var saveBtn=document.getElementById('spoonSaveBtn');
+  var count=parseInt(document.getElementById('spoonCount').value)||10;
+  var cat=document.getElementById('spoonCat').value;
+  var diet=document.getElementById('spoonDiet').value;
+
+  st.textContent='🔍 Spoonacular\'dan tarifler aranıyor...';
+  preview.innerHTML='';
+  saveBtn.style.display='none';
+  _spoonResults=[];
+
+  var spoonType=FS_TO_SPOON[cat]||'main course';
+  var url='https://api.spoonacular.com/recipes/complexSearch?apiKey='+SPOON_KEY
+    +'&type='+encodeURIComponent(spoonType)
+    +'&number='+count
+    +'&addRecipeInformation=true'
+    +'&addRecipeNutrition=true'
+    +'&fillIngredients=true'
+    +'&instructionsRequired=true';
+  if(diet&&diet!=='any')url+='&diet='+diet;
+  // Rastgele sonuçlar için offset
+  url+='&offset='+Math.floor(Math.random()*50);
+
+  try{
+    var resp=await fetch(url);
+    if(!resp.ok)throw new Error('Spoonacular API hatası: '+resp.status);
+    var data=await resp.json();
+    if(!data.results||!data.results.length){
+      st.textContent='❌ Sonuç bulunamadı. Farklı kategori/diyet deneyin.';
+      return;
+    }
+
+    st.textContent='🌐 '+data.results.length+' tarif bulundu. Türkçeye çevriliyor...';
+
+    var recipes=[];
+    for(var i=0;i<data.results.length;i++){
+      var r=data.results[i];
+      st.textContent='🌐 Çevriliyor: '+(i+1)+'/'+data.results.length+' — '+r.title;
+
+      // Makroları çıkar
+      var nutrients=r.nutrition&&r.nutrition.nutrients||[];
+      function getNut(name){var n=nutrients.find(function(x){return x.name===name;});return n?Math.round(n.amount):0;}
+
+      // Malzemeleri çıkar
+      var ings=[];
+      if(r.extendedIngredients){
+        ings=r.extendedIngredients.map(function(ing){return ing.original||ing.name||'';});
+      }
+
+      // Adımları çıkar
+      var steps=[];
+      if(r.analyzedInstructions&&r.analyzedInstructions.length){
+        r.analyzedInstructions[0].steps.forEach(function(s){
+          if(s.step)steps.push(s.step);
+        });
+      }
+
+      // Çevir
+      var trTitle=await translateText(r.title,'en','tr');
+      var trDesc=await translateText(r.summary?r.summary.replace(/<[^>]*>/g,'').substring(0,120):'','en','tr');
+      var trIngs=await translateArray(ings,'en','tr');
+      var trSteps=await translateArray(steps,'en','tr');
+
+      // Fotoğraf
+      var img=r.image||'';
+
+      // Etiketler
+      var tags=[];
+      if(r.vegetarian)tags.push('vejetaryen');
+      if(r.vegan)tags.push('vegan');
+      if(r.glutenFree)tags.push('glutensiz');
+      if(r.dairyFree)tags.push('sütsüz');
+      if(r.veryHealthy)tags.push('saglikli');
+      if(r.cheap)tags.push('ekonomik');
+      if(r.readyInMinutes&&r.readyInMinutes<=20)tags.push('hizli');
+      var hScore=r.healthScore||0;
+      if(hScore>70)tags.push('saglikli');
+
+      var recipe={
+        name:trTitle,
+        emoji:cat==='corba'?'🍲':cat==='tatli'?'🍮':cat==='fit'?'🥗':cat==='sebze'?'🥬':cat==='hizli'?'⚡':cat==='vegan'?'🌱':'🍽️',
+        cat:cat,
+        desc:trDesc.substring(0,100),
+        time:r.readyInMinutes||30,
+        serv:r.servings||4,
+        cal:getNut('Calories'),
+        prot:getNut('Protein'),
+        carb:getNut('Carbohydrates'),
+        fat:getNut('Fat'),
+        ing:trIngs,
+        steps:trSteps,
+        tags:tags,
+        img:img,
+        spoonId:r.id
+      };
+      recipes.push(recipe);
+    }
+
+    _spoonResults=recipes;
+    st.textContent='✅ '+recipes.length+' tarif çevrildi! İnceleyip kaydedin.';
+
+    // Önizleme
+    preview.innerHTML=recipes.map(function(r,i){
+      return '<div style="background:#0d0f14;border:1px solid #2a2d38;border-radius:10px;padding:10px;margin-bottom:6px">'
+        +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">'
+        +(r.img?'<img src="'+r.img+'" style="width:40px;height:40px;border-radius:8px;object-fit:cover">':'<span style="font-size:1.3rem">'+r.emoji+'</span>')
+        +'<div style="flex:1;min-width:0"><div style="font-weight:700;font-size:.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+r.name+'</div>'
+        +'<div style="font-size:.7rem;color:#8a8d9b">'+r.cal+' kcal · P'+r.prot+'g · K'+r.carb+'g · Y'+r.fat+'g · '+r.time+'dk</div>'
+        +'</div>'
+        +'<button onclick="_spoonResults.splice('+i+',1);fetchSpoonPreview()" style="background:#ff5c5c22;color:#ff5c5c;border:1px solid #ff5c5c33;border-radius:6px;padding:2px 6px;font-size:.65rem;cursor:pointer;flex-shrink:0">✕</button>'
+        +'</div>'
+        +'<div style="font-size:.68rem;color:#8a8d9b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+r.desc+'</div>'
+        +'<div style="font-size:.62rem;color:#3dd68c;margin-top:2px">'+r.ing.length+' malzeme · '+r.steps.length+' adım'+(r.tags.length?' · '+r.tags.join(', '):'')+'</div>'
+        +'</div>';
+    }).join('');
+    saveBtn.style.display='block';
+
+  }catch(e){
+    st.textContent='❌ Hata: '+e.message;
+    console.error(e);
+  }
+}
+
+function fetchSpoonPreview(){
+  var preview=document.getElementById('spoonPreview');
+  if(!_spoonResults.length){preview.innerHTML='';document.getElementById('spoonSaveBtn').style.display='none';return;}
+  preview.innerHTML=_spoonResults.map(function(r,i){
+    return '<div style="background:#0d0f14;border:1px solid #2a2d38;border-radius:10px;padding:10px;margin-bottom:6px">'
+      +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">'
+      +(r.img?'<img src="'+r.img+'" style="width:40px;height:40px;border-radius:8px;object-fit:cover">':'<span style="font-size:1.3rem">'+r.emoji+'</span>')
+      +'<div style="flex:1;min-width:0"><div style="font-weight:700;font-size:.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+r.name+'</div>'
+      +'<div style="font-size:.7rem;color:#8a8d9b">'+r.cal+' kcal · P'+r.prot+'g · K'+r.carb+'g · Y'+r.fat+'g · '+r.time+'dk</div>'
+      +'</div>'
+      +'<button onclick="_spoonResults.splice('+i+',1);fetchSpoonPreview()" style="background:#ff5c5c22;color:#ff5c5c;border:1px solid #ff5c5c33;border-radius:6px;padding:2px 6px;font-size:.65rem;cursor:pointer;flex-shrink:0">✕</button>'
+      +'</div></div>';
+  }).join('');
+  document.getElementById('spoonStatus').textContent=_spoonResults.length+' tarif hazır';
+}
+
+async function saveSpoonRecipes(){
+  if(!_spoonResults.length){alert('Kaydedilecek tarif yok');return;}
+  var st=document.getElementById('spoonStatus');
+  // Mevcut tarifleri kontrol et
+  st.textContent='🔍 Mevcut tarifler kontrol ediliyor...';
+  try{
+    var snap=await db.collection('recipes').get();
+    var existing=snap.docs.map(function(d){return d.data().name;});
+    var toAdd=_spoonResults.filter(function(r){return !existing.includes(r.name);});
+    if(!toAdd.length){st.textContent='✅ Bu tarifler zaten mevcut!';return;}
+    st.textContent='💾 '+toAdd.length+' tarif kaydediliyor...';
+    var saved=0;
+    for(var i=0;i<toAdd.length;i++){
+      var r=Object.assign({},toAdd[i]);
+      r.createdAt=Date.now();
+      r.source='spoonacular';
+      await db.collection('recipes').add(r);
+      saved++;
+      st.textContent='💾 '+saved+'/'+toAdd.length+' kaydedildi...';
+    }
+    st.textContent='✅ '+saved+' tarif Firebase\'e kaydedildi!';
+    _spoonResults=[];
+    document.getElementById('spoonPreview').innerHTML='';
+    document.getElementById('spoonSaveBtn').style.display='none';
+    loadRecipeList();
+  }catch(e){
+    st.textContent='❌ Hata: '+e.message;
+  }
+}
+
 </script>
 <div id="sec-recipes" class="section">
   <div class="card">
@@ -736,6 +968,45 @@ async function reuploadSeedRecipes(){
     </div>
     <div id="seedStatus" style="font-size:.75rem;color:#8a8d9b;margin-top:8px;min-height:18px"></div>
     <button class="btn-r" onclick="reuploadSeedRecipes()" style="margin-top:6px;font-size:.72rem;background:#ff5c5c22;color:#ff5c5c;border:1px solid #ff5c5c33">🔄 Mevcut Seed Tarifleri Sil & Yeniden Yükle (fotoğraflı)</button>
+  </div>
+
+  <div class="card">
+    <h2>🥄 Spoonacular'dan Tarif Çek</h2>
+    <p>365.000+ tariften seç, otomatik Türkçeye çevir, Firebase'e kaydet</p>
+    <div class="row" style="margin-bottom:6px">
+      <div style="flex:1">
+        <label style="font-size:.75rem;color:#8a8d9b;display:block;margin-bottom:3px">Kategori</label>
+        <select id="spoonCat">
+          <option value="klasik">🍲 Klasik / Ana Yemek</option>
+          <option value="corba">🍲 Çorba</option>
+          <option value="fit">🥗 Salata / Fit</option>
+          <option value="tatli">🍮 Tatlı</option>
+          <option value="hizli">⚡ Kahvaltı / Hızlı</option>
+          <option value="sebze">🥬 Yan Yemek / Sebze</option>
+          <option value="vegan">🌱 Vegan</option>
+          <option value="hamur">🍞 Ekmek / Hamur</option>
+        </select>
+      </div>
+      <div style="flex:1">
+        <label style="font-size:.75rem;color:#8a8d9b;display:block;margin-bottom:3px">Diyet Filtre</label>
+        <select id="spoonDiet">
+          <option value="any">Hepsi</option>
+          <option value="vegetarian">Vejetaryen</option>
+          <option value="vegan">Vegan</option>
+          <option value="gluten free">Glutensiz</option>
+          <option value="ketogenic">Keto</option>
+          <option value="paleo">Paleo</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:.75rem;color:#8a8d9b;display:block;margin-bottom:3px">Adet</label>
+        <input type="number" id="spoonCount" value="5" min="1" max="20" style="width:60px;text-align:center">
+      </div>
+    </div>
+    <button class="btn-u" onclick="fetchSpoonRecipes()" style="background:#f0a030">🥄 Tarifleri Çek & Çevir</button>
+    <div id="spoonStatus" style="font-size:.75rem;color:#8a8d9b;margin-top:8px;min-height:18px"></div>
+    <div id="spoonPreview" style="max-height:350px;overflow-y:auto;margin-top:8px"></div>
+    <button id="spoonSaveBtn" class="btn-g" onclick="saveSpoonRecipes()" style="display:none;margin-top:8px">💾 Firebase'e Kaydet</button>
   </div>
 
   <div class="card">
