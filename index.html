@@ -1133,6 +1133,13 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
   </div>
 </div>
 
+<!-- Photo Lightbox -->
+<div id="photoLightbox" onclick="closeRecipePhoto()" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.92);z-index:200;display:none;align-items:center;justify-content:center;cursor:zoom-out;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)">
+  <img id="lightboxImg" src="" style="max-width:95%;max-height:85vh;object-fit:contain;border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,.6);transition:transform .3s cubic-bezier(.34,1.56,.64,1);animation:lbZoomIn .3s ease">
+  <div style="position:absolute;top:max(16px,env(safe-area-inset-top));right:16px;width:36px;height:36px;background:rgba(255,255,255,.12);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:#fff;cursor:pointer;backdrop-filter:blur(8px)">✕</div>
+</div>
+<style>@keyframes lbZoomIn{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}</style>
+
 <div class="modal-overlay" id="recipeDetailModal">
   <div class="modal" id="recipeDetailContent"></div>
 </div>
@@ -4557,7 +4564,10 @@ async function filterRecipes(cat){
     const sColor=getScoreColor(score);
     const catLabels={fit:'💪',klasik:'🍲',hizli:'⚡',vegan:'🌱',sebze:'🥬',corba:'🍲'};
     return `<div onclick="openRecipeDetail(${idx})" style="scroll-snap-align:start;cursor:pointer;display:flex;align-items:center;gap:10px;padding:10px 12px;margin-bottom:4px;background:var(--card2);border-radius:12px;border:1px solid var(--border);transition:all .15s;position:relative;overflow:hidden" onpointerdown="this.style.transform='scale(.98)'" onpointerup="this.style.transform=''" onpointerleave="this.style.transform=''">
-      <div style="font-size:1.6rem;flex-shrink:0;width:40px;text-align:center">${r.emoji||'🍽️'}</div>
+      ${r.img
+        ?`<div style="width:52px;height:52px;border-radius:10px;overflow:hidden;flex-shrink:0;background:var(--glass);border:1px solid var(--border)"><img src="${r.img}" alt="${r.name}" style="width:100%;height:100%;object-fit:cover" loading="lazy" onerror="this.parentElement.innerHTML='<div style=\\'font-size:1.5rem;display:flex;align-items:center;justify-content:center;height:100%\\'>${r.emoji||'🍽️'}</div>'"></div>`
+        :`<div style="font-size:1.6rem;flex-shrink:0;width:52px;height:52px;display:flex;align-items:center;justify-content:center;background:var(--glass);border-radius:10px;border:1px solid var(--border)">${r.emoji||'🍽️'}</div>`
+      }
       <div style="flex:1;min-width:0">
         <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
           <span style="font-weight:700;font-size:.84rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.name}</span>
@@ -4597,8 +4607,13 @@ function openRecipeDetail(idx){
   const fPct=totalMacroCal>0?Math.round(((r.fat||0)*9/totalMacroCal)*100):0;
 
   const html=`<div class="modal-handle"></div>
+    ${r.img?`<div style="margin:-16px -20px 14px;border-radius:26px 26px 0 0;overflow:hidden;max-height:200px;cursor:pointer;position:relative" onclick="openRecipePhoto('${r.img.replace(/'/g,"\\'")}')">
+      <img src="${r.img}" alt="${r.name}" style="width:100%;height:200px;object-fit:cover;display:block" onerror="this.parentElement.style.display='none'">
+      <div style="position:absolute;bottom:0;left:0;right:0;height:60px;background:linear-gradient(transparent,var(--card))"></div>
+      <div style="position:absolute;bottom:8px;right:12px;font-size:.62rem;background:rgba(0,0,0,.5);color:#fff;padding:3px 8px;border-radius:6px;backdrop-filter:blur(4px)">🔍 Büyüt</div>
+    </div>`:''}
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
-      <div style="font-size:2.4rem">${r.emoji||'🍽️'}</div>
+      <div style="font-size:${r.img?'1.4rem':'2.4rem'}">${r.emoji||'🍽️'}</div>
       <div style="flex:1;min-width:0">
         <h2 style="font-size:1rem;margin-bottom:3px">${r.name}</h2>
         <div style="font-size:.72rem;color:var(--text2)">${r.desc||''}</div>
@@ -4665,6 +4680,21 @@ function openRecipeDetail(idx){
     </div>`;
   document.getElementById('recipeDetailContent').innerHTML=html;
   document.getElementById('recipeDetailModal').classList.add('show');
+}
+
+function openRecipePhoto(url){
+  var lb=document.getElementById('photoLightbox');
+  var img=document.getElementById('lightboxImg');
+  if(!lb||!img)return;
+  img.src=url;
+  lb.style.display='flex';
+  document.body.style.overflow='hidden';
+}
+function closeRecipePhoto(){
+  var lb=document.getElementById('photoLightbox');
+  if(!lb)return;
+  lb.style.display='none';
+  document.body.style.overflow='';
 }
 
 function switchRecipeTab(tab){
