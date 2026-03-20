@@ -889,6 +889,32 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
     </div>
     <div class="profile-card" style="animation-delay:.06s">
       <h3>📖 Tarifler</h3>
+
+      <!-- ═══ CAROUSEL ═══ -->
+      <div id="recipeCarousel" style="margin:0 -20px 14px;position:relative">
+        <div id="carouselTrack" style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;gap:0;scroll-behavior:smooth;padding:0 16px">
+        </div>
+        <!-- Dot indicators -->
+        <div id="carouselDots" style="display:flex;justify-content:center;gap:5px;margin-top:10px"></div>
+      </div>
+      <style>
+        #carouselTrack::-webkit-scrollbar{display:none}
+        .rc-card{flex:0 0 calc(100% - 32px);scroll-snap-align:center;border-radius:16px;overflow:hidden;position:relative;height:195px;cursor:pointer;margin:0 4px;transition:transform .2s}
+        .rc-card:active{transform:scale(.97)}
+        .rc-card img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s}
+        .rc-card:hover img{transform:scale(1.05)}
+        .rc-card .rc-overlay{position:absolute;bottom:0;left:0;right:0;padding:14px 16px;background:linear-gradient(transparent,rgba(0,0,0,.75) 40%,rgba(0,0,0,.88));color:#fff}
+        .rc-card .rc-title{font-weight:800;font-size:.95rem;margin-bottom:3px;text-shadow:0 1px 4px rgba(0,0,0,.4)}
+        .rc-card .rc-desc{font-size:.68rem;opacity:.8;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .rc-card .rc-chips{display:flex;gap:5px;flex-wrap:wrap}
+        .rc-card .rc-chip{font-size:.6rem;font-weight:700;padding:2px 7px;border-radius:6px;backdrop-filter:blur(6px)}
+        .rc-card .rc-score{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:900;backdrop-filter:blur(8px);border:2px solid rgba(255,255,255,.2)}
+        .rc-card .rc-cat{position:absolute;top:12px;left:12px;font-size:.62rem;font-weight:700;padding:3px 8px;border-radius:6px;backdrop-filter:blur(8px);background:rgba(0,0,0,.35);color:#fff;border:1px solid rgba(255,255,255,.12)}
+        .c-dot{width:7px;height:7px;border-radius:50%;background:var(--border);transition:all .25s;cursor:pointer}
+        .c-dot.active{background:var(--accent);width:20px;border-radius:4px}
+      </style>
+
+      <!-- ═══ KATEGORİ FİLTRE ═══ -->
       <div style="display:flex;gap:6px;margin-bottom:10px;overflow-x:auto">
         <button class="cat-pill active" onclick="filterRecipes('all')" id="rcAll">Tümü</button>
         <button class="cat-pill" onclick="filterRecipes('fit')" id="rcFit">💪 Fit</button>
@@ -897,8 +923,11 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
         <button class="cat-pill" onclick="filterRecipes('vegan')" id="rcVegan">🌱 Vegan</button>
         <button class="cat-pill" onclick="filterRecipes('sebze')" id="rcSebze">🥬 Sebze</button>
         <button class="cat-pill" onclick="filterRecipes('corba')" id="rcCorba">🍲 Çorba</button>
+        <button class="cat-pill" onclick="filterRecipes('tatli')" id="rcTatli">🍮 Tatlı</button>
       </div>
-      <div id="recipeList" style="max-height:480px;overflow-y:auto;overscroll-behavior:contain;scroll-snap-type:y proximity;-webkit-overflow-scrolling:touch;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--glass);padding:4px"></div>
+
+      <!-- ═══ LİSTE ═══ -->
+      <div id="recipeList" style="max-height:420px;overflow-y:auto;overscroll-behavior:contain;scroll-snap-type:y proximity;-webkit-overflow-scrolling:touch;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--glass);padding:4px"></div>
       <div id="recipePageInfo" style="text-align:center;font-size:.68rem;color:var(--text2);margin-top:8px;font-weight:600"></div>
     </div>
   </div>
@@ -4537,12 +4566,15 @@ async function filterRecipes(cat){
     await loadRecipesFromFirebase();
   }
 
-  const catBtns=['rcAll','rcFit','rcKlasik','rcHizli','rcVegan','rcSebze','rcCorba'];
+  const catBtns=['rcAll','rcFit','rcKlasik','rcHizli','rcVegan','rcSebze','rcCorba','rcTatli'];
   catBtns.forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('active')});
-  const btnMap={all:'rcAll',fit:'rcFit',klasik:'rcKlasik',hizli:'rcHizli',vegan:'rcVegan',sebze:'rcSebze',corba:'rcCorba'};
+  const btnMap={all:'rcAll',fit:'rcFit',klasik:'rcKlasik',hizli:'rcHizli',vegan:'rcVegan',sebze:'rcSebze',corba:'rcCorba',tatli:'rcTatli'};
   const activeBtn=document.getElementById(btnMap[cat]);if(activeBtn)activeBtn.classList.add('active');
 
   const filtered=cat==='all'?RECIPES:RECIPES.filter(r=>r.cat===cat);
+
+  // ═══ CAROUSEL ═══
+  renderRecipeCarousel(filtered);
 
   if(pageInfo)pageInfo.textContent=filtered.length+' tarif listeleniyor';
 
@@ -4562,7 +4594,7 @@ async function filterRecipes(cat){
     const idx=RECIPES.findIndex(x=>(x.id&&x.id===r.id)||x.name===r.name);
     const score=getRecipeScore(r);
     const sColor=getScoreColor(score);
-    const catLabels={fit:'💪',klasik:'🍲',hizli:'⚡',vegan:'🌱',sebze:'🥬',corba:'🍲'};
+    const catLabels={fit:'💪',klasik:'🍲',hizli:'⚡',vegan:'🌱',sebze:'🥬',corba:'🍲',tatli:'🍮'};
     return `<div onclick="openRecipeDetail(${idx})" style="scroll-snap-align:start;cursor:pointer;display:flex;align-items:center;gap:10px;padding:10px 12px;margin-bottom:4px;background:var(--card2);border-radius:12px;border:1px solid var(--border);transition:all .15s;position:relative;overflow:hidden" onpointerdown="this.style.transform='scale(.98)'" onpointerup="this.style.transform=''" onpointerleave="this.style.transform=''">
       ${r.img
         ?`<div style="width:52px;height:52px;border-radius:10px;overflow:hidden;flex-shrink:0;background:var(--glass);border:1px solid var(--border)"><img src="${r.img}" alt="${r.name}" style="width:100%;height:100%;object-fit:cover" loading="lazy" onerror="this.parentElement.innerHTML='<div style=\\'font-size:1.5rem;display:flex;align-items:center;justify-content:center;height:100%\\'>${r.emoji||'🍽️'}</div>'"></div>`
@@ -4587,6 +4619,78 @@ async function filterRecipes(cat){
       <div style="font-size:.8rem;color:var(--text2);flex-shrink:0;margin-left:2px">›</div>
     </div>`;
   }).join('');
+}
+
+// ═══ CAROUSEL RENDER ═══
+let _carouselInterval=null;
+function renderRecipeCarousel(recipes){
+  const track=document.getElementById('carouselTrack');
+  const dots=document.getElementById('carouselDots');
+  if(!track||!dots)return;
+
+  // Fotoğraflı tarifleri seç (carousel sadece fotoğraflıları gösterir)
+  const withImg=recipes.filter(r=>r.img);
+  if(!withImg.length){
+    track.innerHTML='';dots.innerHTML='';
+    document.getElementById('recipeCarousel').style.display='none';
+    return;
+  }
+  document.getElementById('recipeCarousel').style.display='block';
+
+  // Rastgele karıştır, max 8 kart
+  const shuffled=[...withImg].sort(()=>Math.random()-.5).slice(0,8);
+  const catLabels={fit:'💪 Fit',klasik:'🍲 Klasik',hizli:'⚡ Hızlı',vegan:'🌱 Vegan',sebze:'🥬 Sebze',corba:'🍲 Çorba',tatli:'🍮 Tatlı'};
+
+  track.innerHTML=shuffled.map((r,i)=>{
+    const idx=RECIPES.findIndex(x=>(x.id&&x.id===r.id)||x.name===r.name);
+    const score=getRecipeScore(r);
+    const sColor=getScoreColor(score);
+    return `<div class="rc-card" onclick="openRecipeDetail(${idx})">
+      <img src="${r.img}" alt="${r.name}" loading="lazy" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 200%22><rect fill=%22%23181b23%22 width=%22400%22 height=%22200%22/><text x=%22200%22 y=%22100%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22 font-size=%2260%22>${r.emoji||'🍽️'}</text></svg>'">
+      <div class="rc-cat">${catLabels[r.cat]||r.cat}</div>
+      <div class="rc-score" style="background:${sColor}44;color:${sColor};border-color:${sColor}55">${score}</div>
+      <div class="rc-overlay">
+        <div class="rc-title">${r.name}</div>
+        <div class="rc-desc">${r.desc||''}</div>
+        <div class="rc-chips">
+          <span class="rc-chip" style="background:rgba(255,107,61,.7);color:#fff">${r.cal||'—'} kcal</span>
+          ${r.prot?`<span class="rc-chip" style="background:rgba(255,122,122,.25);color:#ff7a7a">P${r.prot}g</span>`:''}
+          ${r.carb?`<span class="rc-chip" style="background:rgba(34,211,238,.2);color:#22d3ee">K${r.carb}g</span>`:''}
+          ${r.fat?`<span class="rc-chip" style="background:rgba(255,204,85,.2);color:#ffcc55">Y${r.fat}g</span>`:''}
+          <span class="rc-chip" style="background:rgba(255,255,255,.1);color:#fff">⏱${r.time||'—'}dk</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Dots
+  dots.innerHTML=shuffled.map((_,i)=>`<div class="c-dot${i===0?' active':''}" onclick="scrollCarouselTo(${i})"></div>`).join('');
+
+  // Scroll listener for dots
+  track.onscroll=function(){
+    const scrollLeft=track.scrollLeft;
+    const cardWidth=track.querySelector('.rc-card')?.offsetWidth||300;
+    const activeIdx=Math.round(scrollLeft/(cardWidth+8));
+    dots.querySelectorAll('.c-dot').forEach((d,i)=>{
+      d.classList.toggle('active',i===activeIdx);
+    });
+  };
+
+  // Auto-scroll
+  clearInterval(_carouselInterval);
+  let autoIdx=0;
+  _carouselInterval=setInterval(()=>{
+    if(!document.getElementById('page-oneri')?.classList.contains('active'))return;
+    autoIdx=(autoIdx+1)%shuffled.length;
+    scrollCarouselTo(autoIdx);
+  },4500);
+}
+
+function scrollCarouselTo(idx){
+  const track=document.getElementById('carouselTrack');
+  if(!track)return;
+  const card=track.querySelectorAll('.rc-card')[idx];
+  if(card)card.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
 }
 
 var _openRecipeIdx = -1;
