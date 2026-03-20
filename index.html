@@ -305,6 +305,7 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
     <div style="display:flex;align-items:center;gap:6px">
       <span id="headerSyncIcon" style="font-size:.75rem;opacity:.5;display:none">☁️</span>
       <button class="icon-btn" onclick="openInsightModal()" id="insightBtn" title="Beslenme Yorumu" style="font-size:.78rem">📓</button>
+      <button class="icon-btn" onclick="openPrepModal()" id="prepBtn" title="Hazırla" style="font-size:.78rem">🍱</button>
       <button class="icon-btn" onclick="openGoalsModal()" id="goalsBtn" title="Hedefler" style="font-size:.7rem;font-weight:800;letter-spacing:-.3px">🎯</button>
       <button class="icon-btn" onclick="toggleTheme()" id="themeBtn" title="Tema değiştir">🌙</button>
     </div>
@@ -384,6 +385,60 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
       </div>
       <div id="insightSummaryBar" style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:14px"></div>
       <div id="insightModalContent" style="font-size:.83rem;line-height:1.7;color:var(--text)"></div>
+    </div>
+  </div>
+</div>
+
+<!-- HAZIRLA MODAL -->
+<div class="modal-overlay" id="prepModal" onclick="if(event.target===this)closePrepModal()">
+  <div class="modal-content" style="width:100%">
+    <div class="modal" style="max-height:92vh;width:100%;padding:16px 18px 28px">
+      <div class="modal-handle"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <h2 style="margin:0">🍱 Hazırla</h2>
+        <button onclick="closePrepModal()" style="background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:5px 12px;font-family:var(--font,system-ui);font-size:.75rem;font-weight:700;color:var(--text2);cursor:pointer">Kapat</button>
+      </div>
+
+      <!-- Tab seçici -->
+      <div style="display:flex;background:var(--glass);border-radius:10px;padding:3px;border:1px solid var(--border);margin-bottom:14px">
+        <button id="prepTabCombo" onclick="switchPrepTab('combo')" style="flex:1;padding:9px;border-radius:8px;border:none;font-family:var(--font,system-ui);font-size:.78rem;font-weight:700;cursor:pointer;background:var(--accent);color:#fff;transition:all .2s">🍱 Öğün Kombin</button>
+        <button id="prepTabDaily" onclick="switchPrepTab('daily')" style="flex:1;padding:9px;border-radius:8px;border:none;font-family:var(--font,system-ui);font-size:.78rem;font-weight:700;cursor:pointer;background:transparent;color:var(--text2);transition:all .2s">📅 Günlük Plan</button>
+      </div>
+
+      <!-- Öğün Kombin paneli -->
+      <div id="prepPanelCombo">
+        <p style="font-size:.75rem;color:var(--text2);margin-bottom:10px">Öğün ve beslenme tipini seç, kalori gir, sana özel menü gelsin!</p>
+        <div style="display:flex;gap:6px;margin-bottom:8px;overflow-x:auto;padding-bottom:2px">
+          <button class="cat-pill active" onclick="setComboMeal('kahvalti')" id="cmKahvalti">🌅 Kahvaltı</button>
+          <button class="cat-pill" onclick="setComboMeal('ogle')" id="cmOgle">☀️ Öğle</button>
+          <button class="cat-pill" onclick="setComboMeal('aksam')" id="cmAksam">🌙 Akşam</button>
+          <button class="cat-pill" onclick="setComboMeal('atistirmalik')" id="cmSnack">🍿 Ara Öğün</button>
+        </div>
+        <div style="display:flex;gap:6px;margin-bottom:10px;overflow-x:auto;padding-bottom:2px">
+          <button class="cat-pill active" onclick="setComboDiet('dengeli')" id="cdDengeli">⚖️ Dengeli</button>
+          <button class="cat-pill" onclick="setComboDiet('protein')" id="cdProtein">💪 Yüksek Protein</button>
+          <button class="cat-pill" onclick="setComboDiet('karb')" id="cdKarb">⚡ Yüksek Karb</button>
+          <button class="cat-pill" onclick="setComboDiet('keto')" id="cdKeto">🥑 Keto</button>
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:10px">
+          <input type="number" class="search-box" placeholder="Kalori (ör: 400)" id="comboCalInput" style="margin:0;flex:1;color:var(--text);text-align:center;font-weight:700" value="400">
+          <button style="background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);padding:10px 16px;font-family:var(--font,system-ui);font-weight:700;font-size:.85rem;cursor:pointer;white-space:nowrap" onclick="generateCombo()">🍱 Oluştur</button>
+        </div>
+        <div id="comboResult"></div>
+      </div>
+
+      <!-- Günlük Plan paneli -->
+      <div id="prepPanelDaily" style="display:none">
+        <p style="font-size:.75rem;color:var(--text2);margin-bottom:10px">Günlük kalori hedefinize göre 4 öğünlük tam gün planı oluşturun.</p>
+        <div style="display:flex;gap:6px;margin-bottom:10px;overflow-x:auto">
+          <button class="cat-pill active" onclick="setDailyDiet('dengeli')" id="ddDengeli">⚖️ Dengeli</button>
+          <button class="cat-pill" onclick="setDailyDiet('protein')" id="ddProtein">💪 Protein</button>
+          <button class="cat-pill" onclick="setDailyDiet('karb')" id="ddKarb">⚡ Karb</button>
+          <button class="cat-pill" onclick="setDailyDiet('keto')" id="ddKeto">🥑 Keto</button>
+        </div>
+        <button style="width:100%;padding:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;border-radius:var(--radius-sm);font-family:var(--font,system-ui);font-weight:800;font-size:.85rem;cursor:pointer;box-shadow:0 4px 12px rgba(255,107,61,.2)" onclick="generateDailyPlan()">📅 Tam Gün Planı Oluştur</button>
+        <div id="dailyPlanResult"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -854,39 +909,6 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
 </div>
 <div class="page" id="page-oneri">
   <div class="content">
-    <div class="profile-card">
-      <h3>🍱 Hazır Öğün Kombinleri</h3>
-      <p style="font-size:.78rem;color:var(--text2);margin-bottom:10px">Öğün ve beslenme tipini seç, kalori gir, sana özel menü gelsin!</p>
-      <div style="display:flex;gap:6px;margin-bottom:8px;overflow-x:auto;padding-bottom:2px">
-        <button class="cat-pill active" onclick="setComboMeal('kahvalti')" id="cmKahvalti">🌅 Kahvaltı</button>
-        <button class="cat-pill" onclick="setComboMeal('ogle')" id="cmOgle">☀️ Öğle</button>
-        <button class="cat-pill" onclick="setComboMeal('aksam')" id="cmAksam">🌙 Akşam</button>
-        <button class="cat-pill" onclick="setComboMeal('atistirmalik')" id="cmSnack">🍿 Ara Öğün</button>
-      </div>
-      <div style="display:flex;gap:6px;margin-bottom:10px;overflow-x:auto;padding-bottom:2px">
-        <button class="cat-pill active" onclick="setComboDiet('dengeli')" id="cdDengeli">⚖️ Dengeli</button>
-        <button class="cat-pill" onclick="setComboDiet('protein')" id="cdProtein">💪 Yüksek Protein</button>
-        <button class="cat-pill" onclick="setComboDiet('karb')" id="cdKarb">⚡ Yüksek Karb</button>
-        <button class="cat-pill" onclick="setComboDiet('keto')" id="cdKeto">🥑 Keto</button>
-      </div>
-      <div style="display:flex;gap:8px;margin-bottom:10px">
-        <input type="number" class="search-box" placeholder="Kalori (ör: 400)" id="comboCalInput" style="margin:0;flex:1;color:var(--text);text-align:center;font-weight:700" value="400">
-        <button style="background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);padding:10px 16px;font-family:var(--font,system-ui);font-weight:700;font-size:.85rem;cursor:pointer;white-space:nowrap" onclick="generateCombo()">🍱 Oluştur</button>
-      </div>
-      <div id="comboResult"></div>
-    </div>
-    <div class="profile-card" style="animation-delay:.04s">
-      <h3>📅 Günlük Plan Oluştur</h3>
-      <p style="font-size:.75rem;color:var(--text2);margin-bottom:10px">Günlük kalori hedefinize göre 4 öğünlük tam gün planı oluşturun.</p>
-      <div style="display:flex;gap:6px;margin-bottom:10px;overflow-x:auto">
-        <button class="cat-pill active" onclick="setDailyDiet('dengeli')" id="ddDengeli">⚖️ Dengeli</button>
-        <button class="cat-pill" onclick="setDailyDiet('protein')" id="ddProtein">💪 Protein</button>
-        <button class="cat-pill" onclick="setDailyDiet('karb')" id="ddKarb">⚡ Karb</button>
-        <button class="cat-pill" onclick="setDailyDiet('keto')" id="ddKeto">🥑 Keto</button>
-      </div>
-      <button style="width:100%;padding:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;border-radius:var(--radius-sm);font-family:var(--font,system-ui);font-weight:800;font-size:.85rem;cursor:pointer;box-shadow:0 4px 12px rgba(255,107,61,.2)" onclick="generateDailyPlan()">📅 Tam Gün Planı Oluştur</button>
-      <div id="dailyPlanResult"></div>
-    </div>
     <div class="profile-card" style="animation-delay:.06s;padding:14px 0 18px">
       <h3 style="padding:0 18px;margin-bottom:10px">📖 Tarifler</h3>
 
@@ -998,7 +1020,7 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
 
 <div class="bottom-nav">
   <button class="nav-item active" onclick="switchTab('gunluk')" id="nav-gunluk"><span class="nav-icon">🍽️</span><span class="nav-label">Günlük</span></button>
-  <button class="nav-item" onclick="switchTab('oneri')" id="nav-oneri"><span class="nav-icon">🍱</span><span class="nav-label">Hazırla</span></button>
+  <button class="nav-item" onclick="switchTab('oneri')" id="nav-oneri"><span class="nav-icon">📖</span><span class="nav-label">Tarifler</span></button>
   <button class="nav-item" onclick="switchTab('arkadaslar')" id="nav-arkadaslar"><span class="nav-icon">👥</span><span class="nav-label">Arkadaş</span></button>
   <button class="nav-item" onclick="switchTab('istatistik')" id="nav-istatistik"><span class="nav-icon">📊</span><span class="nav-label">İstatistik</span></button>
   <button class="nav-item" onclick="switchTab('profil')" id="nav-profil"><span class="nav-icon">👤</span><span class="nav-label">Profil</span></button>
@@ -4819,7 +4841,11 @@ function scrollCarouselTo(idx){
   const track=document.getElementById('carouselTrack');
   if(!track)return;
   const card=track.querySelectorAll('.rc-card')[idx];
-  if(card)card.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+  if(card){
+    const trackRect=track.getBoundingClientRect();
+    const cardRect=card.getBoundingClientRect();
+    track.scrollTo({left:track.scrollLeft+(cardRect.left-trackRect.left)-(trackRect.width-cardRect.width)/2,behavior:'smooth'});
+  }
 }
 
 var _openRecipeIdx = -1;
@@ -5994,6 +6020,18 @@ function calculateBMI(weight,height){
 
 
 
+
+function openPrepModal(){document.getElementById('prepModal').classList.add('show')}
+function closePrepModal(){document.getElementById('prepModal').classList.remove('show')}
+function switchPrepTab(tab){
+  var isCombo=tab==='combo';
+  document.getElementById('prepPanelCombo').style.display=isCombo?'block':'none';
+  document.getElementById('prepPanelDaily').style.display=isCombo?'none':'block';
+  var bc=document.getElementById('prepTabCombo');
+  var bd=document.getElementById('prepTabDaily');
+  if(bc){bc.style.background=isCombo?'var(--accent)':'transparent';bc.style.color=isCombo?'#fff':'var(--text2)';}
+  if(bd){bd.style.background=isCombo?'transparent':'var(--accent)';bd.style.color=isCombo?'var(--text2)':'#fff';}
+}
 
 function openInsightModal(){
   var modal=document.getElementById('insightModal');
@@ -7330,6 +7368,7 @@ function addManualExercise(){
     if(id==='addRecipeModal')return ()=>closeAddRecipeModal&&closeAddRecipeModal();
     if(id==='insightModal')return ()=>closeInsightModal&&closeInsightModal();
     if(id==='goalsModal')return ()=>closeGoalsModal&&closeGoalsModal();
+    if(id==='prepModal')return ()=>closePrepModal&&closePrepModal();
     if(id==='exerciseModal')return ()=>closeExerciseModal&&closeExerciseModal();
     return ()=>overlay.classList.remove('show');
   }
