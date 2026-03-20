@@ -1179,10 +1179,11 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
       <div style="margin-bottom:14px">
         <div style="font-size:.76rem;font-weight:700;margin-bottom:6px">Kaç porsiyon?</div>
         <div style="display:flex;align-items:center;gap:10px">
-          <button onclick="var i=document.getElementById('armServings');i.value=Math.max(0.5,parseFloat(i.value||1)-0.5)" style="width:36px;height:36px;border-radius:10px;border:1.5px solid var(--border);background:var(--glass);color:var(--text);font-size:1.2rem;cursor:pointer;font-weight:700;flex-shrink:0">−</button>
-          <input type="number" id="armServings" value="1" min="0.5" max="10" step="0.5" style="flex:1;text-align:center;font-family:var(--font,system-ui);font-size:1.1rem;font-weight:800;border:1.5px solid var(--border);border-radius:10px;padding:8px;background:var(--glass);color:var(--accent);outline:none">
-          <button onclick="var i=document.getElementById('armServings');i.value=Math.min(10,parseFloat(i.value||1)+0.5)" style="width:36px;height:36px;border-radius:10px;border:1.5px solid var(--border);background:var(--glass);color:var(--text);font-size:1.2rem;cursor:pointer;font-weight:700;flex-shrink:0">+</button>
+          <button onclick="var i=document.getElementById('armServings');i.value=Math.max(0.5,parseFloat(i.value||1)-0.5);updateArmCalPreview()" style="width:36px;height:36px;border-radius:10px;border:1.5px solid var(--border);background:var(--glass);color:var(--text);font-size:1.2rem;cursor:pointer;font-weight:700;flex-shrink:0">−</button>
+          <input type="number" id="armServings" value="1" min="0.5" max="10" step="0.5" oninput="updateArmCalPreview()" style="flex:1;text-align:center;font-family:var(--font,system-ui);font-size:1.1rem;font-weight:800;border:1.5px solid var(--border);border-radius:10px;padding:8px;background:var(--glass);color:var(--accent);outline:none">
+          <button onclick="var i=document.getElementById('armServings');i.value=Math.min(10,parseFloat(i.value||1)+0.5);updateArmCalPreview()" style="width:36px;height:36px;border-radius:10px;border:1.5px solid var(--border);background:var(--glass);color:var(--text);font-size:1.2rem;cursor:pointer;font-weight:700;flex-shrink:0">+</button>
         </div>
+        <div id="armCalPreview" style="margin-top:8px;padding:8px 12px;background:var(--accent-glow);border-radius:8px;font-size:.74rem;text-align:center;font-weight:600;color:var(--text)"></div>
       </div>
       <div style="display:flex;gap:8px">
         <button onclick="confirmAddRecipeToMeal()" style="flex:1;padding:12px;background:linear-gradient(135deg,var(--green),#50e0a0);color:#fff;border:none;border-radius:10px;font-family:var(--font,system-ui);font-weight:800;font-size:.86rem;cursor:pointer">✅ Ekle</button>
@@ -4457,11 +4458,23 @@ function openAddRecipeModal(){
   var r=RECIPES[_pendingRecipeIdx];if(!r)return;
   var modal=document.getElementById('addRecipeModal');
   if(!modal)return;
-  document.getElementById('armRecipeName').innerHTML=r.name+' <span style="color:var(--accent);font-weight:700">('+r.cal+' kcal/porsiyon)</span>';
+  document.getElementById('armRecipeName').innerHTML='<span style="font-weight:700;color:var(--text)">' +r.name+'</span> <span style="color:var(--text2)">· '+r.serv+' kişilik tarif · toplam '+(r.cal||0)+' kcal</span>';
   var si=document.getElementById('armServings');
   if(si) si.value=1;
+  updateArmCalPreview();
   modal.style.cssText='z-index:150';
   modal.classList.add('show');
+}
+
+function updateArmCalPreview(){
+  var r=RECIPES[_pendingRecipeIdx];if(!r)return;
+  var el=document.getElementById('armCalPreview');if(!el)return;
+  var servings=parseFloat(document.getElementById('armServings').value)||1;
+  var totalServ=r.serv||1;
+  var scale=servings/totalServ;
+  var cal=Math.round((r.cal||0)*scale);
+  var prot=Math.round((r.prot||0)*scale);
+  el.innerHTML='🍽️ <strong style="color:var(--accent)">'+cal+' kcal</strong> · P'+prot+'g eklenecek <span style="color:var(--text2);font-size:.65rem">('+servings+'/'+totalServ+' porsiyon)</span>';
 }
 
 function closeAddRecipeModal(){
@@ -4477,15 +4490,16 @@ function confirmAddRecipeToMeal(){
   if(!data[mealId]) data[mealId]=[];
 
   // Tarifi tek kalem olarak ekle
-  // Tariflerdeki kalori/makro değerleri 1 porsiyon içindir
-  var scale=servings;
+  // Tariflerdeki değerler toplam (r.serv kişilik) — seçilen porsiyona göre ölçekle
+  var scale=servings/(r.serv||1);
   var cal=Math.round((r.cal||0)*scale);
   var prot=Math.round((r.prot||0)*scale);
   var carb=Math.round((r.carb||0)*scale);
   var fat=Math.round((r.fat||0)*scale);
 
+  var portionLabel=servings===1?' (1/'+r.serv+' porsiyon)':' ('+servings+'/'+r.serv+' porsiyon)';
   data[mealId].push({
-    name:r.name+(servings!==1?' ('+servings+'p)':''),
+    name:r.name+portionLabel,
     emoji:r.emoji||'🍽️',
     cal:cal,prot:prot,carb:carb,fat:fat,
     portionUsed:100,g:100
