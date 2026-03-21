@@ -391,7 +391,7 @@ async function generateRecipes(){
   saveBtn.style.display='none';
   _generatedRecipes=[];
 
-  var catNames={klasik:'Klasik Türk',fit:'Sağlıklı/Fit',hizli:'Hızlı (15dk altı)',vegan:'Vegan/Vejetaryen',sebze:'Zeytinyağlı/Sebze',corba:'Çorba'};
+  var catNames={klasik:'Klasik Türk',fit:'Sağlıklı/Fit',hizli:'Pratik (15dk altı)',vegan:'Vegan/Vejetaryen',sebze:'Zeytinyağlı/Sebze',corba:'Çorba'};
   var prompt='Türk mutfağından '+count+' adet '+catNames[cat]+' tarifi üret.\n'
     +'Her tarif için şu JSON formatını kullan:\n'
     +'[\n'
@@ -720,10 +720,10 @@ steps:["Eti tencerede suyunu salıp çekene kadar kavurun, soğanı ekleyip sote
 ing:["2 su bardağı un","1 yumurta","200g kıyma","1 soğan","2 su bardağı yoğurt","2 diş sarımsak","2 yemek kaşığı tereyağı","Pul biber, nane, tuz"],
 steps:["Un, yumurta, tuz ve su ile sert bir hamur yoğurun, 30 dakika dinlendirin.","Kıymayı rendelenmiş soğan, tuz ve karabiberle karıştırarak iç harç hazırlayın.","Hamuru ince açın, 2x2cm kareler kesin, her birine ceviz büyüklüğü iç koyup kapatın.","Kaynayan tuzlu suda mantıları 10-12 dakika haşlayın.","Sarımsaklı yoğurt hazırlayın, tereyağında pul biberi ve naneyi kızdırın.","Mantıları tabağa alın, üzerine yoğurt ve kızdırılmış yağı gezdirin."]},
 // ── FİT ──
-{name:"Tavuk Izgara Salata",emoji:"🥗",cat:"salata",desc:"Protein dolu ızgara tavuk salatası",time:20,serv:2,cal:280,prot:35,carb:12,fat:10,tags:["proteinli","saglikli","hizli"],img:"https://images.unsplash.com/photo-1546793665-c74683f339c1?w=600&q=80",
+{name:"Tavuk Izgara Salata",emoji:"🥗",cat:"salata",desc:"Protein dolu ızgara tavuk salatası",time:20,serv:2,cal:280,prot:35,carb:12,fat:10,tags:["proteinli","saglikli","pratik"],img:"https://images.unsplash.com/photo-1546793665-c74683f339c1?w=600&q=80",
 ing:["250g tavuk göğsü","4 yaprak marul","1 avuç roka","5 cherry domates","Yarım salatalık","1 yemek kaşığı zeytinyağı","Yarım limon suyu","Tuz, karabiber, kekik"],
 steps:["Tavuk göğsünü tuz, karabiber ve kekikle marine edin.","Izgarada veya yapışmaz tavada her iki yüzünü 4-5 dakika pişirin.","Marul ve rokayı yıkayıp parçalayın, tabağa serin.","Domatesleri ikiye, salatalığı dilimleyin, yeşilliklerin üzerine ekleyin.","Pişen tavuğu dilimleyerek salatanın üzerine yerleştirin.","Zeytinyağı ve limon suyu ile sosunu hazırlayıp gezdirin."]},
-{name:"Yulaf Pankek",emoji:"🥞",cat:"fit",desc:"Yüksek proteinli sağlıklı pankek",time:15,serv:2,cal:220,prot:18,carb:28,fat:5,tags:["proteinli","hizli","saglikli"],img:"https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=600&q=80",
+{name:"Yulaf Pankek",emoji:"🥞",cat:"fit",desc:"Yüksek proteinli sağlıklı pankek",time:15,serv:2,cal:220,prot:18,carb:28,fat:5,tags:["proteinli","pratik","saglikli"],img:"https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=600&q=80",
 ing:["1 su bardağı yulaf ezmesi","1 muz","2 yumurta","Yarım çay kaşığı tarçın","1 tatlı kaşığı bal","Yarım çay kaşığı kabartma tozu"],
 steps:["Yulafı blenderda un haline getirin.","Muzu çatalla ezin, yumurtalar ve yulaf unu ile karıştırın.","Tarçın ve kabartma tozunu ekleyip pürüzsüz bir hamur elde edin.","Yapışmaz tavada az yağ ile küçük pankebler dökün.","Her yüzünü 2 dakika altın rengi olana kadar pişirin.","Bal ve meyve ile servis yapın."]},
 {name:"Kinoa Salatası",emoji:"🥗",cat:"salata",desc:"Sebzeli protein deposu kinoa",time:25,serv:2,cal:310,prot:14,carb:40,fat:11,tags:["vegan","saglikli","proteinli"],img:"https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80",
@@ -742,23 +742,23 @@ steps:["Mercimeği yıkayıp süzün.","Soğan, havuç ve patatesi küp doğray�
 {name:"Ezogelin Çorbası",emoji:"🍲",cat:"corba",desc:"Acılı geleneksel mercimek çorbası",time:35,serv:4,cal:190,prot:10,carb:32,fat:3,tags:["ekonomik","klasik"],img:"https://images.unsplash.com/photo-1604152135912-04a022e23696?w=600&q=80",
 ing:["1 su bardağı kırmızı mercimek","Yarım su bardağı pirinç","Yarım su bardağı bulgur","1 soğan","2 yemek kaşığı salça","1 yemek kaşığı biber salçası","2 yemek kaşığı tereyağı","Nane, pul biber, tuz"],
 steps:["Mercimek, pirinç ve bulguru ayrı ayrı yıkayın.","Tencerede tereyağını eritip soğanı kavurun.","Salça ve biber salçasını ekleyip 1 dakika kavurun.","Mercimek, pirinç ve bulguru ekleyin, 7 su bardağı sıcak su ilave edin.","Kaynayınca kısık ateşte 30 dakika pişirin, ara ara karıştırın.","Pul biber ve naneyi tereyağında kızdırıp üzerine gezdirin."]},
-{name:"Tarhana Çorbası",emoji:"🍲",cat:"corba",desc:"Ev yapımı tarhana ile klasik çorba",time:20,serv:4,cal:160,prot:8,carb:25,fat:4,tags:["hizli","klasik"],img:"https://images.unsplash.com/photo-1594756202469-9ff9799b2e4e?w=600&q=80",
+{name:"Tarhana Çorbası",emoji:"🍲",cat:"corba",desc:"Ev yapımı tarhana ile klasik çorba",time:20,serv:4,cal:160,prot:8,carb:25,fat:4,tags:["pratik","klasik"],img:"https://images.unsplash.com/photo-1594756202469-9ff9799b2e4e?w=600&q=80",
 ing:["4 yemek kaşığı tarhana","5 su bardağı su","1 yemek kaşığı tereyağı","1 yemek kaşığı salça","Tuz, pul biber, nane"],
 steps:["Tarhanayı 1 su bardağı soğuk suda iyice çözün, topak kalmamasına dikkat edin.","Tencerede kalan suyu kaynatın.","Çözülmüş tarhanayı kaynar suya azar azar ekleyin, sürekli karıştırın.","Salçayı ekleyip kısık ateşte 15 dakika ara ara karıştırarak pişirin.","Tereyağında pul biber ve naneyi kızdırın.","Çorbayı tabaklara alıp kızdırılmış yağı gezdirin."]},
 {name:"Yayla Çorbası",emoji:"🍲",cat:"corba",desc:"Yoğurtlu pirinçli ferah çorba",time:30,serv:4,cal:145,prot:7,carb:18,fat:5,tags:["saglikli","klasik"],img:"https://images.unsplash.com/photo-1616501268209-eacc96e5a66e?w=600&q=80",
 ing:["2 su bardağı yoğurt","1 yumurta","2 yemek kaşığı un","Yarım su bardağı pirinç","6 su bardağı su","1 yemek kaşığı tereyağı","Kuru nane, tuz"],
 steps:["Pirinci yıkayıp suda 20 dakika haşlayın.","Ayrı kapta yoğurt, yumurta ve unu çırparak pürüzsüz bir karışım yapın.","Haşlanan pirinç suyundan birkaç kepçe alıp yoğurt karışımına yavaş yavaş ekleyin.","Yoğurt karışımını tencereye ince ince döküp sürekli karıştırın.","Kaynayana kadar karıştırarak pişirin, kaynamadan kısın. 5 dakika demleyin.","Tereyağında naneyi kızdırıp üzerine gezdirerek servis edin."]},
 // ── HIZLI ──
-{name:"Menemen",emoji:"🍳",cat:"hizli",desc:"10 dakikada hazır klasik menemen",time:10,serv:2,cal:220,prot:14,carb:10,fat:14,tags:["hizli","kolay","vejetaryen"],img:"https://images.unsplash.com/photo-1590412200988-a436970781fa?w=600&q=80",
+{name:"Menemen",emoji:"🍳",cat:"pratik",desc:"10 dakikada hazır klasik menemen",time:10,serv:2,cal:220,prot:14,carb:10,fat:14,tags:["pratik","kolay","vejetaryen"],img:"https://images.unsplash.com/photo-1590412200988-a436970781fa?w=600&q=80",
 ing:["3 yumurta","2 domates","2 sivri biber","1 yemek kaşığı sıvıyağ","Tuz, karabiber, pul biber"],
 steps:["Domatesleri küp, biberleri ince halka doğrayın.","Tavada sıvıyağı kızdırıp biberleri 2 dakika soteleyin.","Domatesleri ekleyip suyunu bırakana kadar 3 dakika pişirin.","Yumurtaları kırıp üzerine ekleyin, tuz ve baharatları serpin.","Yumurtalar pişene kadar yavaşça karıştırın (2-3 dakika).","Ekmek ile sıcak servis yapın."]},
-{name:"Peynirli Omlet",emoji:"🍳",cat:"hizli",desc:"5 dakikada protein deposu",time:5,serv:1,cal:280,prot:20,carb:2,fat:21,tags:["hizli","kolay","proteinli"],img:"https://images.unsplash.com/photo-1525351484163-7529414344d8?w=600&q=80",
+{name:"Peynirli Omlet",emoji:"🍳",cat:"pratik",desc:"5 dakikada protein deposu",time:5,serv:1,cal:280,prot:20,carb:2,fat:21,tags:["pratik","kolay","proteinli"],img:"https://images.unsplash.com/photo-1525351484163-7529414344d8?w=600&q=80",
 ing:["3 yumurta","40g beyaz peynir","1 tatlı kaşığı tereyağı","Maydanoz, tuz, karabiber"],
 steps:["Yumurtaları çırpın, ufalanmış peyniri ve doğranmış maydanozu ekleyin.","Tuz ve karabiberi ilave edin.","Tavada tereyağını eritin, karışımı dökün.","Kısık ateşte 2 dakika pişirin, kenarları donarken ortasını sallayarak dağıtın.","Yarısını katlayıp 1 dakika daha pişirin.","Tabağa alıp sıcak servis yapın."]},
-{name:"Ton Balıklı Sandviç",emoji:"🥪",cat:"sandvic",desc:"Pratik ve doyurucu öğle yemeği",time:10,serv:1,cal:320,prot:28,carb:30,fat:10,tags:["hizli","proteinli"],img:"https://images.unsplash.com/photo-1554433607-66b5efe9d304?w=600&q=80",
+{name:"Ton Balıklı Sandviç",emoji:"🥪",cat:"sandvic",desc:"Pratik ve doyurucu öğle yemeği",time:10,serv:1,cal:320,prot:28,carb:30,fat:10,tags:["pratik","proteinli"],img:"https://images.unsplash.com/photo-1554433607-66b5efe9d304?w=600&q=80",
 ing:["1 kutu ton balığı","2 dilim tam buğday ekmeği","Yarım domates","2 yaprak marul","1 tatlı kaşığı zeytinyağı","Limon suyu, tuz, karabiber"],
 steps:["Ton balığını süzüp bir kaba alın.","Zeytinyağı, limon suyu, tuz ve karabiberle karıştırın.","Ekmeği hafif kızartın.","Marul ve domates dilimlerini ekmeğe yerleştirin.","Ton karışımını üzerine yayın, diğer dilimle kapatın.","İsterseniz yanında salatalık turşusu ile servis yapın."]},
-{name:"Yumurtalı Ekmek",emoji:"🍞",cat:"hizli",desc:"Çocukların da bayıldığı pratik lezzet",time:10,serv:2,cal:250,prot:12,carb:26,fat:11,tags:["hizli","kolay","ekonomik"],img:"https://images.unsplash.com/photo-1484723091739-30a097e8f929?w=600&q=80",
+{name:"Yumurtalı Ekmek",emoji:"🍞",cat:"pratik",desc:"Çocukların da bayıldığı pratik lezzet",time:10,serv:2,cal:250,prot:12,carb:26,fat:11,tags:["pratik","kolay","ekonomik"],img:"https://images.unsplash.com/photo-1484723091739-30a097e8f929?w=600&q=80",
 ing:["4 dilim ekmek","2 yumurta","Yarım su bardağı süt","1 yemek kaşığı tereyağı","Tuz, isteğe bağlı kaşar"],
 steps:["Yumurta ve sütü çırpın, tuzu ekleyin.","Ekmek dilimlerini karışıma batırın, her iki yüzünü iyice emdirin.","Tavada tereyağını eritin.","Ekmekleri her iki yüzü altın sarısı olana dek kızartın.","İsterseniz üzerine kaşar rendeleyin, kapağı kapatıp eriyene kadar bekleyin.","Sıcak servis yapın."]},
 // ── VEGAN ──
@@ -788,17 +788,17 @@ steps:["Karnabaharı çiçeklerine ayırıp tuzlu suda 8-10 dakika haşlayın, s
 ing:["4 enginar","2 havuç","1 soğan","Yarım limon","2 yemek kaşığı zeytinyağı","1 tatlı kaşığı şeker","1 tatlı kaşığı un","Dereotu, tuz"],
 steps:["Enginarları temizleyip sert yapraklarını koparın, limonlu suda bekletin.","Soğanı zeytinyağında kavurun, havuç yuvarlakları ekleyin.","Enginarları yerleştirip üzerini geçecek kadar su ekleyin.","Şeker ve tuzu ilave edin.","Kısık ateşte 30 dakika pişirin.","Soğuyunca dereotu ile süsleyip limon sıkarak servis yapın."]},
 // ── SANDVİÇ ──
-{name:"Kaşarlı Tost",emoji:"🥪",cat:"sandvic",desc:"Klasik çıtır kaşarlı tost",time:5,serv:1,cal:280,prot:12,carb:28,fat:14,tags:["hizli","kolay"],img:"https://images.unsplash.com/photo-1528736235302-52922df5c122?w=600&q=80",
+{name:"Kaşarlı Tost",emoji:"🥪",cat:"sandvic",desc:"Klasik çıtır kaşarlı tost",time:5,serv:1,cal:280,prot:12,carb:28,fat:14,tags:["pratik","kolay"],img:"https://images.unsplash.com/photo-1528736235302-52922df5c122?w=600&q=80",
 ing:["2 dilim tost ekmeği","40g kaşar peyniri","1 tatlı kaşığı tereyağı"],
 steps:["Ekmek dilimlerinin arasına kaşar peynirini yerleştirin.","Tost makinesini ısıtın veya tavaya tereyağı koyun.","Her iki yüzü altın sarısı ve peynir eriyene kadar pişirin.","Çapraz kesin, sıcak servis yapın."]},
-{name:"Sucuklu Sandviç",emoji:"🥪",cat:"sandvic",desc:"Yumurtalı sucuklu sıcak sandviç",time:10,serv:1,cal:380,prot:18,carb:30,fat:20,tags:["hizli","proteinli"],img:"https://images.unsplash.com/photo-1553909489-cd47e0907980?w=600&q=80",
+{name:"Sucuklu Sandviç",emoji:"🥪",cat:"sandvic",desc:"Yumurtalı sucuklu sıcak sandviç",time:10,serv:1,cal:380,prot:18,carb:30,fat:20,tags:["pratik","proteinli"],img:"https://images.unsplash.com/photo-1553909489-cd47e0907980?w=600&q=80",
 ing:["1 sandviç ekmeği","4 dilim sucuk","1 yumurta","1 yaprak marul","1 dilim domates","Ketçap/mayonez"],
 steps:["Sucukları tavada yağsız kızartın.","Aynı tavada yumurtayı pişirin.","Ekmeği ikiye kesip hafif kızartın.","Marul, sucuk, yumurta ve domatesi yerleştirin.","Sos ekleyip kapatın.","Sıcak servis yapın."]},
-{name:"Tavuklu Wrap",emoji:"🌯",cat:"sandvic",desc:"Izgara tavuklu lavaş dürüm",time:15,serv:1,cal:320,prot:28,carb:26,fat:12,tags:["proteinli","hizli"],img:"https://images.unsplash.com/photo-1626700051175-6818013e1d4f?w=600&q=80",
+{name:"Tavuklu Wrap",emoji:"🌯",cat:"sandvic",desc:"Izgara tavuklu lavaş dürüm",time:15,serv:1,cal:320,prot:28,carb:26,fat:12,tags:["proteinli","pratik"],img:"https://images.unsplash.com/photo-1626700051175-6818013e1d4f?w=600&q=80",
 ing:["1 lavaş","150g tavuk göğsü","2 yaprak marul","Yarım domates","2 yemek kaşığı yoğurt sosu","Tuz, karabiber, kekik"],
 steps:["Tavuğu baharatlayıp ızgarada veya tavada pişirin.","Dilimleyin.","Lavaşı hafif ısıtın.","Yoğurt sosunu lavaşa sürün.","Marul, domates ve tavuğu yerleştirin.","Sıkıca sarıp ortadan kesin."]},
 // ── SALATA ──
-{name:"Çoban Salatası",emoji:"🥗",cat:"salata",desc:"Klasik Türk çoban salatası",time:10,serv:4,cal:60,prot:2,carb:6,fat:3,tags:["vegan","hizli","saglikli"],img:"https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=600&q=80",
+{name:"Çoban Salatası",emoji:"🥗",cat:"salata",desc:"Klasik Türk çoban salatası",time:10,serv:4,cal:60,prot:2,carb:6,fat:3,tags:["vegan","pratik","saglikli"],img:"https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=600&q=80",
 ing:["3 domates","2 salatalık","1 soğan","2 sivri biber","1 demet maydanoz","2 yemek kaşığı zeytinyağı","1 limon suyu","Tuz"],
 steps:["Domatesleri küçük küp doğrayın.","Salatalıkları küp doğrayın.","Soğanı ince halka, biberleri ince kıyın.","Maydanozu ince kıyın.","Hepsini karıştırın.","Zeytinyağı, limon suyu ve tuz ile sosunu yapıp gezdirin."]},
 {name:"Sezar Salata",emoji:"🥗",cat:"salata",desc:"Tavuklu sezar salata",time:15,serv:2,cal:310,prot:26,carb:14,fat:18,tags:["proteinli"],img:"https://images.unsplash.com/photo-1550304943-4f24f54ddde8?w=600&q=80",
@@ -814,18 +814,39 @@ steps:["Haşlanmış nohutları süzüp blendere alın.","Tahin, sarımsak, limo
 {name:"Babagannuş",emoji:"🍆",cat:"meze",desc:"Közlenmiş patlıcan ezmesi",time:25,serv:4,cal:90,prot:2,carb:7,fat:6,tags:["vegan","saglikli"],img:"https://images.unsplash.com/photo-1623428187969-5da2dcea5ebf?w=600&q=80",
 ing:["3 patlıcan","2 yemek kaşığı tahin","2 diş sarımsak","1 limon suyu","2 yemek kaşığı zeytinyağı","Tuz, maydanoz"],
 steps:["Patlıcanları direkt ateş üzerinde veya fırında közleyin, kabuğu kararana kadar çevirin.","Közlenen patlıcanları soğuk suya alıp kabuklarını soyun.","İç kısmını çatalla ezin, suyunu süzün.","Tahin, sarımsak, limon suyu ve zeytinyağını ekleyip karıştırın.","Tuzunu ayarlayın.","Maydanoz ve zeytinyağı ile süsleyerek servis yapın."]},
-{name:"Acılı Ezme",emoji:"🌶️",cat:"meze",desc:"Güneydoğu usulü acılı ince ezme",time:15,serv:4,cal:60,prot:1,carb:6,fat:3,tags:["vegan","hizli"],img:"https://images.unsplash.com/photo-1563379926898-05f4575a45d8?w=600&q=80",
+{name:"Acılı Ezme",emoji:"🌶️",cat:"meze",desc:"Güneydoğu usulü acılı ince ezme",time:15,serv:4,cal:60,prot:1,carb:6,fat:3,tags:["vegan","pratik"],img:"https://images.unsplash.com/photo-1563379926898-05f4575a45d8?w=600&q=80",
 ing:["3 domates","2 sivri biber","1 kırmızı biber","1 soğan","1 demet maydanoz","1 yemek kaşığı nar ekşisi","1 yemek kaşığı zeytinyağı","Pul biber, tuz, sumak"],
 steps:["Domatesleri çekirdeklerini çıkarıp çok ince küp doğrayın.","Biberleri ve soğanı çok ince kıyın.","Maydanozu ince kıyın.","Hepsini bir kapta birleştirin.","Nar ekşisi, zeytinyağı, pul biber, sumak ve tuzu ekleyin.","İyice karıştırıp 10 dakika dinlendirerek servis yapın."]},
-{name:"Haydari",emoji:"🥒",cat:"meze",desc:"Sarımsaklı süzme yoğurt mezesi",time:10,serv:4,cal:85,prot:5,carb:4,fat:6,tags:["vejetaryen","kolay","hizli"],img:"https://images.unsplash.com/photo-1572441713132-c542fc4fe282?w=600&q=80",
+{name:"Haydari",emoji:"🥒",cat:"meze",desc:"Sarımsaklı süzme yoğurt mezesi",time:10,serv:4,cal:85,prot:5,carb:4,fat:6,tags:["vejetaryen","kolay","pratik"],img:"https://images.unsplash.com/photo-1572441713132-c542fc4fe282?w=600&q=80",
 ing:["2 su bardağı süzme yoğurt","2 diş sarımsak","1 yemek kaşığı zeytinyağı","Yarım demet dereotu","Yarım demet nane","Tuz"],
 steps:["Süzme yoğurdu bir kaba alın.","Sarımsakları rendeleyin veya ezin, yoğurda ekleyin.","Dereotu ve naneyi ince kıyıp katın.","Tuzunu ayarlayıp iyice karıştırın.","Tabağa alıp üzerine zeytinyağı gezdirin.","Soğuk servis yapın, yanında ekmek ile harika gider."]},
-{name:"Atom (Acılı Ezme)",emoji:"🔥",cat:"meze",desc:"Antep usulü ateşli meze",time:10,serv:4,cal:70,prot:2,carb:7,fat:4,tags:["vegan","hizli"],img:"https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=600&q=80",
+{name:"Atom (Acılı Ezme)",emoji:"🔥",cat:"meze",desc:"Antep usulü ateşli meze",time:10,serv:4,cal:70,prot:2,carb:7,fat:4,tags:["vegan","pratik"],img:"https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=600&q=80",
 ing:["4 domates","3 sivri biber","1 soğan","1 demet maydanoz","2 yemek kaşığı biber salçası","1 yemek kaşığı nar ekşisi","İsot, pul biber, tuz"],
 steps:["Domatesleri kabuklarını soyup çok ince doğrayın.","Sivri biberleri ve soğanı çok ince kıyın.","Maydanozu ince kıyın.","Biber salçasını az zeytinyağında açın.","Tüm malzemeleri birleştirip nar ekşisi, isot ve tuzu ekleyin.","Karıştırıp soğuk servis yapın."]},
 {name:"Sigara Böreği",emoji:"🥟",cat:"meze",desc:"Çıtır peynirli börek parmakları",time:30,serv:6,cal:180,prot:7,carb:16,fat:10,tags:["vejetaryen","kolay"],img:"https://images.unsplash.com/photo-1519864600265-abb23847ef2c?w=600&q=80",
 ing:["6 yaprak yufka","200g beyaz peynir","1 demet maydanoz","1 yumurta","Kızartma yağı"],
 steps:["Peyniri ufalayıp maydanozla karıştırın.","Yufkayı üçgen şeklinde kesin.","Geniş ucuna bir kaşık iç koyup sıkıca sarın.","Ucunu yumurta ile yapıştırın.","Kızgın yağda her tarafı altın sarısı olana kadar kızartın.","Kağıt havluya alıp sıcak servis yapın."]},
+{name:"Fava",emoji:"🫘",cat:"meze",desc:"Ege usulü kuru bakla ezmesi",time:40,serv:6,cal:120,prot:7,carb:18,fat:3,tags:["vegan","saglikli"],img:"https://images.unsplash.com/photo-1574484284002-952d92456975?w=600&q=80",
+ing:["1.5 su bardağı kuru bakla (iç bakla)","1 soğan","2 yemek kaşığı zeytinyağı","1 tatlı kaşığı şeker","Tuz, dereotu, limon"],
+steps:["Kuru baklaları bir gece suda bekletin.","Süzüp taze suyla soğanla birlikte haşlayın, yumuşayana kadar 30 dakika pişirin.","Blenderdan geçirip pürüzsüz bir kıvam elde edin.","Zeytinyağı, şeker ve tuzu ekleyip karıştırın.","Tabağa yayıp soğumaya bırakın.","Dereotu ve zeytinyağı ile süsleyip limon sıkarak servis yapın."]},
+{name:"Topik",emoji:"🧆",cat:"meze",desc:"Ermeni mutfağından tahinli nohut köftesi",time:50,serv:6,cal:150,prot:6,carb:20,fat:5,tags:["vegan"],img:"https://images.unsplash.com/photo-1529006557810-274b9b2e4bcd?w=600&q=80",
+ing:["2 su bardağı haşlanmış nohut","1 su bardağı ince bulgur","1 soğan","2 yemek kaşığı tahin","1 yemek kaşığı zeytinyağı","Kimyon, tarçın, tuz, maydanoz"],
+steps:["Nohutları blenderda çekin, bulguru sıcak suyla ıslatıp demlendirin.","Soğanı zeytinyağında kavurun, kimyon ve tarçın ekleyin.","Nohut püresi ve bulguru karıştırıp yoğurun.","İç harcı kavrulan soğanla hazırlayın.","Ceviz büyüklüğünde parçalar koparıp içine harç koyarak şekil verin.","Tarçın ve maydanoz ile süsleyip soğuk servis yapın."]},
+{name:"Şakşuka",emoji:"🍳",cat:"meze",desc:"Sebzeli sıcak meze klasiği",time:25,serv:4,cal:110,prot:3,carb:10,fat:7,tags:["vegan","saglikli"],img:"https://images.unsplash.com/photo-1590412200988-a436970781fa?w=600&q=80",
+ing:["2 patlıcan","2 kabak","2 domates","2 sivri biber","2 diş sarımsak","3 yemek kaşığı zeytinyağı","Tuz, karabiber, pul biber"],
+steps:["Patlıcan ve kabakları küp doğrayın, tuzlu suda 10 dakika bekletin.","Zeytinyağında sarımsağı kavurun.","Süzülmüş patlıcan ve kabakları ekleyip 10 dakika soteleyin.","Doğranmış domates ve biberleri ilave edin.","Baharatları ekleyip 10 dakika daha pişirin.","Sıcak veya ılık servis yapın."]},
+{name:"Muhammara",emoji:"🌶️",cat:"meze",desc:"Antep usulü acılı cevizli biber ezmesi",time:20,serv:6,cal:140,prot:3,carb:10,fat:10,tags:["vegan"],img:"https://images.unsplash.com/photo-1563379926898-05f4575a45d8?w=600&q=80",
+ing:["4 kırmızı kapya biber (közlenmiş)","1 su bardağı ceviz içi","3 yemek kaşığı nar ekşisi","2 yemek kaşığı zeytinyağı","1 yemek kaşığı biber salçası","Kimyon, pul biber, tuz"],
+steps:["Közlenmiş biberleri kabuklarını soyup blendere alın.","Ceviz, nar ekşisi, salça ve baharatları ekleyin.","Kaba bir kıvam kalacak şekilde çekin (tamamen pürüzsüz yapmayın).","Zeytinyağını ilave edip karıştırın.","Tabağa alıp üzerine ceviz ve zeytinyağı gezdirin.","Ekmek veya lavaş ile soğuk servis yapın."]},
+{name:"Köpoğlu",emoji:"🍆",cat:"meze",desc:"Yoğurtlu kızarmış patlıcan mezesi",time:25,serv:4,cal:130,prot:4,carb:8,fat:9,tags:["vejetaryen"],img:"https://images.unsplash.com/photo-1572453800999-e8d2d1589b7c?w=600&q=80",
+ing:["3 patlıcan","2 su bardağı yoğurt","2 diş sarımsak","2 domates","Sıvıyağ (kızartma)","Tuz, pul biber"],
+steps:["Patlıcanları halka halka kesin, tuzlu suda 15 dakika bekletip süzün.","Sıvıyağda her iki yüzünü kızartın, kağıt havluya alın.","Yoğurdu sarımsakla karıştırın.","Servis tabağına patlıcanları dizin.","Üzerine sarımsaklı yoğurdu gezdirin.","Doğranmış domates ve pul biber ile süsleyerek servis yapın."]},
+{name:"Patlıcan Söğürme",emoji:"🍆",cat:"meze",desc:"Urfa usulü közlenmiş patlıcan salatası",time:20,serv:4,cal:80,prot:2,carb:8,fat:5,tags:["vegan","saglikli"],img:"https://images.unsplash.com/photo-1625944228403-e25c4244a37d?w=600&q=80",
+ing:["3 patlıcan","2 domates","1 soğan","1 sivri biber","1 yemek kaşığı nar ekşisi","2 yemek kaşığı zeytinyağı","Maydanoz, tuz, pul biber"],
+steps:["Patlıcanları közleyin, kabuklarını soyun.","İç kısmını çatalla iyice ezin.","Domates, soğan ve biberi çok ince doğrayın.","Hepsini karıştırın.","Nar ekşisi, zeytinyağı ve baharatları ekleyin.","Maydanoz ile süsleyip soğuk servis yapın."]},
+{name:"Havuç Tarator",emoji:"🥕",cat:"meze",desc:"Yoğurtlu havuç mezesi",time:15,serv:4,cal:75,prot:3,carb:8,fat:3,tags:["vejetaryen","pratik","saglikli"],img:"https://images.unsplash.com/photo-1580013759032-7e8bda9b2e61?w=600&q=80",
+ing:["3 havuç","1 su bardağı yoğurt","2 diş sarımsak","1 yemek kaşığı zeytinyağı","Tuz, dereotu"],
+steps:["Havuçları haşlayıp süzün veya buharda pişirin.","Çatalla ezin veya rendeleyin.","Yoğurdu sarımsakla karıştırın.","Havuç ve yoğurdu birleştirip tuzunu ayarlayın.","Tabağa alın.","Zeytinyağı ve dereotu ile süsleyerek servis yapın."]},
 // ── TATLI ──
 {name:"Sütlaç",emoji:"🍮",cat:"tatli",desc:"Fırında klasik Türk sütlacı",time:45,serv:6,cal:180,prot:5,carb:30,fat:4,tags:["klasik","kolay"],img:"https://images.unsplash.com/photo-1488477181946-6428a0291777?w=600&q=80",
 ing:["1 su bardağı pirinç","1 litre süt","1 su bardağı şeker","2 yemek kaşığı pirinç unu","1 yumurta sarısı","1 paket vanilya"],
@@ -940,10 +961,10 @@ var SPOON_CAT_MAP={
   'soup':'corba',
   'salad':'fit',
   'dessert':'tatli',
-  'breakfast':'hizli',
+  'breakfast':'pratik',
   'side dish':'sebze',
   'appetizer':'meze',
-  'snack':'hizli',
+  'snack':'pratik',
   'drink':'icecek',
   'bread':'hamur',
   'sauce':'sos',
@@ -957,7 +978,7 @@ var FS_TO_SPOON={
   'corba':'soup',
   'fit':'salad',
   'tatli':'dessert',
-  'hizli':'breakfast',
+  'pratik':'breakfast',
   'sebze':'side dish',
   'vegan':'salad',
   'hamur':'bread',
@@ -1046,13 +1067,13 @@ async function fetchSpoonRecipes(){
       if(r.dairyFree)tags.push('sütsüz');
       if(r.veryHealthy)tags.push('saglikli');
       if(r.cheap)tags.push('ekonomik');
-      if(r.readyInMinutes&&r.readyInMinutes<=20)tags.push('hizli');
+      if(r.readyInMinutes&&r.readyInMinutes<=20)tags.push('pratik');
       var hScore=r.healthScore||0;
       if(hScore>70)tags.push('saglikli');
 
       var recipe={
         name:trTitle,
-        emoji:cat==='corba'?'🍲':cat==='tatli'?'🍮':cat==='fit'?'🥗':cat==='sebze'?'🥬':cat==='hizli'?'⚡':cat==='vegan'?'🌱':'🍽️',
+        emoji:cat==='corba'?'🍲':cat==='tatli'?'🍮':cat==='fit'?'🥗':cat==='sebze'?'🥬':cat==='pratik'?'⚡':cat==='vegan'?'🌱':'🍽️',
         cat:cat,
         desc:trDesc.substring(0,100),
         time:r.readyInMinutes||30,
@@ -1073,19 +1094,37 @@ async function fetchSpoonRecipes(){
     _spoonResults=recipes;
     st.textContent='✅ '+recipes.length+' tarif çevrildi! İnceleyip kaydedin.';
 
-    // Önizleme
+    // Önizleme — detaylı kartlar
     preview.innerHTML=recipes.map(function(r,i){
-      return '<div style="background:#0d0f14;border:1px solid #2a2d38;border-radius:10px;padding:10px;margin-bottom:6px">'
-        +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">'
-        +(r.img?'<img src="'+r.img+'" style="width:40px;height:40px;border-radius:8px;object-fit:cover">':'<span style="font-size:1.3rem">'+r.emoji+'</span>')
-        +'<div style="flex:1;min-width:0"><div style="font-weight:700;font-size:.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+r.name+'</div>'
-        +'<div style="font-size:.7rem;color:#8a8d9b">'+r.cal+' kcal · P'+r.prot+'g · K'+r.carb+'g · Y'+r.fat+'g · '+r.time+'dk</div>'
+      return '<div style="background:#0d0f14;border:1px solid #2a2d38;border-radius:12px;margin-bottom:8px;overflow:hidden">'
+        // Fotoğraf + başlık
+        +(r.img?'<div style="position:relative"><img src="'+r.img+'" style="width:100%;height:120px;object-fit:cover;display:block"><div style="position:absolute;top:6px;right:6px"><button onclick="_spoonResults.splice('+i+',1);fetchSpoonPreview()" style="background:rgba(0,0,0,.6);color:#ff5c5c;border:none;border-radius:6px;padding:4px 8px;font-size:.7rem;cursor:pointer;backdrop-filter:blur(4px)">✕ Çıkar</button></div></div>':'')
+        +'<div style="padding:10px 12px">'
+        // İsim + makro satırı
+        +'<div style="display:flex;justify-content:space-between;align-items:start;gap:8px;margin-bottom:6px">'
+          +'<div style="flex:1;min-width:0"><div style="font-weight:700;font-size:.88rem;margin-bottom:2px">'+r.emoji+' '+r.name+'</div>'
+          +'<div style="font-size:.68rem;color:#8a8d9b;line-height:1.4">'+r.desc+'</div></div>'
+          +(!r.img?'<button onclick="_spoonResults.splice('+i+',1);fetchSpoonPreview()" style="background:#ff5c5c22;color:#ff5c5c;border:1px solid #ff5c5c33;border-radius:6px;padding:3px 8px;font-size:.65rem;cursor:pointer;flex-shrink:0">✕</button>':'')
         +'</div>'
-        +'<button onclick="_spoonResults.splice('+i+',1);fetchSpoonPreview()" style="background:#ff5c5c22;color:#ff5c5c;border:1px solid #ff5c5c33;border-radius:6px;padding:2px 6px;font-size:.65rem;cursor:pointer;flex-shrink:0">✕</button>'
+        // Makro chips
+        +'<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px">'
+          +'<span style="font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:6px;background:#ff6b3d22;color:#ff6b3d">'+r.cal+' kcal</span>'
+          +'<span style="font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:6px;background:#ff7a7a22;color:#ff7a7a">P '+r.prot+'g</span>'
+          +'<span style="font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:6px;background:#22d3ee22;color:#22d3ee">K '+r.carb+'g</span>'
+          +'<span style="font-size:.65rem;font-weight:700;padding:2px 8px;border-radius:6px;background:#ffcc5522;color:#ffcc55">Y '+r.fat+'g</span>'
+          +'<span style="font-size:.65rem;font-weight:600;padding:2px 8px;border-radius:6px;background:#1e2130;color:#8a8d9b">⏱ '+r.time+'dk · 👥 '+r.serv+' kişi</span>'
         +'</div>'
-        +'<div style="font-size:.68rem;color:#8a8d9b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+r.desc+'</div>'
-        +'<div style="font-size:.62rem;color:#3dd68c;margin-top:2px">'+r.ing.length+' malzeme · '+r.steps.length+' adım'+(r.tags.length?' · '+r.tags.join(', '):'')+'</div>'
-        +'</div>';
+        // Etiketler
+        +(r.tags.length?'<div style="font-size:.6rem;color:#3dd68c;margin-bottom:6px">🏷 '+r.tags.join(', ')+'</div>':'')
+        // Malzemeler (açılır)
+        +'<details style="margin-bottom:4px"><summary style="font-size:.72rem;font-weight:700;color:#8a8d9b;cursor:pointer;padding:4px 0">🧾 Malzemeler ('+r.ing.length+')</summary>'
+          +'<div style="font-size:.68rem;color:#8a8d9b;padding:6px 0;line-height:1.6">'+r.ing.map(function(x){return '• '+x;}).join('<br>')+'</div>'
+        +'</details>'
+        // Adımlar (açılır)
+        +'<details><summary style="font-size:.72rem;font-weight:700;color:#8a8d9b;cursor:pointer;padding:4px 0">👩‍🍳 Yapılış ('+r.steps.length+' adım)</summary>'
+          +'<div style="font-size:.68rem;color:#8a8d9b;padding:6px 0;line-height:1.6">'+r.steps.map(function(s,j){return '<strong>'+(j+1)+'.</strong> '+s;}).join('<br>')+'</div>'
+        +'</details>'
+        +'</div></div>';
     }).join('');
     saveBtn.style.display='block';
 
@@ -1155,7 +1194,7 @@ async function saveSpoonRecipes(){
       <button class="btn-o" onclick="uploadSeedRecipes('corba')">🍲 Çorba</button>
     </div>
     <div class="row" style="margin-top:4px">
-      <button class="btn-o" onclick="uploadSeedRecipes('hizli')">⚡ Hızlı</button>
+      <button class="btn-o" onclick="uploadSeedRecipes('pratik')">⚡ Pratik</button>
       <button class="btn-o" onclick="uploadSeedRecipes('vegan')">🌱 Vegan</button>
       <button class="btn-o" onclick="uploadSeedRecipes('sebze')">🥬 Sebze</button>
     </div>
@@ -1198,7 +1237,7 @@ async function saveSpoonRecipes(){
           <option value="corba">🍲 Çorba</option>
           <option value="fit">🥗 Salata / Fit</option>
           <option value="tatli">🍮 Tatlı</option>
-          <option value="hizli">⚡ Kahvaltı / Hızlı</option>
+          <option value="pratik">⚡ Kahvaltı / Pratik</option>
           <option value="sebze">🥬 Yan Yemek / Sebze</option>
           <option value="vegan">🌱 Vegan</option>
           <option value="hamur">🍞 Ekmek / Hamur</option>
@@ -1247,7 +1286,7 @@ async function saveSpoonRecipes(){
         <select id="genCat">
           <option value="klasik">🍲 Klasik</option>
           <option value="fit">💪 Fit</option>
-          <option value="hizli">⚡ Hızlı</option>
+          <option value="pratik">⚡ Pratik</option>
           <option value="vegan">🌱 Vegan</option>
           <option value="sebze">🥬 Sebze</option>
           <option value="corba">🍲 Çorba</option>
@@ -1272,7 +1311,7 @@ async function saveSpoonRecipes(){
       <select id="rCat">
         <option value="klasik">Klasik</option>
         <option value="fit">Fit</option>
-        <option value="hizli">Hızlı</option>
+        <option value="pratik">Pratik</option>
         <option value="vegan">Vegan</option>
         <option value="sebze">Sebze</option>
         <option value="corba">Çorba</option>
@@ -1314,7 +1353,7 @@ async function saveSpoonRecipes(){
       <button class="btn-sm btn-o" style="border-radius:8px;font-size:.65rem" onclick="filterRecipeListByCat('fit')">Fit</button>
       <button class="btn-sm btn-o" style="border-radius:8px;font-size:.65rem" onclick="filterRecipeListByCat('tatli')">Tatlı</button>
       <button class="btn-sm btn-o" style="border-radius:8px;font-size:.65rem" onclick="filterRecipeListByCat('sebze')">Sebze</button>
-      <button class="btn-sm btn-o" style="border-radius:8px;font-size:.65rem" onclick="filterRecipeListByCat('hizli')">Hızlı</button>
+      <button class="btn-sm btn-o" style="border-radius:8px;font-size:.65rem" onclick="filterRecipeListByCat('pratik')">Pratik</button>
       <button class="btn-sm btn-o" style="border-radius:8px;font-size:.65rem" onclick="filterRecipeListByCat('vegan')">Vegan</button>
       <button class="btn-sm btn-o" style="border-radius:8px;font-size:.65rem" onclick="filterRecipeListByCat('meze')">Meze</button>
       <button class="btn-sm btn-o" style="border-radius:8px;font-size:.65rem" onclick="filterRecipeListByCat('sandvic')">Sandviç</button>
@@ -1341,7 +1380,7 @@ async function saveSpoonRecipes(){
     <div class="row">
       <input type="text" id="reEmoji" placeholder="Emoji" style="max-width:55px;text-align:center">
       <select id="reCat">
-        <option value="klasik">Klasik</option><option value="fit">Fit</option><option value="hizli">Hızlı</option>
+        <option value="klasik">Klasik</option><option value="fit">Fit</option><option value="pratik">Pratik</option>
         <option value="vegan">Vegan</option><option value="sebze">Sebze</option><option value="corba">Çorba</option>
         <option value="tatli">Tatlı</option><option value="hamur">Hamur</option>
         <option value="meze">Meze</option><option value="sandvic">Sandviç</option><option value="salata">Salata</option>
