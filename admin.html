@@ -1434,6 +1434,35 @@ function toggleAllMatchCb(checked){
   document.querySelectorAll('.match-cb').forEach(function(cb){cb.checked=checked;});
 }
 
+// ═══ KATEGORİ SIRALAMA (ADMIN) ═══
+var ADMIN_CATS=[
+  {id:'klasik',label:'🍲 Klasik'},{id:'fit',label:'💪 Fit'},{id:'corba',label:'🍲 Çorbalar'},
+  {id:'tatli',label:'🍮 Tatlılar'},{id:'pratik',label:'⚡ Pratik'},{id:'sebze',label:'🥬 Sebze'},
+  {id:'vegan',label:'🌱 Vegan'},{id:'sandvic',label:'🥪 Sandviçler'},{id:'salata',label:'🥗 Salatalar'},
+  {id:'hamur',label:'🍞 Hamur İşi'},{id:'meze',label:'🫒 Mezeler'},
+  {id:'_protein',label:'💪 Yüksek Proteinli'},{id:'_karb',label:'⚡ Yüksek Karbonhidrat'}
+];
+function getAdminCatOrder(){
+  try{var s=JSON.parse(localStorage.getItem('fs_cat_order')||'null');if(s&&s.length)return s;}catch(e){}
+  return ADMIN_CATS.map(function(c){return{id:c.id,visible:true};});
+}
+function renderAdminCatOrder(){
+  var order=getAdminCatOrder();
+  var el=document.getElementById('adminCatOrderList');if(!el)return;
+  el.innerHTML=order.map(function(o,i){
+    var cat=ADMIN_CATS.find(function(c){return c.id===o.id;});if(!cat)return'';
+    return '<div style="display:flex;align-items:center;gap:8px;padding:8px 10px;margin-bottom:5px;background:#0d0f14;border:1.5px solid #2a2d38;border-radius:10px'+(o.visible?'':';opacity:.35')+'">'
+      +'<div style="display:flex;flex-direction:column;gap:1px;flex-shrink:0"><button onclick="moveAdminCat('+i+',-1)" style="background:none;border:none;color:#8a8d9b;cursor:pointer;font-size:.72rem;padding:0;line-height:1">▲</button><button onclick="moveAdminCat('+i+',1)" style="background:none;border:none;color:#8a8d9b;cursor:pointer;font-size:.72rem;padding:0;line-height:1">▼</button></div>'
+      +'<span style="font-size:.82rem;font-weight:700;flex:1">'+cat.label+'</span>'
+      +'<button onclick="toggleAdminCatVis(\''+o.id+'\')" style="background:'+(o.visible?'#3dd68c':'#ff5c5c')+';color:#fff;border:none;border-radius:6px;padding:3px 10px;font-size:.65rem;font-weight:700;cursor:pointer">'+(o.visible?'👁':'🚫')+'</button>'
+    +'</div>';
+  }).join('');
+}
+function moveAdminCat(i,d){var o=getAdminCatOrder();var t=i+d;if(t<0||t>=o.length)return;var tmp=o[i];o[i]=o[t];o[t]=tmp;localStorage.setItem('fs_cat_order',JSON.stringify(o));renderAdminCatOrder();}
+function toggleAdminCatVis(id){var o=getAdminCatOrder();var it=o.find(function(x){return x.id===id;});if(it)it.visible=!it.visible;localStorage.setItem('fs_cat_order',JSON.stringify(o));renderAdminCatOrder();}
+function saveAdminCatOrder(){showToast('✅ Sıralama kaydedildi! Ana uygulamada görünecek.');}
+setTimeout(renderAdminCatOrder,500);
+
 </script>
 <div id="sec-recipes" class="section">
   <div class="card">
@@ -1626,6 +1655,13 @@ function toggleAllMatchCb(checked){
       <button class="btn-o btn-sm" onclick="toggleAllMatchCb(false)">☐ Tümünü Kaldır</button>
     </div>
     <button class="btn-u" onclick="generateAndSaveMatched()" style="margin-top:6px">🚀 Seçilenleri Tarif Olarak Kaydet</button>
+  </div>
+
+  <div class="card">
+    <h2>⇅ Kategori Sıralaması</h2>
+    <p>Ana uygulamadaki tarif kategorilerinin görünüm sırasını ve görünürlüğünü ayarla</p>
+    <div id="adminCatOrderList" style="margin-top:10px"></div>
+    <button class="btn-u" onclick="saveAdminCatOrder()" style="margin-top:8px">💾 Kaydet & Uygula</button>
   </div>
 
   <div class="card">
