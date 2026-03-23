@@ -39,7 +39,7 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
 .header::after{content:'';position:absolute;bottom:-60px;left:-40px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(160,124,248,.08),transparent 60%);animation:pulse 5s ease-in-out infinite alternate-reverse}
 @keyframes pulse{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.15);opacity:1}}
 .header-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;position:relative;z-index:2}
-.header h1{font-family:'Outfit',sans-serif;font-size:1.5rem;font-weight:900;letter-spacing:-.5px;background:linear-gradient(135deg,#fff 30%,rgba(255,255,255,.7));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.header h1{font-family:'Outfit',sans-serif;font-size:1.5rem;font-weight:900;letter-spacing:-.7px;background:linear-gradient(135deg,#fff 30%,rgba(255,255,255,.7));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .header .date{font-size:.76rem;opacity:.7;font-weight:500;margin-top:2px;letter-spacing:.3px}
 .header .icon-btn{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);color:#fff;width:38px;height:38px;border-radius:12px;font-size:1.05rem;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(10px);transition:all .2s}
 .header .icon-btn:active{transform:scale(.9);background:rgba(255,255,255,.15)}
@@ -60,21 +60,21 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
 .macro-bar-bg{flex:1;height:6px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden}
 .macro-bar-fill{height:100%;border-radius:4px;transition:width .8s cubic-bezier(.25,1,.5,1)}
 .macro-row .macro-val{font-size:.72rem;font-weight:700;min-width:38px;text-align:right;opacity:.85}
-.date-nav{display:flex;align-items:center;justify-content:center;gap:14px;padding:10px 16px;background:var(--card);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:20;backdrop-filter:blur(24px)}
-.date-nav button{background:var(--glass);border:1px solid var(--border);width:34px;height:34px;border-radius:10px;font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text);transition:all .15s}
-.date-nav button:active{transform:scale(.9);background:var(--accent-glow)}
-.date-nav .current-date{font-weight:700;font-size:.88rem;min-width:140px;text-align:center}
+.date-nav{display:flex;align-items:center;justify-content:center;gap:14px;padding:10px 16px;background:var(--card);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:20;backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px)}
+.date-nav button{background:var(--glass);border:1px solid var(--border);width:36px;height:36px;border-radius:10px;font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text);transition:all .2s cubic-bezier(.25,1,.5,1);-webkit-tap-highlight-color:transparent}
+.date-nav button:active{transform:scale(.88);background:var(--accent-glow);border-color:var(--accent)}
+.date-nav .current-date{font-weight:800;font-size:.88rem;min-width:140px;text-align:center;letter-spacing:-.2px}
 .date-nav .today-btn{font-family:var(--font,system-ui);font-size:.72rem;font-weight:700;color:var(--accent);background:var(--accent-glow);border:none;border-radius:8px;padding:5px 12px;cursor:pointer;width:auto;height:auto;display:none}
 .date-nav .today-btn.show{display:inline-flex}
 .content{padding:14px 16px 100px;position:relative;z-index:1}
 .meal-section{margin-bottom:14px;animation:fadeUp .4s cubic-bezier(.25,1,.5,1) both}
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 .meal-section:nth-child(2){animation-delay:.05s}.meal-section:nth-child(3){animation-delay:.1s}.meal-section:nth-child(4){animation-delay:.15s}
-.meal-header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:var(--card);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;cursor:pointer;transition:all .15s;backdrop-filter:blur(16px)}
-.meal-header:active{background:var(--accent-glow)}
+.meal-header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:var(--card);border:1px solid var(--border);border-bottom:none;border-radius:var(--radius) var(--radius) 0 0;cursor:pointer;transition:all .2s cubic-bezier(.25,1,.5,1);backdrop-filter:blur(16px);-webkit-tap-highlight-color:transparent}
+.meal-header:active{background:var(--accent-glow);transform:scale(.99)}
 .meal-section.collapsed .meal-header{border-radius:var(--radius);border-bottom:1px solid var(--border)}
-.meal-title{display:flex;align-items:center;gap:9px;font-weight:700;font-size:.92rem}
-.meal-title .meal-icon{width:30px;height:30px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;box-shadow:var(--glow)}
+.meal-title{display:flex;align-items:center;gap:9px;font-weight:800;font-size:.92rem;letter-spacing:-.2px}
+.meal-title .meal-icon{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.05rem;box-shadow:var(--glow)}
 .meal-right{display:flex;align-items:center;gap:6px}
 .meal-kcal{font-size:.82rem;color:var(--accent);font-weight:800}
 .meal-pct{font-size:.62rem;color:var(--text2);font-weight:700;background:var(--glass);padding:2px 6px;border-radius:6px}
@@ -83,21 +83,19 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
 .meal-body{overflow:hidden;transition:max-height .3s ease;max-height:600px}
 .meal-section.collapsed .meal-body{max-height:0}
 .meal-card{background:var(--card);border-radius:0 0 var(--radius) var(--radius);box-shadow:var(--shadow);overflow:hidden;border:1px solid var(--border);border-top:none;backdrop-filter:blur(16px)}
-.food-item{display:flex;align-items:center;padding:7px 14px;gap:8px;border-bottom:1px solid var(--border);transition:all .15s;position:relative}
-.food-item:active{background:var(--accent-glow);transform:scale(.995)}
+.food-item{display:flex;align-items:center;padding:8px 14px;gap:10px;border-bottom:1px solid var(--border);transition:all .2s cubic-bezier(.25,1,.5,1);position:relative;overflow:hidden}
+.food-item:active{background:var(--accent-glow);transform:scale(.98)}
 .food-item:last-of-type{border-bottom:none}
-.food-emoji{width:38px;height:38px;border-radius:11px;background:var(--glass);display:flex;align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0;border:1px solid var(--border);transition:all .2s cubic-bezier(.34,1.56,.64,1)}
-.food-emoji:active{transform:scale(1.2) rotate(-5deg)}
+.food-emoji{width:40px;height:40px;border-radius:12px;background:var(--glass);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;border:1px solid var(--border);transition:all .25s cubic-bezier(.34,1.56,.64,1)}
+.food-emoji:active{transform:scale(1.2) rotate(-8deg)}
 .food-info{flex:1;min-width:0}
-.food-name{font-weight:600;font-size:.84rem;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.food-macros{display:grid;grid-template-columns:repeat(4,minmax(0,auto));gap:2px;margin-top:3px;font-size:.6rem;font-weight:600;width:fit-content}
-.food-macros .m-p{color:var(--text2);text-align:center;padding:1px 3px}
-.food-macros .m-k{color:var(--text2);text-align:center;padding:1px 3px}
-.food-macros .m-y{color:var(--text2);text-align:center;padding:1px 3px}
-.food-macros .m-pct{color:var(--text2);text-align:center;padding:1px 3px}
-.food-cal{font-weight:800;font-size:.92rem;color:var(--accent);flex-shrink:0;margin-right:2px}
-.add-food-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:12px;color:var(--accent);font-weight:700;font-size:.82rem;cursor:pointer;border-top:1px dashed rgba(255,107,61,.12);transition:all .2s;background:transparent;position:relative}
+.food-name{font-weight:700;font-size:.84rem;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.2px}
+.food-macros{display:flex;gap:6px;margin-top:3px;font-size:.6rem;font-weight:600}
+.food-macros span{color:var(--text2);padding:1px 5px;border-radius:4px;background:var(--glass)}
+.food-cal{font-weight:900;font-size:.92rem;color:var(--accent);flex-shrink:0;margin-right:2px;letter-spacing:-.3px}
+.add-food-btn{display:flex;align-items:center;justify-content:center;gap:6px;padding:13px;color:var(--accent);font-weight:800;font-size:.82rem;cursor:pointer;border-top:1px dashed rgba(255,107,61,.15);transition:all .2s cubic-bezier(.25,1,.5,1);background:transparent;position:relative;letter-spacing:-.1px;-webkit-tap-highlight-color:transparent}
 .add-food-btn:active{background:var(--accent-glow);transform:scale(.97)}
+.add-food-btn:hover{background:rgba(255,107,61,.04)}
 .empty-meal{padding:20px;text-align:center;color:var(--text2);font-size:.8rem;font-style:italic}
 .daily-summary{display:flex;gap:6px;padding:4px 16px 8px;font-size:.65rem;font-weight:600}
 .daily-summary span{padding:2px 6px;border-radius:6px;background:var(--glass)}
@@ -113,17 +111,18 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
 .week-bar .day-label{font-size:.62rem;color:var(--text2);font-weight:600}
 .week-bar .cal-label{font-size:.58rem;color:var(--text2);font-weight:700}
 .target-line{font-size:.72rem;color:var(--text2);margin-bottom:6px;padding:4px 10px;background:var(--glass);border-radius:8px;display:inline-block;font-weight:600}
-.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--card);border-top:1px solid var(--border);display:flex;padding:6px 8px max(10px,env(safe-area-inset-bottom));z-index:50;backdrop-filter:blur(28px)}
-.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;padding:6px 0;cursor:pointer;color:var(--text2);font-family:var(--font,system-ui);transition:all .25s;position:relative}
+.bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--card);border-top:1px solid var(--border);display:flex;padding:6px 8px max(10px,env(safe-area-inset-bottom));z-index:50;backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px)}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:none;padding:6px 0;cursor:pointer;color:var(--text2);font-family:var(--font,system-ui);transition:all .2s cubic-bezier(.25,1,.5,1);position:relative;-webkit-tap-highlight-color:transparent}
 .nav-item.active{color:var(--accent)}
-.nav-item.active .nav-icon{transform:scale(1.1) translateY(-1px);filter:drop-shadow(0 2px 8px rgba(255,107,61,.35))}
-.nav-item.active::after{content:'';position:absolute;bottom:-2px;width:20px;height:3px;border-radius:3px;background:var(--accent);animation:navDot .3s ease}
+.nav-item.active .nav-icon{transform:scale(1.15) translateY(-2px);filter:drop-shadow(0 3px 10px rgba(255,107,61,.4))}
+.nav-item.active::after{content:'';position:absolute;bottom:-2px;width:22px;height:3.5px;border-radius:3px;background:var(--accent);box-shadow:0 0 12px rgba(255,107,61,.5);animation:navDot .3s ease}
 @keyframes navDot{from{width:0;opacity:0}to{width:20px;opacity:1}}
 .nav-item:active{transform:scale(.92)}
 .nav-icon{font-size:1.15rem;transition:all .25s cubic-bezier(.34,1.56,.64,1)}
 .nav-label{font-size:.6rem;font-weight:700;letter-spacing:.3px;transition:all .2s}
-.page{display:none}.page.active{display:block}
-.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:100;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s ease;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);will-change:opacity;overflow:hidden}
+.page{display:none}.page.active{display:block;animation:pageFade .25s ease both}
+@keyframes pageFade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.55);z-index:100;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s ease;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);will-change:opacity;overflow:hidden}
 #goalsModal{justify-content:stretch}
 #goalsModal #goalsModalContent{width:100%}
 .modal-overlay.show{opacity:1;pointer-events:auto}
@@ -131,6 +130,7 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
 .modal-overlay.show .modal-content{transform:translateY(0)}
 .modal{background:var(--card);border-radius:26px 26px 0 0;width:100%;max-width:430px;max-height:92vh;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;touch-action:pan-y;padding:16px 20px 28px;animation:slideUp .3s cubic-bezier(.25,1,.5,1);border-top:1px solid var(--border);backdrop-filter:blur(20px);transition:transform .3s cubic-bezier(.25,1,.5,1)}
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@keyframes slideDown{from{transform:translateY(-100%);opacity:0}to{transform:translateY(0);opacity:1}}
 .modal-handle{width:36px;height:4px;background:rgba(255,255,255,.15);border-radius:4px;margin:0 auto 14px}
 .modal h2{font-size:1rem;font-weight:800;margin-bottom:14px}
 
@@ -811,12 +811,20 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
         <div class="acc-body">
           <div class="profile-field"><label>Bildirimler</label><button id="notifToggle" style="font-family:var(--font,system-ui);font-size:.82rem;font-weight:600;padding:7px 14px;border:1.5px solid var(--green);color:var(--green);background:var(--card);border-radius:8px;cursor:pointer" onclick="toggleNotifications()">Aktifleştir</button></div>
           <div id="notifSettings" style="display:none">
+            <div style="font-size:.72rem;font-weight:700;color:var(--accent);margin-bottom:6px;padding-top:4px">🍽️ Öğün Hatırlatıcılar</div>
             <div class="profile-field"><label>🌅 Kahvaltı</label><input type="time" id="notifKahvalti" value="08:00" onchange="saveNotifSettings()" style="width:110px"></div>
             <div class="profile-field"><label>☀️ Öğle</label><input type="time" id="notifOgle" value="12:30" onchange="saveNotifSettings()" style="width:110px"></div>
             <div class="profile-field"><label>🌙 Akşam</label><input type="time" id="notifAksam" value="19:00" onchange="saveNotifSettings()" style="width:110px"></div>
+            <div style="font-size:.72rem;font-weight:700;color:var(--accent);margin:10px 0 6px">💧 Su & Özet</div>
             <div class="profile-field"><label>💧 Su hatırlatma</label><select id="notifWater" onchange="saveNotifSettings()" style="width:110px"><option value="0">Kapalı</option><option value="60">Her saat</option><option value="90">1.5 saatte bir</option><option value="120">2 saatte bir</option></select></div>
             <div class="profile-field"><label>📊 Günlük özet</label><input type="time" id="notifSummary" value="21:00" onchange="saveNotifSettings()" style="width:110px"></div>
-            <button style="width:100%;padding:8px;margin-top:6px;background:var(--glass);border:1px solid var(--border);border-radius:8px;color:var(--text2);font-family:var(--font,system-ui);font-size:.75rem;font-weight:600;cursor:pointer" onclick="sendNotification('🔔 Test Bildirimi','FitSofra bildirimleri çalışıyor!')">🔔 Test Bildirimi Gönder</button>
+            <div style="font-size:.72rem;font-weight:700;color:var(--accent);margin:10px 0 6px">📅 Haftalık</div>
+            <div class="profile-field"><label>📅 Haftalık rapor</label><select id="notifWeekly" onchange="saveNotifSettings()" style="width:110px"><option value="0">Kapalı</option><option value="1">Pazartesi</option><option value="5">Cuma</option><option value="7">Pazar</option></select></div>
+            <div class="profile-field"><label>⏰ Rapor saati</label><input type="time" id="notifWeeklyTime" value="10:00" onchange="saveNotifSettings()" style="width:110px"></div>
+            <div style="display:flex;gap:6px;margin-top:8px">
+              <button style="flex:1;padding:8px;background:var(--glass);border:1px solid var(--border);border-radius:8px;color:var(--text2);font-family:var(--font,system-ui);font-size:.75rem;font-weight:600;cursor:pointer" onclick="sendNotification('🔔 Test Bildirimi','FitSofra bildirimleri çalışıyor!')">🔔 Test</button>
+              <button style="flex:1;padding:8px;background:var(--glass);border:1px solid var(--border);border-radius:8px;color:var(--text2);font-family:var(--font,system-ui);font-size:.75rem;font-weight:600;cursor:pointer" onclick="sendDailySummaryNotif()">📊 Özet Test</button>
+            </div>
           </div>
         </div>
       </div>
@@ -914,12 +922,19 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
 
       <!-- ═══ ARAMA ═══ -->
       <div style="padding:0 18px 10px">
-        <div onclick="openRecipeSearchModal()" style="display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--glass);border:1.5px solid var(--border);border-radius:12px;cursor:pointer;transition:all .15s" onpointerdown="this.style.borderColor='var(--accent)'" onpointerup="this.style.borderColor='var(--border)'" onpointerleave="this.style.borderColor='var(--border)'">
-          <span style="font-size:.9rem;opacity:.5">🔍</span>
-          <span style="font-size:.82rem;color:var(--text2);font-weight:500">Tarif ara...</span>
+        <div style="display:flex;align-items:center;gap:8px">
+          <input type="text" id="recipeSearchInput" placeholder="🔍 Tarif ara..." oninput="onRecipeSearch()" onfocus="showRecipeSearchMode()" style="flex:1;font-family:var(--font,system-ui);font-size:.85rem;font-weight:600;border:1.5px solid var(--border);border-radius:12px;background:var(--glass);color:var(--text);outline:none;padding:10px 14px;transition:border-color .2s">
+          <button id="recipeSearchCloseBtn" onclick="hideRecipeSearchMode()" style="display:none;background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:6px 12px;font-family:var(--font,system-ui);font-size:.72rem;font-weight:700;color:var(--text2);cursor:pointer;flex-shrink:0">İptal</button>
         </div>
       </div>
 
+      <!-- ═══ ARAMA SONUÇLARI (inline) ═══ -->
+      <div id="recipeSearchPanel" style="display:none;padding:0 18px 20px">
+        <div id="recipeSearchResults" style="min-height:200px"></div>
+      </div>
+
+      <!-- ═══ NORMAL İÇERİK (carousel + kategoriler) ═══ -->
+      <div id="recipeNormalContent">
       <!-- ═══ POPÜLER TARİFLER CAROUSEL ═══ -->
       <div style="padding:0 18px 8px;display:flex;justify-content:space-between;align-items:center">
         <div style="font-weight:800;font-size:.88rem">🔥 Popüler Tarifler</div>
@@ -948,6 +963,7 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
 
       <!-- ═══ KATEGORİ SATIRLARI ═══ -->
       <div id="recipeCatRows"></div>
+      </div><!-- /recipeNormalContent -->
     </div>
 
     <!-- GİZLİ: eski liste (filterRecipes uyumluluğu için) -->
@@ -961,16 +977,6 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
         <button onclick="closeRecipeCatModal()" style="background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:5px 12px;font-family:var(--font,system-ui);font-size:.75rem;font-weight:700;color:var(--text2);cursor:pointer">Kapat</button>
       </div>
       <div id="catModalList" style="flex:1;overflow-y:auto;padding:10px 16px 80px;-webkit-overflow-scrolling:touch"></div>
-    </div>
-
-    <div id="recipeSearchModal" style="position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:200;display:none;flex-direction:column">
-      <div style="padding:max(14px,env(safe-area-inset-top)) 16px 10px;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--card);backdrop-filter:blur(20px)">
-        <div style="display:flex;align-items:center;gap:10px;max-width:430px;margin:0 auto">
-          <button onclick="closeRecipeSearchModal()" style="background:var(--glass);border:1px solid var(--border);border-radius:10px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:.9rem;color:var(--text2);cursor:pointer;flex-shrink:0">✕</button>
-          <input type="text" id="recipeSearchInput" placeholder="Tarif adı ara..." oninput="onRecipeSearch()" style="flex:1;font-family:var(--font,system-ui);font-size:.92rem;font-weight:600;border:1.5px solid var(--border);border-radius:10px;background:var(--glass);color:var(--text);outline:none;padding:10px 14px" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
-        </div>
-      </div>
-      <div id="recipeSearchResults" style="flex:1;overflow-y:auto;padding:10px 16px 80px;-webkit-overflow-scrolling:touch;max-width:430px;margin:0 auto;width:100%"></div>
     </div>
   </div>
 </div>
@@ -4829,14 +4835,22 @@ function openRecipeCatModal(catId){
 function closeRecipeCatModal(){document.getElementById('recipeCatModal').style.display='none'}
 
 // ═══ ARAMA MODAL ═══
-function openRecipeSearchModal(){
-  var m=document.getElementById('recipeSearchModal');
-  m.style.display='flex';
-  document.getElementById('recipeSearchInput').value='';
-  document.getElementById('recipeSearchResults').innerHTML='<div style="text-align:center;padding:40px 20px;color:var(--text2);font-size:.82rem">Tarif adı yazarak arayın</div>';
-  setTimeout(function(){document.getElementById('recipeSearchInput').focus()},100);
+function showRecipeSearchMode(){
+  document.getElementById('recipeNormalContent').style.display='none';
+  document.getElementById('recipeSearchPanel').style.display='block';
+  document.getElementById('recipeSearchCloseBtn').style.display='block';
+  document.getElementById('recipeSearchInput').style.borderColor='var(--accent)';
+  var q=document.getElementById('recipeSearchInput').value.trim();
+  if(!q) document.getElementById('recipeSearchResults').innerHTML='<div style="text-align:center;padding:40px 20px;color:var(--text2);font-size:.82rem">Tarif adı yazarak arayın</div>';
 }
-function closeRecipeSearchModal(){document.getElementById('recipeSearchModal').style.display='none'}
+function hideRecipeSearchMode(){
+  document.getElementById('recipeNormalContent').style.display='block';
+  document.getElementById('recipeSearchPanel').style.display='none';
+  document.getElementById('recipeSearchCloseBtn').style.display='none';
+  document.getElementById('recipeSearchInput').value='';
+  document.getElementById('recipeSearchInput').blur();
+  document.getElementById('recipeSearchInput').style.borderColor='var(--border)';
+}
 
 function onRecipeSearch(){
   const q=(document.getElementById('recipeSearchInput').value||'').toLowerCase().trim();
@@ -4856,7 +4870,7 @@ function onRecipeSearch(){
     +results.map(function(r){
       const idx=RECIPES.findIndex(function(x){return(x.id&&x.id===r.id)||x.name===r.name;});
       const catLabels={fit:'💪',klasik:'🍲',hizli:'⚡',vegan:'🌱',sebze:'🥬',corba:'🍲',tatli:'🍮',hamur:'🍞'};
-      return `<div onclick="closeRecipeSearchModal();openRecipeDetail(${idx})" style="display:flex;align-items:center;gap:10px;padding:9px 4px;border-bottom:1px solid var(--border);cursor:pointer">
+      return `<div onclick="hideRecipeSearchMode();openRecipeDetail(${idx})" style="display:flex;align-items:center;gap:10px;padding:9px 4px;border-bottom:1px solid var(--border);cursor:pointer">
         ${r.img
           ?`<div style="width:44px;height:44px;border-radius:8px;overflow:hidden;flex-shrink:0"><img src="${r.img}" style="width:100%;height:100%;object-fit:cover" loading="lazy"></div>`
           :`<div style="width:44px;height:44px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;background:var(--glass);flex-shrink:0">${r.emoji||'🍽️'}</div>`
@@ -5324,7 +5338,7 @@ let notifTimers=[];
 
 function getNotifSettings(){
   const raw=localStorage.getItem('fs_notif');
-  return raw?JSON.parse(raw):{enabled:false,kahvalti:'08:00',ogle:'12:30',aksam:'19:00',water:0,summary:'21:00'};
+  return raw?JSON.parse(raw):{enabled:false,kahvalti:'08:00',ogle:'12:30',aksam:'19:00',water:0,summary:'21:00',weekly:0,weeklyTime:'10:00'};
 }
 
 function saveNotifSettings(){
@@ -5334,6 +5348,10 @@ function saveNotifSettings(){
     ogle:document.getElementById('notifOgle').value,
     aksam:document.getElementById('notifAksam').value,
     water:parseInt(document.getElementById('notifWater').value)||0,
+    summary:document.getElementById('notifSummary').value,
+    weekly:parseInt(document.getElementById('notifWeekly').value)||0,
+    weeklyTime:document.getElementById('notifWeeklyTime').value||'10:00'
+  };
     summary:document.getElementById('notifSummary').value
   };
   localStorage.setItem('fs_notif',JSON.stringify(s));
@@ -5348,8 +5366,12 @@ function loadNotifSettings(){
   document.getElementById('notifAksam').value=s.aksam||'19:00';
   document.getElementById('notifWater').value=s.water||0;
   document.getElementById('notifSummary').value=s.summary||'21:00';
+  document.getElementById('notifWeekly').value=s.weekly||0;
+  document.getElementById('notifWeeklyTime').value=s.weeklyTime||'10:00';
   updateNotifUI();
   if(notifEnabled)scheduleNotifications();
+  // Admin bildirimlerini kontrol et
+  checkAdminNotifications();
 }
 
 function updateNotifUI(){
@@ -5409,12 +5431,11 @@ function scheduleNotifications(){
   const s=getNotifSettings();
   const now=new Date();
   
-  
+  // Öğün hatırlatıcılar
   const meals=[
     {time:s.kahvalti,title:'🌅 Kahvaltı Zamanı!',body:'Günün en önemli öğününü atlamayın.'},
     {time:s.ogle,title:'☀️ Öğle Yemeği',body:'Öğle yemeğinizi girmeyi unutmayın.'},
-    {time:s.aksam,title:'🌙 Akşam Yemeği',body:'Akşam öğününüzü kaydetmeyi unutmayın.'},
-    {time:s.summary,title:'📊 Günlük Özet',body:'Bugün toplam kaç kalori aldığınızı kontrol edin!'}
+    {time:s.aksam,title:'🌙 Akşam Yemeği',body:'Akşam öğününüzü kaydetmeyi unutmayın.'}
   ];
   
   meals.forEach(m=>{
@@ -5433,7 +5454,23 @@ function scheduleNotifications(){
     }
   });
   
+  // Günlük kalori özeti (gerçek verili)
+  if(s.summary){
+    const [sh,sm]=s.summary.split(':').map(Number);
+    const summaryTarget=new Date(now);
+    summaryTarget.setHours(sh,sm,0,0);
+    if(summaryTarget<=now)summaryTarget.setDate(summaryTarget.getDate()+1);
+    const summaryDelay=summaryTarget-now;
+    if(summaryDelay>0&&summaryDelay<86400000){
+      const timer=setTimeout(()=>{
+        sendDailySummaryNotif();
+        scheduleNotifications();
+      },summaryDelay);
+      notifTimers.push(timer);
+    }
+  }
   
+  // Su hatırlatma
   if(s.water>0){
     const waterInterval=s.water*60*1000;
     const waterTimer=setInterval(()=>{
@@ -5443,11 +5480,31 @@ function scheduleNotifications(){
         const targetMl=waterTarget;
         if(currentMl<targetMl){
           const remaining=targetMl-currentMl;
-          sendNotification('💧 Su İçme Zamanı!',`Bugün ${currentMl}ml içtiniz. Hedefe ${remaining}ml kaldı.`);
+          sendNotification('💧 Su İçme Zamanı!','Bugün '+currentMl+'ml içtiniz. Hedefe '+remaining+'ml kaldı.');
         }
       }
     },waterInterval);
     notifTimers.push(waterTimer);
+  }
+  
+  // Haftalık rapor
+  if(s.weekly>0){
+    const [wh,wm]=(s.weeklyTime||'10:00').split(':').map(Number);
+    const weeklyTarget=new Date(now);
+    // Hedef gün: 1=Pazartesi, 5=Cuma, 7=Pazar
+    var targetDay=s.weekly===7?0:s.weekly; // JS'de 0=Pazar
+    var daysUntil=(targetDay-now.getDay()+7)%7;
+    if(daysUntil===0&&(now.getHours()>wh||(now.getHours()===wh&&now.getMinutes()>=wm)))daysUntil=7;
+    weeklyTarget.setDate(now.getDate()+daysUntil);
+    weeklyTarget.setHours(wh,wm,0,0);
+    const weeklyDelay=weeklyTarget-now;
+    if(weeklyDelay>0){
+      const timer=setTimeout(()=>{
+        sendWeeklyReportNotif();
+        scheduleNotifications();
+      },weeklyDelay);
+      notifTimers.push(timer);
+    }
   }
 }
 
@@ -5462,6 +5519,80 @@ function sendNotification(title,body){
       requireInteraction:false
     });
     n.onclick=()=>{window.focus();n.close()};
+  }catch(e){}
+  // Uygulama içi banner da göster
+  showNotifBanner(title,body);
+}
+
+// Uygulama içi bildirim banner'ı
+function showNotifBanner(title,body){
+  var existing=document.getElementById('notifBanner');
+  if(existing)existing.remove();
+  var banner=document.createElement('div');
+  banner.id='notifBanner';
+  banner.style.cssText='position:fixed;top:max(12px,env(safe-area-inset-top));left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:400px;background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:12px 16px;z-index:300;box-shadow:0 8px 30px rgba(0,0,0,.3);backdrop-filter:blur(20px);animation:slideDown .3s ease;cursor:pointer';
+  banner.innerHTML='<div style="display:flex;align-items:start;gap:10px"><div style="flex:1"><div style="font-weight:800;font-size:.82rem;color:var(--text);margin-bottom:2px">'+title+'</div><div style="font-size:.72rem;color:var(--text2);line-height:1.4">'+body+'</div></div><button onclick="this.parentElement.parentElement.remove()" style="background:none;border:none;color:var(--text2);font-size:.9rem;cursor:pointer;flex-shrink:0;padding:0">✕</button></div>';
+  document.body.appendChild(banner);
+  banner.onclick=function(e){if(e.target.tagName!=='BUTTON')banner.remove()};
+  setTimeout(function(){if(banner.parentElement)banner.remove()},6000);
+}
+
+// Günlük kalori özet bildirimi (gerçek verili)
+function sendDailySummaryNotif(){
+  var t=getTotals();
+  var pct=Math.round((t.cal/dailyTarget)*100);
+  var waterMl=getWaterMl();
+  var title='📊 Günlük Beslenme Özeti';
+  var body='Kalori: '+t.cal+'/'+dailyTarget+' kcal (%'+pct+') · P:'+t.prot+'g K:'+t.carb+'g Y:'+t.fat+'g · Su: '+(waterMl/1000).toFixed(1)+'L';
+  if(pct<80) body+=' — Biraz daha yemelisiniz!';
+  else if(pct<=110) body+=' — Harika gün!';
+  else body+=' — Biraz fazla kaçmış!';
+  sendNotification(title,body);
+}
+
+// Haftalık ilerleme raporu
+function sendWeeklyReportNotif(){
+  var days=[];
+  for(var i=6;i>=0;i--){
+    var d=new Date();d.setDate(d.getDate()-i);
+    var key='fs_day_'+d.toISOString().split('T')[0];
+    var raw=localStorage.getItem(key);
+    if(raw){
+      try{
+        var data=JSON.parse(raw);
+        var dayCal=0;
+        ['kahvalti','ogle','aksam','atistirmalik'].forEach(function(m){
+          if(data[m])data[m].forEach(function(f){dayCal+=(f.cal||0)});
+        });
+        days.push(dayCal);
+      }catch(e){days.push(0);}
+    }else{days.push(0);}
+  }
+  var avg=days.length?Math.round(days.reduce(function(a,b){return a+b},0)/days.length):0;
+  var loggedDays=days.filter(function(d){return d>0}).length;
+  var title='📅 Haftalık İlerleme Raporu';
+  var body='Son 7 gün: Ort. '+avg+' kcal/gün · '+loggedDays+'/7 gün kayıt · Hedef: '+dailyTarget+' kcal';
+  if(avg>0&&avg<=dailyTarget*1.1) body+=' — Harika tempo!';
+  else if(avg>dailyTarget*1.1) body+=' — Biraz dikkat!';
+  sendNotification(title,body);
+}
+
+// Admin bildirimlerini kontrol et (Firestore'dan)
+async function checkAdminNotifications(){
+  try{
+    var lastCheck=parseInt(localStorage.getItem('fs_last_admin_notif')||'0');
+    var snap=await db.collection('settings').doc('notifications').get();
+    if(!snap.exists)return;
+    var data=snap.data();
+    if(!data.messages||!data.messages.length)return;
+    data.messages.forEach(function(msg){
+      if(msg.timestamp>lastCheck){
+        setTimeout(function(){
+          showNotifBanner(msg.title||'📢 Bildirim',msg.body||'');
+        },2000);
+      }
+    });
+    localStorage.setItem('fs_last_admin_notif',String(Date.now()));
   }catch(e){}
 }
 function checkCalorieMilestone(){
