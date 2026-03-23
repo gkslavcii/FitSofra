@@ -46,7 +46,7 @@ input:focus{border-color:#ff6b3d}
 .edit-modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.7);z-index:100;display:none;align-items:center;justify-content:center}
 .edit-modal.show{display:flex}
 .edit-box{background:#181b23;border:1px solid #2a2d38;border-radius:14px;padding:20px;max-width:400px;width:90%}
-.locked{pointer-events:none;opacity:.3}
+.locked{display:none!important}
 </style></head><body>
 <h1>🍽️ FitSofra Admin</h1>
 <p>Veritabani yonetimi ve talep onaylama</p>
@@ -55,13 +55,14 @@ input:focus{border-color:#ff6b3d}
   <div id="logged" style="display:none">
     <div class="user-info"><img id="avatar" src=""><span id="uname"></span></div>
     <div id="adminBadge" style="display:none;padding:4px 10px;border-radius:8px;background:#3dd68c22;color:#3dd68c;font-size:.75rem;font-weight:700;margin-bottom:6px">✅ Admin Yetkisi</div>
-    <div id="uidDisplay" style="font-size:.6rem;color:#8a8d9b;margin-bottom:4px;font-family:monospace;word-break:break-all"></div>
-    <div id="notAdmin" style="display:none;padding:14px;border-radius:10px;background:#ff5c5c11;border:1px solid #ff5c5c33;color:#ff5c5c;font-size:.82rem;margin-bottom:8px;text-align:center">
-      <div style="font-size:1.5rem;margin-bottom:6px">🔒</div>
-      <div style="font-weight:700;margin-bottom:4px">Admin Yetkisi Gerekli</div>
-      <div style="font-size:.72rem;color:#8a8d9b">Bu panel sadece yetkili kullanıcılar içindir. Yetki almak için yönetici ile iletişime geçin.</div>
+    <div id="uidDisplay" style="display:none;font-size:.6rem;color:#8a8d9b;margin-bottom:4px;font-family:monospace;word-break:break-all"></div>
+    <div id="notAdmin" style="display:none;padding:40px 20px;text-align:center">
+      <div style="font-size:3rem;margin-bottom:16px">🔒</div>
+      <div style="font-weight:800;font-size:1.1rem;color:#e8e8ec;margin-bottom:8px">Erişim Reddedildi</div>
+      <div style="font-size:.82rem;color:#8a8d9b;margin-bottom:20px;line-height:1.5">Bu panel sadece yetkili yöneticiler içindir.<br>Erişim talep etmek için yönetici ile iletişime geçin.</div>
+      <button class="btn-o" onclick="logout()" style="margin:0 auto">Çıkış Yap</button>
     </div>
-    <button class="btn-o" onclick="logout()">Çıkış Yap</button>
+    <button id="adminLogoutBtn" class="btn-o" onclick="logout()" style="display:none">Çıkış Yap</button>
   </div>
 </div>
 <div id="adminContent">
@@ -72,6 +73,7 @@ input:focus{border-color:#ff6b3d}
   <button class="tab-btn" onclick="showTab('add',this)">➕</button>
   <button class="tab-btn" onclick="showTab('browse',this)">📋</button>
   <button class="tab-btn" onclick="showTab('recipes',this)">🍽️</button>
+  <button class="tab-btn" onclick="showTab('notifs',this)">🔔</button>
 </div>
 <div class="section active" id="sec-status">
   <div class="card"><h2>☁️ DB Durumu</h2><div id="dbStatus"><p>Kontrol ediliyor...</p></div><button class="btn-o" onclick="checkDB()">🔄 Yenile</button></div>
@@ -156,23 +158,23 @@ auth.onAuthStateChanged(async u=>{
   if(u){
     document.getElementById("avatar").src=u.photoURL||"";
     document.getElementById("uname").textContent=u.displayName||u.email;
-    // Admin listesini yükle (henüz yüklenmediyse)
     if(!_adminUids.length)await loadAdminList();
-    // Admin kontrolü: listedeyse VEYA henüz admin listesi oluşturulmamışsa (ilk kurulumda)
     isAdmin=_adminUids.includes(u.uid)||_adminUids.length===0;
+    // Admin: her şeyi göster, yetkisiz: sadece reddi göster
     document.getElementById("adminBadge").style.display=isAdmin?"block":"none";
+    document.getElementById("uidDisplay").style.display=isAdmin?"block":"none";
+    document.getElementById("adminLogoutBtn").style.display=isAdmin?"block":"none";
     document.getElementById("notAdmin").style.display=isAdmin?"none":"block";
     document.getElementById("adminContent").classList.toggle("locked",!isAdmin);
-    // İlk girişte admin listesi yoksa otomatik oluştur (kendini admin yap)
+    // İlk girişte admin listesi yoksa otomatik oluştur
     if(_adminUids.length===0&&u.uid){
       _adminUids=[u.uid];
       await db.collection('settings').doc('admins').set({uids:[u.uid],createdAt:Date.now()});
       log('🔑 İlk admin olarak kaydedildiniz: '+u.uid);
     }
-    // UID'yi göster (admin yönetimi için)
-    document.getElementById("uidDisplay").textContent='UID: '+u.uid;
+    if(isAdmin) document.getElementById("uidDisplay").textContent='UID: '+u.uid;
+    if(isAdmin) checkDB();
   }
-  checkDB();
 });
 
 async function login(){try{const r=await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());log("Giris: "+r.user.displayName+" | UID: "+r.user.uid)}catch(e){if(e.code!=="auth/popup-closed-by-user")log("❌ "+e.message)}}
@@ -1989,5 +1991,86 @@ setTimeout(renderAdminCatOrder,500);
     <button class="btn-r" onclick="deleteRecipeFromEdit()" style="margin-top:6px;font-size:.72rem">🗑️ Bu Tarifi Sil</button>
   </div>
 </div>
+
+<!-- BİLDİRİM YÖNETİMİ -->
+<div id="sec-notifs" class="section">
+  <div class="card">
+    <h2>📢 Toplu Bildirim Gönder</h2>
+    <p>Tüm kullanıcılara uygulama içi bildirim gönder</p>
+    <input type="text" id="adminNotifTitle" placeholder="Bildirim başlığı (ör: 🎉 Yeni Güncelleme!)" style="margin-bottom:6px">
+    <textarea id="adminNotifBody" placeholder="Bildirim mesajı..." style="width:100%;padding:10px;border:1.5px solid #2a2d38;border-radius:10px;background:#0d0f14;color:#e8e8ec;font-family:inherit;font-size:.82rem;resize:vertical;min-height:60px;margin-bottom:8px;outline:none"></textarea>
+    <button class="btn-u" onclick="sendAdminNotification()">📢 Gönder</button>
+    <div id="adminNotifStatus" style="font-size:.75rem;color:#8a8d9b;margin-top:6px;min-height:16px"></div>
+  </div>
+
+  <div class="card">
+    <h2>📋 Gönderilen Bildirimler</h2>
+    <div id="adminNotifHistory" class="list-scroll" style="max-height:300px"></div>
+    <button class="btn-o btn-sm" onclick="loadAdminNotifHistory()" style="margin-top:6px">🔄 Yenile</button>
+  </div>
+
+  <div class="card">
+    <h2>📊 Bildirim İstatistikleri</h2>
+    <div id="adminNotifStats" style="font-size:.78rem;color:#8a8d9b">Yükleniyor...</div>
+  </div>
+</div>
+
+<script>
+// Admin bildirim fonksiyonları
+async function sendAdminNotification(){
+  var title=document.getElementById('adminNotifTitle').value.trim();
+  var body=document.getElementById('adminNotifBody').value.trim();
+  var st=document.getElementById('adminNotifStatus');
+  if(!title||!body){st.textContent='❌ Başlık ve mesaj gerekli';return;}
+  try{
+    st.textContent='📢 Gönderiliyor...';
+    // Firestore'daki settings/notifications dokümanına ekle
+    var doc=await db.collection('settings').doc('notifications').get();
+    var messages=[];
+    if(doc.exists&&doc.data().messages)messages=doc.data().messages;
+    messages.push({title:title,body:body,timestamp:Date.now(),sender:auth.currentUser?auth.currentUser.displayName:'Admin'});
+    // Son 20 bildirimi tut
+    if(messages.length>20)messages=messages.slice(-20);
+    await db.collection('settings').doc('notifications').set({messages:messages,updatedAt:Date.now()});
+    st.textContent='✅ Bildirim gönderildi! Tüm kullanıcılar uygulamayı açtığında görecek.';
+    document.getElementById('adminNotifTitle').value='';
+    document.getElementById('adminNotifBody').value='';
+    loadAdminNotifHistory();
+    showToast('📢 Bildirim gönderildi!');
+  }catch(e){
+    st.textContent='❌ Hata: '+e.message;
+  }
+}
+
+async function loadAdminNotifHistory(){
+  var el=document.getElementById('adminNotifHistory');
+  try{
+    var doc=await db.collection('settings').doc('notifications').get();
+    if(!doc.exists||!doc.data().messages||!doc.data().messages.length){
+      el.innerHTML='<div style="color:#8a8d9b;font-size:.78rem;padding:10px">Henüz bildirim gönderilmemiş</div>';
+      return;
+    }
+    var msgs=doc.data().messages.slice().reverse();
+    el.innerHTML=msgs.map(function(m,i){
+      var d=new Date(m.timestamp);
+      return '<div style="padding:8px;border-bottom:1px solid #2a2d38;font-size:.78rem">'
+        +'<div style="display:flex;justify-content:space-between;margin-bottom:2px">'
+        +'<span style="font-weight:700">'+m.title+'</span>'
+        +'<span style="color:#8a8d9b;font-size:.65rem">'+d.toLocaleDateString('tr-TR')+' '+d.toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'})+'</span>'
+        +'</div>'
+        +'<div style="color:#8a8d9b;font-size:.72rem">'+m.body+'</div>'
+        +'<div style="color:#8a8d9b;font-size:.6rem;margin-top:2px">Gönderen: '+(m.sender||'Admin')+'</div>'
+        +'</div>';
+    }).join('');
+    // İstatistik
+    document.getElementById('adminNotifStats').innerHTML='Toplam gönderilen: <strong>'+msgs.length+'</strong> bildirim';
+  }catch(e){
+    el.innerHTML='<div style="color:#ff5c5c;font-size:.78rem">❌ '+e.message+'</div>';
+  }
+}
+// Sekme açıldığında yükle
+var origShowTab=showTab;
+showTab=function(id,btn){origShowTab(id,btn);if(id==='notifs')loadAdminNotifHistory()};
+</script>
 
 </body>
