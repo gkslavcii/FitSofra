@@ -5352,8 +5352,6 @@ function saveNotifSettings(){
     weekly:parseInt(document.getElementById('notifWeekly').value)||0,
     weeklyTime:document.getElementById('notifWeeklyTime').value||'10:00'
   };
-    summary:document.getElementById('notifSummary').value
-  };
   localStorage.setItem('fs_notif',JSON.stringify(s));
   scheduleNotifications();
 }
