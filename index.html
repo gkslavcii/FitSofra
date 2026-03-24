@@ -4774,10 +4774,10 @@ function renderCategoryRows(){
       <div style="display:flex;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;gap:12px;padding:0 18px;scroll-snap-type:x mandatory" class="cat-row-track">
         ${items.slice(0,10).map(function(r){
           const idx=RECIPES.findIndex(function(x){return(x.id&&x.id===r.id)||x.name===r.name;});
-          return `<div onclick="openRecipeDetail(${idx})" style="flex:0 0 75%;scroll-snap-align:start;cursor:pointer;border-radius:14px;overflow:hidden;background:var(--card2);border:1px solid var(--border);transition:transform .2s;-webkit-tap-highlight-color:transparent" >
+          return `<div onclick="openRecipeDetail(${idx})" style="flex:0 0 85%;scroll-snap-align:start;cursor:pointer;border-radius:14px;overflow:hidden;background:var(--card2);border:1px solid var(--border);transition:transform .2s;-webkit-tap-highlight-color:transparent" >
             ${r.img
-              ?`<div style="height:190px;overflow:hidden;position:relative"><img src="${r.img}" style="width:100%;height:100%;object-fit:cover;display:block" loading="lazy" onerror="this.parentElement.innerHTML='<div style=\\'height:190px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;background:var(--glass)\\'>${r.emoji||'🍽️'}</div>'"><div style="position:absolute;bottom:0;left:0;right:0;height:50px;background:linear-gradient(transparent,rgba(0,0,0,.4))"></div></div>`
-              :`<div style="height:190px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;background:var(--glass)">${r.emoji||'🍽️'}</div>`
+              ?`<div style="height:210px;overflow:hidden;position:relative"><img src="${r.img}" style="width:100%;height:100%;object-fit:cover;display:block" loading="lazy" onerror="this.parentElement.innerHTML='<div style=\\'height:210px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;background:var(--glass)\\'>${r.emoji||'🍽️'}</div>'"><div style="position:absolute;bottom:0;left:0;right:0;height:50px;background:linear-gradient(transparent,rgba(0,0,0,.4))"></div></div>`
+              :`<div style="height:210px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;background:var(--glass)">${r.emoji||'🍽️'}</div>`
             }
             <div style="padding:10px 12px">
               <div style="font-weight:700;font-size:.85rem;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.name}</div>
@@ -6258,7 +6258,11 @@ function calculateBMI(weight,height){
 
 
 function openPrepModal(){document.getElementById('prepModal').classList.add('show')}
-function closePrepModal(){document.getElementById('prepModal').classList.remove('show')}
+function closePrepModal(){
+  var el=document.getElementById('prepModal');
+  el.querySelectorAll('input,textarea,select').forEach(function(i){i.blur()});
+  el.classList.remove('show');
+}
 function switchPrepTab(tab){
   var isCombo=tab==='combo';
   document.getElementById('prepPanelCombo').style.display=isCombo?'block':'none';
@@ -6728,6 +6732,7 @@ function openGoalsModal(){
 function closeGoalsModal(){
   var el=document.getElementById('goalsModal');
   if(!el)return;
+  el.querySelectorAll('input,textarea,select').forEach(function(i){i.blur()});
   el.classList.remove('show');
 }
 
@@ -7655,19 +7660,23 @@ function addManualExercise(){
       activeModal.style.transform='translateY(100%)';
       activeOverlay.style.transition='opacity .25s';
       activeOverlay.style.opacity='0';
+      activeOverlay.style.pointerEvents='none';
       var overlayRef=activeOverlay;
       var modalRef=activeModal;
       dragging=false; activeOverlay=null; activeModal=null;
+      // Input'ları blur et
+      overlayRef.querySelectorAll('input,textarea,select').forEach(function(i){i.blur()});
       setTimeout(function(){
         var closeFn=getCloseHandler(overlayRef);
         closeFn();
-        // Transform/transition sıfırla ama temel style'lara dokunma
+        // Transform/transition sıfırla
         modalRef.style.transform='';
         modalRef.style.transition='';
         modalRef.style.opacity='';
         overlayRef.style.background='';
         overlayRef.style.opacity='';
         overlayRef.style.transition='';
+        overlayRef.style.pointerEvents='';
       },280);
     } else if(dy<-EXPAND_THRESHOLD){
       // Genişlet
