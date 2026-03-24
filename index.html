@@ -1497,11 +1497,41 @@ async function syncFromCloud(){
         showToast('📥 Buluttan veriler indirildi!');
         
         
-        loadProfile();loadNotifSettings();updateDateNav();renderMeals();updateHeader();updateWaterHeader();
+        loadProfile();loadNotifSettings();updateDateNav();updateWaterHeader();
+        // initFoodDB tamamlanmışsa hemen render et, değilse bitince render edilecek
+        if(foodDbLoaded){renderMeals();updateHeader();}
+        else{window._pendingRenderAfterSync=true;}
       }
     }else{
+      // Yerel daha yeni görünüyor — ama cloud'da gerçekten veri var mı kontrol et
+      // Eğer cloud'da günlük yemek kaydı varsa ve yerelde yoksa, cloud'u tercih et
+      const localDayKey='fs_day_'+dateKey();
+      const localHasToday=localStorage.getItem(localDayKey);
+      let localTodayEmpty=true;
+      try{const ld=JSON.parse(localHasToday||'{}');localTodayEmpty=Object.values(ld).every(a=>!a||!a.length);}catch(e){}
       
-      await syncToCloud();
+      if(localTodayEmpty && cloudTime>0){
+        // Yerelde bugün boş, cloud'da veri var → cloud'dan çek
+        const chunkCount2=meta.chunkCount||1;
+        let dataStr2='';
+        for(let i=0;i<chunkCount2;i++){
+          const chunk2=await userRef.collection('data').doc('chunk_'+i).get();
+          if(chunk2.exists)dataStr2+=chunk2.data().content;
+        }
+        if(dataStr2){
+          const data2=JSON.parse(dataStr2);
+          Object.keys(data2).forEach(k=>{localStorage.setItem(k,typeof data2[k]==='string'?data2[k]:JSON.stringify(data2[k]));});
+          localStorage.setItem('fs_last_sync',String(Date.now()));
+          if(indicator)indicator.textContent='☁️';
+          if(indicator)indicator.style.color='var(--green)';
+          showToast('📥 Buluttan veriler indirildi!');
+          loadProfile();loadNotifSettings();updateDateNav();updateWaterHeader();
+          if(foodDbLoaded){renderMeals();updateHeader();}
+          else{window._pendingRenderAfterSync=true;}
+        }
+      } else {
+        await syncToCloud();
+      }
     }
   }catch(e){
     if(indicator)indicator.textContent='⚠️';
@@ -1521,7 +1551,15 @@ const _origSetWaterMl=function(ml){localStorage.setItem('fs_water_'+dateKey(),Ma
 auth.onAuthStateChanged(user=>{
   currentUser=user;
   updateSyncUI();
-  if(user){syncFromCloud();updateMyPublicProfile()}
+  if(user){
+    // initFoodDB hazırsa hemen sync et, değilse DB hazır olunca sync et
+    if(foodDbLoaded){
+      syncFromCloud();
+    } else {
+      window._pendingSyncAfterDB=true;
+    }
+    updateMyPublicProfile();
+  }
 });
 
 let FOOD_DB = [];
@@ -1559,6 +1597,16 @@ async function initFoodDB(){
   // Firebase zorunlu — built-in DB kaldırıldı
   if(!FOOD_DB.length){
     console.warn('FitSofra: Firebase food_db boş veya erişilemiyor.');
+  }
+  // Sync daha önce bitti ama DB hazır değildi — şimdi render et
+  if(window._pendingRenderAfterSync){
+    window._pendingRenderAfterSync=false;
+    renderMeals();updateHeader();
+  }
+  // Auth daha önce geldi ama DB hazır değildi — şimdi sync et
+  if(window._pendingSyncAfterDB){
+    window._pendingSyncAfterDB=false;
+    syncFromCloud();
   }
 }
 
