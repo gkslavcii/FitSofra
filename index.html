@@ -60,14 +60,15 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
 .macro-row .macro-name{font-size:.72rem;opacity:.7;width:48px;font-weight:600}
 .macro-bar-bg{flex:1;height:6px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden}
 .macro-bar-fill{height:100%;border-radius:4px;transition:width .8s cubic-bezier(.25,1,.5,1)}
+.macro-bar-over{position:absolute;top:0;left:0;height:100%;border-radius:4px;transition:width .8s cubic-bezier(.25,1,.5,1);opacity:.85}
 .macro-row .macro-val{font-size:.72rem;font-weight:700;min-width:38px;text-align:right;opacity:.85}
-.date-nav{display:flex;align-items:center;justify-content:center;gap:14px;padding:10px 16px;background:var(--card);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:20;backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px)}
+.date-nav{display:flex;align-items:center;justify-content:center;gap:14px;padding:10px 16px;background:var(--card);border-bottom:1px solid var(--border);position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;z-index:20;backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px)}
 .date-nav button{background:var(--glass);border:1px solid var(--border);width:36px;height:36px;border-radius:10px;font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text);transition:all .2s cubic-bezier(.25,1,.5,1);-webkit-tap-highlight-color:transparent}
 .date-nav button:active{transform:scale(.88);background:var(--accent-glow);border-color:var(--accent)}
 .date-nav .current-date{font-weight:800;font-size:.88rem;min-width:140px;text-align:center;letter-spacing:-.2px}
 .date-nav .today-btn{font-family:var(--font,system-ui);font-size:.72rem;font-weight:700;color:var(--accent);background:var(--accent-glow);border:none;border-radius:8px;padding:5px 12px;cursor:pointer;width:auto;height:auto;display:none}
 .date-nav .today-btn.show{display:inline-flex}
-.content{padding:14px 16px 100px;position:relative;z-index:1}
+.content{padding:72px 16px 100px;position:relative;z-index:1}
 .meal-section{margin-bottom:14px;animation:fadeUp .4s cubic-bezier(.25,1,.5,1) both}
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 .meal-section:nth-child(2){animation-delay:.05s}.meal-section:nth-child(3){animation-delay:.1s}.meal-section:nth-child(4){animation-delay:.15s}
@@ -291,18 +292,49 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </head>
 <body>
-<div id="splashScreen" style="position:fixed;top:0;left:0;right:0;bottom:0;background:#080a10;z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;transition:opacity .5s">
-  <div style="width:80px;height:80px;border-radius:22px;background:linear-gradient(135deg,#ff6b3d,#ff3d6b);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 40px rgba(255,107,61,.35);animation:bounceIn .6s ease"><svg width="44" height="44" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" fill="none" stroke="#fff" stroke-width="1.2" opacity=".3"/><path d="M8 14c0-2.2 1.8-4 4-4s4 1.8 4 4" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="9" r="1.5" fill="#fff"/><path d="M12 5V3M7.5 6.5L6 5M16.5 6.5L18 5" stroke="#4ade80" stroke-width="1.8" stroke-linecap="round"/><path d="M5 17h14" stroke="#fff" stroke-width="1.5" stroke-linecap="round" opacity=".5"/><path d="M7 20h10" stroke="#fff" stroke-width="1.5" stroke-linecap="round" opacity=".3"/></svg></div>
-  <div style="font-family:'Outfit',sans-serif;font-size:1.4rem;font-weight:900;background:linear-gradient(135deg,#ff6b3d,#ff8f5a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-top:14px;animation:bounceIn .6s ease .1s both">FitSofra</div>
-  <div style="font-size:.72rem;color:#6b7094;margin-top:6px;animation:bounceIn .6s ease .2s both">Sağlıklı beslenmenin anahtarı</div>
-  <div style="margin-top:20px;width:40px;height:40px;border:3px solid rgba(255,107,61,.15);border-top-color:#ff6b3d;border-radius:50%;animation:spin .6s linear infinite"></div>
+<div id="splashScreen" style="position:fixed;top:0;left:0;right:0;bottom:0;background:#080a10;z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;transition:opacity .6s ease">
+  <!-- Arka plan dekor halkalar -->
+  <div style="position:absolute;width:320px;height:320px;border-radius:50%;border:1px solid rgba(255,107,61,.07);top:50%;left:50%;transform:translate(-50%,-50%)"></div>
+  <div style="position:absolute;width:480px;height:480px;border-radius:50%;border:1px solid rgba(255,107,61,.04);top:50%;left:50%;transform:translate(-50%,-50%)"></div>
+  <!-- Logo ikonu -->
+  <div style="animation:splashBounce .7s cubic-bezier(.34,1.56,.64,1) both;filter:drop-shadow(0 12px 40px rgba(255,107,61,.35))">
+    <svg width="110" height="110" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="120" height="120" rx="28" fill="#1a1c24"/>
+      <rect width="120" height="120" rx="28" fill="rgba(255,107,61,0.04)"/>
+      <!-- Tabak dışı halka -->
+      <circle cx="60" cy="52" r="30" stroke="#ff6b3d" stroke-width="3.5" opacity="0.95"/>
+      <circle cx="60" cy="52" r="30" stroke="#ff9060" stroke-width="1" opacity="0.2"/>
+      <!-- Çatal -->
+      <line x1="40" y1="28" x2="40" y2="42" stroke="#ff9060" stroke-width="2.4" stroke-linecap="round"/>
+      <line x1="45" y1="27" x2="45" y2="42" stroke="#ff9060" stroke-width="2.4" stroke-linecap="round"/>
+      <line x1="50" y1="28" x2="50" y2="42" stroke="#ff9060" stroke-width="2.4" stroke-linecap="round"/>
+      <line x1="45" y1="42" x2="45" y2="80" stroke="#ff9060" stroke-width="2.4" stroke-linecap="round"/>
+      <!-- Bıçak -->
+      <path d="M72 27 Q80 27 80 36 L80 80" stroke="#8890aa" stroke-width="2.4" stroke-linecap="round" fill="none"/>
+      <!-- İç ince dash ring -->
+      <circle cx="60" cy="52" r="19" stroke="#ff6b3d" stroke-width="1.5" stroke-dasharray="7 4" opacity="0.45"/>
+    </svg>
+  </div>
+  <!-- Yazı -->
+  <div style="margin-top:18px;animation:splashBounce .7s cubic-bezier(.34,1.56,.64,1) .1s both">
+    <span style="font-family:'Outfit',sans-serif;font-size:2rem;font-weight:900;letter-spacing:-.05em;color:#ff6b3d">Fit</span><span style="font-family:'Outfit',sans-serif;font-size:2rem;font-weight:900;letter-spacing:-.05em;color:#d0d4e8">Sofra</span>
+  </div>
+  <div style="font-size:.73rem;color:#6b7094;margin-top:6px;letter-spacing:.18em;text-transform:uppercase;animation:splashBounce .7s cubic-bezier(.34,1.56,.64,1) .2s both">Sağlıklı beslenmenin anahtarı</div>
+  <!-- Yükleme çubuğu -->
+  <div style="margin-top:28px;width:48px;height:3px;background:rgba(255,107,61,.12);border-radius:4px;overflow:hidden;animation:splashBounce .7s .3s both">
+    <div style="height:100%;width:100%;background:#ff6b3d;border-radius:4px;animation:splashBar 2s ease-in-out infinite"></div>
+  </div>
 </div>
+<style>
+@keyframes splashBounce{from{opacity:0;transform:scale(.85) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes splashBar{0%{transform:translateX(-100%)}60%{transform:translateX(0)}100%{transform:translateX(100%)}}
+</style>
 <style>@keyframes bounceIn{from{opacity:0;transform:scale(.8) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}</style>
 <script>setTimeout(()=>{const s=document.getElementById('splashScreen');if(s){s.style.opacity='0';setTimeout(()=>s.remove(),500)}},2200)</script>
 
 <div class="header">
   <div class="header-top">
-    <div style="display:flex;align-items:center;gap:8px"><div style="width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#ff6b3d,#ff3d6b);display:flex;align-items:center;justify-content:center;box-shadow:0 3px 12px rgba(255,107,61,.4)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" fill="none" stroke="#fff" stroke-width="1.5" opacity=".3"/><path d="M8 14c0-2.2 1.8-4 4-4s4 1.8 4 4" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="9" r="1.5" fill="#fff"/><path d="M12 5V3M7.5 6.5L6 5M16.5 6.5L18 5" stroke="#4ade80" stroke-width="1.8" stroke-linecap="round"/><path d="M5 17h14" stroke="#fff" stroke-width="1.5" stroke-linecap="round" opacity=".5"/><path d="M7 20h10" stroke="#fff" stroke-width="1.5" stroke-linecap="round" opacity=".3"/></svg></div><div><h1>FitSofra</h1><div class="date" id="todayDate"></div><div id="weeklyPlanBadge" style="display:none;font-size:.6rem;font-weight:700;color:var(--accent);opacity:.8;margin-top:1px">📆 Haftalık plan aktif</div></div></div>
+    <div style="display:flex;align-items:center;gap:10px"><div style="filter:drop-shadow(0 3px 10px rgba(255,107,61,.35))"><svg width="36" height="36" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="120" height="120" rx="26" fill="#1a1c24"/><circle cx="60" cy="52" r="30" stroke="#ff6b3d" stroke-width="4" opacity="0.95"/><line x1="40" y1="28" x2="40" y2="42" stroke="#ff9060" stroke-width="2.8" stroke-linecap="round"/><line x1="45" y1="27" x2="45" y2="42" stroke="#ff9060" stroke-width="2.8" stroke-linecap="round"/><line x1="50" y1="28" x2="50" y2="42" stroke="#ff9060" stroke-width="2.8" stroke-linecap="round"/><line x1="45" y1="42" x2="45" y2="80" stroke="#ff9060" stroke-width="2.8" stroke-linecap="round"/><path d="M72 27 Q80 27 80 36 L80 80" stroke="#8890aa" stroke-width="2.8" stroke-linecap="round" fill="none"/><circle cx="60" cy="52" r="19" stroke="#ff6b3d" stroke-width="1.5" stroke-dasharray="7 4" opacity="0.4"/></svg></div><div><h1>FitSofra</h1><div class="date" id="todayDate"></div><div id="weeklyPlanBadge" style="display:none;font-size:.6rem;font-weight:700;color:var(--accent);opacity:.8;margin-top:1px">📆 Haftalık plan aktif</div></div></div>
     <div style="display:flex;align-items:center;gap:6px">
       <span id="headerSyncIcon" style="font-size:.75rem;opacity:.5;display:none">☁️</span>
       <button class="icon-btn" onclick="openInsightModal()" id="insightBtn" title="Beslenme Yorumu" style="font-size:.78rem">📓</button>
@@ -314,17 +346,25 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
   <div class="calorie-ring-section">
     <div class="ring-container">
       <svg width="105" height="105" viewBox="0 0 105 105">
-        <circle cx="52.5" cy="52.5" r="44" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="9"/>
+        <!-- Dış halka arka iz -->
+        <circle cx="52.5" cy="52.5" r="44" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="9"/>
+        <!-- Dış halka: protein / karb / yağ dilimleri -->
         <circle cx="52.5" cy="52.5" r="44" fill="none" stroke="#ff7a7a" stroke-width="9" stroke-dasharray="276.5" stroke-dashoffset="276.5" stroke-linecap="round" id="ringProt" transform="rotate(-90 52.5 52.5)"/>
         <circle cx="52.5" cy="52.5" r="44" fill="none" stroke="#22d3ee" stroke-width="9" stroke-dasharray="276.5" stroke-dashoffset="276.5" stroke-linecap="round" id="ringCarb" transform="rotate(-90 52.5 52.5)"/>
         <circle cx="52.5" cy="52.5" r="44" fill="none" stroke="#ffcc55" stroke-width="9" stroke-dasharray="276.5" stroke-dashoffset="276.5" stroke-linecap="round" id="ringFat" transform="rotate(-90 52.5 52.5)"/>
+        <!-- Aşım overlay (kırmızı, sadece kalori hedefi aşılınca görünür) -->
+        <circle cx="52.5" cy="52.5" r="44" fill="none" stroke="#ff3b3b" stroke-width="9" stroke-dasharray="276.5" stroke-dashoffset="276.5" stroke-linecap="round" id="ringOver" transform="rotate(-90 52.5 52.5)" opacity="0"/>
+        <!-- İnce iç şerit arka iz -->
+        <circle cx="52.5" cy="52.5" r="33" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="3"/>
+        <!-- İnce iç şerit dolum -->
+        <circle cx="52.5" cy="52.5" r="33" fill="none" stroke="#ff6b3d" stroke-width="3" stroke-dasharray="207.3" stroke-dashoffset="207.3" stroke-linecap="round" id="ringInner" transform="rotate(-90 52.5 52.5)" opacity="0.7"/>
       </svg>
-      <div class="ring-text"><span class="cal-num" id="calRemain">2200</span><span class="cal-label">kalan</span></div>
+      <div class="ring-text"><span class="cal-num" id="calRemain">2200</span><span class="cal-label" id="calLabel">kalan</span></div>
     </div>
     <div class="macro-summary">
-      <div class="macro-row"><div class="macro-dot" style="background:#ff7a7a"></div><span class="macro-name">Protein</span><div class="macro-bar-bg"><div class="macro-bar-fill" id="protBar" style="width:0%;background:#ff7a7a"></div></div><span class="macro-val" id="protVal">0g</span></div>
-      <div class="macro-row"><div class="macro-dot" style="background:#22d3ee"></div><span class="macro-name">Karb</span><div class="macro-bar-bg"><div class="macro-bar-fill" id="carbBar" style="width:0%;background:#22d3ee"></div></div><span class="macro-val" id="carbVal">0g</span></div>
-      <div class="macro-row"><div class="macro-dot" style="background:#ffcc55"></div><span class="macro-name">Yağ</span><div class="macro-bar-bg"><div class="macro-bar-fill" id="fatBar" style="width:0%;background:#ffcc55"></div></div><span class="macro-val" id="fatVal">0g</span></div>
+      <div class="macro-row"><div class="macro-dot" style="background:#ff7a7a"></div><span class="macro-name">Protein</span><div class="macro-bar-bg" style="position:relative;overflow:visible"><div class="macro-bar-fill" id="protBar" style="width:0%;background:#ff7a7a"></div><div class="macro-bar-over" id="protOver" style="width:0%;background:#7a1a1a"></div></div><span class="macro-val" id="protVal">0g</span></div>
+      <div class="macro-row"><div class="macro-dot" style="background:#22d3ee"></div><span class="macro-name">Karb</span><div class="macro-bar-bg" style="position:relative;overflow:visible"><div class="macro-bar-fill" id="carbBar" style="width:0%;background:#22d3ee"></div><div class="macro-bar-over" id="carbOver" style="width:0%;background:#0a4a55"></div></div><span class="macro-val" id="carbVal">0g</span></div>
+      <div class="macro-row"><div class="macro-dot" style="background:#ffcc55"></div><span class="macro-name">Yağ</span><div class="macro-bar-bg" style="position:relative;overflow:visible"><div class="macro-bar-fill" id="fatBar" style="width:0%;background:#ffcc55"></div><div class="macro-bar-over" id="fatOver" style="width:0%;background:#5a4200"></div></div><span class="macro-val" id="fatVal">0g</span></div>
       <div class="macro-row"><div class="macro-dot" style="background:#22d3ee"></div><span class="macro-name">Su</span><div class="macro-bar-bg"><div class="macro-bar-fill" id="waterBar" style="width:0%;background:#22d3ee"></div></div><span class="macro-val" id="waterVal">0L</span></div>
     </div>
   </div>
@@ -2046,9 +2086,9 @@ function updateDateNav(){document.getElementById('navDate').textContent=formatDa
 function changeDate(delta){
   const next=new Date(currentDate);
   next.setDate(next.getDate()+delta);
-  // Bugünden sonrasına geçişi engelle
-  const tomorrow=new Date();tomorrow.setDate(tomorrow.getDate()+1);tomorrow.setHours(0,0,0,0);
-  if(next>=tomorrow){showToast('📅 Gelecek tarihe geçemezsiniz');return;}
+  // Bugünden 10 gün sonrasına kadar izin ver
+  const maxDate=new Date();maxDate.setDate(maxDate.getDate()+10);maxDate.setHours(23,59,59,999);
+  if(next>maxDate){showToast('📅 En fazla 10 gün ileriye gidebilirsiniz');return;}
   currentDate=next;
   updateDateNav();renderMeals();updateHeader();updateWaterHeader();renderExerciseCard&&renderExerciseCard();
 }
@@ -2111,7 +2151,8 @@ function renderCalendar(){
     var dk=dateKey(dt);
     var isToday=dk===todayKey;
     var isSelected=dk===selectedKey;
-    var isFuture=dt>today;
+    var maxAllowed=new Date();maxAllowed.setDate(maxAllowed.getDate()+10);maxAllowed.setHours(23,59,59,999);
+    var isFuture=dt>maxAllowed;
 
     // Kalori verisi
     var cal=0;
@@ -2239,7 +2280,78 @@ function updateHeader(){
   const tgt=getTodayTargets();
   const _burned=exBurnActive?getTotalBurned():0;
   const _dailyTarget=tgt.cal+_burned,_protTarget=tgt.prot,_carbTarget=tgt.carb,_fatTarget=tgt.fat;
-  const t=getTotals();const remain=Math.max(0,_dailyTarget-t.cal);document.getElementById('calRemain').textContent=remain;const circ=2*Math.PI*44;const totalCal=t.cal||1;const protCal=t.prot*4;const carbCal=t.carb*4;const fatCal=t.fat*9;const pct=Math.min(1,t.cal/_dailyTarget);const protArc=(protCal/_dailyTarget)*circ;const carbArc=(carbCal/_dailyTarget)*circ;const fatArc=(fatCal/_dailyTarget)*circ;const protOff=circ-Math.min(protArc,circ);const carbOff=circ-Math.min(carbArc,circ);const fatOff=circ-Math.min(fatArc,circ);document.getElementById('ringProt').style.strokeDashoffset=protOff;document.getElementById('ringProt').setAttribute('transform',`rotate(-90 52.5 52.5)`);document.getElementById('ringCarb').style.strokeDashoffset=carbOff;document.getElementById('ringCarb').setAttribute('transform',`rotate(${-90+(protCal/_dailyTarget)*360} 52.5 52.5)`);document.getElementById('ringFat').style.strokeDashoffset=fatOff;document.getElementById('ringFat').setAttribute('transform',`rotate(${-90+((protCal+carbCal)/_dailyTarget)*360} 52.5 52.5)`);document.getElementById('protBar').style.width=Math.min(100,(t.prot/_protTarget)*100)+'%';document.getElementById('carbBar').style.width=Math.min(100,(t.carb/_carbTarget)*100)+'%';document.getElementById('fatBar').style.width=Math.min(100,(t.fat/_fatTarget)*100)+'%';document.getElementById('protVal').textContent=Math.round(t.prot)+'g';document.getElementById('carbVal').textContent=Math.round(t.carb)+'g';document.getElementById('fatVal').textContent=Math.round(t.fat)+'g';checkCalorieMilestone();updateDailyBanner();updateProfileInsight();if(document.getElementById('insightModal')&&document.getElementById('insightModal').classList.contains('show'))updateInsightModalContent();const _badge=document.getElementById('weeklyPlanBadge');if(_badge)_badge.style.display=weeklyPlanActive?'block':'none';}
+
+  const t=getTotals();
+  const circ=2*Math.PI*44;
+  const innerCirc=2*Math.PI*33;
+  const isOver=t.cal>_dailyTarget;
+  const remain=_dailyTarget-t.cal; // negatif olabilir
+
+  // ── Kalan / Aşım etiketi ──
+  const calRemainEl=document.getElementById('calRemain');
+  const calLabelEl=document.getElementById('calLabel');
+  if(isOver){
+    calRemainEl.textContent='+'+Math.round(Math.abs(remain));
+    calRemainEl.style.color='#ff4444';
+    if(calLabelEl){calLabelEl.textContent='aşım';calLabelEl.style.color='#ff4444';}
+  } else {
+    calRemainEl.textContent=Math.round(remain);
+    calRemainEl.style.color='';
+    if(calLabelEl){calLabelEl.textContent='kalan';calLabelEl.style.color='';}
+  }
+
+  // ── Dış halka dilimleri ──
+  const protCal=t.prot*4;const carbCal=t.carb*4;const fatCal=t.fat*9;
+  const protArc=(protCal/_dailyTarget)*circ;
+  const carbArc=(carbCal/_dailyTarget)*circ;
+  const fatArc=(fatCal/_dailyTarget)*circ;
+  document.getElementById('ringProt').style.strokeDashoffset=circ-Math.min(protArc,circ);
+  document.getElementById('ringProt').setAttribute('transform','rotate(-90 52.5 52.5)');
+  document.getElementById('ringCarb').style.strokeDashoffset=circ-Math.min(carbArc,circ);
+  document.getElementById('ringCarb').setAttribute('transform',`rotate(${-90+(protCal/_dailyTarget)*360} 52.5 52.5)`);
+  document.getElementById('ringFat').style.strokeDashoffset=circ-Math.min(fatArc,circ);
+  document.getElementById('ringFat').setAttribute('transform',`rotate(${-90+((protCal+carbCal)/_dailyTarget)*360} 52.5 52.5)`);
+
+  // ── Aşım overlay (kırmızı şerit hedefin üstüne bindirme) ──
+  const overEl=document.getElementById('ringOver');
+  if(isOver){
+    const overFrac=Math.min((t.cal-_dailyTarget)/_dailyTarget,1);
+    overEl.style.strokeDashoffset=circ-(overFrac*circ);
+    overEl.style.opacity='0.75';
+    overEl.setAttribute('transform','rotate(-90 52.5 52.5)');
+  } else {
+    overEl.style.opacity='0';
+  }
+
+  // ── İnce iç şerit (toplam kalori dolumu, %100 = tam dolu) ──
+  const innerPct=Math.min(t.cal/_dailyTarget,1);
+  document.getElementById('ringInner').style.strokeDashoffset=innerCirc-(innerPct*innerCirc);
+  document.getElementById('ringInner').style.stroke=isOver?'#ff4444':'#ff6b3d';
+
+  // ── Makro bar normal dolum (max %100) ──
+  document.getElementById('protBar').style.width=Math.min(100,(t.prot/_protTarget)*100)+'%';
+  document.getElementById('carbBar').style.width=Math.min(100,(t.carb/_carbTarget)*100)+'%';
+  document.getElementById('fatBar').style.width=Math.min(100,(t.fat/_fatTarget)*100)+'%';
+
+  // ── Makro bar aşım overlay ──
+  function setOverBar(id,val,tgt){
+    const el=document.getElementById(id);
+    if(!el)return;
+    if(val>tgt){const pct=Math.min(((val-tgt)/tgt)*100,100);el.style.width=pct+'%';}
+    else{el.style.width='0%';}
+  }
+  setOverBar('protOver',t.prot,_protTarget);
+  setOverBar('carbOver',t.carb,_carbTarget);
+  setOverBar('fatOver',t.fat,_fatTarget);
+
+  document.getElementById('protVal').textContent=Math.round(t.prot)+'g';
+  document.getElementById('carbVal').textContent=Math.round(t.carb)+'g';
+  document.getElementById('fatVal').textContent=Math.round(t.fat)+'g';
+  checkCalorieMilestone();updateDailyBanner();updateProfileInsight();
+  if(document.getElementById('insightModal')&&document.getElementById('insightModal').classList.contains('show'))updateInsightModalContent();
+  const _badge=document.getElementById('weeklyPlanBadge');
+  if(_badge)_badge.style.display=weeklyPlanActive?'block':'none';
+}
 function renderMeals(){const container=document.getElementById('mealsContainer');const data=getDayData();let html='';MEAL_DEFS.forEach(meal=>{const foods=data[meal.id]||[];const mealCal=Math.round(foods.reduce((s,f)=>s+f.cal,0));const mealProt=Math.round(foods.reduce((s,f)=>s+f.prot,0));const mealCarb=Math.round(foods.reduce((s,f)=>s+f.carb,0));const mealFat=Math.round(foods.reduce((s,f)=>s+f.fat,0));const _tgtCal=getTodayTargets().cal;const mealPct=_tgtCal?Math.round((mealCal/_tgtCal)*100):0;let fHTML='';if(!foods.length){fHTML='<div class="empty-meal">Henüz yemek eklenmedi</div>'}else{foods.forEach((f,fi)=>{const dbF=FOOD_DB.find(d=>d.name===f.name);const img=dbF?getFoodImg(dbF):'';const imgHtml='';const pct=dailyTarget?Math.round((f.cal/dailyTarget)*100):0;fHTML+=`<div class="food-item" onclick="openEditFood('${meal.id}',${fi})" style="cursor:pointer">${imgHtml}<div class="food-info" style="flex:1;min-width:0"><div style="display:flex;align-items:baseline;justify-content:space-between;gap:6px"><div class="food-name" style="flex:1">${f.name}</div><div style="display:flex;align-items:center;gap:4px;flex-shrink:0"><div class="food-cal">${Math.round(f.cal)}</div><div style="font-size:.62rem;color:var(--text2)">${Math.round(f.portionUsed||100)}g</div><div style="color:var(--text2);font-size:.7rem">✏️</div></div></div><div class="food-macros"><div class="m-p">P ${Math.round(f.prot)}g</div><div class="m-k">K ${Math.round(f.carb)}g</div><div class="m-y">Y ${Math.round(f.fat)}g</div><div class="m-pct">%${pct}</div></div></div></div>`})}const mealOpenKey='fs_meal_open_'+meal.id;
     const userOpened=sessionStorage.getItem(mealOpenKey);
     const collapsed=(userOpened==='1')?'':' collapsed';
