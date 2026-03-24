@@ -62,13 +62,13 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
 .macro-bar-fill{height:100%;border-radius:4px;transition:width .8s cubic-bezier(.25,1,.5,1)}
 .macro-bar-over{position:absolute;top:0;left:0;height:100%;border-radius:4px;transition:width .8s cubic-bezier(.25,1,.5,1);opacity:.85}
 .macro-row .macro-val{font-size:.72rem;font-weight:700;min-width:38px;text-align:right;opacity:.85}
-.date-nav{display:flex;align-items:center;justify-content:center;gap:14px;padding:10px 16px;background:var(--card);border-bottom:1px solid var(--border);position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;z-index:20;backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px)}
+.date-nav{display:flex;align-items:center;justify-content:center;gap:14px;padding:10px 16px;background:var(--card);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:20;backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px)}
 .date-nav button{background:var(--glass);border:1px solid var(--border);width:36px;height:36px;border-radius:10px;font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text);transition:all .2s cubic-bezier(.25,1,.5,1);-webkit-tap-highlight-color:transparent}
 .date-nav button:active{transform:scale(.88);background:var(--accent-glow);border-color:var(--accent)}
 .date-nav .current-date{font-weight:800;font-size:.88rem;min-width:140px;text-align:center;letter-spacing:-.2px}
 .date-nav .today-btn{font-family:var(--font,system-ui);font-size:.72rem;font-weight:700;color:var(--accent);background:var(--accent-glow);border:none;border-radius:8px;padding:5px 12px;cursor:pointer;width:auto;height:auto;display:none}
 .date-nav .today-btn.show{display:inline-flex}
-.content{padding:72px 16px 100px;position:relative;z-index:1}
+.content{padding:14px 16px 100px;position:relative;z-index:1}
 .meal-section{margin-bottom:14px;animation:fadeUp .4s cubic-bezier(.25,1,.5,1) both}
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 .meal-section:nth-child(2){animation-delay:.05s}.meal-section:nth-child(3){animation-delay:.1s}.meal-section:nth-child(4){animation-delay:.15s}
@@ -301,18 +301,23 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
     <svg width="110" height="110" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect width="120" height="120" rx="28" fill="#1a1c24"/>
       <rect width="120" height="120" rx="28" fill="rgba(255,107,61,0.04)"/>
-      <!-- Tabak dışı halka -->
-      <circle cx="60" cy="52" r="30" stroke="#ff6b3d" stroke-width="3.5" opacity="0.95"/>
-      <circle cx="60" cy="52" r="30" stroke="#ff9060" stroke-width="1" opacity="0.2"/>
-      <!-- Çatal -->
-      <line x1="40" y1="28" x2="40" y2="42" stroke="#ff9060" stroke-width="2.4" stroke-linecap="round"/>
-      <line x1="45" y1="27" x2="45" y2="42" stroke="#ff9060" stroke-width="2.4" stroke-linecap="round"/>
-      <line x1="50" y1="28" x2="50" y2="42" stroke="#ff9060" stroke-width="2.4" stroke-linecap="round"/>
-      <line x1="45" y1="42" x2="45" y2="80" stroke="#ff9060" stroke-width="2.4" stroke-linecap="round"/>
-      <!-- Bıçak -->
-      <path d="M72 27 Q80 27 80 36 L80 80" stroke="#8890aa" stroke-width="2.4" stroke-linecap="round" fill="none"/>
-      <!-- İç ince dash ring -->
-      <circle cx="60" cy="52" r="19" stroke="#ff6b3d" stroke-width="1.5" stroke-dasharray="7 4" opacity="0.45"/>
+      <!-- Tabak dış halka -->
+      <circle cx="60" cy="54" r="34" fill="none" stroke="#ff6b3d" stroke-width="5" opacity="0.95"/>
+      <!-- Tabak iç dolgu -->
+      <circle cx="60" cy="54" r="27" fill="rgba(255,107,61,0.07)"/>
+      <!-- Tabak iç rim -->
+      <circle cx="60" cy="54" r="20" fill="none" stroke="#ff6b3d" stroke-width="1.5" opacity="0.3"/>
+      <!-- Çatal 3 diş -->
+      <line x1="36" y1="22" x2="36" y2="40" stroke="#ff8f5a" stroke-width="3.5" stroke-linecap="round"/>
+      <line x1="43" y1="21" x2="43" y2="40" stroke="#ff8f5a" stroke-width="3.5" stroke-linecap="round"/>
+      <line x1="50" y1="22" x2="50" y2="40" stroke="#ff8f5a" stroke-width="3.5" stroke-linecap="round"/>
+      <!-- Çatal U bağlantı -->
+      <path d="M36 40 Q36 47 43 47 Q50 47 50 40" fill="none" stroke="#ff8f5a" stroke-width="3.5" stroke-linecap="round"/>
+      <!-- Çatal sap -->
+      <line x1="43" y1="47" x2="43" y2="97" stroke="#ff8f5a" stroke-width="3.5" stroke-linecap="round"/>
+      <!-- Bıçak kavisli kesici -->
+      <path d="M70 21 Q81 21 82 31 Q83 41 74 44 L70 44 Z" fill="#7a8099" opacity="0.9"/>
+      <line x1="70" y1="44" x2="70" y2="97" stroke="#7a8099" stroke-width="3.5" stroke-linecap="round"/>
     </svg>
   </div>
   <!-- Yazı -->
@@ -334,7 +339,7 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
 
 <div class="header">
   <div class="header-top">
-    <div style="display:flex;align-items:center;gap:10px"><div style="filter:drop-shadow(0 3px 10px rgba(255,107,61,.35))"><svg width="36" height="36" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="120" height="120" rx="26" fill="#1a1c24"/><circle cx="60" cy="52" r="30" stroke="#ff6b3d" stroke-width="4" opacity="0.95"/><line x1="40" y1="28" x2="40" y2="42" stroke="#ff9060" stroke-width="2.8" stroke-linecap="round"/><line x1="45" y1="27" x2="45" y2="42" stroke="#ff9060" stroke-width="2.8" stroke-linecap="round"/><line x1="50" y1="28" x2="50" y2="42" stroke="#ff9060" stroke-width="2.8" stroke-linecap="round"/><line x1="45" y1="42" x2="45" y2="80" stroke="#ff9060" stroke-width="2.8" stroke-linecap="round"/><path d="M72 27 Q80 27 80 36 L80 80" stroke="#8890aa" stroke-width="2.8" stroke-linecap="round" fill="none"/><circle cx="60" cy="52" r="19" stroke="#ff6b3d" stroke-width="1.5" stroke-dasharray="7 4" opacity="0.4"/></svg></div><div><h1>FitSofra</h1><div class="date" id="todayDate"></div><div id="weeklyPlanBadge" style="display:none;font-size:.6rem;font-weight:700;color:var(--accent);opacity:.8;margin-top:1px">📆 Haftalık plan aktif</div></div></div>
+    <div style="display:flex;align-items:center;gap:10px"><div style="filter:drop-shadow(0 3px 10px rgba(255,107,61,.35))"><svg width="36" height="36" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="120" height="120" rx="26" fill="#1a1c24"/><circle cx="60" cy="54" r="34" fill="none" stroke="#ff6b3d" stroke-width="5" opacity="0.95"/><circle cx="60" cy="54" r="27" fill="rgba(255,107,61,0.07)"/><circle cx="60" cy="54" r="20" fill="none" stroke="#ff6b3d" stroke-width="1.5" opacity="0.3"/><line x1="36" y1="22" x2="36" y2="40" stroke="#ff8f5a" stroke-width="3.5" stroke-linecap="round"/><line x1="43" y1="21" x2="43" y2="40" stroke="#ff8f5a" stroke-width="3.5" stroke-linecap="round"/><line x1="50" y1="22" x2="50" y2="40" stroke="#ff8f5a" stroke-width="3.5" stroke-linecap="round"/><path d="M36 40 Q36 47 43 47 Q50 47 50 40" fill="none" stroke="#ff8f5a" stroke-width="3.5" stroke-linecap="round"/><line x1="43" y1="47" x2="43" y2="97" stroke="#ff8f5a" stroke-width="3.5" stroke-linecap="round"/><path d="M70 21 Q81 21 82 31 Q83 41 74 44 L70 44 Z" fill="#7a8099" opacity="0.9"/><line x1="70" y1="44" x2="70" y2="97" stroke="#7a8099" stroke-width="3.5" stroke-linecap="round"/></svg></div><div><h1>FitSofra</h1><div class="date" id="todayDate"></div><div id="weeklyPlanBadge" style="display:none;font-size:.6rem;font-weight:700;color:var(--accent);opacity:.8;margin-top:1px">📆 Haftalık plan aktif</div></div></div>
     <div style="display:flex;align-items:center;gap:6px">
       <span id="headerSyncIcon" style="font-size:.75rem;opacity:.5;display:none">☁️</span>
       <button class="icon-btn" onclick="openInsightModal()" id="insightBtn" title="Beslenme Yorumu" style="font-size:.78rem">📓</button>
@@ -346,18 +351,12 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
   <div class="calorie-ring-section">
     <div class="ring-container">
       <svg width="105" height="105" viewBox="0 0 105 105">
-        <!-- Dış halka arka iz -->
-        <circle cx="52.5" cy="52.5" r="44" fill="none" stroke="rgba(255,255,255,.08)" stroke-width="9"/>
-        <!-- Dış halka: protein / karb / yağ dilimleri -->
+        <circle cx="52.5" cy="52.5" r="44" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="9"/>
         <circle cx="52.5" cy="52.5" r="44" fill="none" stroke="#ff7a7a" stroke-width="9" stroke-dasharray="276.5" stroke-dashoffset="276.5" stroke-linecap="round" id="ringProt" transform="rotate(-90 52.5 52.5)"/>
         <circle cx="52.5" cy="52.5" r="44" fill="none" stroke="#22d3ee" stroke-width="9" stroke-dasharray="276.5" stroke-dashoffset="276.5" stroke-linecap="round" id="ringCarb" transform="rotate(-90 52.5 52.5)"/>
         <circle cx="52.5" cy="52.5" r="44" fill="none" stroke="#ffcc55" stroke-width="9" stroke-dasharray="276.5" stroke-dashoffset="276.5" stroke-linecap="round" id="ringFat" transform="rotate(-90 52.5 52.5)"/>
-        <!-- Aşım overlay (kırmızı, sadece kalori hedefi aşılınca görünür) -->
-        <circle cx="52.5" cy="52.5" r="44" fill="none" stroke="#ff3b3b" stroke-width="9" stroke-dasharray="276.5" stroke-dashoffset="276.5" stroke-linecap="round" id="ringOver" transform="rotate(-90 52.5 52.5)" opacity="0"/>
-        <!-- İnce iç şerit arka iz -->
-        <circle cx="52.5" cy="52.5" r="33" fill="none" stroke="rgba(255,255,255,.06)" stroke-width="3"/>
-        <!-- İnce iç şerit dolum -->
-        <circle cx="52.5" cy="52.5" r="33" fill="none" stroke="#ff6b3d" stroke-width="3" stroke-dasharray="207.3" stroke-dashoffset="207.3" stroke-linecap="round" id="ringInner" transform="rotate(-90 52.5 52.5)" opacity="0.7"/>
+        <!-- Aşım iç çemberi — sadece hedef aşılınca görünür -->
+        <circle cx="52.5" cy="52.5" r="32" fill="none" stroke="#ff3b3b" stroke-width="4" id="ringOverInner" opacity="0" stroke-linecap="round"/>
       </svg>
       <div class="ring-text"><span class="cal-num" id="calRemain">2200</span><span class="cal-label" id="calLabel">kalan</span></div>
     </div>
@@ -1537,487 +1536,11 @@ async function initFoodDB(){
     }
   }catch(e){}
 
-  // Fallback if nothing loaded
+  // Firebase zorunlu — built-in DB kaldırıldı
   if(!FOOD_DB.length){
-    FOOD_DB=getBuiltinFoodDB();
-    foodDbLoaded=true;rebuildSearchIndex();
+    console.warn('FitSofra: Firebase food_db boş veya erişilemiyor.');
   }
 }
-function getBuiltinFoodDB(){return[
-{name:"Haşlanmış Yumurta",emoji:"🥚",cal:155,prot:13,carb:1,fat:11,cat:"kahvalti"},
-{name:"Sahanda Yumurta",emoji:"🍳",cal:196,prot:14,carb:1,fat:15,cat:"kahvalti"},
-{name:"Sucuklu Yumurta",emoji:"🍳",cal:200,prot:14,carb:1,fat:16,cat:"kahvalti"},
-{name:"Menemen",emoji:"🍳",cal:70,prot:4,carb:3,fat:5,cat:"kahvalti"},
-{name:"Omlet (sade)",emoji:"🍳",cal:154,prot:11,carb:0,fat:12,cat:"kahvalti"},
-{name:"Beyaz Peynir",emoji:"🧀",cal:264,prot:17,carb:1,fat:21,cat:"kahvalti"},
-{name:"Kaşar Peyniri",emoji:"🧀",cal:313,prot:25,carb:1,fat:23,cat:"kahvalti"},
-{name:"Tulum Peyniri",emoji:"🧀",cal:350,prot:22,carb:1,fat:29,cat:"kahvalti"},
-{name:"Mercimek Çorbası",emoji:"🍲",cal:48,prot:3,carb:7,fat:1,cat:"corba"},
-{name:"Ezogelin Çorbası",emoji:"🍲",cal:52,prot:3,carb:8,fat:1,cat:"corba"},
-{name:"Domates Çorbası",emoji:"🍲",cal:35,prot:1,carb:6,fat:1,cat:"corba"},
-{name:"Tarhana Çorbası",emoji:"🍲",cal:45,prot:2,carb:7,fat:1,cat:"corba"},
-{name:"Yayla Çorbası",emoji:"🍲",cal:55,prot:2,carb:5,fat:3,cat:"corba"},
-{name:"Tavuk Suyu Çorbası",emoji:"🍲",cal:30,prot:3,carb:2,fat:1,cat:"corba"},
-{name:"İşkembe Çorbası",emoji:"🍲",cal:52,prot:5,carb:3,fat:2,cat:"corba"},
-{name:"Düğün Çorbası",emoji:"🍲",cal:65,prot:4,carb:5,fat:3,cat:"corba"},
-{name:"Tavuk Sote",emoji:"🍗",cal:130,prot:15,carb:4,fat:6,cat:"et"},
-{name:"Et Haşlama",emoji:"🥩",cal:120,prot:14,carb:3,fat:6,cat:"et"},
-{name:"Kuzu Tandır",emoji:"🥩",cal:180,prot:16,carb:2,fat:12,cat:"et"},
-{name:"Ali Nazik",emoji:"🥩",cal:140,prot:10,carb:8,fat:8,cat:"et"},
-{name:"Hünkar Beğendi",emoji:"🥩",cal:150,prot:10,carb:10,fat:8,cat:"et"},
-{name:"Tas Kebabı",emoji:"🥩",cal:130,prot:12,carb:4,fat:8,cat:"et"},
-{name:"Orman Kebabı",emoji:"🥩",cal:110,prot:10,carb:5,fat:6,cat:"et"},
-{name:"Çerkez Tavuğu",emoji:"🍗",cal:160,prot:12,carb:5,fat:11,cat:"et"},
-{name:"Tavuk But (fırında)",emoji:"🍗",cal:170,prot:20,carb:0,fat:10,cat:"et"},
-{name:"Ciğer Tava",emoji:"🥩",cal:190,prot:22,carb:5,fat:9,cat:"et"},
-{name:"Tavuk Göğsü (çiğ)",emoji:"🥩",cal:110,prot:23,carb:0,fat:1,cat:"et"},
-{name:"Tavuk But (çiğ)",emoji:"🥩",cal:127,prot:17,carb:0,fat:6,cat:"et"},
-{name:"Karnıyarık",emoji:"🍆",cal:95,prot:5,carb:8,fat:5,cat:"sebze"},
-{name:"İmam Bayıldı",emoji:"🍆",cal:70,prot:2,carb:8,fat:4,cat:"sebze"},
-{name:"Patlıcan Musakka",emoji:"🍆",cal:110,prot:5,carb:9,fat:6,cat:"sebze"},
-{name:"Patlıcan Kebabı",emoji:"🍆",cal:120,prot:7,carb:6,fat:8,cat:"sebze"},
-{name:"Zeytinyağlı Fasulye",emoji:"🫛",cal:65,prot:2,carb:8,fat:3,cat:"sebze"},
-{name:"Zeytinyağlı Enginar",emoji:"🌿",cal:72,prot:2,carb:10,fat:3,cat:"sebze"},
-{name:"Zeytinyağlı Yaprak Sarma",emoji:"🌿",cal:85,prot:2,carb:12,fat:4,cat:"sebze"},
-{name:"Etli Yaprak Sarma",emoji:"🌿",cal:110,prot:6,carb:10,fat:5,cat:"sebze"},
-{name:"Zeytinyağlı Dolma",emoji:"🫑",cal:80,prot:2,carb:12,fat:3,cat:"sebze"},
-{name:"Etli Biber Dolma",emoji:"🫑",cal:105,prot:6,carb:10,fat:5,cat:"sebze"},
-{name:"Etli Lahana Sarma",emoji:"🥬",cal:95,prot:6,carb:8,fat:4,cat:"sebze"},
-{name:"Türlü (sebze)",emoji:"🥘",cal:60,prot:2,carb:8,fat:2,cat:"sebze"},
-{name:"Kuru Fasulye (çiğ)",emoji:"🥩",cal:333,prot:23,carb:60,fat:1,cat:"baklagil"},
-{name:"Nohut (çiğ)",emoji:"🥩",cal:364,prot:19,carb:61,fat:6,cat:"baklagil"},
-{name:"Kırmızı Mercimek (çiğ)",emoji:"🥩",cal:352,prot:24,carb:63,fat:1,cat:"baklagil"},
-{name:"Yeşil Mercimek (çiğ)",emoji:"🥩",cal:352,prot:25,carb:60,fat:1,cat:"baklagil"},
-{name:"Barbunya (çiğ)",emoji:"🥩",cal:335,prot:22,carb:60,fat:1,cat:"baklagil"},
-{name:"Börülce (çiğ)",emoji:"🥩",cal:336,prot:24,carb:60,fat:1,cat:"baklagil"},
-{name:"Pirinç Baldo (çiğ)",emoji:"🌾",cal:360,prot:7,carb:80,fat:1,cat:"pilav"},
-{name:"Pirinç Osmancık (çiğ)",emoji:"🌾",cal:358,prot:7,carb:79,fat:1,cat:"pilav"},
-{name:"Pirinç Basmati (çiğ)",emoji:"🌾",cal:350,prot:7,carb:77,fat:1,cat:"pilav"},
-{name:"Pirinç Jasmine (çiğ)",emoji:"🌾",cal:355,prot:7,carb:79,fat:1,cat:"pilav"},
-{name:"Esmer Pirinç (çiğ)",emoji:"🌾",cal:362,prot:8,carb:76,fat:3,cat:"pilav"},
-{name:"Sushi Pirinci (çiğ)",emoji:"🌾",cal:350,prot:7,carb:78,fat:1,cat:"pilav"},
-{name:"Su Böreği",emoji:"🥟",cal:200,prot:7,carb:22,fat:9,cat:"hamur"},
-{name:"Kol Böreği",emoji:"🥟",cal:220,prot:7,carb:25,fat:10,cat:"hamur"},
-{name:"Katmer",emoji:"🥟",cal:350,prot:6,carb:35,fat:20,cat:"hamur"},
-{name:"Etli Ekmek",emoji:"🫓",cal:210,prot:10,carb:25,fat:8,cat:"hamur"},
-{name:"Börek (ıspanaklı)",emoji:"🥧",cal:240,prot:7,carb:24,fat:13,cat:"hamur"},
-{name:"Elma",emoji:"🍎",cal:52,prot:0,carb:14,fat:0,cat:"meyve"},
-{name:"Muz",emoji:"🍌",cal:89,prot:1,carb:23,fat:0,cat:"meyve"},
-{name:"Portakal",emoji:"🍊",cal:47,prot:1,carb:12,fat:0,cat:"meyve"},
-{name:"Mandalina",emoji:"🍊",cal:53,prot:1,carb:13,fat:0,cat:"meyve"},
-{name:"Üzüm",emoji:"🍇",cal:69,prot:1,carb:18,fat:0,cat:"meyve"},
-{name:"Çilek",emoji:"🍓",cal:32,prot:1,carb:8,fat:0,cat:"meyve"},
-{name:"Kiraz",emoji:"🍒",cal:50,prot:1,carb:12,fat:0,cat:"meyve"},
-{name:"Karpuz",emoji:"🍉",cal:30,prot:1,carb:8,fat:0,cat:"meyve"},
-{name:"Kavun",emoji:"🍈",cal:34,prot:1,carb:8,fat:0,cat:"meyve"},
-{name:"Şeftali",emoji:"🍑",cal:39,prot:1,carb:10,fat:0,cat:"meyve"},
-{name:"Yoğurt (tam yağlı)",emoji:"🥛",cal:60,prot:5,carb:5,fat:2,cat:"sut"},
-{name:"Yoğurt (light)",emoji:"🥛",cal:40,prot:5,carb:4,fat:0,cat:"sut"},
-{name:"Süzme Yoğurt",emoji:"🥛",cal:95,prot:8,carb:4,fat:5,cat:"sut"},
-{name:"Ayran",emoji:"🥛",cal:36,prot:2,carb:3,fat:2,cat:"sut"},
-{name:"Kefir",emoji:"🥛",cal:55,prot:3,carb:4,fat:3,cat:"sut"},
-{name:"Çay (şekersiz)",emoji:"🍵",cal:1,prot:0,carb:0,fat:0,cat:"icecek"},
-{name:"Çay (1 şekerli)",emoji:"🍵",cal:20,prot:0,carb:5,fat:0,cat:"icecek"},
-{name:"Türk Kahvesi",emoji:"☕",cal:12,prot:0,carb:2,fat:0,cat:"icecek"},
-{name:"Filtre Kahve (sade)",emoji:"☕",cal:2,prot:0,carb:0,fat:0,cat:"icecek"},
-{name:"Latte",emoji:"☕",cal:120,prot:6,carb:10,fat:6,cat:"icecek"},
-{name:"Cappuccino",emoji:"☕",cal:80,prot:4,carb:6,fat:4,cat:"icecek"},
-{name:"Badem",emoji:"🥜",cal:579,prot:21,carb:22,fat:50,cat:"kuruyemis"},
-{name:"Ceviz",emoji:"🥜",cal:654,prot:15,carb:14,fat:65,cat:"kuruyemis"},
-{name:"Fındık",emoji:"🌰",cal:628,prot:15,carb:17,fat:61,cat:"kuruyemis"},
-{name:"Fıstık (Antep)",emoji:"🥜",cal:562,prot:20,carb:28,fat:45,cat:"kuruyemis"},
-{name:"Hamburger",emoji:"🍔",cal:250,prot:13,carb:24,fat:12,cat:"fastfood"},
-{name:"Cheeseburger",emoji:"🍔",cal:300,prot:15,carb:25,fat:15,cat:"fastfood"},
-{name:"Pizza (1 dilim)",emoji:"🍕",cal:266,prot:11,carb:33,fat:10,cat:"fastfood"},
-{name:"Patates Kızartması",emoji:"🍟",cal:312,prot:3,carb:41,fat:15,cat:"fastfood"},
-{name:"Güllaç",emoji:"🍮",cal:130,prot:4,carb:22,fat:3,cat:"tatli"},
-{name:"Keşkül",emoji:"🍮",cal:150,prot:4,carb:20,fat:6,cat:"tatli"},
-{name:"Aşure",emoji:"🍮",cal:120,prot:3,carb:24,fat:2,cat:"tatli"},
-{name:"Fırın Sütlaç",emoji:"🍮",cal:130,prot:4,carb:20,fat:4,cat:"tatli"},
-{name:"Baklava",emoji:"🍯",cal:428,prot:6,carb:47,fat:24,cat:"tatli"},
-{name:"Çikolata (sütlü)",emoji:"🍫",cal:535,prot:8,carb:59,fat:30,cat:"atistirmalik"},
-{name:"Çikolata (bitter)",emoji:"🍫",cal:546,prot:5,carb:60,fat:31,cat:"atistirmalik"},
-{name:"Protein Bar",emoji:"🍫",cal:333,prot:33,carb:37,fat:12,cat:"atistirmalik"},
-{name:"Granola Bar",emoji:"🍫",cal:400,prot:8,carb:60,fat:15,cat:"atistirmalik"},
-{name:"Levrek (ızgara)",emoji:"🐟",cal:97,prot:18,carb:0,fat:2,cat:"balik"},
-{name:"Çipura (ızgara)",emoji:"🐟",cal:100,prot:19,carb:0,fat:2,cat:"balik"},
-{name:"Somon (ızgara)",emoji:"🐟",cal:208,prot:20,carb:0,fat:13,cat:"balik"},
-{name:"Hamsi (tava)",emoji:"🐟",cal:210,prot:18,carb:6,fat:12,cat:"balik"},
-{name:"Ketçap (genel)",emoji:"🧴",cal:112,prot:1,carb:26,fat:0,cat:"sos"},
-{name:"Heinz Ketçap",emoji:"🧴",cal:110,prot:1,carb:25,fat:0,cat:"sos"},
-{name:"Mayonez (genel)",emoji:"🧴",cal:680,prot:1,carb:1,fat:75,cat:"sos"},
-{name:"Yulaf Ezmesi (çiğ)",emoji:"🌾",cal:389,prot:17,carb:66,fat:7,cat:"sporcu"},
-{name:"Yulaf Kepeği",emoji:"🌾",cal:246,prot:17,carb:66,fat:7,cat:"sporcu"},
-{name:"Chia Tohumu",emoji:"🌱",cal:486,prot:17,carb:42,fat:31,cat:"sporcu"}
-// ══════════════════════════════════════════════════════
-//  YENİ ÜRÜNLER — BeBIS + USDA + Türkiye Gıda Kompozisyon DB
-// ══════════════════════════════════════════════════════
-
-// ── HAMMADDELER: TAHILLAR & UNLU ──
-,{name:"Buğday Unu (beyaz)",emoji:"🌾",cal:364,prot:10,carb:76,fat:1,cat:"hammadde"}
-,{name:"Tam Buğday Unu",emoji:"🌾",cal:340,prot:13,carb:72,fat:2,cat:"hammadde"}
-,{name:"Mısır Unu",emoji:"🌽",cal:361,prot:7,carb:76,fat:4,cat:"hammadde"}
-,{name:"Pirinç (çiğ)",emoji:"🍚",cal:358,prot:7,carb:79,fat:1,cat:"hammadde"}
-,{name:"Bulgur (çiğ)",emoji:"🌾",cal:342,prot:12,carb:76,fat:1,cat:"hammadde"}
-,{name:"Yulaf Ezmesi (çiğ)",emoji:"🌾",cal:389,prot:17,carb:66,fat:7,cat:"hammadde"}
-,{name:"Makarna (çiğ)",emoji:"🍝",cal:371,prot:13,carb:75,fat:2,cat:"hammadde"}
-,{name:"Ekmek (tam buğday)",emoji:"🍞",cal:247,prot:13,carb:41,fat:4,cat:"hammadde"}
-,{name:"Ekmek (beyaz)",emoji:"🍞",cal:265,prot:9,carb:49,fat:3,cat:"hammadde"}
-,{name:"Simit",emoji:"🥨",cal:284,prot:9,carb:54,fat:3,cat:"kahvalti"}
-,{name:"Bazlama",emoji:"🫓",cal:262,prot:8,carb:48,fat:5,cat:"hamur"}
-,{name:"Gözleme (peynirli)",emoji:"🫓",cal:218,prot:9,carb:28,fat:8,cat:"hamur"}
-,{name:"Pide (sade)",emoji:"🫓",cal:258,prot:9,carb:50,fat:2,cat:"hamur"}
-,{name:"Katmer",emoji:"🥞",cal:385,prot:7,carb:42,fat:21,cat:"hamur"}
-,{name:"Lavaş",emoji:"🫓",cal:275,prot:9,carb:55,fat:3,cat:"hamur"}
-
-// ── HAMMADDELER: YAĞLAR ──
-,{name:"Zeytinyağı",emoji:"🫒",cal:884,prot:0,carb:0,fat:100,cat:"hammadde"}
-,{name:"Tereyağı",emoji:"🧈",cal:717,prot:1,carb:0,fat:81,cat:"hammadde"}
-,{name:"Ayçiçek Yağı",emoji:"🌻",cal:884,prot:0,carb:0,fat:100,cat:"hammadde"}
-,{name:"Hindistan Cevizi Yağı",emoji:"🥥",cal:862,prot:0,carb:0,fat:100,cat:"hammadde"}
-,{name:"Margarin",emoji:"🧈",cal:719,prot:0,carb:1,fat:80,cat:"hammadde"}
-,{name:"Mısır Yağı",emoji:"🌽",cal:884,prot:0,carb:0,fat:100,cat:"hammadde"}
-
-// ── HAMMADDELER: ŞEKER & TATLANDIRICI ──
-,{name:"Toz Şeker",emoji:"🍬",cal:387,prot:0,carb:100,fat:0,cat:"hammadde"}
-,{name:"Bal",emoji:"🍯",cal:304,prot:0,carb:82,fat:0,cat:"kahvalti"}
-,{name:"Esmer Şeker",emoji:"🍬",cal:377,prot:0,carb:97,fat:0,cat:"hammadde"}
-,{name:"Nişasta",emoji:"🌾",cal:381,prot:0,carb:91,fat:0,cat:"hammadde"}
-
-// ── HAMMADDELER: SÜT & YUMURTA ──
-,{name:"Yumurta (1 adet ~60g)",emoji:"🥚",cal:155,prot:13,carb:1,fat:11,cat:"hammadde"}
-,{name:"Süt (tam yağlı)",emoji:"🥛",cal:61,prot:3,carb:5,fat:3,cat:"hammadde"}
-,{name:"Süt (yağsız)",emoji:"🥛",cal:35,prot:4,carb:5,fat:0,cat:"hammadde"}
-,{name:"Krema (%35 yağ)",emoji:"🥛",cal:345,prot:2,carb:3,fat:36,cat:"hammadde"}
-,{name:"Kaşar Peyniri",emoji:"🧀",cal:386,prot:25,carb:2,fat:31,cat:"sut"}
-,{name:"Beyaz Peynir",emoji:"🧀",cal:264,prot:16,carb:2,fat:21,cat:"sut"}
-,{name:"Tulum Peyniri",emoji:"🧀",cal:320,prot:22,carb:2,fat:25,cat:"sut"}
-,{name:"Dil Peyniri",emoji:"🧀",cal:330,prot:24,carb:1,fat:26,cat:"sut"}
-,{name:"Çökelek",emoji:"🧀",cal:88,prot:12,carb:2,fat:4,cat:"sut"}
-,{name:"Ayran",emoji:"🥛",cal:36,prot:2,carb:3,fat:2,cat:"icecek"}
-,{name:"Sütlü Kahve (latte)",emoji:"☕",cal:61,prot:3,carb:6,fat:3,cat:"icecek"}
-
-// ── HAMMADDELER: ET & TAVUK (çiğ) ──
-,{name:"Dana Kıyma (çiğ)",emoji:"🥩",cal:215,prot:18,carb:0,fat:16,cat:"hammadde"}
-,{name:"Tavuk Göğsü (çiğ)",emoji:"🍗",cal:120,prot:23,carb:0,fat:3,cat:"hammadde"}
-,{name:"Kuzu Kıyma (çiğ)",emoji:"🥩",cal:282,prot:17,carb:0,fat:23,cat:"hammadde"}
-,{name:"Balık Fileto (çiğ)",emoji:"🐟",cal:105,prot:22,carb:0,fat:2,cat:"hammadde"}
-
-// ── HAMMADDELER: SEBZE (çiğ/taze) ──
-,{name:"Domates",emoji:"🍅",cal:18,prot:1,carb:4,fat:0,cat:"sebze"}
-,{name:"Salatalık",emoji:"🥒",cal:16,prot:1,carb:4,fat:0,cat:"sebze"}
-,{name:"Biber (dolmalık)",emoji:"🫑",cal:31,prot:1,carb:6,fat:0,cat:"sebze"}
-,{name:"Soğan",emoji:"🧅",cal:40,prot:1,carb:9,fat:0,cat:"hammadde"}
-,{name:"Sarımsak",emoji:"🧄",cal:149,prot:6,carb:33,fat:1,cat:"hammadde"}
-,{name:"Patates",emoji:"🥔",cal:77,prot:2,carb:17,fat:0,cat:"sebze"}
-,{name:"Havuç",emoji:"🥕",cal:41,prot:1,carb:10,fat:0,cat:"sebze"}
-,{name:"Ispanak (çiğ)",emoji:"🥬",cal:23,prot:3,carb:4,fat:0,cat:"sebze"}
-,{name:"Brokoli",emoji:"🥦",cal:34,prot:3,carb:7,fat:0,cat:"sebze"}
-,{name:"Karnabahar",emoji:"🥦",cal:25,prot:2,carb:5,fat:0,cat:"sebze"}
-,{name:"Kabak (yeşil)",emoji:"🥒",cal:17,prot:1,carb:3,fat:0,cat:"sebze"}
-,{name:"Patlıcan",emoji:"🍆",cal:25,prot:1,carb:6,fat:0,cat:"sebze"}
-,{name:"Lahana (beyaz)",emoji:"🥬",cal:25,prot:1,carb:6,fat:0,cat:"sebze"}
-,{name:"Kırmızı Lahana",emoji:"🥬",cal:31,prot:1,carb:7,fat:0,cat:"sebze"}
-,{name:"Marul",emoji:"🥬",cal:15,prot:1,carb:3,fat:0,cat:"sebze"}
-,{name:"Roka",emoji:"🌿",cal:25,prot:3,carb:4,fat:1,cat:"sebze"}
-,{name:"Maydanoz",emoji:"🌿",cal:36,prot:3,carb:6,fat:1,cat:"hammadde"}
-,{name:"Nane",emoji:"🌿",cal:44,prot:3,carb:8,fat:1,cat:"hammadde"}
-,{name:"Dereotu",emoji:"🌿",cal:43,prot:4,carb:7,fat:1,cat:"hammadde"}
-,{name:"Tahin",emoji:"🥜",cal:595,prot:17,carb:21,fat:54,cat:"hammadde"}
-,{name:"Nar Ekşisi",emoji:"🍎",cal:110,prot:0,carb:28,fat:0,cat:"hammadde"}
-,{name:"Biber Salçası",emoji:"🌶️",cal:80,prot:3,carb:14,fat:2,cat:"hammadde"}
-,{name:"Domates Salçası",emoji:"🍅",cal:82,prot:4,carb:18,fat:0,cat:"hammadde"}
-,{name:"Sumak",emoji:"🌿",cal:239,prot:5,carb:44,fat:8,cat:"hammadde"}
-,{name:"Kimyon",emoji:"🌿",cal:375,prot:18,carb:44,fat:22,cat:"hammadde"}
-,{name:"Pul Biber",emoji:"🌶️",cal:282,prot:12,carb:50,fat:6,cat:"hammadde"}
-,{name:"Kekik (kuru)",emoji:"🌿",cal:276,prot:9,carb:64,fat:7,cat:"hammadde"}
-,{name:"İsot (Urfa biberi)",emoji:"🌶️",cal:282,prot:12,carb:50,fat:6,cat:"hammadde"}
-,{name:"Karabiber",emoji:"🌿",cal:255,prot:10,carb:64,fat:3,cat:"hammadde"}
-,{name:"Tarçın",emoji:"🌿",cal:247,prot:4,carb:81,fat:1,cat:"hammadde"}
-,{name:"Defne Yaprağı",emoji:"🍃",cal:313,prot:8,carb:75,fat:8,cat:"hammadde"}
-,{name:"Pekmez (üzüm)",emoji:"🍇",cal:293,prot:1,carb:72,fat:0,cat:"hammadde"}
-,{name:"Sirke (üzüm)",emoji:"🫗",cal:18,prot:0,carb:1,fat:0,cat:"hammadde"}
-,{name:"Limon Suyu",emoji:"🍋",cal:22,prot:0,carb:7,fat:0,cat:"hammadde"}
-,{name:"Çam Fıstığı",emoji:"🌰",cal:673,prot:14,carb:13,fat:68,cat:"hammadde"}
-,{name:"Antep Fıstığı",emoji:"🥜",cal:562,prot:20,carb:28,fat:45,cat:"hammadde"}
-,{name:"Kuru Üzüm",emoji:"🍇",cal:299,prot:3,carb:79,fat:0,cat:"hammadde"}
-,{name:"Kuş Üzümü",emoji:"🍇",cal:283,prot:4,carb:67,fat:2,cat:"hammadde"}
-,{name:"Yufka",emoji:"🥟",cal:310,prot:9,carb:58,fat:5,cat:"hammadde"}
-,{name:"Baklava Yufkası",emoji:"🥟",cal:340,prot:8,carb:55,fat:10,cat:"hammadde"}
-,{name:"Gül Suyu",emoji:"🌹",cal:0,prot:0,carb:0,fat:0,cat:"hammadde"}
-,{name:"Maya (kuru)",emoji:"🧬",cal:325,prot:40,carb:41,fat:7,cat:"hammadde"}
-,{name:"Kabartma Tozu",emoji:"🧪",cal:53,prot:0,carb:28,fat:0,cat:"hammadde"}
-,{name:"Tuz",emoji:"🧂",cal:0,prot:0,carb:0,fat:0,cat:"hammadde"}
-,{name:"Sıvıyağ",emoji:"🫗",cal:884,prot:0,carb:0,fat:100,cat:"hammadde"}
-,{name:"Susam",emoji:"🌿",cal:573,prot:18,carb:23,fat:50,cat:"hammadde"}
-,{name:"Çörek Otu",emoji:"🌿",cal:345,prot:16,carb:52,fat:15,cat:"hammadde"}
-,{name:"Kırmızı Toz Biber",emoji:"🌶️",cal:282,prot:12,carb:50,fat:6,cat:"hammadde"}
-,{name:"Mahlep",emoji:"🌿",cal:400,prot:6,carb:30,fat:30,cat:"hammadde"}
-,{name:"Beyaz Peynir",emoji:"🧀",cal:264,prot:17,carb:1,fat:21,cat:"hammadde"}
-,{name:"Kaşar Peyniri",emoji:"🧀",cal:350,prot:25,carb:2,fat:27,cat:"hammadde"}
-,{name:"Lor Peyniri",emoji:"🧀",cal:160,prot:11,carb:3,fat:12,cat:"hammadde"}
-,{name:"Süzme Yoğurt",emoji:"🥛",cal:66,prot:10,carb:4,fat:0,cat:"hammadde"}
-,{name:"Tulum Peyniri",emoji:"🧀",cal:315,prot:22,carb:1,fat:25,cat:"hammadde"}
-,{name:"Taze Soğan",emoji:"🧅",cal:32,prot:2,carb:7,fat:0,cat:"sebze"}
-,{name:"Mantar (kültür)",emoji:"🍄",cal:22,prot:3,carb:3,fat:0,cat:"sebze"}
-,{name:"Bezelye (taze)",emoji:"🟢",cal:81,prot:5,carb:14,fat:0,cat:"sebze"}
-,{name:"Taze Fasulye",emoji:"🫘",cal:35,prot:2,carb:8,fat:0,cat:"sebze"}
-,{name:"Mısır (haşlama)",emoji:"🌽",cal:86,prot:3,carb:19,fat:1,cat:"sebze"}
-,{name:"Semizotu",emoji:"🌿",cal:20,prot:2,carb:4,fat:0,cat:"sebze"}
-
-// ── HAMMADDELER: MEYVE ──
-,{name:"Elma",emoji:"🍎",cal:52,prot:0,carb:14,fat:0,cat:"meyve"}
-,{name:"Muz",emoji:"🍌",cal:89,prot:1,carb:23,fat:0,cat:"meyve"}
-,{name:"Portakal",emoji:"🍊",cal:47,prot:1,carb:12,fat:0,cat:"meyve"}
-,{name:"Üzüm",emoji:"🍇",cal:69,prot:1,carb:18,fat:0,cat:"meyve"}
-,{name:"Çilek",emoji:"🍓",cal:32,prot:1,carb:8,fat:0,cat:"meyve"}
-,{name:"Kavun",emoji:"🍈",cal:34,prot:1,carb:8,fat:0,cat:"meyve"}
-,{name:"Karpuz",emoji:"🍉",cal:30,prot:1,carb:8,fat:0,cat:"meyve"}
-,{name:"Şeftali",emoji:"🍑",cal:39,prot:1,carb:10,fat:0,cat:"meyve"}
-,{name:"Kiraz",emoji:"🍒",cal:63,prot:1,carb:16,fat:0,cat:"meyve"}
-,{name:"Erik",emoji:"🍑",cal:46,prot:1,carb:11,fat:0,cat:"meyve"}
-,{name:"Ayva",emoji:"🍐",cal:57,prot:0,carb:15,fat:0,cat:"meyve"}
-,{name:"Mandalina",emoji:"🍊",cal:53,prot:1,carb:13,fat:0,cat:"meyve"}
-,{name:"Limon",emoji:"🍋",cal:29,prot:1,carb:9,fat:0,cat:"meyve"}
-,{name:"Avokado",emoji:"🥑",cal:160,prot:2,carb:9,fat:15,cat:"meyve"}
-,{name:"Ananas",emoji:"🍍",cal:50,prot:1,carb:13,fat:0,cat:"meyve"}
-
-// ── PIŞMIŞ TAHILLAR & MAKARNA ──
-,{name:"Bulgur Pilavı (pişmiş)",emoji:"🍚",cal:83,prot:3,carb:19,fat:0,cat:"pilav"}
-,{name:"Makarna (pişmiş)",emoji:"🍝",cal:131,prot:5,carb:25,fat:1,cat:"pilav"}
-,{name:"Spagetti (pişmiş)",emoji:"🍝",cal:157,prot:6,carb:31,fat:1,cat:"pilav"}
-,{name:"Erişte (pişmiş)",emoji:"🍜",cal:138,prot:5,carb:26,fat:2,cat:"pilav"}
-,{name:"Pirinç Pilavı (pişmiş)",emoji:"🍚",cal:130,prot:2,carb:29,fat:0,cat:"pilav"}
-,{name:"Kuskus (pişmiş)",emoji:"🍚",cal:112,prot:4,carb:23,fat:0,cat:"pilav"}
-
-// ── TÜRK YEMEKLERI: KEBAP & ET YEMEKLERİ ──
-,{name:"Adana Kebap",emoji:"🥩",cal:285,prot:19,carb:2,fat:23,cat:"et"}
-,{name:"Urfa Kebap",emoji:"🥩",cal:268,prot:18,carb:2,fat:21,cat:"et"}
-,{name:"Şiş Kebap (kuzu)",emoji:"🥩",cal:225,prot:22,carb:0,fat:15,cat:"et"}
-,{name:"Tavuk Şiş",emoji:"🍗",cal:165,prot:28,carb:0,fat:6,cat:"et"}
-,{name:"İskender Kebap",emoji:"🥩",cal:245,prot:16,carb:12,fat:16,cat:"et"}
-,{name:"Döner (tavuk, dürümsüz)",emoji:"🍗",cal:185,prot:22,carb:2,fat:10,cat:"et"}
-,{name:"Döner (et, dürümsüz)",emoji:"🥩",cal:215,prot:18,carb:2,fat:15,cat:"et"}
-,{name:"Lahmacun (1 adet)",emoji:"🫓",cal:210,prot:10,carb:26,fat:7,cat:"fastfood"}
-,{name:"İçli Köfte (1 adet)",emoji:"🥟",cal:220,prot:9,carb:22,fat:12,cat:"hamur"}
-,{name:"Kısır",emoji:"🥗",cal:145,prot:3,carb:26,fat:4,cat:"sebze"}
-,{name:"Taze Köfte (ızgara)",emoji:"🥩",cal:235,prot:18,carb:4,fat:17,cat:"et"}
-,{name:"Kaburga (fırında)",emoji:"🥩",cal:334,prot:20,carb:0,fat:28,cat:"et"}
-,{name:"Kanat (ızgara)",emoji:"🍗",cal:203,prot:24,carb:0,fat:12,cat:"et"}
-,{name:"Sote Tavuk (zeytinyağlı)",emoji:"🍗",cal:175,prot:24,carb:3,fat:8,cat:"et"}
-,{name:"Fırın Tavuk (bütün)",emoji:"🍗",cal:215,prot:25,carb:0,fat:13,cat:"et"}
-
-// ── TÜRK YEMEKLERİ: ÇORBA ──
-,{name:"Mercimek Çorbası (kırmızı)",emoji:"🍵",cal:72,prot:4,carb:12,fat:2,cat:"corba"}
-,{name:"Domates Çorbası",emoji:"🍵",cal:48,prot:2,carb:8,fat:1,cat:"corba"}
-,{name:"Ezogelin Çorbası",emoji:"🍵",cal:82,prot:4,carb:14,fat:2,cat:"corba"}
-,{name:"Sebze Çorbası",emoji:"🍵",cal:45,prot:2,carb:7,fat:1,cat:"corba"}
-,{name:"Toyga Çorbası",emoji:"🍵",cal:65,prot:3,carb:9,fat:2,cat:"corba"}
-,{name:"Balık Çorbası",emoji:"🍵",cal:58,prot:6,carb:5,fat:2,cat:"corba"}
-
-// ── TÜRK YEMEKLERİ: SALATA & MEZE ──
-,{name:"Çoban Salatası",emoji:"🥗",cal:42,prot:1,carb:6,fat:2,cat:"sebze"}
-,{name:"Mevsim Salatası",emoji:"🥗",cal:35,prot:1,carb:5,fat:2,cat:"sebze"}
-,{name:"Piyaz",emoji:"🥗",cal:125,prot:5,carb:16,fat:5,cat:"baklagil"}
-,{name:"Tarator",emoji:"🥗",cal:165,prot:5,carb:8,fat:13,cat:"sos"}
-,{name:"Cacık",emoji:"🥗",cal:42,prot:2,carb:4,fat:2,cat:"sebze"}
-,{name:"Humus",emoji:"🫘",cal:166,prot:9,carb:14,fat:10,cat:"baklagil"}
-,{name:"Babaganuş",emoji:"🍆",cal:88,prot:2,carb:8,fat:6,cat:"sebze"}
-,{name:"Muhammara",emoji:"🌶️",cal:195,prot:4,carb:12,fat:15,cat:"sos"}
-,{name:"Yaprak Sarma (zeytinyağlı)",emoji:"🌿",cal:108,prot:2,carb:14,fat:5,cat:"sebze"}
-,{name:"Yaprak Sarma (etli)",emoji:"🌿",cal:145,prot:7,carb:14,fat:7,cat:"et"}
-,{name:"Ezme",emoji:"🌶️",cal:38,prot:1,carb:6,fat:1,cat:"sos"}
-
-// ── TÜRK YEMEKLERİ: ZEYTİNYAĞLILAR ──
-,{name:"Zeytinyağlı Kereviz",emoji:"🌿",cal:66,prot:1,carb:8,fat:4,cat:"sebze"}
-,{name:"Zeytinyağlı Biber Dolması",emoji:"🫑",cal:95,prot:2,carb:12,fat:5,cat:"sebze"}
-,{name:"Zeytinyağlı Kabak Dolması",emoji:"🥒",cal:88,prot:2,carb:10,fat:5,cat:"sebze"}
-,{name:"Zeytinyağlı Bakla",emoji:"🫘",cal:88,prot:5,carb:11,fat:3,cat:"baklagil"}
-,{name:"Zeytinyağlı Bamya",emoji:"🌿",cal:78,prot:2,carb:9,fat:4,cat:"sebze"}
-,{name:"Zeytinyağlı Brokoli",emoji:"🥦",cal:72,prot:3,carb:6,fat:4,cat:"sebze"}
-
-// ── SEBZELİ YEMEKLER ──
-,{name:"Türlü (sebze güveç)",emoji:"🫕",cal:82,prot:2,carb:10,fat:4,cat:"sebze"}
-,{name:"Menemen",emoji:"🍳",cal:118,prot:6,carb:6,fat:8,cat:"kahvalti"}
-,{name:"Sebzeli Güveç",emoji:"🫕",cal:95,prot:4,carb:10,fat:5,cat:"sebze"}
-,{name:"İmam Bayıldı",emoji:"🍆",cal:145,prot:2,carb:10,fat:11,cat:"sebze"}
-,{name:"Musakka",emoji:"🍆",cal:168,prot:8,carb:8,fat:12,cat:"et"}
-,{name:"Patates Oturtma",emoji:"🥔",cal:135,prot:5,carb:14,fat:7,cat:"sebze"}
-,{name:"Türlü Kavurma",emoji:"🥘",cal:182,prot:10,carb:9,fat:12,cat:"et"}
-,{name:"Patlıcan Kebabı",emoji:"🍆",cal:178,prot:9,carb:10,fat:11,cat:"et"}
-
-// ── TATLILER & PASTA ──
-,{name:"Baklava (1 dilim)",emoji:"🍰",cal:336,prot:6,carb:40,fat:17,cat:"tatli"}
-,{name:"Kadayıf",emoji:"🍮",cal:285,prot:4,carb:48,fat:9,cat:"tatli"}
-,{name:"Künefe",emoji:"🍮",cal:420,prot:10,carb:48,fat:22,cat:"tatli"}
-,{name:"Muhallebi",emoji:"🍮",cal:128,prot:4,carb:22,fat:3,cat:"tatli"}
-,{name:"Güllaç",emoji:"🍮",cal:112,prot:4,carb:22,fat:2,cat:"tatli"}
-,{name:"Profiterol",emoji:"🍮",cal:305,prot:5,carb:32,fat:18,cat:"tatli"}
-,{name:"Çikolatalı Kek",emoji:"🎂",cal:371,prot:5,carb:52,fat:16,cat:"tatli"}
-,{name:"Cheesecake (dilim)",emoji:"🍰",cal:321,prot:6,carb:25,fat:23,cat:"tatli"}
-,{name:"Tiramisu",emoji:"🍰",cal:295,prot:6,carb:28,fat:18,cat:"tatli"}
-,{name:"Dondurma (sade)",emoji:"🍦",cal:207,prot:4,carb:24,fat:11,cat:"tatli"}
-
-// ── İÇECEKLER ──
-,{name:"Su (0 kal)",emoji:"💧",cal:0,prot:0,carb:0,fat:0,cat:"icecek"}
-,{name:"Çay (sade)",emoji:"🫖",cal:2,prot:0,carb:0,fat:0,cat:"icecek"}
-,{name:"Meyve Suyu (elma)",emoji:"🧃",cal:46,prot:0,carb:11,fat:0,cat:"icecek"}
-,{name:"Limonata (ev yapımı)",emoji:"🍋",cal:38,prot:0,carb:10,fat:0,cat:"icecek"}
-,{name:"Boza",emoji:"🥤",cal:62,prot:1,carb:13,fat:0,cat:"icecek"}
-,{name:"Şalgam Suyu",emoji:"🥤",cal:22,prot:1,carb:5,fat:0,cat:"icecek"}
-,{name:"Kola (250ml)",emoji:"🥤",cal:105,prot:0,carb:27,fat:0,cat:"icecek"}
-,{name:"Enerji İçeceği (250ml)",emoji:"⚡",cal:113,prot:1,carb:28,fat:0,cat:"icecek"}
-,{name:"Bitki Çayı",emoji:"🌿",cal:2,prot:0,carb:0,fat:0,cat:"icecek"}
-,{name:"Maden Suyu",emoji:"💧",cal:0,prot:0,carb:0,fat:0,cat:"icecek"}
-
-// ── KURUYEMIŞ & TOHUMLAR ──
-,{name:"Ceviz",emoji:"🌰",cal:654,prot:15,carb:14,fat:65,cat:"kuruyemis"}
-,{name:"Badem",emoji:"🥜",cal:579,prot:21,carb:22,fat:50,cat:"kuruyemis"}
-,{name:"Fıstık (yer fıstığı)",emoji:"🥜",cal:567,prot:26,carb:16,fat:49,cat:"kuruyemis"}
-,{name:"Antep Fıstığı",emoji:"🫘",cal:560,prot:20,carb:28,fat:45,cat:"kuruyemis"}
-,{name:"Kaju",emoji:"🥜",cal:553,prot:18,carb:30,fat:44,cat:"kuruyemis"}
-,{name:"Kuru Kayısı",emoji:"🍑",cal:241,prot:3,carb:63,fat:0,cat:"kuruyemis"}
-,{name:"Kuru Üzüm",emoji:"🍇",cal:299,prot:3,carb:79,fat:0,cat:"kuruyemis"}
-,{name:"Kuru İncir",emoji:"🫐",cal:249,prot:3,carb:64,fat:1,cat:"kuruyemis"}
-,{name:"Kuru Erik",emoji:"🍑",cal:240,prot:2,carb:64,fat:0,cat:"kuruyemis"}
-,{name:"Ay Çekirdeği",emoji:"🌻",cal:584,prot:21,carb:20,fat:51,cat:"kuruyemis"}
-,{name:"Kabak Çekirdeği",emoji:"🌰",cal:559,prot:30,carb:11,fat:49,cat:"kuruyemis"}
-,{name:"Susam",emoji:"🌱",cal:573,prot:17,carb:23,fat:50,cat:"kuruyemis"}
-,{name:"Keten Tohumu",emoji:"🌱",cal:534,prot:18,carb:29,fat:42,cat:"sporcu"}
-
-// ── FAST FOOD & HAZIR ──
-,{name:"Pizza (1 dilim)",emoji:"🍕",cal:266,prot:11,carb:33,fat:10,cat:"fastfood"}
-,{name:"Hamburger",emoji:"🍔",cal:295,prot:17,carb:24,fat:14,cat:"fastfood"}
-,{name:"Patates Kızartması",emoji:"🍟",cal:312,prot:4,carb:41,fat:15,cat:"fastfood"}
-,{name:"Hot Dog",emoji:"🌭",cal:290,prot:11,carb:18,fat:20,cat:"fastfood"}
-,{name:"Gözleme (patatesli)",emoji:"🫓",cal:195,prot:5,carb:30,fat:7,cat:"fastfood"}
-,{name:"Börek (ıspanaklı)",emoji:"🥧",cal:245,prot:8,carb:24,fat:13,cat:"hamur"}
-
-// ── SPORCU GIDALAR ──
-,{name:"Whey Protein (1 ölçek)",emoji:"💪",cal:120,prot:25,carb:3,fat:2,cat:"sporcu"}
-,{name:"Muz-Yulaf Smoothie",emoji:"🥤",cal:185,prot:6,carb:35,fat:3,cat:"sporcu"}
-,{name:"Mercimek Salatası (protein)",emoji:"🥗",cal:145,prot:10,carb:20,fat:3,cat:"sporcu"}
-,{name:"Tavuk Göğsü + Pirinç",emoji:"🍱",cal:218,prot:28,carb:22,fat:3,cat:"sporcu"}
-,{name:"Yumurta Akı",emoji:"🥚",cal:52,prot:11,carb:1,fat:0,cat:"sporcu"}
-
-// ── BALIK & DENİZ ÜRÜNLERİ ──
-,{name:"Somon (fırında)",emoji:"🐟",cal:208,prot:20,carb:0,fat:13,cat:"balik"}
-,{name:"Sardalya (konserve)",emoji:"🐟",cal:208,prot:25,carb:0,fat:12,cat:"balik"}
-,{name:"İstavrit (ızgara)",emoji:"🐟",cal:165,prot:21,carb:0,fat:9,cat:"balik"}
-,{name:"Kalkan (buğulama)",emoji:"🐟",cal:115,prot:22,carb:0,fat:3,cat:"balik"}
-,{name:"Ahtapot (haşlama)",emoji:"🦑",cal:82,prot:15,carb:2,fat:1,cat:"balik"}
-,{name:"Kalamar (tava)",emoji:"🦑",cal:175,prot:18,carb:8,fat:7,cat:"balik"}
-
-// ── ATIŞTIIMALIK ──
-,{name:"Cips (patates)",emoji:"🥔",cal:536,prot:7,carb:53,fat:35,cat:"atistirmalik"}
-,{name:"Çikolata (sütlü)",emoji:"🍫",cal:535,prot:8,carb:59,fat:30,cat:"atistirmalik"}
-,{name:"Bisküvi (tam buğday)",emoji:"🍪",cal:418,prot:8,carb:68,fat:13,cat:"atistirmalik"}
-,{name:"Gofret",emoji:"🍫",cal:512,prot:6,carb:60,fat:28,cat:"atistirmalik"}
-,{name:"Leblebi",emoji:"🫘",cal:364,prot:22,carb:56,fat:5,cat:"atistirmalik"}
-,{name:"Mısır Patlaması (sade)",emoji:"🍿",cal:375,prot:11,carb:74,fat:5,cat:"atistirmalik"}
-,{name:"Grisini",emoji:"🥖",cal:392,prot:11,carb:69,fat:8,cat:"atistirmalik"}
-
-// ── SOS & BAHARAT ──
-,{name:"Domates Salçası",emoji:"🍅",cal:82,prot:4,carb:19,fat:0,cat:"sos"}
-,{name:"Biber Salçası",emoji:"🌶️",cal:96,prot:4,carb:22,fat:1,cat:"sos"}
-,{name:"Ketçap",emoji:"🍅",cal:112,prot:1,carb:27,fat:0,cat:"sos"}
-,{name:"Mayonez",emoji:"🥣",cal:680,prot:1,carb:2,fat:75,cat:"sos"}
-,{name:"Hardal",emoji:"🌭",cal:66,prot:4,carb:8,fat:4,cat:"sos"}
-,{name:"Soya Sosu",emoji:"🫙",cal:53,prot:8,carb:5,fat:1,cat:"sos"}
-// ── ET & TAVUK (12→22) ──
-,{name:"Kuzu Pirzola",emoji:"🥩",cal:294,prot:26,carb:0,fat:21,cat:"et"}
-,{name:"Kanat (fırında)",emoji:"🍗",cal:203,prot:30,carb:0,fat:9,cat:"et"}
-,{name:"Kıyma (orta yağlı)",emoji:"🥩",cal:254,prot:17,carb:0,fat:20,cat:"et"}
-,{name:"Hindi Göğsü (ızgara)",emoji:"🦃",cal:157,prot:30,carb:0,fat:3,cat:"et"}
-,{name:"Dana Bonfile",emoji:"🥩",cal:271,prot:26,carb:0,fat:18,cat:"et"}
-,{name:"Tavuk But (fırında)",emoji:"🍗",cal:215,prot:27,carb:0,fat:12,cat:"et"}
-,{name:"Ciğer (dana, sote)",emoji:"🥩",cal:175,prot:26,carb:4,fat:5,cat:"et"}
-,{name:"Sucuk (ızgara)",emoji:"🌭",cal:378,prot:15,carb:2,fat:34,cat:"et"}
-,{name:"Pastırma",emoji:"🥩",cal:297,prot:31,carb:0,fat:19,cat:"et"}
-,{name:"Tavuk Kanatlı Bütün",emoji:"🍗",cal:239,prot:27,carb:0,fat:14,cat:"et"}
-// ── BALIK (4→12) ──
-,{name:"Çipura (ızgara)",emoji:"🐟",cal:128,prot:26,carb:0,fat:3,cat:"balik"}
-,{name:"Levrek (fırında)",emoji:"🐟",cal:124,prot:24,carb:0,fat:3,cat:"balik"}
-,{name:"Uskumru (ızgara)",emoji:"🐟",cal:205,prot:19,carb:0,fat:14,cat:"balik"}
-,{name:"Hamsi Tava",emoji:"🐟",cal:235,prot:22,carb:8,fat:13,cat:"balik"}
-,{name:"Alabalık (fırında)",emoji:"🐟",cal:148,prot:21,carb:0,fat:7,cat:"balik"}
-,{name:"Ton Balığı (konserve)",emoji:"🐟",cal:116,prot:26,carb:0,fat:1,cat:"balik"}
-,{name:"Karides (haşlama)",emoji:"🦐",cal:99,prot:21,carb:1,fat:1,cat:"balik"}
-,{name:"Midye Dolma (4 adet)",emoji:"🦪",cal:156,prot:10,carb:16,fat:5,cat:"balik"}
-// ── ÇORBA (8→14) ──
-,{name:"Yayla Çorbası",emoji:"🍵",cal:68,prot:3,carb:8,fat:3,cat:"corba"}
-,{name:"İşkembe Çorbası",emoji:"🍵",cal:72,prot:6,carb:5,fat:3,cat:"corba"}
-,{name:"Tarhana Çorbası",emoji:"🍵",cal:87,prot:4,carb:14,fat:2,cat:"corba"}
-,{name:"Düğün Çorbası",emoji:"🍵",cal:95,prot:7,carb:7,fat:4,cat:"corba"}
-,{name:"Paça Çorbası",emoji:"🍵",cal:83,prot:8,carb:4,fat:4,cat:"corba"}
-,{name:"Soğan Çorbası",emoji:"🍵",cal:56,prot:2,carb:8,fat:2,cat:"corba"}
-// ── SEBZE (12→20) ──
-,{name:"Zeytinyağlı Taze Fasulye",emoji:"🫘",cal:72,prot:2,carb:8,fat:4,cat:"sebze"}
-,{name:"Zeytinyağlı Pırasa",emoji:"🥬",cal:68,prot:2,carb:7,fat:4,cat:"sebze"}
-,{name:"Fırında Kabak",emoji:"🥒",cal:45,prot:2,carb:6,fat:2,cat:"sebze"}
-,{name:"Biber Dolması (zeytinyağlı)",emoji:"🫑",cal:95,prot:2,carb:12,fat:5,cat:"sebze"}
-,{name:"Ispanak Yemeği",emoji:"🥬",cal:82,prot:3,carb:6,fat:5,cat:"sebze"}
-,{name:"Enginar (zeytinyağlı)",emoji:"🌿",cal:74,prot:3,carb:9,fat:3,cat:"sebze"}
-,{name:"Turşu (karışık)",emoji:"🥒",cal:18,prot:1,carb:4,fat:0,cat:"sebze"}
-,{name:"Közlenmiş Patlıcan Salatası",emoji:"🍆",cal:85,prot:2,carb:8,fat:5,cat:"sebze"}
-// ── HAMUR İŞİ & PİLAV (5+6→18) ──
-,{name:"Karnıyarık",emoji:"🍆",cal:185,prot:8,carb:12,fat:12,cat:"hamur"}
-,{name:"Hünkâr Beğendi",emoji:"🍆",cal:215,prot:12,carb:14,fat:13,cat:"hamur"}
-,{name:"Tost (kaşarlı)",emoji:"🥪",cal:298,prot:13,carb:30,fat:14,cat:"hamur"}
-,{name:"Açma",emoji:"🥐",cal:312,prot:7,carb:42,fat:13,cat:"hamur"}
-,{name:"Poğaça (peynirli)",emoji:"🥐",cal:285,prot:8,carb:34,fat:13,cat:"hamur"}
-,{name:"Su Böreği",emoji:"🥧",cal:280,prot:11,carb:28,fat:14,cat:"hamur"}
-,{name:"Sigara Böreği (4 adet)",emoji:"🥧",cal:240,prot:7,carb:22,fat:14,cat:"hamur"}
-,{name:"Mantı (1 porsiyon)",emoji:"🥟",cal:310,prot:14,carb:40,fat:11,cat:"hamur"}
-,{name:"Şehriyeli Pilav",emoji:"🍚",cal:175,prot:4,carb:33,fat:4,cat:"pilav"}
-,{name:"Arpa Şehriye Pilavı",emoji:"🍚",cal:168,prot:4,carb:31,fat:4,cat:"pilav"}
-,{name:"Nohutlu Pilav",emoji:"🍚",cal:198,prot:6,carb:35,fat:5,cat:"pilav"}
-,{name:"İç Pilav",emoji:"🍚",cal:215,prot:5,carb:34,fat:8,cat:"pilav"}
-// ── TATLI (5→10) ──
-,{name:"Sütlaç",emoji:"🍮",cal:145,prot:4,carb:26,fat:3,cat:"tatli"}
-,{name:"Kazandibi",emoji:"🍮",cal:168,prot:4,carb:28,fat:4,cat:"tatli"}
-,{name:"Revani",emoji:"🍰",cal:285,prot:5,carb:48,fat:8,cat:"tatli"}
-,{name:"Şekerpare",emoji:"🍪",cal:310,prot:4,carb:52,fat:10,cat:"tatli"}
-,{name:"Lokma",emoji:"🍩",cal:265,prot:3,carb:42,fat:10,cat:"tatli"}
-// ── KAHVALTILIK (8→14) ──
-,{name:"Haydari",emoji:"🥣",cal:95,prot:4,carb:4,fat:7,cat:"kahvalti"}
-,{name:"Çılbır (yumurta+yoğurt)",emoji:"🍳",cal:185,prot:12,carb:6,fat:13,cat:"kahvalti"}
-,{name:"Peynirli Omlet",emoji:"🍳",cal:218,prot:14,carb:2,fat:17,cat:"kahvalti"}
-,{name:"Mıhlama",emoji:"🧀",cal:285,prot:14,carb:4,fat:24,cat:"kahvalti"}
-,{name:"Tahin",emoji:"🫙",cal:595,prot:17,carb:21,fat:54,cat:"kahvalti"}
-,{name:"Pekmez (üzüm)",emoji:"🫙",cal:280,prot:1,carb:69,fat:0,cat:"kahvalti"}
-// ── BAKLAGİL (6→12) ──
-,{name:"Mercimek Köftesi (10 adet)",emoji:"🟠",cal:185,prot:7,carb:28,fat:6,cat:"baklagil"}
-,{name:"Nohut Salatası",emoji:"🥗",cal:168,prot:8,carb:22,fat:6,cat:"baklagil"}
-,{name:"Fava",emoji:"🫘",cal:135,prot:7,carb:18,fat:4,cat:"baklagil"}
-,{name:"Barbunya Pilaki",emoji:"🫘",cal:148,prot:7,carb:20,fat:5,cat:"baklagil"}
-,{name:"Yeşil Mercimek Çorbası",emoji:"🫘",cal:95,prot:6,carb:14,fat:2,cat:"baklagil"}
-,{name:"Börülce Yemeği",emoji:"🫘",cal:132,prot:7,carb:17,fat:4,cat:"baklagil"}
-// ── ATIŞTIIRMALIK & FASTFOOD (4+4→12) ──
-,{name:"Dürüm (tavuk)",emoji:"🌯",cal:395,prot:24,carb:42,fat:14,cat:"fastfood"}
-,{name:"Pide (kıymalı)",emoji:"🫓",cal:285,prot:14,carb:35,fat:10,cat:"fastfood"}
-,{name:"Tantuni",emoji:"🌯",cal:340,prot:20,carb:38,fat:12,cat:"fastfood"}
-,{name:"Balık Ekmek",emoji:"🥖",cal:365,prot:22,carb:40,fat:12,cat:"fastfood"}
-,{name:"Fındık Ezmesi (2 yemek kaşığı)",emoji:"🥜",cal:188,prot:4,carb:8,fat:16,cat:"atistirmalik"}
-,{name:"Protein Bar",emoji:"💪",cal:210,prot:20,carb:22,fat:6,cat:"sporcu"}
-,{name:"Yulaf Lapası (sütlü)",emoji:"🥣",cal:168,prot:6,carb:27,fat:4,cat:"sporcu"}
-,{name:"Smoothie (meyve)",emoji:"🥤",cal:145,prot:2,carb:32,fat:1,cat:"icecek"}
-,{name:"Türk Kahvesi (sade)",emoji:"☕",cal:4,prot:0,carb:1,fat:0,cat:"icecek"}
-,{name:"Taze Sıkılmış Portakal Suyu",emoji:"🍊",cal:112,prot:2,carb:26,fat:0,cat:"icecek"}
-// ── MEYVE (10→16) ──
-,{name:"Kivi",emoji:"🥝",cal:61,prot:1,carb:15,fat:1,cat:"meyve"}
-,{name:"Nar",emoji:"🍎",cal:83,prot:1,carb:19,fat:1,cat:"meyve"}
-,{name:"Armut",emoji:"🍐",cal:57,prot:0,carb:15,fat:0,cat:"meyve"}
-,{name:"Vişne",emoji:"🍒",cal:58,prot:1,carb:14,fat:0,cat:"meyve"}
-,{name:"Incir (taze)",emoji:"🫐",cal:74,prot:1,carb:19,fat:0,cat:"meyve"}
-,{name:"Kayısı",emoji:"🍑",cal:48,prot:1,carb:11,fat:0,cat:"meyve"}
-// ── SÜT ÜRÜNLERİ (5→10) ──
-,{name:"Labne Peyniri",emoji:"🧀",cal:105,prot:5,carb:4,fat:8,cat:"sut"}
-,{name:"Lor Peyniri",emoji:"🧀",cal:105,prot:12,carb:4,fat:5,cat:"sut"}
-,{name:"Kefir (1 bardak)",emoji:"🥛",cal:104,prot:9,carb:10,fat:3,cat:"sut"}
-,{name:"Tam Yağlı Yoğurt",emoji:"🥛",cal:97,prot:5,carb:7,fat:5,cat:"sut"}
-,{name:"Çökelek",emoji:"🧀",cal:88,prot:12,carb:2,fat:4,cat:"sut"},
-]}
 
 
 const CATEGORIES = [
@@ -2077,7 +1600,6 @@ let currentMealId=null,selectedCat='all',currentSource='local';
 let currentDate=new Date(),pendingFood=null,deferredPrompt=null;
 
 
-// USDA API Key (free, demo key — user should get their own for production)
 function dateKey(d){const dd=d||currentDate;return `${dd.getFullYear()}-${String(dd.getMonth()+1).padStart(2,'0')}-${String(dd.getDate()).padStart(2,'0')}`}
 function isToday(d){const t=new Date();return d.getFullYear()===t.getFullYear()&&d.getMonth()===t.getMonth()&&d.getDate()===t.getDate()}
 function formatDateShort(d){const days=['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'];const months=['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];if(isToday(d))return'Bugün';return`${d.getDate()} ${months[d.getMonth()]}, ${days[d.getDay()]}`}
@@ -2283,7 +1805,6 @@ function updateHeader(){
 
   const t=getTotals();
   const circ=2*Math.PI*44;
-  const innerCirc=2*Math.PI*33;
   const isOver=t.cal>_dailyTarget;
   const remain=_dailyTarget-t.cal; // negatif olabilir
 
@@ -2291,9 +1812,9 @@ function updateHeader(){
   const calRemainEl=document.getElementById('calRemain');
   const calLabelEl=document.getElementById('calLabel');
   if(isOver){
-    calRemainEl.textContent='+'+Math.round(Math.abs(remain));
+    calRemainEl.textContent=Math.round(Math.abs(remain));
     calRemainEl.style.color='#ff4444';
-    if(calLabelEl){calLabelEl.textContent='aşım';calLabelEl.style.color='#ff4444';}
+    if(calLabelEl){calLabelEl.textContent='AŞIM';calLabelEl.style.color='#ff4444';}
   } else {
     calRemainEl.textContent=Math.round(remain);
     calRemainEl.style.color='';
@@ -2312,21 +1833,11 @@ function updateHeader(){
   document.getElementById('ringFat').style.strokeDashoffset=circ-Math.min(fatArc,circ);
   document.getElementById('ringFat').setAttribute('transform',`rotate(${-90+((protCal+carbCal)/_dailyTarget)*360} 52.5 52.5)`);
 
-  // ── Aşım overlay (kırmızı şerit hedefin üstüne bindirme) ──
-  const overEl=document.getElementById('ringOver');
-  if(isOver){
-    const overFrac=Math.min((t.cal-_dailyTarget)/_dailyTarget,1);
-    overEl.style.strokeDashoffset=circ-(overFrac*circ);
-    overEl.style.opacity='0.75';
-    overEl.setAttribute('transform','rotate(-90 52.5 52.5)');
-  } else {
-    overEl.style.opacity='0';
+  // ── Aşım iç çemberi — hedef aşılınca kırmızı iç çember belirir ──
+  const overInnerEl=document.getElementById('ringOverInner');
+  if(overInnerEl){
+    overInnerEl.style.opacity=isOver?'0.85':'0';
   }
-
-  // ── İnce iç şerit (toplam kalori dolumu, %100 = tam dolu) ──
-  const innerPct=Math.min(t.cal/_dailyTarget,1);
-  document.getElementById('ringInner').style.strokeDashoffset=innerCirc-(innerPct*innerCirc);
-  document.getElementById('ringInner').style.stroke=isOver?'#ff4444':'#ff6b3d';
 
   // ── Makro bar normal dolum (max %100) ──
   document.getElementById('protBar').style.width=Math.min(100,(t.prot/_protTarget)*100)+'%';
@@ -7877,7 +7388,6 @@ loadTheme();setHeaderDate();loadProfile();loadNotifSettings();updateDateNav();up
 initFoodDB()
   .then(()=>{renderMeals();updateHeader();loadCloudFoods();loadRecipesFromFirebase();})
   .catch(()=>{
-    FOOD_DB=getBuiltinFoodDB();
     rebuildSearchIndex();
     renderMeals();
     updateHeader();
