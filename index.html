@@ -22,7 +22,7 @@ html{scroll-behavior:smooth}
 :root{--font:"Plus Jakarta Sans",system-ui,sans-serif;--bg:#080a10;--card:rgba(20,23,32,.85);--card2:rgba(28,31,42,.7);--text:#f0f0f5;--text2:#6b7094;--accent:#ff6b3d;--accent2:#ff8f5a;--accent-glow:rgba(255,107,61,.15);--green:#3dd68c;--green-light:rgba(61,214,140,.1);--blue:#5b9cf6;--blue-light:rgba(91,156,246,.1);--orange:#f0a030;--orange-light:rgba(240,160,48,.1);--red:#ff5c5c;--red-light:rgba(255,92,92,.1);--purple:#a07cf8;--purple-light:rgba(160,124,248,.1);--border:rgba(255,255,255,.06);--shadow:0 4px 24px rgba(0,0,0,.4);--shadow-lg:0 12px 48px rgba(0,0,0,.6);--radius:20px;--radius-sm:14px;--glass:rgba(255,255,255,.04);--glow:0 0 20px rgba(255,107,61,.1)}
 [data-theme="light"]{--bg:#f0f2f5;--card:rgba(255,255,255,.9);--card2:rgba(245,246,250,.8);--text:#0f1118;--text2:#6b7084;--accent:#e85d3a;--accent2:#ff7a54;--accent-glow:rgba(232,93,58,.1);--green:#2daa6e;--green-light:rgba(45,170,110,.08);--blue:#3a8fe8;--blue-light:rgba(58,143,232,.08);--orange:#e8a23a;--orange-light:rgba(232,162,58,.08);--red:#e84d4d;--red-light:rgba(232,77,77,.08);--purple:#7c5ce6;--purple-light:rgba(124,92,230,.08);--border:rgba(0,0,0,.06);--shadow:0 2px 20px rgba(0,0,0,.06);--shadow-lg:0 8px 40px rgba(0,0,0,.08);--glass:rgba(0,0,0,.02);--glow:none}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{font-family:var(--font,system-ui),system-ui,sans-serif;background:var(--bg);color:var(--text);max-width:430px;margin:0 auto;min-height:100vh;min-height:100dvh;position:relative;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body{font-family:var(--font,system-ui),system-ui,sans-serif;background:var(--bg);color:var(--text);max-width:430px;margin:0 auto;min-height:100vh;min-height:100dvh;position:relative;-webkit-font-smoothing:antialiased;overscroll-behavior-x:none}
 body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at 30% 20%,rgba(255,107,61,.04) 0%,transparent 50%),radial-gradient(ellipse at 70% 80%,rgba(91,156,246,.03) 0%,transparent 50%),radial-gradient(ellipse at 50% 50%,rgba(160,124,248,.02) 0%,transparent 60%);pointer-events:none;z-index:0}
 .header{padding:18px 20px 20px;background:linear-gradient(165deg,#1a0e28 0%,#0d1018 40%,#081520 100%);color:#fff;position:relative;overflow:hidden;border-bottom:1px solid rgba(255,255,255,.05)}
 [data-theme="light"] .header{background:linear-gradient(165deg,#ff7043 0%,#e85530 50%,#d44020 100%)}
@@ -291,8 +291,8 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
 </head>
 <body>
 <div id="splashScreen" style="position:fixed;top:0;left:0;right:0;bottom:0;background:#080a10;z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;transition:opacity .5s">
-  <div style="font-size:3.5rem;animation:bounceIn .6s ease">🍽️</div>
-  <div style="font-family:'Outfit',sans-serif;font-size:1.4rem;font-weight:900;background:linear-gradient(135deg,#ff6b3d,#ff8f5a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-top:10px;animation:bounceIn .6s ease .1s both">FitSofra</div>
+  <div style="width:80px;height:80px;border-radius:22px;background:linear-gradient(135deg,#ff6b3d,#ff3d6b);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 40px rgba(255,107,61,.35);animation:bounceIn .6s ease"><svg width="44" height="44" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" fill="none" stroke="#fff" stroke-width="1.2" opacity=".3"/><path d="M8 14c0-2.2 1.8-4 4-4s4 1.8 4 4" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="9" r="1.5" fill="#fff"/><path d="M12 5V3M7.5 6.5L6 5M16.5 6.5L18 5" stroke="#4ade80" stroke-width="1.8" stroke-linecap="round"/><path d="M5 17h14" stroke="#fff" stroke-width="1.5" stroke-linecap="round" opacity=".5"/><path d="M7 20h10" stroke="#fff" stroke-width="1.5" stroke-linecap="round" opacity=".3"/></svg></div>
+  <div style="font-family:'Outfit',sans-serif;font-size:1.4rem;font-weight:900;background:linear-gradient(135deg,#ff6b3d,#ff8f5a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-top:14px;animation:bounceIn .6s ease .1s both">FitSofra</div>
   <div style="font-size:.72rem;color:#6b7094;margin-top:6px;animation:bounceIn .6s ease .2s both">Sağlıklı beslenmenin anahtarı</div>
   <div style="margin-top:20px;width:40px;height:40px;border:3px solid rgba(255,107,61,.15);border-top-color:#ff6b3d;border-radius:50%;animation:spin .6s linear infinite"></div>
 </div>
@@ -301,7 +301,7 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
 
 <div class="header">
   <div class="header-top">
-    <div><h1>🥗 FitSofra</h1><div class="date" id="todayDate"></div><div id="weeklyPlanBadge" style="display:none;font-size:.6rem;font-weight:700;color:var(--accent);opacity:.8;margin-top:1px">📆 Haftalık plan aktif</div></div>
+    <div style="display:flex;align-items:center;gap:8px"><div style="width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#ff6b3d,#ff3d6b);display:flex;align-items:center;justify-content:center;box-shadow:0 3px 12px rgba(255,107,61,.4)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" fill="none" stroke="#fff" stroke-width="1.5" opacity=".3"/><path d="M8 14c0-2.2 1.8-4 4-4s4 1.8 4 4" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="9" r="1.5" fill="#fff"/><path d="M12 5V3M7.5 6.5L6 5M16.5 6.5L18 5" stroke="#4ade80" stroke-width="1.8" stroke-linecap="round"/><path d="M5 17h14" stroke="#fff" stroke-width="1.5" stroke-linecap="round" opacity=".5"/><path d="M7 20h10" stroke="#fff" stroke-width="1.5" stroke-linecap="round" opacity=".3"/></svg></div><div><h1>FitSofra</h1><div class="date" id="todayDate"></div><div id="weeklyPlanBadge" style="display:none;font-size:.6rem;font-weight:700;color:var(--accent);opacity:.8;margin-top:1px">📆 Haftalık plan aktif</div></div></div>
     <div style="display:flex;align-items:center;gap:6px">
       <span id="headerSyncIcon" style="font-size:.75rem;opacity:.5;display:none">☁️</span>
       <button class="icon-btn" onclick="openInsightModal()" id="insightBtn" title="Beslenme Yorumu" style="font-size:.78rem">📓</button>
@@ -959,6 +959,7 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
         .c-dot{width:7px;height:7px;border-radius:50%;background:var(--border);transition:all .25s;cursor:pointer}
         .c-dot.active{background:var(--accent);width:20px;border-radius:4px}
         .cat-row-track::-webkit-scrollbar{display:none}
+        .cat-row-track>div:active{transform:scale(.97);opacity:.9}
       </style>
 
       <!-- ═══ KATEGORİ SATIRLARI ═══ -->
@@ -4773,7 +4774,7 @@ function renderCategoryRows(){
       <div style="display:flex;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;gap:12px;padding:0 18px;scroll-snap-type:x mandatory" class="cat-row-track">
         ${items.slice(0,10).map(function(r){
           const idx=RECIPES.findIndex(function(x){return(x.id&&x.id===r.id)||x.name===r.name;});
-          return `<div onclick="openRecipeDetail(${idx})" style="flex:0 0 calc(100% - 36px);scroll-snap-align:start;cursor:pointer;border-radius:14px;overflow:hidden;background:var(--card2);border:1px solid var(--border);transition:transform .15s" onpointerdown="this.style.transform='scale(.97)'" onpointerup="this.style.transform=''" onpointerleave="this.style.transform=''">
+          return `<div onclick="openRecipeDetail(${idx})" style="flex:0 0 75%;scroll-snap-align:start;cursor:pointer;border-radius:14px;overflow:hidden;background:var(--card2);border:1px solid var(--border);transition:transform .2s;-webkit-tap-highlight-color:transparent" >
             ${r.img
               ?`<div style="height:190px;overflow:hidden;position:relative"><img src="${r.img}" style="width:100%;height:100%;object-fit:cover;display:block" loading="lazy" onerror="this.parentElement.innerHTML='<div style=\\'height:190px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;background:var(--glass)\\'>${r.emoji||'🍽️'}</div>'"><div style="position:absolute;bottom:0;left:0;right:0;height:50px;background:linear-gradient(transparent,rgba(0,0,0,.4))"></div></div>`
               :`<div style="height:190px;display:flex;align-items:center;justify-content:center;font-size:2.5rem;background:var(--glass)">${r.emoji||'🍽️'}</div>`
@@ -4807,7 +4808,7 @@ function openRecipeCatModal(catId){
     const idx=RECIPES.findIndex(function(x){return(x.id&&x.id===r.id)||x.name===r.name;});
     const score=getRecipeScore(r);
     const sColor=getScoreColor(score);
-    return `<div onclick="closeRecipeCatModal();openRecipeDetail(${idx})" style="display:flex;align-items:center;gap:10px;padding:10px 4px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s" onpointerdown="this.style.background='var(--accent-glow)'" onpointerup="this.style.background=''" onpointerleave="this.style.background=''">
+    return `<div onclick="closeRecipeCatModal();openRecipeDetail(${idx})" style="display:flex;align-items:center;gap:10px;padding:10px 4px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .1s" >
       ${r.img
         ?`<div style="width:56px;height:56px;border-radius:10px;overflow:hidden;flex-shrink:0;background:var(--glass)"><img src="${r.img}" style="width:100%;height:100%;object-fit:cover" loading="lazy"></div>`
         :`<div style="width:56px;height:56px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;background:var(--glass);flex-shrink:0">${r.emoji||'🍽️'}</div>`
