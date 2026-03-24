@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="FitSofra">
 <meta name="description" content="FitSofra - Günlük kalori ve beslenme takip uygulaması">
 <link rel="manifest" id="manifestLink">
-<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%23ff6b3d'/><stop offset='100%25' stop-color='%23e85530'/></linearGradient></defs><rect fill='url(%23g)' width='100' height='100' rx='22'/><circle cx='50' cy='42' r='22' fill='none' stroke='%23fff' stroke-width='3' opacity='.9'/><line x1='50' y1='20' x2='50' y2='30' stroke='%23fff' stroke-width='3' stroke-linecap='round' opacity='.9'/><text x='50' y='82' text-anchor='middle' font-family='sans-serif' font-size='14' font-weight='900' fill='%23fff'>FitSofra</text></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 160'><defs><linearGradient id='sg' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%23ff6b3d'/><stop offset='100%25' stop-color='%23ffaa55'/></linearGradient><linearGradient id='fg' x1='0' y1='0' x2='0' y2='1'><stop offset='0%25' stop-color='%23ff8f5a' stop-opacity='.55'/><stop offset='100%25' stop-color='%23ff6b3d' stop-opacity='.2'/></linearGradient><linearGradient id='kg' x1='0' y1='0' x2='0' y2='1'><stop offset='0%25' stop-color='%23aab0c8' stop-opacity='.45'/><stop offset='100%25' stop-color='%237a8099' stop-opacity='.15'/></linearGradient></defs><rect fill='%231a1c24' width='160' height='160' rx='36'/><path d='M55 32 C55 28 57 26 57 32 L57 52' stroke='url(%23fg)' stroke-width='2.2' stroke-linecap='round' fill='none'/><path d='M60 31 C60 27 62 25 62 31 L62 52' stroke='url(%23fg)' stroke-width='2.2' stroke-linecap='round' fill='none'/><path d='M65 31 C65 27 67 25 67 31 L67 52' stroke='url(%23fg)' stroke-width='2.2' stroke-linecap='round' fill='none'/><path d='M70 32 C70 28 72 26 72 32 L72 52' stroke='url(%23fg)' stroke-width='2.2' stroke-linecap='round' fill='none'/><path d='M57 52 Q57 59 63 60 Q69 61 72 52' fill='none' stroke='url(%23fg)' stroke-width='2.2' stroke-linecap='round'/><path d='M63 60 Q62.5 65 63 68' stroke='url(%23fg)' stroke-width='2.8' stroke-linecap='round' fill='none'/><path d='M63 68 Q62 80 62.5 96 Q63 110 63.5 128' stroke='url(%23fg)' stroke-width='3' stroke-linecap='round' fill='none'/><line x1='93' y1='30' x2='93' y2='60' stroke='url(%23kg)' stroke-width='2' stroke-linecap='round'/><path d='M93 30 Q103 32 104 42 Q105 52 98 60 L93 60' fill='none' stroke='url(%23kg)' stroke-width='2.2' stroke-linecap='round'/><path d='M93.5 65 Q92.5 80 93 100 Q93.5 115 93 128' stroke='url(%23kg)' stroke-width='3.2' stroke-linecap='round' fill='none'/><circle cx='80' cy='80' r='54' stroke='rgba(255,107,61,.12)' stroke-width='9'/><circle cx='80' cy='80' r='54' fill='none' stroke='url(%23sg)' stroke-width='9' stroke-linecap='round' stroke-dasharray='283 94' transform='rotate(135 80 80)'/><circle cx='80' cy='64' r='4.5' fill='%23ff6b3d'/><circle cx='80' cy='80' r='3.5' fill='%23ff8f5a' opacity='.75'/><circle cx='80' cy='96' r='2.5' fill='%23ffaa55' opacity='.5'/></svg>">
 <title>FitSofra</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet">
 <script async src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
@@ -62,7 +62,7 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
 .macro-bar-fill{height:100%;border-radius:4px;transition:width .8s cubic-bezier(.25,1,.5,1)}
 .macro-bar-over{position:absolute;top:0;left:0;height:100%;border-radius:4px;transition:width .8s cubic-bezier(.25,1,.5,1);opacity:.85}
 .macro-row .macro-val{font-size:.72rem;font-weight:700;min-width:38px;text-align:right;opacity:.85}
-.date-nav{display:flex;align-items:center;justify-content:center;gap:14px;padding:10px 16px;background:var(--card);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:20;backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px)}
+.date-nav{display:flex;align-items:center;justify-content:center;gap:14px;padding:10px 16px;background:var(--card);border-bottom:1px solid var(--border);position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;z-index:20;backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px)}
 .date-nav button{background:var(--glass);border:1px solid var(--border);width:36px;height:36px;border-radius:10px;font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text);transition:all .2s cubic-bezier(.25,1,.5,1);-webkit-tap-highlight-color:transparent}
 .date-nav button:active{transform:scale(.88);background:var(--accent-glow);border-color:var(--accent)}
 .date-nav .current-date{font-weight:800;font-size:.88rem;min-width:140px;text-align:center;letter-spacing:-.2px}
@@ -298,26 +298,46 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
   <div style="position:absolute;width:480px;height:480px;border-radius:50%;border:1px solid rgba(255,107,61,.04);top:50%;left:50%;transform:translate(-50%,-50%)"></div>
   <!-- Logo ikonu -->
   <div style="animation:splashBounce .7s cubic-bezier(.34,1.56,.64,1) both;filter:drop-shadow(0 12px 40px rgba(255,107,61,.35))">
-    <svg width="110" height="110" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="120" height="120" rx="28" fill="#1a1c24"/>
-      <rect width="120" height="120" rx="28" fill="rgba(255,107,61,0.04)"/>
-      <!-- Tabak dış halka -->
-      <circle cx="60" cy="54" r="34" fill="none" stroke="#ff6b3d" stroke-width="5" opacity="0.95"/>
-      <!-- Tabak iç dolgu -->
-      <circle cx="60" cy="54" r="27" fill="rgba(255,107,61,0.07)"/>
-      <!-- Tabak iç rim -->
-      <circle cx="60" cy="54" r="20" fill="none" stroke="#ff6b3d" stroke-width="1.5" opacity="0.3"/>
-      <!-- Çatal 3 diş -->
-      <line x1="36" y1="22" x2="36" y2="40" stroke="#ff8f5a" stroke-width="3.5" stroke-linecap="round"/>
-      <line x1="43" y1="21" x2="43" y2="40" stroke="#ff8f5a" stroke-width="3.5" stroke-linecap="round"/>
-      <line x1="50" y1="22" x2="50" y2="40" stroke="#ff8f5a" stroke-width="3.5" stroke-linecap="round"/>
-      <!-- Çatal U bağlantı -->
-      <path d="M36 40 Q36 47 43 47 Q50 47 50 40" fill="none" stroke="#ff8f5a" stroke-width="3.5" stroke-linecap="round"/>
-      <!-- Çatal sap -->
-      <line x1="43" y1="47" x2="43" y2="97" stroke="#ff8f5a" stroke-width="3.5" stroke-linecap="round"/>
-      <!-- Bıçak kavisli kesici -->
-      <path d="M70 21 Q81 21 82 31 Q83 41 74 44 L70 44 Z" fill="#7a8099" opacity="0.9"/>
-      <line x1="70" y1="44" x2="70" y2="97" stroke="#7a8099" stroke-width="3.5" stroke-linecap="round"/>
+    <svg width="110" height="110" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="sg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#ff6b3d"/>
+          <stop offset="100%" stop-color="#ffaa55"/>
+        </linearGradient>
+        <linearGradient id="forkGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#ff8f5a" stop-opacity=".55"/>
+          <stop offset="100%" stop-color="#ff6b3d" stop-opacity=".2"/>
+        </linearGradient>
+        <linearGradient id="knifeGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#aab0c8" stop-opacity=".45"/>
+          <stop offset="100%" stop-color="#7a8099" stop-opacity=".15"/>
+        </linearGradient>
+      </defs>
+      <!-- ÇATAL -->
+      <path d="M55 32 C55 28 57 26 57 32 L57 52" stroke="url(#forkGrad)" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+      <path d="M60 31 C60 27 62 25 62 31 L62 52" stroke="url(#forkGrad)" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+      <path d="M65 31 C65 27 67 25 67 31 L67 52" stroke="url(#forkGrad)" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+      <path d="M70 32 C70 28 72 26 72 32 L72 52" stroke="url(#forkGrad)" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+      <path d="M57 52 Q57 59 63 60 Q69 61 72 52" fill="none" stroke="url(#forkGrad)" stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M63 60 Q62.5 65 63 68" stroke="url(#forkGrad)" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+      <path d="M63 68 Q62 72 62.5 80 Q63 88 63 96 Q63 100 63.5 106 Q64 110 63.5 120 Q63 125 63.5 128" stroke="url(#forkGrad)" stroke-width="3" stroke-linecap="round" fill="none"/>
+      <path d="M62 126 Q63.5 130 65 126" fill="none" stroke="url(#forkGrad)" stroke-width="2.2" stroke-linecap="round"/>
+      <!-- BIÇAK -->
+      <line x1="93" y1="30" x2="93" y2="60" stroke="url(#knifeGrad)" stroke-width="2" stroke-linecap="round"/>
+      <path d="M93 30 Q103 32 104 42 Q105 52 98 60 L93 60" fill="rgba(170,176,200,.07)" stroke="url(#knifeGrad)" stroke-width="2.2" stroke-linecap="round"/>
+      <rect x="91.5" y="60" width="5" height="5" rx="1" fill="rgba(170,176,200,.2)"/>
+      <path d="M93.5 65 Q92.5 70 92.5 80 Q92.5 90 93 100 Q93.5 110 93 120 Q92.5 125 93 128" stroke="url(#knifeGrad)" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+      <path d="M95.5 65 Q94.5 80 95 100 Q95.5 115 95 128" stroke="url(#knifeGrad)" stroke-width="1.2" stroke-linecap="round" fill="none" opacity=".5"/>
+      <path d="M91.5 126 Q93 130 94.5 126" fill="none" stroke="url(#knifeGrad)" stroke-width="2" stroke-linecap="round"/>
+      <!-- LOGO HALKASI -->
+      <circle cx="80" cy="80" r="60" fill="rgba(255,107,61,.05)"/>
+      <circle cx="80" cy="80" r="54" stroke="rgba(255,107,61,.1)" stroke-width="9"/>
+      <circle cx="80" cy="80" r="54" fill="none" stroke="url(#sg)" stroke-width="9"
+              stroke-linecap="round" stroke-dasharray="283 94" transform="rotate(135 80 80)"/>
+      <!-- 3 NOKTA -->
+      <circle cx="80" cy="64" r="4.5" fill="#ff6b3d"/>
+      <circle cx="80" cy="80" r="3.5" fill="#ff8f5a" opacity=".75"/>
+      <circle cx="80" cy="96" r="2.5" fill="#ffaa55" opacity=".5"/>
     </svg>
   </div>
   <!-- Yazı -->
@@ -339,7 +359,7 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
 
 <div class="header">
   <div class="header-top">
-    <div style="display:flex;align-items:center;gap:10px"><div style="filter:drop-shadow(0 3px 10px rgba(255,107,61,.35))"><svg width="36" height="36" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="120" height="120" rx="26" fill="#1a1c24"/><circle cx="60" cy="54" r="34" fill="none" stroke="#ff6b3d" stroke-width="5" opacity="0.95"/><circle cx="60" cy="54" r="27" fill="rgba(255,107,61,0.07)"/><circle cx="60" cy="54" r="20" fill="none" stroke="#ff6b3d" stroke-width="1.5" opacity="0.3"/><line x1="36" y1="22" x2="36" y2="40" stroke="#ff8f5a" stroke-width="3.5" stroke-linecap="round"/><line x1="43" y1="21" x2="43" y2="40" stroke="#ff8f5a" stroke-width="3.5" stroke-linecap="round"/><line x1="50" y1="22" x2="50" y2="40" stroke="#ff8f5a" stroke-width="3.5" stroke-linecap="round"/><path d="M36 40 Q36 47 43 47 Q50 47 50 40" fill="none" stroke="#ff8f5a" stroke-width="3.5" stroke-linecap="round"/><line x1="43" y1="47" x2="43" y2="97" stroke="#ff8f5a" stroke-width="3.5" stroke-linecap="round"/><path d="M70 21 Q81 21 82 31 Q83 41 74 44 L70 44 Z" fill="#7a8099" opacity="0.9"/><line x1="70" y1="44" x2="70" y2="97" stroke="#7a8099" stroke-width="3.5" stroke-linecap="round"/></svg></div><div><h1>FitSofra</h1><div class="date" id="todayDate"></div><div id="weeklyPlanBadge" style="display:none;font-size:.6rem;font-weight:700;color:var(--accent);opacity:.8;margin-top:1px">📆 Haftalık plan aktif</div></div></div>
+    <div style="display:flex;align-items:center;gap:10px"><div style="filter:drop-shadow(0 3px 10px rgba(255,107,61,.35))"><svg width="36" height="36" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="hg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6b3d"/><stop offset="100%" stop-color="#ffaa55"/></linearGradient><linearGradient id="hfg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ff8f5a" stop-opacity=".7"/><stop offset="100%" stop-color="#ff6b3d" stop-opacity=".25"/></linearGradient><linearGradient id="hkg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#aab0c8" stop-opacity=".6"/><stop offset="100%" stop-color="#7a8099" stop-opacity=".2"/></linearGradient></defs><path d="M55 32 C55 28 57 26 57 32 L57 52" stroke="url(#hfg)" stroke-width="2.2" stroke-linecap="round" fill="none"/><path d="M60 31 C60 27 62 25 62 31 L62 52" stroke="url(#hfg)" stroke-width="2.2" stroke-linecap="round" fill="none"/><path d="M65 31 C65 27 67 25 67 31 L67 52" stroke="url(#hfg)" stroke-width="2.2" stroke-linecap="round" fill="none"/><path d="M70 32 C70 28 72 26 72 32 L72 52" stroke="url(#hfg)" stroke-width="2.2" stroke-linecap="round" fill="none"/><path d="M57 52 Q57 59 63 60 Q69 61 72 52" fill="none" stroke="url(#hfg)" stroke-width="2.2" stroke-linecap="round"/><path d="M63 60 Q62.5 65 63 68" stroke="url(#hfg)" stroke-width="2.8" stroke-linecap="round" fill="none"/><path d="M63 68 Q62 80 62.5 96 Q63 110 63.5 128" stroke="url(#hfg)" stroke-width="3" stroke-linecap="round" fill="none"/><path d="M62 126 Q63.5 130 65 126" fill="none" stroke="url(#hfg)" stroke-width="2.2" stroke-linecap="round"/><line x1="93" y1="30" x2="93" y2="60" stroke="url(#hkg)" stroke-width="2" stroke-linecap="round"/><path d="M93 30 Q103 32 104 42 Q105 52 98 60 L93 60" fill="rgba(170,176,200,.07)" stroke="url(#hkg)" stroke-width="2.2" stroke-linecap="round"/><rect x="91.5" y="60" width="5" height="5" rx="1" fill="rgba(170,176,200,.2)"/><path d="M93.5 65 Q92.5 80 93 100 Q93.5 115 93 128" stroke="url(#hkg)" stroke-width="3.2" stroke-linecap="round" fill="none"/><path d="M95.5 65 Q94.5 80 95 100 Q95.5 115 95 128" stroke="url(#hkg)" stroke-width="1.2" stroke-linecap="round" fill="none" opacity=".5"/><path d="M91.5 126 Q93 130 94.5 126" fill="none" stroke="url(#hkg)" stroke-width="2" stroke-linecap="round"/><circle cx="80" cy="80" r="60" fill="rgba(255,107,61,.05)"/><circle cx="80" cy="80" r="54" stroke="rgba(255,107,61,.1)" stroke-width="9"/><circle cx="80" cy="80" r="54" fill="none" stroke="url(#hg)" stroke-width="9" stroke-linecap="round" stroke-dasharray="283 94" transform="rotate(135 80 80)"/><circle cx="80" cy="64" r="4.5" fill="#ff6b3d"/><circle cx="80" cy="80" r="3.5" fill="#ff8f5a" opacity=".75"/><circle cx="80" cy="96" r="2.5" fill="#ffaa55" opacity=".5"/></svg></div><div><h1>FitSofra</h1><div class="date" id="todayDate"></div><div id="weeklyPlanBadge" style="display:none;font-size:.6rem;font-weight:700;color:var(--accent);opacity:.8;margin-top:1px">📆 Haftalık plan aktif</div></div></div>
     <div style="display:flex;align-items:center;gap:6px">
       <span id="headerSyncIcon" style="font-size:.75rem;opacity:.5;display:none">☁️</span>
       <button class="icon-btn" onclick="openInsightModal()" id="insightBtn" title="Beslenme Yorumu" style="font-size:.78rem">📓</button>
@@ -779,7 +799,7 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
 
 
 
-<div class="page active" id="page-gunluk"><div id="dailyBanner" style="margin:0 16px 0;padding:12px 14px;border-radius:var(--radius-sm);background:linear-gradient(135deg,var(--accent-glow),rgba(160,124,248,.05));border:1px solid var(--border);font-size:.78rem;line-height:1.5;display:none;animation:fadeUp .3s ease"></div><div class="content" id="mealsContainer"></div></div>
+<div class="page active" id="page-gunluk"><div style="height:58px"></div><div id="dailyBanner" style="margin:0 16px 0;padding:12px 14px;border-radius:var(--radius-sm);background:linear-gradient(135deg,var(--accent-glow),rgba(160,124,248,.05));border:1px solid var(--border);font-size:.78rem;line-height:1.5;display:none;animation:fadeUp .3s ease"></div><div class="content" id="mealsContainer"></div></div>
 <div class="page" id="page-istatistik"><div class="content" id="statsContainer"></div></div>
 <div class="page" id="page-profil">
   <div class="content">
@@ -6293,7 +6313,7 @@ function importData(event){
   reader.readAsText(file);
   event.target.value='';
 }
-function switchTab(tab){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));document.getElementById('page-'+tab).classList.add('active');document.getElementById('nav-'+tab).classList.add('active');if(tab==='istatistik')renderStats();if(tab==='ogunler')renderSavedMeals();if(tab==='profil')renderWeightCard();if(tab==='oneri')filterRecipes('all');if(tab==='arkadaslar')renderFriendsPage()}
+function switchTab(tab){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));document.getElementById('page-'+tab).classList.add('active');document.getElementById('nav-'+tab).classList.add('active');const dn=document.querySelector('.date-nav');if(dn)dn.style.display=tab==='gunluk'?'flex':'none';if(tab==='istatistik')renderStats();if(tab==='ogunler')renderSavedMeals();if(tab==='profil')renderWeightCard();if(tab==='oneri')filterRecipes('all');if(tab==='arkadaslar')renderFriendsPage()}
 function getSavedMeals(){const raw=localStorage.getItem('fs_meals');return raw?JSON.parse(raw):[]}
 function setSavedMeals(meals){localStorage.setItem('fs_meals',JSON.stringify(meals))}
 
@@ -7373,7 +7393,7 @@ document.getElementById('tplModal').addEventListener('click',e=>{if(e.target.id=
 document.getElementById('barcodeModal').addEventListener('click',e=>{if(e.target.id==='barcodeModal')closeBarcodeScanner()});
 document.getElementById('editFoodModal').addEventListener('click',e=>{if(e.target.id==='editFoodModal')closeEditFood()});
 document.getElementById('recipeDetailModal').addEventListener('click',e=>{if(e.target.id==='recipeDetailModal')e.target.classList.remove('show')});
-function setupPWA(){const manifest={name:"FitSofra - Beslenme Takibi",short_name:"FitSofra",description:"Günlük kalori ve beslenme takip uygulaması",start_url:location.href,display:"standalone",background_color:"#0d0f14",theme_color:"#0d0f14",orientation:"portrait",icons:[{src:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%23ff6b3d'/><stop offset='100%25' stop-color='%23e85530'/></linearGradient></defs><rect fill='url(%23g)' width='512' height='512' rx='110'/><circle cx='256' cy='230' r='120' fill='none' stroke='%23fff' stroke-width='12' opacity='.9'/><line x1='256' y1='110' x2='256' y2='170' stroke='%23fff' stroke-width='12' stroke-linecap='round' opacity='.9'/><text x='256' y='400' text-anchor='middle' font-family='sans-serif' font-size='72' font-weight='900' fill='%23fff'>FitSofra</text></svg>",sizes:"512x512",type:"image/svg+xml",purpose:"any maskable"}]};const blob=new Blob([JSON.stringify(manifest)],{type:'application/json'});document.getElementById('manifestLink').href=URL.createObjectURL(blob);if('serviceWorker' in navigator){const swCode=`const CACHE_NAME='fitsofra-v2';self.addEventListener('install',e=>{self.skipWaiting()});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(n=>Promise.all(n.filter(n=>n!==CACHE_NAME).map(n=>caches.delete(n)))));self.clients.claim()});self.addEventListener('fetch',e=>{e.respondWith(fetch(e.request).catch(()=>caches.match(e.request)))})`;const swBlob=new Blob([swCode],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(()=>{})}}
+function setupPWA(){const manifest={name:"FitSofra - Beslenme Takibi",short_name:"FitSofra",description:"Günlük kalori ve beslenme takip uygulaması",start_url:location.href,display:"standalone",background_color:"#0d0f14",theme_color:"#0d0f14",orientation:"portrait",icons:[{src:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><defs><linearGradient id='sg' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%23ff6b3d'/><stop offset='100%25' stop-color='%23ffaa55'/></linearGradient><linearGradient id='fg' x1='0' y1='0' x2='0' y2='1'><stop offset='0%25' stop-color='%23ff8f5a' stop-opacity='.55'/><stop offset='100%25' stop-color='%23ff6b3d' stop-opacity='.2'/></linearGradient><linearGradient id='kg' x1='0' y1='0' x2='0' y2='1'><stop offset='0%25' stop-color='%23aab0c8' stop-opacity='.45'/><stop offset='100%25' stop-color='%237a8099' stop-opacity='.15'/></linearGradient></defs><rect fill='%231a1c24' width='512' height='512' rx='110'/><path d='M176 102 C176 90 182 84 182 102 L182 166' stroke='url(%23fg)' stroke-width='7' stroke-linecap='round' fill='none'/><path d='M195 99 C195 87 201 81 201 99 L201 166' stroke='url(%23fg)' stroke-width='7' stroke-linecap='round' fill='none'/><path d='M208 99 C208 87 214 81 214 99 L214 166' stroke='url(%23fg)' stroke-width='7' stroke-linecap='round' fill='none'/><path d='M221 102 C221 90 227 84 227 102 L227 166' stroke='url(%23fg)' stroke-width='7' stroke-linecap='round' fill='none'/><path d='M182 166 Q182 188 201 190 Q220 192 227 166' fill='none' stroke='url(%23fg)' stroke-width='7' stroke-linecap='round'/><path d='M201 190 Q200 210 201 216' stroke='url(%23fg)' stroke-width='9' stroke-linecap='round' fill='none'/><path d='M201 216 Q198 256 200 306 Q202 356 202 410' stroke='url(%23fg)' stroke-width='10' stroke-linecap='round' fill='none'/><line x1='297' y1='96' x2='297' y2='192' stroke='url(%23kg)' stroke-width='6.5' stroke-linecap='round'/><path d='M297 96 Q329 102 331 135 Q333 166 313 192 L297 192' fill='rgba(170,176,200,.07)' stroke='url(%23kg)' stroke-width='7' stroke-linecap='round'/><rect x='291' y='192' width='16' height='16' rx='3' fill='rgba(170,176,200,.2)'/><path d='M299 208 Q296 256 298 320 Q300 370 298 410' stroke='url(%23kg)' stroke-width='10' stroke-linecap='round' fill='none'/><path d='M307 208 Q304 256 306 320 Q308 370 306 410' stroke='url(%23kg)' stroke-width='4' stroke-linecap='round' fill='none' opacity='.5'/><circle cx='256' cy='256' r='173' stroke='rgba(255,107,61,.12)' stroke-width='29'/><circle cx='256' cy='256' r='173' fill='none' stroke='url(%23sg)' stroke-width='29' stroke-linecap='round' stroke-dasharray='906 302' transform='rotate(135 256 256)'/><circle cx='256' cy='205' r='14' fill='%23ff6b3d'/><circle cx='256' cy='256' r='11' fill='%23ff8f5a' opacity='.75'/><circle cx='256' cy='307' r='8' fill='%23ffaa55' opacity='.5'/></svg>",sizes:"512x512",type:"image/svg+xml",purpose:"any maskable"}]};const blob=new Blob([JSON.stringify(manifest)],{type:'application/json'});document.getElementById('manifestLink').href=URL.createObjectURL(blob);if('serviceWorker' in navigator){const swCode=`const CACHE_NAME='fitsofra-v2';self.addEventListener('install',e=>{self.skipWaiting()});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(n=>Promise.all(n.filter(n=>n!==CACHE_NAME).map(n=>caches.delete(n)))));self.clients.claim()});self.addEventListener('fetch',e=>{e.respondWith(fetch(e.request).catch(()=>caches.match(e.request)))})`;const swBlob=new Blob([swCode],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(()=>{})}}
 function loadTheme(){
   const saved=localStorage.getItem('fs_theme');
   if(saved==='light'){document.documentElement.setAttribute('data-theme','light');document.getElementById('themeBtn').textContent='☀️'}
