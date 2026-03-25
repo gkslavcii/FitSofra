@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="FitSofra">
 <meta name="description" content="FitSofra - Günlük kalori ve beslenme takip uygulaması">
 <link rel="manifest" id="manifestLink">
-<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 160 160'><defs><linearGradient id='sg' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%23ff6b3d'/><stop offset='100%25' stop-color='%23ffaa55'/></linearGradient><linearGradient id='fg' x1='0' y1='0' x2='0' y2='1'><stop offset='0%25' stop-color='%23ff8f5a' stop-opacity='.55'/><stop offset='100%25' stop-color='%23ff6b3d' stop-opacity='.2'/></linearGradient><linearGradient id='kg' x1='0' y1='0' x2='0' y2='1'><stop offset='0%25' stop-color='%23aab0c8' stop-opacity='.45'/><stop offset='100%25' stop-color='%237a8099' stop-opacity='.15'/></linearGradient></defs><rect fill='%231a1c24' width='160' height='160' rx='36'/><path d='M55 32 C55 28 57 26 57 32 L57 52' stroke='url(%23fg)' stroke-width='2.2' stroke-linecap='round' fill='none'/><path d='M60 31 C60 27 62 25 62 31 L62 52' stroke='url(%23fg)' stroke-width='2.2' stroke-linecap='round' fill='none'/><path d='M65 31 C65 27 67 25 67 31 L67 52' stroke='url(%23fg)' stroke-width='2.2' stroke-linecap='round' fill='none'/><path d='M70 32 C70 28 72 26 72 32 L72 52' stroke='url(%23fg)' stroke-width='2.2' stroke-linecap='round' fill='none'/><path d='M57 52 Q57 59 63 60 Q69 61 72 52' fill='none' stroke='url(%23fg)' stroke-width='2.2' stroke-linecap='round'/><path d='M63 60 Q62.5 65 63 68' stroke='url(%23fg)' stroke-width='2.8' stroke-linecap='round' fill='none'/><path d='M63 68 Q62 80 62.5 96 Q63 110 63.5 128' stroke='url(%23fg)' stroke-width='3' stroke-linecap='round' fill='none'/><line x1='93' y1='30' x2='93' y2='60' stroke='url(%23kg)' stroke-width='2' stroke-linecap='round'/><path d='M93 30 Q103 32 104 42 Q105 52 98 60 L93 60' fill='none' stroke='url(%23kg)' stroke-width='2.2' stroke-linecap='round'/><path d='M93.5 65 Q92.5 80 93 100 Q93.5 115 93 128' stroke='url(%23kg)' stroke-width='3.2' stroke-linecap='round' fill='none'/><circle cx='80' cy='80' r='54' stroke='rgba(255,107,61,.12)' stroke-width='9'/><circle cx='80' cy='80' r='54' fill='none' stroke='url(%23sg)' stroke-width='9' stroke-linecap='round' stroke-dasharray='283 94' transform='rotate(135 80 80)'/><circle cx='80' cy='64' r='4.5' fill='%23ff6b3d'/><circle cx='80' cy='80' r='3.5' fill='%23ff8f5a' opacity='.75'/><circle cx='80' cy='96' r='2.5' fill='%23ffaa55' opacity='.5'/></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%23ff6b3d'/><stop offset='100%25' stop-color='%23e85530'/></linearGradient></defs><rect fill='url(%23g)' width='100' height='100' rx='22'/><circle cx='50' cy='42' r='22' fill='none' stroke='%23fff' stroke-width='3' opacity='.9'/><line x1='50' y1='20' x2='50' y2='30' stroke='%23fff' stroke-width='3' stroke-linecap='round' opacity='.9'/><text x='50' y='82' text-anchor='middle' font-family='sans-serif' font-size='14' font-weight='900' fill='%23fff'>FitSofra</text></svg>">
 <title>FitSofra</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@700;800;900&display=swap" rel="stylesheet">
 <script async src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
@@ -60,7 +60,6 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
 .macro-row .macro-name{font-size:.72rem;opacity:.7;width:48px;font-weight:600}
 .macro-bar-bg{flex:1;height:6px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden}
 .macro-bar-fill{height:100%;border-radius:4px;transition:width .8s cubic-bezier(.25,1,.5,1)}
-.macro-bar-over{position:absolute;top:0;left:0;height:100%;border-radius:4px;transition:width .8s cubic-bezier(.25,1,.5,1);opacity:.85}
 .macro-row .macro-val{font-size:.72rem;font-weight:700;min-width:38px;text-align:right;opacity:.85}
 .date-nav{display:flex;align-items:center;justify-content:center;gap:14px;padding:10px 16px;background:var(--card);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:20;backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px)}
 .date-nav button{background:var(--glass);border:1px solid var(--border);width:36px;height:36px;border-radius:10px;font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text);transition:all .2s cubic-bezier(.25,1,.5,1);-webkit-tap-highlight-color:transparent}
@@ -88,6 +87,15 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
 .food-item{display:flex;align-items:center;padding:8px 14px;gap:10px;border-bottom:1px solid var(--border);transition:all .2s cubic-bezier(.25,1,.5,1);position:relative;overflow:hidden}
 .food-item:active{background:var(--accent-glow);transform:scale(.98)}
 .food-item:last-of-type{border-bottom:none}
+.swipe-wrapper{position:relative;overflow:hidden}
+.swipe-delete-bg{position:absolute;top:0;right:0;bottom:0;width:100%;background:linear-gradient(90deg,transparent 60%,var(--red));display:flex;align-items:center;justify-content:flex-end;padding-right:18px;font-size:.82rem;font-weight:800;color:#fff;pointer-events:none;opacity:0;transition:opacity .15s}
+.swipe-wrapper .food-item{transition:transform .25s cubic-bezier(.25,1,.5,1);will-change:transform;touch-action:pan-y}
+.undo-toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--card);color:var(--text);padding:10px 14px;border-radius:var(--radius-sm);font-size:.8rem;font-weight:600;z-index:200;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:10px;border:1px solid var(--border);backdrop-filter:blur(16px);opacity:0;transition:all .3s cubic-bezier(.25,1,.5,1);pointer-events:none;max-width:88%}
+.undo-toast.show{transform:translateX(-50%) translateY(0);opacity:1;pointer-events:auto}
+.undo-toast button{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:6px 14px;font-family:var(--font,system-ui);font-size:.76rem;font-weight:800;cursor:pointer;flex-shrink:0}
+#streakBadge{background:linear-gradient(135deg,rgba(255,107,61,.2),rgba(255,60,60,.15));padding:2px 8px;border-radius:6px;color:#fff}
+@keyframes streakPop{0%{transform:scale(.8);opacity:0}50%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+#streakBadge.pop{animation:streakPop .4s cubic-bezier(.34,1.56,.64,1)}
 .food-emoji{width:40px;height:40px;border-radius:12px;background:var(--glass);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;border:1px solid var(--border);transition:all .25s cubic-bezier(.34,1.56,.64,1)}
 .food-emoji:active{transform:scale(1.2) rotate(-8deg)}
 .food-info{flex:1;min-width:0}
@@ -292,74 +300,18 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 </head>
 <body>
-<div id="splashScreen" style="position:fixed;top:0;left:0;right:0;bottom:0;background:#080a10;z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;transition:opacity .6s ease">
-  <!-- Arka plan dekor halkalar -->
-  <div style="position:absolute;width:320px;height:320px;border-radius:50%;border:1px solid rgba(255,107,61,.07);top:50%;left:50%;transform:translate(-50%,-50%)"></div>
-  <div style="position:absolute;width:480px;height:480px;border-radius:50%;border:1px solid rgba(255,107,61,.04);top:50%;left:50%;transform:translate(-50%,-50%)"></div>
-  <!-- Logo ikonu -->
-  <div style="animation:splashBounce .7s cubic-bezier(.34,1.56,.64,1) both;filter:drop-shadow(0 12px 40px rgba(255,107,61,.35))">
-    <svg width="110" height="110" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="sg" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="#ff6b3d"/>
-          <stop offset="100%" stop-color="#ffaa55"/>
-        </linearGradient>
-        <linearGradient id="forkGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#ff8f5a" stop-opacity=".55"/>
-          <stop offset="100%" stop-color="#ff6b3d" stop-opacity=".2"/>
-        </linearGradient>
-        <linearGradient id="knifeGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="#aab0c8" stop-opacity=".45"/>
-          <stop offset="100%" stop-color="#7a8099" stop-opacity=".15"/>
-        </linearGradient>
-      </defs>
-      <!-- ÇATAL -->
-      <path d="M55 32 C55 28 57 26 57 32 L57 52" stroke="url(#forkGrad)" stroke-width="2.2" stroke-linecap="round" fill="none"/>
-      <path d="M60 31 C60 27 62 25 62 31 L62 52" stroke="url(#forkGrad)" stroke-width="2.2" stroke-linecap="round" fill="none"/>
-      <path d="M65 31 C65 27 67 25 67 31 L67 52" stroke="url(#forkGrad)" stroke-width="2.2" stroke-linecap="round" fill="none"/>
-      <path d="M70 32 C70 28 72 26 72 32 L72 52" stroke="url(#forkGrad)" stroke-width="2.2" stroke-linecap="round" fill="none"/>
-      <path d="M57 52 Q57 59 63 60 Q69 61 72 52" fill="none" stroke="url(#forkGrad)" stroke-width="2.2" stroke-linecap="round"/>
-      <path d="M63 60 Q62.5 65 63 68" stroke="url(#forkGrad)" stroke-width="2.8" stroke-linecap="round" fill="none"/>
-      <path d="M63 68 Q62 72 62.5 80 Q63 88 63 96 Q63 100 63.5 106 Q64 110 63.5 120 Q63 125 63.5 128" stroke="url(#forkGrad)" stroke-width="3" stroke-linecap="round" fill="none"/>
-      <path d="M62 126 Q63.5 130 65 126" fill="none" stroke="url(#forkGrad)" stroke-width="2.2" stroke-linecap="round"/>
-      <!-- BIÇAK -->
-      <line x1="93" y1="30" x2="93" y2="60" stroke="url(#knifeGrad)" stroke-width="2" stroke-linecap="round"/>
-      <path d="M93 30 Q103 32 104 42 Q105 52 98 60 L93 60" fill="rgba(170,176,200,.07)" stroke="url(#knifeGrad)" stroke-width="2.2" stroke-linecap="round"/>
-      <rect x="91.5" y="60" width="5" height="5" rx="1" fill="rgba(170,176,200,.2)"/>
-      <path d="M93.5 65 Q92.5 70 92.5 80 Q92.5 90 93 100 Q93.5 110 93 120 Q92.5 125 93 128" stroke="url(#knifeGrad)" stroke-width="3.2" stroke-linecap="round" fill="none"/>
-      <path d="M95.5 65 Q94.5 80 95 100 Q95.5 115 95 128" stroke="url(#knifeGrad)" stroke-width="1.2" stroke-linecap="round" fill="none" opacity=".5"/>
-      <path d="M91.5 126 Q93 130 94.5 126" fill="none" stroke="url(#knifeGrad)" stroke-width="2" stroke-linecap="round"/>
-      <!-- LOGO HALKASI -->
-      <circle cx="80" cy="80" r="60" fill="rgba(255,107,61,.05)"/>
-      <circle cx="80" cy="80" r="54" stroke="rgba(255,107,61,.1)" stroke-width="9"/>
-      <circle cx="80" cy="80" r="54" fill="none" stroke="url(#sg)" stroke-width="9"
-              stroke-linecap="round" stroke-dasharray="283 94" transform="rotate(135 80 80)"/>
-      <!-- 3 NOKTA -->
-      <circle cx="80" cy="64" r="4.5" fill="#ff6b3d"/>
-      <circle cx="80" cy="80" r="3.5" fill="#ff8f5a" opacity=".75"/>
-      <circle cx="80" cy="96" r="2.5" fill="#ffaa55" opacity=".5"/>
-    </svg>
-  </div>
-  <!-- Yazı -->
-  <div style="margin-top:18px;animation:splashBounce .7s cubic-bezier(.34,1.56,.64,1) .1s both">
-    <span style="font-family:'Outfit',sans-serif;font-size:2rem;font-weight:900;letter-spacing:-.05em;color:#ff6b3d">Fit</span><span style="font-family:'Outfit',sans-serif;font-size:2rem;font-weight:900;letter-spacing:-.05em;color:#d0d4e8">Sofra</span>
-  </div>
-  <div style="font-size:.73rem;color:#6b7094;margin-top:6px;letter-spacing:.18em;text-transform:uppercase;animation:splashBounce .7s cubic-bezier(.34,1.56,.64,1) .2s both">Sağlıklı beslenmenin anahtarı</div>
-  <!-- Yükleme çubuğu -->
-  <div style="margin-top:28px;width:48px;height:3px;background:rgba(255,107,61,.12);border-radius:4px;overflow:hidden;animation:splashBounce .7s .3s both">
-    <div style="height:100%;width:100%;background:#ff6b3d;border-radius:4px;animation:splashBar 2s ease-in-out infinite"></div>
-  </div>
+<div id="splashScreen" style="position:fixed;top:0;left:0;right:0;bottom:0;background:#080a10;z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;transition:opacity .5s">
+  <div style="width:80px;height:80px;border-radius:22px;background:linear-gradient(135deg,#ff6b3d,#ff3d6b);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 40px rgba(255,107,61,.35);animation:bounceIn .6s ease"><svg width="44" height="44" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" fill="none" stroke="#fff" stroke-width="1.2" opacity=".3"/><path d="M8 14c0-2.2 1.8-4 4-4s4 1.8 4 4" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="9" r="1.5" fill="#fff"/><path d="M12 5V3M7.5 6.5L6 5M16.5 6.5L18 5" stroke="#4ade80" stroke-width="1.8" stroke-linecap="round"/><path d="M5 17h14" stroke="#fff" stroke-width="1.5" stroke-linecap="round" opacity=".5"/><path d="M7 20h10" stroke="#fff" stroke-width="1.5" stroke-linecap="round" opacity=".3"/></svg></div>
+  <div style="font-family:'Outfit',sans-serif;font-size:1.4rem;font-weight:900;background:linear-gradient(135deg,#ff6b3d,#ff8f5a);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-top:14px;animation:bounceIn .6s ease .1s both">FitSofra</div>
+  <div style="font-size:.72rem;color:#6b7094;margin-top:6px;animation:bounceIn .6s ease .2s both">Sağlıklı beslenmenin anahtarı</div>
+  <div style="margin-top:20px;width:40px;height:40px;border:3px solid rgba(255,107,61,.15);border-top-color:#ff6b3d;border-radius:50%;animation:spin .6s linear infinite"></div>
 </div>
-<style>
-@keyframes splashBounce{from{opacity:0;transform:scale(.85) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
-@keyframes splashBar{0%{transform:translateX(-100%)}60%{transform:translateX(0)}100%{transform:translateX(100%)}}
-</style>
 <style>@keyframes bounceIn{from{opacity:0;transform:scale(.8) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}</style>
 <script>setTimeout(()=>{const s=document.getElementById('splashScreen');if(s){s.style.opacity='0';setTimeout(()=>s.remove(),500)}},2200)</script>
 
 <div class="header">
   <div class="header-top">
-    <div style="display:flex;align-items:center;gap:12px"><div style="filter:drop-shadow(0 3px 12px rgba(255,107,61,.4))"><svg width="44" height="44" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="hg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6b3d"/><stop offset="100%" stop-color="#ffaa55"/></linearGradient><linearGradient id="hfg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ff8f5a" stop-opacity=".7"/><stop offset="100%" stop-color="#ff6b3d" stop-opacity=".25"/></linearGradient><linearGradient id="hkg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#aab0c8" stop-opacity=".6"/><stop offset="100%" stop-color="#7a8099" stop-opacity=".2"/></linearGradient></defs><path d="M55 32 C55 28 57 26 57 32 L57 52" stroke="url(#hfg)" stroke-width="2.2" stroke-linecap="round" fill="none"/><path d="M60 31 C60 27 62 25 62 31 L62 52" stroke="url(#hfg)" stroke-width="2.2" stroke-linecap="round" fill="none"/><path d="M65 31 C65 27 67 25 67 31 L67 52" stroke="url(#hfg)" stroke-width="2.2" stroke-linecap="round" fill="none"/><path d="M70 32 C70 28 72 26 72 32 L72 52" stroke="url(#hfg)" stroke-width="2.2" stroke-linecap="round" fill="none"/><path d="M57 52 Q57 59 63 60 Q69 61 72 52" fill="none" stroke="url(#hfg)" stroke-width="2.2" stroke-linecap="round"/><path d="M63 60 Q62.5 65 63 68" stroke="url(#hfg)" stroke-width="2.8" stroke-linecap="round" fill="none"/><path d="M63 68 Q62 80 62.5 96 Q63 110 63.5 128" stroke="url(#hfg)" stroke-width="3" stroke-linecap="round" fill="none"/><path d="M62 126 Q63.5 130 65 126" fill="none" stroke="url(#hfg)" stroke-width="2.2" stroke-linecap="round"/><line x1="93" y1="30" x2="93" y2="60" stroke="url(#hkg)" stroke-width="2" stroke-linecap="round"/><path d="M93 30 Q103 32 104 42 Q105 52 98 60 L93 60" fill="rgba(170,176,200,.07)" stroke="url(#hkg)" stroke-width="2.2" stroke-linecap="round"/><rect x="91.5" y="60" width="5" height="5" rx="1" fill="rgba(170,176,200,.2)"/><path d="M93.5 65 Q92.5 80 93 100 Q93.5 115 93 128" stroke="url(#hkg)" stroke-width="3.2" stroke-linecap="round" fill="none"/><path d="M95.5 65 Q94.5 80 95 100 Q95.5 115 95 128" stroke="url(#hkg)" stroke-width="1.2" stroke-linecap="round" fill="none" opacity=".5"/><path d="M91.5 126 Q93 130 94.5 126" fill="none" stroke="url(#hkg)" stroke-width="2" stroke-linecap="round"/><circle cx="80" cy="80" r="60" fill="rgba(255,107,61,.05)"/><circle cx="80" cy="80" r="54" stroke="rgba(255,107,61,.1)" stroke-width="9"/><circle cx="80" cy="80" r="54" fill="none" stroke="url(#hg)" stroke-width="9" stroke-linecap="round" stroke-dasharray="283 94" transform="rotate(135 80 80)"/><circle cx="80" cy="64" r="4.5" fill="#ff6b3d"/><circle cx="80" cy="80" r="3.5" fill="#ff8f5a" opacity=".75"/><circle cx="80" cy="96" r="2.5" fill="#ffaa55" opacity=".5"/></svg></div><div><h1><span style="color:#ff6b3d">Fit</span><span>Sofra</span></h1><div class="date" id="todayDate"></div><div id="weeklyPlanBadge" style="display:none;font-size:.6rem;font-weight:700;color:var(--accent);opacity:.8;margin-top:1px">📆 Haftalık plan aktif</div></div></div>
+    <div style="display:flex;align-items:center;gap:8px"><div style="width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#ff6b3d,#ff3d6b);display:flex;align-items:center;justify-content:center;box-shadow:0 3px 12px rgba(255,107,61,.4)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z" fill="none" stroke="#fff" stroke-width="1.5" opacity=".3"/><path d="M8 14c0-2.2 1.8-4 4-4s4 1.8 4 4" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="9" r="1.5" fill="#fff"/><path d="M12 5V3M7.5 6.5L6 5M16.5 6.5L18 5" stroke="#4ade80" stroke-width="1.8" stroke-linecap="round"/><path d="M5 17h14" stroke="#fff" stroke-width="1.5" stroke-linecap="round" opacity=".5"/><path d="M7 20h10" stroke="#fff" stroke-width="1.5" stroke-linecap="round" opacity=".3"/></svg></div><div><h1>FitSofra</h1><div class="date" id="todayDate"></div><div id="streakBadge" style="display:none;font-size:.62rem;font-weight:800;margin-top:2px;display:inline-flex;align-items:center;gap:3px"><span style="font-size:.8rem">🔥</span><span id="streakCount">0</span><span style="color:rgba(255,255,255,.6)">gün seri</span></div><div id="weeklyPlanBadge" style="display:none;font-size:.6rem;font-weight:700;color:var(--accent);opacity:.8;margin-top:1px">📆 Haftalık plan aktif</div></div></div>
     <div style="display:flex;align-items:center;gap:6px">
       <span id="headerSyncIcon" style="font-size:.75rem;opacity:.5;display:none">☁️</span>
       <button class="icon-btn" onclick="openInsightModal()" id="insightBtn" title="Beslenme Yorumu" style="font-size:.78rem">📓</button>
@@ -375,15 +327,13 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
         <circle cx="52.5" cy="52.5" r="44" fill="none" stroke="#ff7a7a" stroke-width="9" stroke-dasharray="276.5" stroke-dashoffset="276.5" stroke-linecap="round" id="ringProt" transform="rotate(-90 52.5 52.5)"/>
         <circle cx="52.5" cy="52.5" r="44" fill="none" stroke="#22d3ee" stroke-width="9" stroke-dasharray="276.5" stroke-dashoffset="276.5" stroke-linecap="round" id="ringCarb" transform="rotate(-90 52.5 52.5)"/>
         <circle cx="52.5" cy="52.5" r="44" fill="none" stroke="#ffcc55" stroke-width="9" stroke-dasharray="276.5" stroke-dashoffset="276.5" stroke-linecap="round" id="ringFat" transform="rotate(-90 52.5 52.5)"/>
-        <!-- Aşım iç çemberi — sadece hedef aşılınca görünür -->
-        <circle cx="52.5" cy="52.5" r="32" fill="none" stroke="#ff3b3b" stroke-width="4" id="ringOverInner" opacity="0" stroke-linecap="round"/>
       </svg>
-      <div class="ring-text"><span class="cal-num" id="calRemain">2200</span><span class="cal-label" id="calLabel">kalan</span></div>
+      <div class="ring-text"><span class="cal-num" id="calRemain">2200</span><span class="cal-label">kalan</span></div>
     </div>
     <div class="macro-summary">
-      <div class="macro-row"><div class="macro-dot" style="background:#ff7a7a"></div><span class="macro-name">Protein</span><div class="macro-bar-bg" style="position:relative;overflow:visible"><div class="macro-bar-fill" id="protBar" style="width:0%;background:#ff7a7a"></div><div class="macro-bar-over" id="protOver" style="width:0%;background:#7a1a1a"></div></div><span class="macro-val" id="protVal">0g</span></div>
-      <div class="macro-row"><div class="macro-dot" style="background:#22d3ee"></div><span class="macro-name">Karb</span><div class="macro-bar-bg" style="position:relative;overflow:visible"><div class="macro-bar-fill" id="carbBar" style="width:0%;background:#22d3ee"></div><div class="macro-bar-over" id="carbOver" style="width:0%;background:#0a4a55"></div></div><span class="macro-val" id="carbVal">0g</span></div>
-      <div class="macro-row"><div class="macro-dot" style="background:#ffcc55"></div><span class="macro-name">Yağ</span><div class="macro-bar-bg" style="position:relative;overflow:visible"><div class="macro-bar-fill" id="fatBar" style="width:0%;background:#ffcc55"></div><div class="macro-bar-over" id="fatOver" style="width:0%;background:#5a4200"></div></div><span class="macro-val" id="fatVal">0g</span></div>
+      <div class="macro-row"><div class="macro-dot" style="background:#ff7a7a"></div><span class="macro-name">Protein</span><div class="macro-bar-bg"><div class="macro-bar-fill" id="protBar" style="width:0%;background:#ff7a7a"></div></div><span class="macro-val" id="protVal">0g</span></div>
+      <div class="macro-row"><div class="macro-dot" style="background:#22d3ee"></div><span class="macro-name">Karb</span><div class="macro-bar-bg"><div class="macro-bar-fill" id="carbBar" style="width:0%;background:#22d3ee"></div></div><span class="macro-val" id="carbVal">0g</span></div>
+      <div class="macro-row"><div class="macro-dot" style="background:#ffcc55"></div><span class="macro-name">Yağ</span><div class="macro-bar-bg"><div class="macro-bar-fill" id="fatBar" style="width:0%;background:#ffcc55"></div></div><span class="macro-val" id="fatVal">0g</span></div>
       <div class="macro-row"><div class="macro-dot" style="background:#22d3ee"></div><span class="macro-name">Su</span><div class="macro-bar-bg"><div class="macro-bar-fill" id="waterBar" style="width:0%;background:#22d3ee"></div></div><span class="macro-val" id="waterVal">0L</span></div>
     </div>
   </div>
@@ -431,6 +381,7 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
 </div>
 
 <div class="toast" id="toast"></div>
+<div class="undo-toast" id="undoToast"><span id="undoMsg"></span><button onclick="undoDelete()">Geri Al</button></div>
 <!-- ═══════════════════════════════════════════
      HEDEFLER MODAL
 ═══════════════════════════════════════════ -->
@@ -1497,41 +1448,11 @@ async function syncFromCloud(){
         showToast('📥 Buluttan veriler indirildi!');
         
         
-        loadProfile();loadNotifSettings();updateDateNav();updateWaterHeader();
-        // initFoodDB tamamlanmışsa hemen render et, değilse bitince render edilecek
-        if(foodDbLoaded){renderMeals();updateHeader();}
-        else{window._pendingRenderAfterSync=true;}
+        loadProfile();loadNotifSettings();updateDateNav();renderMeals();updateHeader();updateWaterHeader();
       }
     }else{
-      // Yerel daha yeni görünüyor — ama cloud'da gerçekten veri var mı kontrol et
-      // Eğer cloud'da günlük yemek kaydı varsa ve yerelde yoksa, cloud'u tercih et
-      const localDayKey='fs_day_'+dateKey();
-      const localHasToday=localStorage.getItem(localDayKey);
-      let localTodayEmpty=true;
-      try{const ld=JSON.parse(localHasToday||'{}');localTodayEmpty=Object.values(ld).every(a=>!a||!a.length);}catch(e){}
       
-      if(localTodayEmpty && cloudTime>0){
-        // Yerelde bugün boş, cloud'da veri var → cloud'dan çek
-        const chunkCount2=meta.chunkCount||1;
-        let dataStr2='';
-        for(let i=0;i<chunkCount2;i++){
-          const chunk2=await userRef.collection('data').doc('chunk_'+i).get();
-          if(chunk2.exists)dataStr2+=chunk2.data().content;
-        }
-        if(dataStr2){
-          const data2=JSON.parse(dataStr2);
-          Object.keys(data2).forEach(k=>{localStorage.setItem(k,typeof data2[k]==='string'?data2[k]:JSON.stringify(data2[k]));});
-          localStorage.setItem('fs_last_sync',String(Date.now()));
-          if(indicator)indicator.textContent='☁️';
-          if(indicator)indicator.style.color='var(--green)';
-          showToast('📥 Buluttan veriler indirildi!');
-          loadProfile();loadNotifSettings();updateDateNav();updateWaterHeader();
-          if(foodDbLoaded){renderMeals();updateHeader();}
-          else{window._pendingRenderAfterSync=true;}
-        }
-      } else {
-        await syncToCloud();
-      }
+      await syncToCloud();
     }
   }catch(e){
     if(indicator)indicator.textContent='⚠️';
@@ -1551,15 +1472,7 @@ const _origSetWaterMl=function(ml){localStorage.setItem('fs_water_'+dateKey(),Ma
 auth.onAuthStateChanged(user=>{
   currentUser=user;
   updateSyncUI();
-  if(user){
-    // initFoodDB hazırsa hemen sync et, değilse DB hazır olunca sync et
-    if(foodDbLoaded){
-      syncFromCloud();
-    } else {
-      window._pendingSyncAfterDB=true;
-    }
-    updateMyPublicProfile();
-  }
+  if(user){syncFromCloud();updateMyPublicProfile()}
 });
 
 let FOOD_DB = [];
@@ -1594,21 +1507,487 @@ async function initFoodDB(){
     }
   }catch(e){}
 
-  // Firebase zorunlu — built-in DB kaldırıldı
+  // Fallback if nothing loaded
   if(!FOOD_DB.length){
-    console.warn('FitSofra: Firebase food_db boş veya erişilemiyor.');
-  }
-  // Sync daha önce bitti ama DB hazır değildi — şimdi render et
-  if(window._pendingRenderAfterSync){
-    window._pendingRenderAfterSync=false;
-    renderMeals();updateHeader();
-  }
-  // Auth daha önce geldi ama DB hazır değildi — şimdi sync et
-  if(window._pendingSyncAfterDB){
-    window._pendingSyncAfterDB=false;
-    syncFromCloud();
+    FOOD_DB=getBuiltinFoodDB();
+    foodDbLoaded=true;rebuildSearchIndex();
   }
 }
+function getBuiltinFoodDB(){return[
+{name:"Haşlanmış Yumurta",emoji:"🥚",cal:155,prot:13,carb:1,fat:11,cat:"kahvalti"},
+{name:"Sahanda Yumurta",emoji:"🍳",cal:196,prot:14,carb:1,fat:15,cat:"kahvalti"},
+{name:"Sucuklu Yumurta",emoji:"🍳",cal:200,prot:14,carb:1,fat:16,cat:"kahvalti"},
+{name:"Menemen",emoji:"🍳",cal:70,prot:4,carb:3,fat:5,cat:"kahvalti"},
+{name:"Omlet (sade)",emoji:"🍳",cal:154,prot:11,carb:0,fat:12,cat:"kahvalti"},
+{name:"Beyaz Peynir",emoji:"🧀",cal:264,prot:17,carb:1,fat:21,cat:"kahvalti"},
+{name:"Kaşar Peyniri",emoji:"🧀",cal:313,prot:25,carb:1,fat:23,cat:"kahvalti"},
+{name:"Tulum Peyniri",emoji:"🧀",cal:350,prot:22,carb:1,fat:29,cat:"kahvalti"},
+{name:"Mercimek Çorbası",emoji:"🍲",cal:48,prot:3,carb:7,fat:1,cat:"corba"},
+{name:"Ezogelin Çorbası",emoji:"🍲",cal:52,prot:3,carb:8,fat:1,cat:"corba"},
+{name:"Domates Çorbası",emoji:"🍲",cal:35,prot:1,carb:6,fat:1,cat:"corba"},
+{name:"Tarhana Çorbası",emoji:"🍲",cal:45,prot:2,carb:7,fat:1,cat:"corba"},
+{name:"Yayla Çorbası",emoji:"🍲",cal:55,prot:2,carb:5,fat:3,cat:"corba"},
+{name:"Tavuk Suyu Çorbası",emoji:"🍲",cal:30,prot:3,carb:2,fat:1,cat:"corba"},
+{name:"İşkembe Çorbası",emoji:"🍲",cal:52,prot:5,carb:3,fat:2,cat:"corba"},
+{name:"Düğün Çorbası",emoji:"🍲",cal:65,prot:4,carb:5,fat:3,cat:"corba"},
+{name:"Tavuk Sote",emoji:"🍗",cal:130,prot:15,carb:4,fat:6,cat:"et"},
+{name:"Et Haşlama",emoji:"🥩",cal:120,prot:14,carb:3,fat:6,cat:"et"},
+{name:"Kuzu Tandır",emoji:"🥩",cal:180,prot:16,carb:2,fat:12,cat:"et"},
+{name:"Ali Nazik",emoji:"🥩",cal:140,prot:10,carb:8,fat:8,cat:"et"},
+{name:"Hünkar Beğendi",emoji:"🥩",cal:150,prot:10,carb:10,fat:8,cat:"et"},
+{name:"Tas Kebabı",emoji:"🥩",cal:130,prot:12,carb:4,fat:8,cat:"et"},
+{name:"Orman Kebabı",emoji:"🥩",cal:110,prot:10,carb:5,fat:6,cat:"et"},
+{name:"Çerkez Tavuğu",emoji:"🍗",cal:160,prot:12,carb:5,fat:11,cat:"et"},
+{name:"Tavuk But (fırında)",emoji:"🍗",cal:170,prot:20,carb:0,fat:10,cat:"et"},
+{name:"Ciğer Tava",emoji:"🥩",cal:190,prot:22,carb:5,fat:9,cat:"et"},
+{name:"Tavuk Göğsü (çiğ)",emoji:"🥩",cal:110,prot:23,carb:0,fat:1,cat:"et"},
+{name:"Tavuk But (çiğ)",emoji:"🥩",cal:127,prot:17,carb:0,fat:6,cat:"et"},
+{name:"Karnıyarık",emoji:"🍆",cal:95,prot:5,carb:8,fat:5,cat:"sebze"},
+{name:"İmam Bayıldı",emoji:"🍆",cal:70,prot:2,carb:8,fat:4,cat:"sebze"},
+{name:"Patlıcan Musakka",emoji:"🍆",cal:110,prot:5,carb:9,fat:6,cat:"sebze"},
+{name:"Patlıcan Kebabı",emoji:"🍆",cal:120,prot:7,carb:6,fat:8,cat:"sebze"},
+{name:"Zeytinyağlı Fasulye",emoji:"🫛",cal:65,prot:2,carb:8,fat:3,cat:"sebze"},
+{name:"Zeytinyağlı Enginar",emoji:"🌿",cal:72,prot:2,carb:10,fat:3,cat:"sebze"},
+{name:"Zeytinyağlı Yaprak Sarma",emoji:"🌿",cal:85,prot:2,carb:12,fat:4,cat:"sebze"},
+{name:"Etli Yaprak Sarma",emoji:"🌿",cal:110,prot:6,carb:10,fat:5,cat:"sebze"},
+{name:"Zeytinyağlı Dolma",emoji:"🫑",cal:80,prot:2,carb:12,fat:3,cat:"sebze"},
+{name:"Etli Biber Dolma",emoji:"🫑",cal:105,prot:6,carb:10,fat:5,cat:"sebze"},
+{name:"Etli Lahana Sarma",emoji:"🥬",cal:95,prot:6,carb:8,fat:4,cat:"sebze"},
+{name:"Türlü (sebze)",emoji:"🥘",cal:60,prot:2,carb:8,fat:2,cat:"sebze"},
+{name:"Kuru Fasulye (çiğ)",emoji:"🥩",cal:333,prot:23,carb:60,fat:1,cat:"baklagil"},
+{name:"Nohut (çiğ)",emoji:"🥩",cal:364,prot:19,carb:61,fat:6,cat:"baklagil"},
+{name:"Kırmızı Mercimek (çiğ)",emoji:"🥩",cal:352,prot:24,carb:63,fat:1,cat:"baklagil"},
+{name:"Yeşil Mercimek (çiğ)",emoji:"🥩",cal:352,prot:25,carb:60,fat:1,cat:"baklagil"},
+{name:"Barbunya (çiğ)",emoji:"🥩",cal:335,prot:22,carb:60,fat:1,cat:"baklagil"},
+{name:"Börülce (çiğ)",emoji:"🥩",cal:336,prot:24,carb:60,fat:1,cat:"baklagil"},
+{name:"Pirinç Baldo (çiğ)",emoji:"🌾",cal:360,prot:7,carb:80,fat:1,cat:"pilav"},
+{name:"Pirinç Osmancık (çiğ)",emoji:"🌾",cal:358,prot:7,carb:79,fat:1,cat:"pilav"},
+{name:"Pirinç Basmati (çiğ)",emoji:"🌾",cal:350,prot:7,carb:77,fat:1,cat:"pilav"},
+{name:"Pirinç Jasmine (çiğ)",emoji:"🌾",cal:355,prot:7,carb:79,fat:1,cat:"pilav"},
+{name:"Esmer Pirinç (çiğ)",emoji:"🌾",cal:362,prot:8,carb:76,fat:3,cat:"pilav"},
+{name:"Sushi Pirinci (çiğ)",emoji:"🌾",cal:350,prot:7,carb:78,fat:1,cat:"pilav"},
+{name:"Su Böreği",emoji:"🥟",cal:200,prot:7,carb:22,fat:9,cat:"hamur"},
+{name:"Kol Böreği",emoji:"🥟",cal:220,prot:7,carb:25,fat:10,cat:"hamur"},
+{name:"Katmer",emoji:"🥟",cal:350,prot:6,carb:35,fat:20,cat:"hamur"},
+{name:"Etli Ekmek",emoji:"🫓",cal:210,prot:10,carb:25,fat:8,cat:"hamur"},
+{name:"Börek (ıspanaklı)",emoji:"🥧",cal:240,prot:7,carb:24,fat:13,cat:"hamur"},
+{name:"Elma",emoji:"🍎",cal:52,prot:0,carb:14,fat:0,cat:"meyve"},
+{name:"Muz",emoji:"🍌",cal:89,prot:1,carb:23,fat:0,cat:"meyve"},
+{name:"Portakal",emoji:"🍊",cal:47,prot:1,carb:12,fat:0,cat:"meyve"},
+{name:"Mandalina",emoji:"🍊",cal:53,prot:1,carb:13,fat:0,cat:"meyve"},
+{name:"Üzüm",emoji:"🍇",cal:69,prot:1,carb:18,fat:0,cat:"meyve"},
+{name:"Çilek",emoji:"🍓",cal:32,prot:1,carb:8,fat:0,cat:"meyve"},
+{name:"Kiraz",emoji:"🍒",cal:50,prot:1,carb:12,fat:0,cat:"meyve"},
+{name:"Karpuz",emoji:"🍉",cal:30,prot:1,carb:8,fat:0,cat:"meyve"},
+{name:"Kavun",emoji:"🍈",cal:34,prot:1,carb:8,fat:0,cat:"meyve"},
+{name:"Şeftali",emoji:"🍑",cal:39,prot:1,carb:10,fat:0,cat:"meyve"},
+{name:"Yoğurt (tam yağlı)",emoji:"🥛",cal:60,prot:5,carb:5,fat:2,cat:"sut"},
+{name:"Yoğurt (light)",emoji:"🥛",cal:40,prot:5,carb:4,fat:0,cat:"sut"},
+{name:"Süzme Yoğurt",emoji:"🥛",cal:95,prot:8,carb:4,fat:5,cat:"sut"},
+{name:"Ayran",emoji:"🥛",cal:36,prot:2,carb:3,fat:2,cat:"sut"},
+{name:"Kefir",emoji:"🥛",cal:55,prot:3,carb:4,fat:3,cat:"sut"},
+{name:"Çay (şekersiz)",emoji:"🍵",cal:1,prot:0,carb:0,fat:0,cat:"icecek"},
+{name:"Çay (1 şekerli)",emoji:"🍵",cal:20,prot:0,carb:5,fat:0,cat:"icecek"},
+{name:"Türk Kahvesi",emoji:"☕",cal:12,prot:0,carb:2,fat:0,cat:"icecek"},
+{name:"Filtre Kahve (sade)",emoji:"☕",cal:2,prot:0,carb:0,fat:0,cat:"icecek"},
+{name:"Latte",emoji:"☕",cal:120,prot:6,carb:10,fat:6,cat:"icecek"},
+{name:"Cappuccino",emoji:"☕",cal:80,prot:4,carb:6,fat:4,cat:"icecek"},
+{name:"Badem",emoji:"🥜",cal:579,prot:21,carb:22,fat:50,cat:"kuruyemis"},
+{name:"Ceviz",emoji:"🥜",cal:654,prot:15,carb:14,fat:65,cat:"kuruyemis"},
+{name:"Fındık",emoji:"🌰",cal:628,prot:15,carb:17,fat:61,cat:"kuruyemis"},
+{name:"Fıstık (Antep)",emoji:"🥜",cal:562,prot:20,carb:28,fat:45,cat:"kuruyemis"},
+{name:"Hamburger",emoji:"🍔",cal:250,prot:13,carb:24,fat:12,cat:"fastfood"},
+{name:"Cheeseburger",emoji:"🍔",cal:300,prot:15,carb:25,fat:15,cat:"fastfood"},
+{name:"Pizza (1 dilim)",emoji:"🍕",cal:266,prot:11,carb:33,fat:10,cat:"fastfood"},
+{name:"Patates Kızartması",emoji:"🍟",cal:312,prot:3,carb:41,fat:15,cat:"fastfood"},
+{name:"Güllaç",emoji:"🍮",cal:130,prot:4,carb:22,fat:3,cat:"tatli"},
+{name:"Keşkül",emoji:"🍮",cal:150,prot:4,carb:20,fat:6,cat:"tatli"},
+{name:"Aşure",emoji:"🍮",cal:120,prot:3,carb:24,fat:2,cat:"tatli"},
+{name:"Fırın Sütlaç",emoji:"🍮",cal:130,prot:4,carb:20,fat:4,cat:"tatli"},
+{name:"Baklava",emoji:"🍯",cal:428,prot:6,carb:47,fat:24,cat:"tatli"},
+{name:"Çikolata (sütlü)",emoji:"🍫",cal:535,prot:8,carb:59,fat:30,cat:"atistirmalik"},
+{name:"Çikolata (bitter)",emoji:"🍫",cal:546,prot:5,carb:60,fat:31,cat:"atistirmalik"},
+{name:"Protein Bar",emoji:"🍫",cal:333,prot:33,carb:37,fat:12,cat:"atistirmalik"},
+{name:"Granola Bar",emoji:"🍫",cal:400,prot:8,carb:60,fat:15,cat:"atistirmalik"},
+{name:"Levrek (ızgara)",emoji:"🐟",cal:97,prot:18,carb:0,fat:2,cat:"balik"},
+{name:"Çipura (ızgara)",emoji:"🐟",cal:100,prot:19,carb:0,fat:2,cat:"balik"},
+{name:"Somon (ızgara)",emoji:"🐟",cal:208,prot:20,carb:0,fat:13,cat:"balik"},
+{name:"Hamsi (tava)",emoji:"🐟",cal:210,prot:18,carb:6,fat:12,cat:"balik"},
+{name:"Ketçap (genel)",emoji:"🧴",cal:112,prot:1,carb:26,fat:0,cat:"sos"},
+{name:"Heinz Ketçap",emoji:"🧴",cal:110,prot:1,carb:25,fat:0,cat:"sos"},
+{name:"Mayonez (genel)",emoji:"🧴",cal:680,prot:1,carb:1,fat:75,cat:"sos"},
+{name:"Yulaf Ezmesi (çiğ)",emoji:"🌾",cal:389,prot:17,carb:66,fat:7,cat:"sporcu"},
+{name:"Yulaf Kepeği",emoji:"🌾",cal:246,prot:17,carb:66,fat:7,cat:"sporcu"},
+{name:"Chia Tohumu",emoji:"🌱",cal:486,prot:17,carb:42,fat:31,cat:"sporcu"}
+// ══════════════════════════════════════════════════════
+//  YENİ ÜRÜNLER — BeBIS + USDA + Türkiye Gıda Kompozisyon DB
+// ══════════════════════════════════════════════════════
+
+// ── HAMMADDELER: TAHILLAR & UNLU ──
+,{name:"Buğday Unu (beyaz)",emoji:"🌾",cal:364,prot:10,carb:76,fat:1,cat:"hammadde"}
+,{name:"Tam Buğday Unu",emoji:"🌾",cal:340,prot:13,carb:72,fat:2,cat:"hammadde"}
+,{name:"Mısır Unu",emoji:"🌽",cal:361,prot:7,carb:76,fat:4,cat:"hammadde"}
+,{name:"Pirinç (çiğ)",emoji:"🍚",cal:358,prot:7,carb:79,fat:1,cat:"hammadde"}
+,{name:"Bulgur (çiğ)",emoji:"🌾",cal:342,prot:12,carb:76,fat:1,cat:"hammadde"}
+,{name:"Yulaf Ezmesi (çiğ)",emoji:"🌾",cal:389,prot:17,carb:66,fat:7,cat:"hammadde"}
+,{name:"Makarna (çiğ)",emoji:"🍝",cal:371,prot:13,carb:75,fat:2,cat:"hammadde"}
+,{name:"Ekmek (tam buğday)",emoji:"🍞",cal:247,prot:13,carb:41,fat:4,cat:"hammadde"}
+,{name:"Ekmek (beyaz)",emoji:"🍞",cal:265,prot:9,carb:49,fat:3,cat:"hammadde"}
+,{name:"Simit",emoji:"🥨",cal:284,prot:9,carb:54,fat:3,cat:"kahvalti"}
+,{name:"Bazlama",emoji:"🫓",cal:262,prot:8,carb:48,fat:5,cat:"hamur"}
+,{name:"Gözleme (peynirli)",emoji:"🫓",cal:218,prot:9,carb:28,fat:8,cat:"hamur"}
+,{name:"Pide (sade)",emoji:"🫓",cal:258,prot:9,carb:50,fat:2,cat:"hamur"}
+,{name:"Katmer",emoji:"🥞",cal:385,prot:7,carb:42,fat:21,cat:"hamur"}
+,{name:"Lavaş",emoji:"🫓",cal:275,prot:9,carb:55,fat:3,cat:"hamur"}
+
+// ── HAMMADDELER: YAĞLAR ──
+,{name:"Zeytinyağı",emoji:"🫒",cal:884,prot:0,carb:0,fat:100,cat:"hammadde"}
+,{name:"Tereyağı",emoji:"🧈",cal:717,prot:1,carb:0,fat:81,cat:"hammadde"}
+,{name:"Ayçiçek Yağı",emoji:"🌻",cal:884,prot:0,carb:0,fat:100,cat:"hammadde"}
+,{name:"Hindistan Cevizi Yağı",emoji:"🥥",cal:862,prot:0,carb:0,fat:100,cat:"hammadde"}
+,{name:"Margarin",emoji:"🧈",cal:719,prot:0,carb:1,fat:80,cat:"hammadde"}
+,{name:"Mısır Yağı",emoji:"🌽",cal:884,prot:0,carb:0,fat:100,cat:"hammadde"}
+
+// ── HAMMADDELER: ŞEKER & TATLANDIRICI ──
+,{name:"Toz Şeker",emoji:"🍬",cal:387,prot:0,carb:100,fat:0,cat:"hammadde"}
+,{name:"Bal",emoji:"🍯",cal:304,prot:0,carb:82,fat:0,cat:"kahvalti"}
+,{name:"Esmer Şeker",emoji:"🍬",cal:377,prot:0,carb:97,fat:0,cat:"hammadde"}
+,{name:"Nişasta",emoji:"🌾",cal:381,prot:0,carb:91,fat:0,cat:"hammadde"}
+
+// ── HAMMADDELER: SÜT & YUMURTA ──
+,{name:"Yumurta (1 adet ~60g)",emoji:"🥚",cal:155,prot:13,carb:1,fat:11,cat:"hammadde"}
+,{name:"Süt (tam yağlı)",emoji:"🥛",cal:61,prot:3,carb:5,fat:3,cat:"hammadde"}
+,{name:"Süt (yağsız)",emoji:"🥛",cal:35,prot:4,carb:5,fat:0,cat:"hammadde"}
+,{name:"Krema (%35 yağ)",emoji:"🥛",cal:345,prot:2,carb:3,fat:36,cat:"hammadde"}
+,{name:"Kaşar Peyniri",emoji:"🧀",cal:386,prot:25,carb:2,fat:31,cat:"sut"}
+,{name:"Beyaz Peynir",emoji:"🧀",cal:264,prot:16,carb:2,fat:21,cat:"sut"}
+,{name:"Tulum Peyniri",emoji:"🧀",cal:320,prot:22,carb:2,fat:25,cat:"sut"}
+,{name:"Dil Peyniri",emoji:"🧀",cal:330,prot:24,carb:1,fat:26,cat:"sut"}
+,{name:"Çökelek",emoji:"🧀",cal:88,prot:12,carb:2,fat:4,cat:"sut"}
+,{name:"Ayran",emoji:"🥛",cal:36,prot:2,carb:3,fat:2,cat:"icecek"}
+,{name:"Sütlü Kahve (latte)",emoji:"☕",cal:61,prot:3,carb:6,fat:3,cat:"icecek"}
+
+// ── HAMMADDELER: ET & TAVUK (çiğ) ──
+,{name:"Dana Kıyma (çiğ)",emoji:"🥩",cal:215,prot:18,carb:0,fat:16,cat:"hammadde"}
+,{name:"Tavuk Göğsü (çiğ)",emoji:"🍗",cal:120,prot:23,carb:0,fat:3,cat:"hammadde"}
+,{name:"Kuzu Kıyma (çiğ)",emoji:"🥩",cal:282,prot:17,carb:0,fat:23,cat:"hammadde"}
+,{name:"Balık Fileto (çiğ)",emoji:"🐟",cal:105,prot:22,carb:0,fat:2,cat:"hammadde"}
+
+// ── HAMMADDELER: SEBZE (çiğ/taze) ──
+,{name:"Domates",emoji:"🍅",cal:18,prot:1,carb:4,fat:0,cat:"sebze"}
+,{name:"Salatalık",emoji:"🥒",cal:16,prot:1,carb:4,fat:0,cat:"sebze"}
+,{name:"Biber (dolmalık)",emoji:"🫑",cal:31,prot:1,carb:6,fat:0,cat:"sebze"}
+,{name:"Soğan",emoji:"🧅",cal:40,prot:1,carb:9,fat:0,cat:"hammadde"}
+,{name:"Sarımsak",emoji:"🧄",cal:149,prot:6,carb:33,fat:1,cat:"hammadde"}
+,{name:"Patates",emoji:"🥔",cal:77,prot:2,carb:17,fat:0,cat:"sebze"}
+,{name:"Havuç",emoji:"🥕",cal:41,prot:1,carb:10,fat:0,cat:"sebze"}
+,{name:"Ispanak (çiğ)",emoji:"🥬",cal:23,prot:3,carb:4,fat:0,cat:"sebze"}
+,{name:"Brokoli",emoji:"🥦",cal:34,prot:3,carb:7,fat:0,cat:"sebze"}
+,{name:"Karnabahar",emoji:"🥦",cal:25,prot:2,carb:5,fat:0,cat:"sebze"}
+,{name:"Kabak (yeşil)",emoji:"🥒",cal:17,prot:1,carb:3,fat:0,cat:"sebze"}
+,{name:"Patlıcan",emoji:"🍆",cal:25,prot:1,carb:6,fat:0,cat:"sebze"}
+,{name:"Lahana (beyaz)",emoji:"🥬",cal:25,prot:1,carb:6,fat:0,cat:"sebze"}
+,{name:"Kırmızı Lahana",emoji:"🥬",cal:31,prot:1,carb:7,fat:0,cat:"sebze"}
+,{name:"Marul",emoji:"🥬",cal:15,prot:1,carb:3,fat:0,cat:"sebze"}
+,{name:"Roka",emoji:"🌿",cal:25,prot:3,carb:4,fat:1,cat:"sebze"}
+,{name:"Maydanoz",emoji:"🌿",cal:36,prot:3,carb:6,fat:1,cat:"hammadde"}
+,{name:"Nane",emoji:"🌿",cal:44,prot:3,carb:8,fat:1,cat:"hammadde"}
+,{name:"Dereotu",emoji:"🌿",cal:43,prot:4,carb:7,fat:1,cat:"hammadde"}
+,{name:"Tahin",emoji:"🥜",cal:595,prot:17,carb:21,fat:54,cat:"hammadde"}
+,{name:"Nar Ekşisi",emoji:"🍎",cal:110,prot:0,carb:28,fat:0,cat:"hammadde"}
+,{name:"Biber Salçası",emoji:"🌶️",cal:80,prot:3,carb:14,fat:2,cat:"hammadde"}
+,{name:"Domates Salçası",emoji:"🍅",cal:82,prot:4,carb:18,fat:0,cat:"hammadde"}
+,{name:"Sumak",emoji:"🌿",cal:239,prot:5,carb:44,fat:8,cat:"hammadde"}
+,{name:"Kimyon",emoji:"🌿",cal:375,prot:18,carb:44,fat:22,cat:"hammadde"}
+,{name:"Pul Biber",emoji:"🌶️",cal:282,prot:12,carb:50,fat:6,cat:"hammadde"}
+,{name:"Kekik (kuru)",emoji:"🌿",cal:276,prot:9,carb:64,fat:7,cat:"hammadde"}
+,{name:"İsot (Urfa biberi)",emoji:"🌶️",cal:282,prot:12,carb:50,fat:6,cat:"hammadde"}
+,{name:"Karabiber",emoji:"🌿",cal:255,prot:10,carb:64,fat:3,cat:"hammadde"}
+,{name:"Tarçın",emoji:"🌿",cal:247,prot:4,carb:81,fat:1,cat:"hammadde"}
+,{name:"Defne Yaprağı",emoji:"🍃",cal:313,prot:8,carb:75,fat:8,cat:"hammadde"}
+,{name:"Pekmez (üzüm)",emoji:"🍇",cal:293,prot:1,carb:72,fat:0,cat:"hammadde"}
+,{name:"Sirke (üzüm)",emoji:"🫗",cal:18,prot:0,carb:1,fat:0,cat:"hammadde"}
+,{name:"Limon Suyu",emoji:"🍋",cal:22,prot:0,carb:7,fat:0,cat:"hammadde"}
+,{name:"Çam Fıstığı",emoji:"🌰",cal:673,prot:14,carb:13,fat:68,cat:"hammadde"}
+,{name:"Antep Fıstığı",emoji:"🥜",cal:562,prot:20,carb:28,fat:45,cat:"hammadde"}
+,{name:"Kuru Üzüm",emoji:"🍇",cal:299,prot:3,carb:79,fat:0,cat:"hammadde"}
+,{name:"Kuş Üzümü",emoji:"🍇",cal:283,prot:4,carb:67,fat:2,cat:"hammadde"}
+,{name:"Yufka",emoji:"🥟",cal:310,prot:9,carb:58,fat:5,cat:"hammadde"}
+,{name:"Baklava Yufkası",emoji:"🥟",cal:340,prot:8,carb:55,fat:10,cat:"hammadde"}
+,{name:"Gül Suyu",emoji:"🌹",cal:0,prot:0,carb:0,fat:0,cat:"hammadde"}
+,{name:"Maya (kuru)",emoji:"🧬",cal:325,prot:40,carb:41,fat:7,cat:"hammadde"}
+,{name:"Kabartma Tozu",emoji:"🧪",cal:53,prot:0,carb:28,fat:0,cat:"hammadde"}
+,{name:"Tuz",emoji:"🧂",cal:0,prot:0,carb:0,fat:0,cat:"hammadde"}
+,{name:"Sıvıyağ",emoji:"🫗",cal:884,prot:0,carb:0,fat:100,cat:"hammadde"}
+,{name:"Susam",emoji:"🌿",cal:573,prot:18,carb:23,fat:50,cat:"hammadde"}
+,{name:"Çörek Otu",emoji:"🌿",cal:345,prot:16,carb:52,fat:15,cat:"hammadde"}
+,{name:"Kırmızı Toz Biber",emoji:"🌶️",cal:282,prot:12,carb:50,fat:6,cat:"hammadde"}
+,{name:"Mahlep",emoji:"🌿",cal:400,prot:6,carb:30,fat:30,cat:"hammadde"}
+,{name:"Beyaz Peynir",emoji:"🧀",cal:264,prot:17,carb:1,fat:21,cat:"hammadde"}
+,{name:"Kaşar Peyniri",emoji:"🧀",cal:350,prot:25,carb:2,fat:27,cat:"hammadde"}
+,{name:"Lor Peyniri",emoji:"🧀",cal:160,prot:11,carb:3,fat:12,cat:"hammadde"}
+,{name:"Süzme Yoğurt",emoji:"🥛",cal:66,prot:10,carb:4,fat:0,cat:"hammadde"}
+,{name:"Tulum Peyniri",emoji:"🧀",cal:315,prot:22,carb:1,fat:25,cat:"hammadde"}
+,{name:"Taze Soğan",emoji:"🧅",cal:32,prot:2,carb:7,fat:0,cat:"sebze"}
+,{name:"Mantar (kültür)",emoji:"🍄",cal:22,prot:3,carb:3,fat:0,cat:"sebze"}
+,{name:"Bezelye (taze)",emoji:"🟢",cal:81,prot:5,carb:14,fat:0,cat:"sebze"}
+,{name:"Taze Fasulye",emoji:"🫘",cal:35,prot:2,carb:8,fat:0,cat:"sebze"}
+,{name:"Mısır (haşlama)",emoji:"🌽",cal:86,prot:3,carb:19,fat:1,cat:"sebze"}
+,{name:"Semizotu",emoji:"🌿",cal:20,prot:2,carb:4,fat:0,cat:"sebze"}
+
+// ── HAMMADDELER: MEYVE ──
+,{name:"Elma",emoji:"🍎",cal:52,prot:0,carb:14,fat:0,cat:"meyve"}
+,{name:"Muz",emoji:"🍌",cal:89,prot:1,carb:23,fat:0,cat:"meyve"}
+,{name:"Portakal",emoji:"🍊",cal:47,prot:1,carb:12,fat:0,cat:"meyve"}
+,{name:"Üzüm",emoji:"🍇",cal:69,prot:1,carb:18,fat:0,cat:"meyve"}
+,{name:"Çilek",emoji:"🍓",cal:32,prot:1,carb:8,fat:0,cat:"meyve"}
+,{name:"Kavun",emoji:"🍈",cal:34,prot:1,carb:8,fat:0,cat:"meyve"}
+,{name:"Karpuz",emoji:"🍉",cal:30,prot:1,carb:8,fat:0,cat:"meyve"}
+,{name:"Şeftali",emoji:"🍑",cal:39,prot:1,carb:10,fat:0,cat:"meyve"}
+,{name:"Kiraz",emoji:"🍒",cal:63,prot:1,carb:16,fat:0,cat:"meyve"}
+,{name:"Erik",emoji:"🍑",cal:46,prot:1,carb:11,fat:0,cat:"meyve"}
+,{name:"Ayva",emoji:"🍐",cal:57,prot:0,carb:15,fat:0,cat:"meyve"}
+,{name:"Mandalina",emoji:"🍊",cal:53,prot:1,carb:13,fat:0,cat:"meyve"}
+,{name:"Limon",emoji:"🍋",cal:29,prot:1,carb:9,fat:0,cat:"meyve"}
+,{name:"Avokado",emoji:"🥑",cal:160,prot:2,carb:9,fat:15,cat:"meyve"}
+,{name:"Ananas",emoji:"🍍",cal:50,prot:1,carb:13,fat:0,cat:"meyve"}
+
+// ── PIŞMIŞ TAHILLAR & MAKARNA ──
+,{name:"Bulgur Pilavı (pişmiş)",emoji:"🍚",cal:83,prot:3,carb:19,fat:0,cat:"pilav"}
+,{name:"Makarna (pişmiş)",emoji:"🍝",cal:131,prot:5,carb:25,fat:1,cat:"pilav"}
+,{name:"Spagetti (pişmiş)",emoji:"🍝",cal:157,prot:6,carb:31,fat:1,cat:"pilav"}
+,{name:"Erişte (pişmiş)",emoji:"🍜",cal:138,prot:5,carb:26,fat:2,cat:"pilav"}
+,{name:"Pirinç Pilavı (pişmiş)",emoji:"🍚",cal:130,prot:2,carb:29,fat:0,cat:"pilav"}
+,{name:"Kuskus (pişmiş)",emoji:"🍚",cal:112,prot:4,carb:23,fat:0,cat:"pilav"}
+
+// ── TÜRK YEMEKLERI: KEBAP & ET YEMEKLERİ ──
+,{name:"Adana Kebap",emoji:"🥩",cal:285,prot:19,carb:2,fat:23,cat:"et"}
+,{name:"Urfa Kebap",emoji:"🥩",cal:268,prot:18,carb:2,fat:21,cat:"et"}
+,{name:"Şiş Kebap (kuzu)",emoji:"🥩",cal:225,prot:22,carb:0,fat:15,cat:"et"}
+,{name:"Tavuk Şiş",emoji:"🍗",cal:165,prot:28,carb:0,fat:6,cat:"et"}
+,{name:"İskender Kebap",emoji:"🥩",cal:245,prot:16,carb:12,fat:16,cat:"et"}
+,{name:"Döner (tavuk, dürümsüz)",emoji:"🍗",cal:185,prot:22,carb:2,fat:10,cat:"et"}
+,{name:"Döner (et, dürümsüz)",emoji:"🥩",cal:215,prot:18,carb:2,fat:15,cat:"et"}
+,{name:"Lahmacun (1 adet)",emoji:"🫓",cal:210,prot:10,carb:26,fat:7,cat:"fastfood"}
+,{name:"İçli Köfte (1 adet)",emoji:"🥟",cal:220,prot:9,carb:22,fat:12,cat:"hamur"}
+,{name:"Kısır",emoji:"🥗",cal:145,prot:3,carb:26,fat:4,cat:"sebze"}
+,{name:"Taze Köfte (ızgara)",emoji:"🥩",cal:235,prot:18,carb:4,fat:17,cat:"et"}
+,{name:"Kaburga (fırında)",emoji:"🥩",cal:334,prot:20,carb:0,fat:28,cat:"et"}
+,{name:"Kanat (ızgara)",emoji:"🍗",cal:203,prot:24,carb:0,fat:12,cat:"et"}
+,{name:"Sote Tavuk (zeytinyağlı)",emoji:"🍗",cal:175,prot:24,carb:3,fat:8,cat:"et"}
+,{name:"Fırın Tavuk (bütün)",emoji:"🍗",cal:215,prot:25,carb:0,fat:13,cat:"et"}
+
+// ── TÜRK YEMEKLERİ: ÇORBA ──
+,{name:"Mercimek Çorbası (kırmızı)",emoji:"🍵",cal:72,prot:4,carb:12,fat:2,cat:"corba"}
+,{name:"Domates Çorbası",emoji:"🍵",cal:48,prot:2,carb:8,fat:1,cat:"corba"}
+,{name:"Ezogelin Çorbası",emoji:"🍵",cal:82,prot:4,carb:14,fat:2,cat:"corba"}
+,{name:"Sebze Çorbası",emoji:"🍵",cal:45,prot:2,carb:7,fat:1,cat:"corba"}
+,{name:"Toyga Çorbası",emoji:"🍵",cal:65,prot:3,carb:9,fat:2,cat:"corba"}
+,{name:"Balık Çorbası",emoji:"🍵",cal:58,prot:6,carb:5,fat:2,cat:"corba"}
+
+// ── TÜRK YEMEKLERİ: SALATA & MEZE ──
+,{name:"Çoban Salatası",emoji:"🥗",cal:42,prot:1,carb:6,fat:2,cat:"sebze"}
+,{name:"Mevsim Salatası",emoji:"🥗",cal:35,prot:1,carb:5,fat:2,cat:"sebze"}
+,{name:"Piyaz",emoji:"🥗",cal:125,prot:5,carb:16,fat:5,cat:"baklagil"}
+,{name:"Tarator",emoji:"🥗",cal:165,prot:5,carb:8,fat:13,cat:"sos"}
+,{name:"Cacık",emoji:"🥗",cal:42,prot:2,carb:4,fat:2,cat:"sebze"}
+,{name:"Humus",emoji:"🫘",cal:166,prot:9,carb:14,fat:10,cat:"baklagil"}
+,{name:"Babaganuş",emoji:"🍆",cal:88,prot:2,carb:8,fat:6,cat:"sebze"}
+,{name:"Muhammara",emoji:"🌶️",cal:195,prot:4,carb:12,fat:15,cat:"sos"}
+,{name:"Yaprak Sarma (zeytinyağlı)",emoji:"🌿",cal:108,prot:2,carb:14,fat:5,cat:"sebze"}
+,{name:"Yaprak Sarma (etli)",emoji:"🌿",cal:145,prot:7,carb:14,fat:7,cat:"et"}
+,{name:"Ezme",emoji:"🌶️",cal:38,prot:1,carb:6,fat:1,cat:"sos"}
+
+// ── TÜRK YEMEKLERİ: ZEYTİNYAĞLILAR ──
+,{name:"Zeytinyağlı Kereviz",emoji:"🌿",cal:66,prot:1,carb:8,fat:4,cat:"sebze"}
+,{name:"Zeytinyağlı Biber Dolması",emoji:"🫑",cal:95,prot:2,carb:12,fat:5,cat:"sebze"}
+,{name:"Zeytinyağlı Kabak Dolması",emoji:"🥒",cal:88,prot:2,carb:10,fat:5,cat:"sebze"}
+,{name:"Zeytinyağlı Bakla",emoji:"🫘",cal:88,prot:5,carb:11,fat:3,cat:"baklagil"}
+,{name:"Zeytinyağlı Bamya",emoji:"🌿",cal:78,prot:2,carb:9,fat:4,cat:"sebze"}
+,{name:"Zeytinyağlı Brokoli",emoji:"🥦",cal:72,prot:3,carb:6,fat:4,cat:"sebze"}
+
+// ── SEBZELİ YEMEKLER ──
+,{name:"Türlü (sebze güveç)",emoji:"🫕",cal:82,prot:2,carb:10,fat:4,cat:"sebze"}
+,{name:"Menemen",emoji:"🍳",cal:118,prot:6,carb:6,fat:8,cat:"kahvalti"}
+,{name:"Sebzeli Güveç",emoji:"🫕",cal:95,prot:4,carb:10,fat:5,cat:"sebze"}
+,{name:"İmam Bayıldı",emoji:"🍆",cal:145,prot:2,carb:10,fat:11,cat:"sebze"}
+,{name:"Musakka",emoji:"🍆",cal:168,prot:8,carb:8,fat:12,cat:"et"}
+,{name:"Patates Oturtma",emoji:"🥔",cal:135,prot:5,carb:14,fat:7,cat:"sebze"}
+,{name:"Türlü Kavurma",emoji:"🥘",cal:182,prot:10,carb:9,fat:12,cat:"et"}
+,{name:"Patlıcan Kebabı",emoji:"🍆",cal:178,prot:9,carb:10,fat:11,cat:"et"}
+
+// ── TATLILER & PASTA ──
+,{name:"Baklava (1 dilim)",emoji:"🍰",cal:336,prot:6,carb:40,fat:17,cat:"tatli"}
+,{name:"Kadayıf",emoji:"🍮",cal:285,prot:4,carb:48,fat:9,cat:"tatli"}
+,{name:"Künefe",emoji:"🍮",cal:420,prot:10,carb:48,fat:22,cat:"tatli"}
+,{name:"Muhallebi",emoji:"🍮",cal:128,prot:4,carb:22,fat:3,cat:"tatli"}
+,{name:"Güllaç",emoji:"🍮",cal:112,prot:4,carb:22,fat:2,cat:"tatli"}
+,{name:"Profiterol",emoji:"🍮",cal:305,prot:5,carb:32,fat:18,cat:"tatli"}
+,{name:"Çikolatalı Kek",emoji:"🎂",cal:371,prot:5,carb:52,fat:16,cat:"tatli"}
+,{name:"Cheesecake (dilim)",emoji:"🍰",cal:321,prot:6,carb:25,fat:23,cat:"tatli"}
+,{name:"Tiramisu",emoji:"🍰",cal:295,prot:6,carb:28,fat:18,cat:"tatli"}
+,{name:"Dondurma (sade)",emoji:"🍦",cal:207,prot:4,carb:24,fat:11,cat:"tatli"}
+
+// ── İÇECEKLER ──
+,{name:"Su (0 kal)",emoji:"💧",cal:0,prot:0,carb:0,fat:0,cat:"icecek"}
+,{name:"Çay (sade)",emoji:"🫖",cal:2,prot:0,carb:0,fat:0,cat:"icecek"}
+,{name:"Meyve Suyu (elma)",emoji:"🧃",cal:46,prot:0,carb:11,fat:0,cat:"icecek"}
+,{name:"Limonata (ev yapımı)",emoji:"🍋",cal:38,prot:0,carb:10,fat:0,cat:"icecek"}
+,{name:"Boza",emoji:"🥤",cal:62,prot:1,carb:13,fat:0,cat:"icecek"}
+,{name:"Şalgam Suyu",emoji:"🥤",cal:22,prot:1,carb:5,fat:0,cat:"icecek"}
+,{name:"Kola (250ml)",emoji:"🥤",cal:105,prot:0,carb:27,fat:0,cat:"icecek"}
+,{name:"Enerji İçeceği (250ml)",emoji:"⚡",cal:113,prot:1,carb:28,fat:0,cat:"icecek"}
+,{name:"Bitki Çayı",emoji:"🌿",cal:2,prot:0,carb:0,fat:0,cat:"icecek"}
+,{name:"Maden Suyu",emoji:"💧",cal:0,prot:0,carb:0,fat:0,cat:"icecek"}
+
+// ── KURUYEMIŞ & TOHUMLAR ──
+,{name:"Ceviz",emoji:"🌰",cal:654,prot:15,carb:14,fat:65,cat:"kuruyemis"}
+,{name:"Badem",emoji:"🥜",cal:579,prot:21,carb:22,fat:50,cat:"kuruyemis"}
+,{name:"Fıstık (yer fıstığı)",emoji:"🥜",cal:567,prot:26,carb:16,fat:49,cat:"kuruyemis"}
+,{name:"Antep Fıstığı",emoji:"🫘",cal:560,prot:20,carb:28,fat:45,cat:"kuruyemis"}
+,{name:"Kaju",emoji:"🥜",cal:553,prot:18,carb:30,fat:44,cat:"kuruyemis"}
+,{name:"Kuru Kayısı",emoji:"🍑",cal:241,prot:3,carb:63,fat:0,cat:"kuruyemis"}
+,{name:"Kuru Üzüm",emoji:"🍇",cal:299,prot:3,carb:79,fat:0,cat:"kuruyemis"}
+,{name:"Kuru İncir",emoji:"🫐",cal:249,prot:3,carb:64,fat:1,cat:"kuruyemis"}
+,{name:"Kuru Erik",emoji:"🍑",cal:240,prot:2,carb:64,fat:0,cat:"kuruyemis"}
+,{name:"Ay Çekirdeği",emoji:"🌻",cal:584,prot:21,carb:20,fat:51,cat:"kuruyemis"}
+,{name:"Kabak Çekirdeği",emoji:"🌰",cal:559,prot:30,carb:11,fat:49,cat:"kuruyemis"}
+,{name:"Susam",emoji:"🌱",cal:573,prot:17,carb:23,fat:50,cat:"kuruyemis"}
+,{name:"Keten Tohumu",emoji:"🌱",cal:534,prot:18,carb:29,fat:42,cat:"sporcu"}
+
+// ── FAST FOOD & HAZIR ──
+,{name:"Pizza (1 dilim)",emoji:"🍕",cal:266,prot:11,carb:33,fat:10,cat:"fastfood"}
+,{name:"Hamburger",emoji:"🍔",cal:295,prot:17,carb:24,fat:14,cat:"fastfood"}
+,{name:"Patates Kızartması",emoji:"🍟",cal:312,prot:4,carb:41,fat:15,cat:"fastfood"}
+,{name:"Hot Dog",emoji:"🌭",cal:290,prot:11,carb:18,fat:20,cat:"fastfood"}
+,{name:"Gözleme (patatesli)",emoji:"🫓",cal:195,prot:5,carb:30,fat:7,cat:"fastfood"}
+,{name:"Börek (ıspanaklı)",emoji:"🥧",cal:245,prot:8,carb:24,fat:13,cat:"hamur"}
+
+// ── SPORCU GIDALAR ──
+,{name:"Whey Protein (1 ölçek)",emoji:"💪",cal:120,prot:25,carb:3,fat:2,cat:"sporcu"}
+,{name:"Muz-Yulaf Smoothie",emoji:"🥤",cal:185,prot:6,carb:35,fat:3,cat:"sporcu"}
+,{name:"Mercimek Salatası (protein)",emoji:"🥗",cal:145,prot:10,carb:20,fat:3,cat:"sporcu"}
+,{name:"Tavuk Göğsü + Pirinç",emoji:"🍱",cal:218,prot:28,carb:22,fat:3,cat:"sporcu"}
+,{name:"Yumurta Akı",emoji:"🥚",cal:52,prot:11,carb:1,fat:0,cat:"sporcu"}
+
+// ── BALIK & DENİZ ÜRÜNLERİ ──
+,{name:"Somon (fırında)",emoji:"🐟",cal:208,prot:20,carb:0,fat:13,cat:"balik"}
+,{name:"Sardalya (konserve)",emoji:"🐟",cal:208,prot:25,carb:0,fat:12,cat:"balik"}
+,{name:"İstavrit (ızgara)",emoji:"🐟",cal:165,prot:21,carb:0,fat:9,cat:"balik"}
+,{name:"Kalkan (buğulama)",emoji:"🐟",cal:115,prot:22,carb:0,fat:3,cat:"balik"}
+,{name:"Ahtapot (haşlama)",emoji:"🦑",cal:82,prot:15,carb:2,fat:1,cat:"balik"}
+,{name:"Kalamar (tava)",emoji:"🦑",cal:175,prot:18,carb:8,fat:7,cat:"balik"}
+
+// ── ATIŞTIIMALIK ──
+,{name:"Cips (patates)",emoji:"🥔",cal:536,prot:7,carb:53,fat:35,cat:"atistirmalik"}
+,{name:"Çikolata (sütlü)",emoji:"🍫",cal:535,prot:8,carb:59,fat:30,cat:"atistirmalik"}
+,{name:"Bisküvi (tam buğday)",emoji:"🍪",cal:418,prot:8,carb:68,fat:13,cat:"atistirmalik"}
+,{name:"Gofret",emoji:"🍫",cal:512,prot:6,carb:60,fat:28,cat:"atistirmalik"}
+,{name:"Leblebi",emoji:"🫘",cal:364,prot:22,carb:56,fat:5,cat:"atistirmalik"}
+,{name:"Mısır Patlaması (sade)",emoji:"🍿",cal:375,prot:11,carb:74,fat:5,cat:"atistirmalik"}
+,{name:"Grisini",emoji:"🥖",cal:392,prot:11,carb:69,fat:8,cat:"atistirmalik"}
+
+// ── SOS & BAHARAT ──
+,{name:"Domates Salçası",emoji:"🍅",cal:82,prot:4,carb:19,fat:0,cat:"sos"}
+,{name:"Biber Salçası",emoji:"🌶️",cal:96,prot:4,carb:22,fat:1,cat:"sos"}
+,{name:"Ketçap",emoji:"🍅",cal:112,prot:1,carb:27,fat:0,cat:"sos"}
+,{name:"Mayonez",emoji:"🥣",cal:680,prot:1,carb:2,fat:75,cat:"sos"}
+,{name:"Hardal",emoji:"🌭",cal:66,prot:4,carb:8,fat:4,cat:"sos"}
+,{name:"Soya Sosu",emoji:"🫙",cal:53,prot:8,carb:5,fat:1,cat:"sos"}
+// ── ET & TAVUK (12→22) ──
+,{name:"Kuzu Pirzola",emoji:"🥩",cal:294,prot:26,carb:0,fat:21,cat:"et"}
+,{name:"Kanat (fırında)",emoji:"🍗",cal:203,prot:30,carb:0,fat:9,cat:"et"}
+,{name:"Kıyma (orta yağlı)",emoji:"🥩",cal:254,prot:17,carb:0,fat:20,cat:"et"}
+,{name:"Hindi Göğsü (ızgara)",emoji:"🦃",cal:157,prot:30,carb:0,fat:3,cat:"et"}
+,{name:"Dana Bonfile",emoji:"🥩",cal:271,prot:26,carb:0,fat:18,cat:"et"}
+,{name:"Tavuk But (fırında)",emoji:"🍗",cal:215,prot:27,carb:0,fat:12,cat:"et"}
+,{name:"Ciğer (dana, sote)",emoji:"🥩",cal:175,prot:26,carb:4,fat:5,cat:"et"}
+,{name:"Sucuk (ızgara)",emoji:"🌭",cal:378,prot:15,carb:2,fat:34,cat:"et"}
+,{name:"Pastırma",emoji:"🥩",cal:297,prot:31,carb:0,fat:19,cat:"et"}
+,{name:"Tavuk Kanatlı Bütün",emoji:"🍗",cal:239,prot:27,carb:0,fat:14,cat:"et"}
+// ── BALIK (4→12) ──
+,{name:"Çipura (ızgara)",emoji:"🐟",cal:128,prot:26,carb:0,fat:3,cat:"balik"}
+,{name:"Levrek (fırında)",emoji:"🐟",cal:124,prot:24,carb:0,fat:3,cat:"balik"}
+,{name:"Uskumru (ızgara)",emoji:"🐟",cal:205,prot:19,carb:0,fat:14,cat:"balik"}
+,{name:"Hamsi Tava",emoji:"🐟",cal:235,prot:22,carb:8,fat:13,cat:"balik"}
+,{name:"Alabalık (fırında)",emoji:"🐟",cal:148,prot:21,carb:0,fat:7,cat:"balik"}
+,{name:"Ton Balığı (konserve)",emoji:"🐟",cal:116,prot:26,carb:0,fat:1,cat:"balik"}
+,{name:"Karides (haşlama)",emoji:"🦐",cal:99,prot:21,carb:1,fat:1,cat:"balik"}
+,{name:"Midye Dolma (4 adet)",emoji:"🦪",cal:156,prot:10,carb:16,fat:5,cat:"balik"}
+// ── ÇORBA (8→14) ──
+,{name:"Yayla Çorbası",emoji:"🍵",cal:68,prot:3,carb:8,fat:3,cat:"corba"}
+,{name:"İşkembe Çorbası",emoji:"🍵",cal:72,prot:6,carb:5,fat:3,cat:"corba"}
+,{name:"Tarhana Çorbası",emoji:"🍵",cal:87,prot:4,carb:14,fat:2,cat:"corba"}
+,{name:"Düğün Çorbası",emoji:"🍵",cal:95,prot:7,carb:7,fat:4,cat:"corba"}
+,{name:"Paça Çorbası",emoji:"🍵",cal:83,prot:8,carb:4,fat:4,cat:"corba"}
+,{name:"Soğan Çorbası",emoji:"🍵",cal:56,prot:2,carb:8,fat:2,cat:"corba"}
+// ── SEBZE (12→20) ──
+,{name:"Zeytinyağlı Taze Fasulye",emoji:"🫘",cal:72,prot:2,carb:8,fat:4,cat:"sebze"}
+,{name:"Zeytinyağlı Pırasa",emoji:"🥬",cal:68,prot:2,carb:7,fat:4,cat:"sebze"}
+,{name:"Fırında Kabak",emoji:"🥒",cal:45,prot:2,carb:6,fat:2,cat:"sebze"}
+,{name:"Biber Dolması (zeytinyağlı)",emoji:"🫑",cal:95,prot:2,carb:12,fat:5,cat:"sebze"}
+,{name:"Ispanak Yemeği",emoji:"🥬",cal:82,prot:3,carb:6,fat:5,cat:"sebze"}
+,{name:"Enginar (zeytinyağlı)",emoji:"🌿",cal:74,prot:3,carb:9,fat:3,cat:"sebze"}
+,{name:"Turşu (karışık)",emoji:"🥒",cal:18,prot:1,carb:4,fat:0,cat:"sebze"}
+,{name:"Közlenmiş Patlıcan Salatası",emoji:"🍆",cal:85,prot:2,carb:8,fat:5,cat:"sebze"}
+// ── HAMUR İŞİ & PİLAV (5+6→18) ──
+,{name:"Karnıyarık",emoji:"🍆",cal:185,prot:8,carb:12,fat:12,cat:"hamur"}
+,{name:"Hünkâr Beğendi",emoji:"🍆",cal:215,prot:12,carb:14,fat:13,cat:"hamur"}
+,{name:"Tost (kaşarlı)",emoji:"🥪",cal:298,prot:13,carb:30,fat:14,cat:"hamur"}
+,{name:"Açma",emoji:"🥐",cal:312,prot:7,carb:42,fat:13,cat:"hamur"}
+,{name:"Poğaça (peynirli)",emoji:"🥐",cal:285,prot:8,carb:34,fat:13,cat:"hamur"}
+,{name:"Su Böreği",emoji:"🥧",cal:280,prot:11,carb:28,fat:14,cat:"hamur"}
+,{name:"Sigara Böreği (4 adet)",emoji:"🥧",cal:240,prot:7,carb:22,fat:14,cat:"hamur"}
+,{name:"Mantı (1 porsiyon)",emoji:"🥟",cal:310,prot:14,carb:40,fat:11,cat:"hamur"}
+,{name:"Şehriyeli Pilav",emoji:"🍚",cal:175,prot:4,carb:33,fat:4,cat:"pilav"}
+,{name:"Arpa Şehriye Pilavı",emoji:"🍚",cal:168,prot:4,carb:31,fat:4,cat:"pilav"}
+,{name:"Nohutlu Pilav",emoji:"🍚",cal:198,prot:6,carb:35,fat:5,cat:"pilav"}
+,{name:"İç Pilav",emoji:"🍚",cal:215,prot:5,carb:34,fat:8,cat:"pilav"}
+// ── TATLI (5→10) ──
+,{name:"Sütlaç",emoji:"🍮",cal:145,prot:4,carb:26,fat:3,cat:"tatli"}
+,{name:"Kazandibi",emoji:"🍮",cal:168,prot:4,carb:28,fat:4,cat:"tatli"}
+,{name:"Revani",emoji:"🍰",cal:285,prot:5,carb:48,fat:8,cat:"tatli"}
+,{name:"Şekerpare",emoji:"🍪",cal:310,prot:4,carb:52,fat:10,cat:"tatli"}
+,{name:"Lokma",emoji:"🍩",cal:265,prot:3,carb:42,fat:10,cat:"tatli"}
+// ── KAHVALTILIK (8→14) ──
+,{name:"Haydari",emoji:"🥣",cal:95,prot:4,carb:4,fat:7,cat:"kahvalti"}
+,{name:"Çılbır (yumurta+yoğurt)",emoji:"🍳",cal:185,prot:12,carb:6,fat:13,cat:"kahvalti"}
+,{name:"Peynirli Omlet",emoji:"🍳",cal:218,prot:14,carb:2,fat:17,cat:"kahvalti"}
+,{name:"Mıhlama",emoji:"🧀",cal:285,prot:14,carb:4,fat:24,cat:"kahvalti"}
+,{name:"Tahin",emoji:"🫙",cal:595,prot:17,carb:21,fat:54,cat:"kahvalti"}
+,{name:"Pekmez (üzüm)",emoji:"🫙",cal:280,prot:1,carb:69,fat:0,cat:"kahvalti"}
+// ── BAKLAGİL (6→12) ──
+,{name:"Mercimek Köftesi (10 adet)",emoji:"🟠",cal:185,prot:7,carb:28,fat:6,cat:"baklagil"}
+,{name:"Nohut Salatası",emoji:"🥗",cal:168,prot:8,carb:22,fat:6,cat:"baklagil"}
+,{name:"Fava",emoji:"🫘",cal:135,prot:7,carb:18,fat:4,cat:"baklagil"}
+,{name:"Barbunya Pilaki",emoji:"🫘",cal:148,prot:7,carb:20,fat:5,cat:"baklagil"}
+,{name:"Yeşil Mercimek Çorbası",emoji:"🫘",cal:95,prot:6,carb:14,fat:2,cat:"baklagil"}
+,{name:"Börülce Yemeği",emoji:"🫘",cal:132,prot:7,carb:17,fat:4,cat:"baklagil"}
+// ── ATIŞTIIRMALIK & FASTFOOD (4+4→12) ──
+,{name:"Dürüm (tavuk)",emoji:"🌯",cal:395,prot:24,carb:42,fat:14,cat:"fastfood"}
+,{name:"Pide (kıymalı)",emoji:"🫓",cal:285,prot:14,carb:35,fat:10,cat:"fastfood"}
+,{name:"Tantuni",emoji:"🌯",cal:340,prot:20,carb:38,fat:12,cat:"fastfood"}
+,{name:"Balık Ekmek",emoji:"🥖",cal:365,prot:22,carb:40,fat:12,cat:"fastfood"}
+,{name:"Fındık Ezmesi (2 yemek kaşığı)",emoji:"🥜",cal:188,prot:4,carb:8,fat:16,cat:"atistirmalik"}
+,{name:"Protein Bar",emoji:"💪",cal:210,prot:20,carb:22,fat:6,cat:"sporcu"}
+,{name:"Yulaf Lapası (sütlü)",emoji:"🥣",cal:168,prot:6,carb:27,fat:4,cat:"sporcu"}
+,{name:"Smoothie (meyve)",emoji:"🥤",cal:145,prot:2,carb:32,fat:1,cat:"icecek"}
+,{name:"Türk Kahvesi (sade)",emoji:"☕",cal:4,prot:0,carb:1,fat:0,cat:"icecek"}
+,{name:"Taze Sıkılmış Portakal Suyu",emoji:"🍊",cal:112,prot:2,carb:26,fat:0,cat:"icecek"}
+// ── MEYVE (10→16) ──
+,{name:"Kivi",emoji:"🥝",cal:61,prot:1,carb:15,fat:1,cat:"meyve"}
+,{name:"Nar",emoji:"🍎",cal:83,prot:1,carb:19,fat:1,cat:"meyve"}
+,{name:"Armut",emoji:"🍐",cal:57,prot:0,carb:15,fat:0,cat:"meyve"}
+,{name:"Vişne",emoji:"🍒",cal:58,prot:1,carb:14,fat:0,cat:"meyve"}
+,{name:"Incir (taze)",emoji:"🫐",cal:74,prot:1,carb:19,fat:0,cat:"meyve"}
+,{name:"Kayısı",emoji:"🍑",cal:48,prot:1,carb:11,fat:0,cat:"meyve"}
+// ── SÜT ÜRÜNLERİ (5→10) ──
+,{name:"Labne Peyniri",emoji:"🧀",cal:105,prot:5,carb:4,fat:8,cat:"sut"}
+,{name:"Lor Peyniri",emoji:"🧀",cal:105,prot:12,carb:4,fat:5,cat:"sut"}
+,{name:"Kefir (1 bardak)",emoji:"🥛",cal:104,prot:9,carb:10,fat:3,cat:"sut"}
+,{name:"Tam Yağlı Yoğurt",emoji:"🥛",cal:97,prot:5,carb:7,fat:5,cat:"sut"}
+,{name:"Çökelek",emoji:"🧀",cal:88,prot:12,carb:2,fat:4,cat:"sut"},
+]}
 
 
 const CATEGORIES = [
@@ -1668,6 +2047,7 @@ let currentMealId=null,selectedCat='all',currentSource='local';
 let currentDate=new Date(),pendingFood=null,deferredPrompt=null;
 
 
+// USDA API Key (free, demo key — user should get their own for production)
 function dateKey(d){const dd=d||currentDate;return `${dd.getFullYear()}-${String(dd.getMonth()+1).padStart(2,'0')}-${String(dd.getDate()).padStart(2,'0')}`}
 function isToday(d){const t=new Date();return d.getFullYear()===t.getFullYear()&&d.getMonth()===t.getMonth()&&d.getDate()===t.getDate()}
 function formatDateShort(d){const days=['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'];const months=['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];if(isToday(d))return'Bugün';return`${d.getDate()} ${months[d.getMonth()]}, ${days[d.getDay()]}`}
@@ -1676,9 +2056,9 @@ function updateDateNav(){document.getElementById('navDate').textContent=formatDa
 function changeDate(delta){
   const next=new Date(currentDate);
   next.setDate(next.getDate()+delta);
-  // Bugünden 10 gün sonrasına kadar izin ver
-  const maxDate=new Date();maxDate.setDate(maxDate.getDate()+10);maxDate.setHours(23,59,59,999);
-  if(next>maxDate){showToast('📅 En fazla 10 gün ileriye gidebilirsiniz');return;}
+  // Bugünden sonrasına geçişi engelle
+  const tomorrow=new Date();tomorrow.setDate(tomorrow.getDate()+1);tomorrow.setHours(0,0,0,0);
+  if(next>=tomorrow){showToast('📅 Gelecek tarihe geçemezsiniz');return;}
   currentDate=next;
   updateDateNav();renderMeals();updateHeader();updateWaterHeader();renderExerciseCard&&renderExerciseCard();
 }
@@ -1741,8 +2121,7 @@ function renderCalendar(){
     var dk=dateKey(dt);
     var isToday=dk===todayKey;
     var isSelected=dk===selectedKey;
-    var maxAllowed=new Date();maxAllowed.setDate(maxAllowed.getDate()+10);maxAllowed.setHours(23,59,59,999);
-    var isFuture=dt>maxAllowed;
+    var isFuture=dt>today;
 
     // Kalori verisi
     var cal=0;
@@ -1870,68 +2249,8 @@ function updateHeader(){
   const tgt=getTodayTargets();
   const _burned=exBurnActive?getTotalBurned():0;
   const _dailyTarget=tgt.cal+_burned,_protTarget=tgt.prot,_carbTarget=tgt.carb,_fatTarget=tgt.fat;
-
-  const t=getTotals();
-  const circ=2*Math.PI*44;
-  const isOver=t.cal>_dailyTarget;
-  const remain=_dailyTarget-t.cal; // negatif olabilir
-
-  // ── Kalan / Aşım etiketi ──
-  const calRemainEl=document.getElementById('calRemain');
-  const calLabelEl=document.getElementById('calLabel');
-  if(isOver){
-    calRemainEl.textContent=Math.round(Math.abs(remain));
-    calRemainEl.style.color='#ff4444';
-    if(calLabelEl){calLabelEl.textContent='AŞIM';calLabelEl.style.color='#ff4444';}
-  } else {
-    calRemainEl.textContent=Math.round(remain);
-    calRemainEl.style.color='';
-    if(calLabelEl){calLabelEl.textContent='kalan';calLabelEl.style.color='';}
-  }
-
-  // ── Dış halka dilimleri ──
-  const protCal=t.prot*4;const carbCal=t.carb*4;const fatCal=t.fat*9;
-  const protArc=(protCal/_dailyTarget)*circ;
-  const carbArc=(carbCal/_dailyTarget)*circ;
-  const fatArc=(fatCal/_dailyTarget)*circ;
-  document.getElementById('ringProt').style.strokeDashoffset=circ-Math.min(protArc,circ);
-  document.getElementById('ringProt').setAttribute('transform','rotate(-90 52.5 52.5)');
-  document.getElementById('ringCarb').style.strokeDashoffset=circ-Math.min(carbArc,circ);
-  document.getElementById('ringCarb').setAttribute('transform',`rotate(${-90+(protCal/_dailyTarget)*360} 52.5 52.5)`);
-  document.getElementById('ringFat').style.strokeDashoffset=circ-Math.min(fatArc,circ);
-  document.getElementById('ringFat').setAttribute('transform',`rotate(${-90+((protCal+carbCal)/_dailyTarget)*360} 52.5 52.5)`);
-
-  // ── Aşım iç çemberi — hedef aşılınca kırmızı iç çember belirir ──
-  const overInnerEl=document.getElementById('ringOverInner');
-  if(overInnerEl){
-    overInnerEl.style.opacity=isOver?'0.85':'0';
-  }
-
-  // ── Makro bar normal dolum (max %100) ──
-  document.getElementById('protBar').style.width=Math.min(100,(t.prot/_protTarget)*100)+'%';
-  document.getElementById('carbBar').style.width=Math.min(100,(t.carb/_carbTarget)*100)+'%';
-  document.getElementById('fatBar').style.width=Math.min(100,(t.fat/_fatTarget)*100)+'%';
-
-  // ── Makro bar aşım overlay ──
-  function setOverBar(id,val,tgt){
-    const el=document.getElementById(id);
-    if(!el)return;
-    if(val>tgt){const pct=Math.min(((val-tgt)/tgt)*100,100);el.style.width=pct+'%';}
-    else{el.style.width='0%';}
-  }
-  setOverBar('protOver',t.prot,_protTarget);
-  setOverBar('carbOver',t.carb,_carbTarget);
-  setOverBar('fatOver',t.fat,_fatTarget);
-
-  document.getElementById('protVal').textContent=Math.round(t.prot)+'g';
-  document.getElementById('carbVal').textContent=Math.round(t.carb)+'g';
-  document.getElementById('fatVal').textContent=Math.round(t.fat)+'g';
-  checkCalorieMilestone();updateDailyBanner();updateProfileInsight();
-  if(document.getElementById('insightModal')&&document.getElementById('insightModal').classList.contains('show'))updateInsightModalContent();
-  const _badge=document.getElementById('weeklyPlanBadge');
-  if(_badge)_badge.style.display=weeklyPlanActive?'block':'none';
-}
-function renderMeals(){const container=document.getElementById('mealsContainer');const data=getDayData();let html='';MEAL_DEFS.forEach(meal=>{const foods=data[meal.id]||[];const mealCal=Math.round(foods.reduce((s,f)=>s+f.cal,0));const mealProt=Math.round(foods.reduce((s,f)=>s+f.prot,0));const mealCarb=Math.round(foods.reduce((s,f)=>s+f.carb,0));const mealFat=Math.round(foods.reduce((s,f)=>s+f.fat,0));const _tgtCal=getTodayTargets().cal;const mealPct=_tgtCal?Math.round((mealCal/_tgtCal)*100):0;let fHTML='';if(!foods.length){fHTML='<div class="empty-meal">Henüz yemek eklenmedi</div>'}else{foods.forEach((f,fi)=>{const dbF=FOOD_DB.find(d=>d.name===f.name);const img=dbF?getFoodImg(dbF):'';const imgHtml='';const pct=dailyTarget?Math.round((f.cal/dailyTarget)*100):0;fHTML+=`<div class="food-item" onclick="openEditFood('${meal.id}',${fi})" style="cursor:pointer">${imgHtml}<div class="food-info" style="flex:1;min-width:0"><div style="display:flex;align-items:baseline;justify-content:space-between;gap:6px"><div class="food-name" style="flex:1">${f.name}</div><div style="display:flex;align-items:center;gap:4px;flex-shrink:0"><div class="food-cal">${Math.round(f.cal)}</div><div style="font-size:.62rem;color:var(--text2)">${Math.round(f.portionUsed||100)}g</div><div style="color:var(--text2);font-size:.7rem">✏️</div></div></div><div class="food-macros"><div class="m-p">P ${Math.round(f.prot)}g</div><div class="m-k">K ${Math.round(f.carb)}g</div><div class="m-y">Y ${Math.round(f.fat)}g</div><div class="m-pct">%${pct}</div></div></div></div>`})}const mealOpenKey='fs_meal_open_'+meal.id;
+  const t=getTotals();const remain=Math.max(0,_dailyTarget-t.cal);document.getElementById('calRemain').textContent=remain;const circ=2*Math.PI*44;const totalCal=t.cal||1;const protCal=t.prot*4;const carbCal=t.carb*4;const fatCal=t.fat*9;const pct=Math.min(1,t.cal/_dailyTarget);const protArc=(protCal/_dailyTarget)*circ;const carbArc=(carbCal/_dailyTarget)*circ;const fatArc=(fatCal/_dailyTarget)*circ;const protOff=circ-Math.min(protArc,circ);const carbOff=circ-Math.min(carbArc,circ);const fatOff=circ-Math.min(fatArc,circ);document.getElementById('ringProt').style.strokeDashoffset=protOff;document.getElementById('ringProt').setAttribute('transform',`rotate(-90 52.5 52.5)`);document.getElementById('ringCarb').style.strokeDashoffset=carbOff;document.getElementById('ringCarb').setAttribute('transform',`rotate(${-90+(protCal/_dailyTarget)*360} 52.5 52.5)`);document.getElementById('ringFat').style.strokeDashoffset=fatOff;document.getElementById('ringFat').setAttribute('transform',`rotate(${-90+((protCal+carbCal)/_dailyTarget)*360} 52.5 52.5)`);document.getElementById('protBar').style.width=Math.min(100,(t.prot/_protTarget)*100)+'%';document.getElementById('carbBar').style.width=Math.min(100,(t.carb/_carbTarget)*100)+'%';document.getElementById('fatBar').style.width=Math.min(100,(t.fat/_fatTarget)*100)+'%';document.getElementById('protVal').textContent=Math.round(t.prot)+'g';document.getElementById('carbVal').textContent=Math.round(t.carb)+'g';document.getElementById('fatVal').textContent=Math.round(t.fat)+'g';checkCalorieMilestone();updateDailyBanner();updateProfileInsight();if(document.getElementById('insightModal')&&document.getElementById('insightModal').classList.contains('show'))updateInsightModalContent();const _badge=document.getElementById('weeklyPlanBadge');if(_badge)_badge.style.display=weeklyPlanActive?'block':'none';}
+function renderMeals(){const container=document.getElementById('mealsContainer');const data=getDayData();let html='';MEAL_DEFS.forEach(meal=>{const foods=data[meal.id]||[];const mealCal=Math.round(foods.reduce((s,f)=>s+f.cal,0));const mealProt=Math.round(foods.reduce((s,f)=>s+f.prot,0));const mealCarb=Math.round(foods.reduce((s,f)=>s+f.carb,0));const mealFat=Math.round(foods.reduce((s,f)=>s+f.fat,0));const _tgtCal=getTodayTargets().cal;const mealPct=_tgtCal?Math.round((mealCal/_tgtCal)*100):0;let fHTML='';if(!foods.length){fHTML='<div class="empty-meal">Henüz yemek eklenmedi</div>'}else{foods.forEach((f,fi)=>{const dbF=FOOD_DB.find(d=>d.name===f.name);const img=dbF?getFoodImg(dbF):'';const imgHtml='';const pct=dailyTarget?Math.round((f.cal/dailyTarget)*100):0;fHTML+=`<div class="swipe-wrapper" data-meal="${meal.id}" data-idx="${fi}"><div class="swipe-delete-bg">🗑️ Sil</div><div class="food-item" onclick="openEditFood('${meal.id}',${fi})" style="cursor:pointer">${imgHtml}<div class="food-info" style="flex:1;min-width:0"><div style="display:flex;align-items:baseline;justify-content:space-between;gap:6px"><div class="food-name" style="flex:1">${f.name}</div><div style="display:flex;align-items:center;gap:4px;flex-shrink:0"><div class="food-cal">${Math.round(f.cal)}</div><div style="font-size:.62rem;color:var(--text2)">${Math.round(f.portionUsed||100)}g</div><div style="color:var(--text2);font-size:.7rem">✏️</div></div></div><div class="food-macros"><div class="m-p">P ${Math.round(f.prot)}g</div><div class="m-k">K ${Math.round(f.carb)}g</div><div class="m-y">Y ${Math.round(f.fat)}g</div><div class="m-pct">%${pct}</div></div></div></div></div>`})}const mealOpenKey='fs_meal_open_'+meal.id;
     const userOpened=sessionStorage.getItem(mealOpenKey);
     const collapsed=(userOpened==='1')?'':' collapsed';
     html+=`<div class="meal-section${collapsed}" id="ms-${meal.id}"><div class="meal-header"><div class="meal-title" onclick="toggleMealSection('${meal.id}')" style="flex:1;cursor:pointer"><div class="meal-icon" style="background:${meal.colorLight}">${meal.icon}</div>${meal.name}</div><div class="meal-right">${mealCal?`<div class="meal-kcal">${mealCal}</div><div class="meal-pct">${mealPct}%</div>`:''}<button onclick="event.stopPropagation();openMealTemplates('${meal.id}')" style="padding:3px 7px;border-radius:6px;border:1.5px solid var(--border);background:var(--glass);color:var(--text2);font-size:.65rem;font-weight:700;cursor:pointer;font-family:var(--font,system-ui)" title="Öğün Şablonları">📋</button><span class="meal-chevron" onclick="toggleMealSection('${meal.id}')" style="cursor:pointer">‹</span></div></div><div class="meal-body"><div class="meal-card">${fHTML}<div style="display:flex;border-top:1px dashed rgba(255,107,61,.12)">
@@ -6361,7 +6680,7 @@ function importData(event){
   reader.readAsText(file);
   event.target.value='';
 }
-function switchTab(tab){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));document.getElementById('page-'+tab).classList.add('active');document.getElementById('nav-'+tab).classList.add('active');const dn=document.querySelector('.date-nav');if(dn)dn.style.display=tab==='gunluk'?'flex':'none';if(tab==='istatistik')renderStats();if(tab==='ogunler')renderSavedMeals();if(tab==='profil')renderWeightCard();if(tab==='oneri')filterRecipes('all');if(tab==='arkadaslar')renderFriendsPage()}
+function switchTab(tab){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));document.getElementById('page-'+tab).classList.add('active');document.getElementById('nav-'+tab).classList.add('active');if(tab==='istatistik')renderStats();if(tab==='ogunler')renderSavedMeals();if(tab==='profil')renderWeightCard();if(tab==='oneri')filterRecipes('all');if(tab==='arkadaslar')renderFriendsPage()}
 function getSavedMeals(){const raw=localStorage.getItem('fs_meals');return raw?JSON.parse(raw):[]}
 function setSavedMeals(meals){localStorage.setItem('fs_meals',JSON.stringify(meals))}
 
@@ -7441,7 +7760,7 @@ document.getElementById('tplModal').addEventListener('click',e=>{if(e.target.id=
 document.getElementById('barcodeModal').addEventListener('click',e=>{if(e.target.id==='barcodeModal')closeBarcodeScanner()});
 document.getElementById('editFoodModal').addEventListener('click',e=>{if(e.target.id==='editFoodModal')closeEditFood()});
 document.getElementById('recipeDetailModal').addEventListener('click',e=>{if(e.target.id==='recipeDetailModal')e.target.classList.remove('show')});
-function setupPWA(){const manifest={name:"FitSofra - Beslenme Takibi",short_name:"FitSofra",description:"Günlük kalori ve beslenme takip uygulaması",start_url:location.href,display:"standalone",background_color:"#0d0f14",theme_color:"#0d0f14",orientation:"portrait",icons:[{src:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><defs><linearGradient id='sg' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%23ff6b3d'/><stop offset='100%25' stop-color='%23ffaa55'/></linearGradient><linearGradient id='fg' x1='0' y1='0' x2='0' y2='1'><stop offset='0%25' stop-color='%23ff8f5a' stop-opacity='.55'/><stop offset='100%25' stop-color='%23ff6b3d' stop-opacity='.2'/></linearGradient><linearGradient id='kg' x1='0' y1='0' x2='0' y2='1'><stop offset='0%25' stop-color='%23aab0c8' stop-opacity='.45'/><stop offset='100%25' stop-color='%237a8099' stop-opacity='.15'/></linearGradient></defs><rect fill='%231a1c24' width='512' height='512' rx='110'/><path d='M176 102 C176 90 182 84 182 102 L182 166' stroke='url(%23fg)' stroke-width='7' stroke-linecap='round' fill='none'/><path d='M195 99 C195 87 201 81 201 99 L201 166' stroke='url(%23fg)' stroke-width='7' stroke-linecap='round' fill='none'/><path d='M208 99 C208 87 214 81 214 99 L214 166' stroke='url(%23fg)' stroke-width='7' stroke-linecap='round' fill='none'/><path d='M221 102 C221 90 227 84 227 102 L227 166' stroke='url(%23fg)' stroke-width='7' stroke-linecap='round' fill='none'/><path d='M182 166 Q182 188 201 190 Q220 192 227 166' fill='none' stroke='url(%23fg)' stroke-width='7' stroke-linecap='round'/><path d='M201 190 Q200 210 201 216' stroke='url(%23fg)' stroke-width='9' stroke-linecap='round' fill='none'/><path d='M201 216 Q198 256 200 306 Q202 356 202 410' stroke='url(%23fg)' stroke-width='10' stroke-linecap='round' fill='none'/><line x1='297' y1='96' x2='297' y2='192' stroke='url(%23kg)' stroke-width='6.5' stroke-linecap='round'/><path d='M297 96 Q329 102 331 135 Q333 166 313 192 L297 192' fill='rgba(170,176,200,.07)' stroke='url(%23kg)' stroke-width='7' stroke-linecap='round'/><rect x='291' y='192' width='16' height='16' rx='3' fill='rgba(170,176,200,.2)'/><path d='M299 208 Q296 256 298 320 Q300 370 298 410' stroke='url(%23kg)' stroke-width='10' stroke-linecap='round' fill='none'/><path d='M307 208 Q304 256 306 320 Q308 370 306 410' stroke='url(%23kg)' stroke-width='4' stroke-linecap='round' fill='none' opacity='.5'/><circle cx='256' cy='256' r='173' stroke='rgba(255,107,61,.12)' stroke-width='29'/><circle cx='256' cy='256' r='173' fill='none' stroke='url(%23sg)' stroke-width='29' stroke-linecap='round' stroke-dasharray='906 302' transform='rotate(135 256 256)'/><circle cx='256' cy='205' r='14' fill='%23ff6b3d'/><circle cx='256' cy='256' r='11' fill='%23ff8f5a' opacity='.75'/><circle cx='256' cy='307' r='8' fill='%23ffaa55' opacity='.5'/></svg>",sizes:"512x512",type:"image/svg+xml",purpose:"any maskable"}]};const blob=new Blob([JSON.stringify(manifest)],{type:'application/json'});document.getElementById('manifestLink').href=URL.createObjectURL(blob);if('serviceWorker' in navigator){const swCode=`const CACHE_NAME='fitsofra-v2';self.addEventListener('install',e=>{self.skipWaiting()});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(n=>Promise.all(n.filter(n=>n!==CACHE_NAME).map(n=>caches.delete(n)))));self.clients.claim()});self.addEventListener('fetch',e=>{e.respondWith(fetch(e.request).catch(()=>caches.match(e.request)))})`;const swBlob=new Blob([swCode],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(()=>{})}}
+function setupPWA(){const manifest={name:"FitSofra - Beslenme Takibi",short_name:"FitSofra",description:"Günlük kalori ve beslenme takip uygulaması",start_url:location.href,display:"standalone",background_color:"#0d0f14",theme_color:"#0d0f14",orientation:"portrait",icons:[{src:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%23ff6b3d'/><stop offset='100%25' stop-color='%23e85530'/></linearGradient></defs><rect fill='url(%23g)' width='512' height='512' rx='110'/><circle cx='256' cy='230' r='120' fill='none' stroke='%23fff' stroke-width='12' opacity='.9'/><line x1='256' y1='110' x2='256' y2='170' stroke='%23fff' stroke-width='12' stroke-linecap='round' opacity='.9'/><text x='256' y='400' text-anchor='middle' font-family='sans-serif' font-size='72' font-weight='900' fill='%23fff'>FitSofra</text></svg>",sizes:"512x512",type:"image/svg+xml",purpose:"any maskable"}]};const blob=new Blob([JSON.stringify(manifest)],{type:'application/json'});document.getElementById('manifestLink').href=URL.createObjectURL(blob);if('serviceWorker' in navigator){const swCode=`const CACHE_NAME='fitsofra-v2';self.addEventListener('install',e=>{self.skipWaiting()});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(n=>Promise.all(n.filter(n=>n!==CACHE_NAME).map(n=>caches.delete(n)))));self.clients.claim()});self.addEventListener('fetch',e=>{e.respondWith(fetch(e.request).catch(()=>caches.match(e.request)))})`;const swBlob=new Blob([swCode],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(()=>{})}}
 function loadTheme(){
   const saved=localStorage.getItem('fs_theme');
   if(saved==='light'){document.documentElement.setAttribute('data-theme','light');document.getElementById('themeBtn').textContent='☀️'}
@@ -7456,6 +7775,7 @@ loadTheme();setHeaderDate();loadProfile();loadNotifSettings();updateDateNav();up
 initFoodDB()
   .then(()=>{renderMeals();updateHeader();loadCloudFoods();loadRecipesFromFirebase();})
   .catch(()=>{
+    FOOD_DB=getBuiltinFoodDB();
     rebuildSearchIndex();
     renderMeals();
     updateHeader();
@@ -7470,6 +7790,302 @@ function showOfflineBanner(){
   b.innerHTML='⚠️ Çevrimdışı mod — bulut verilere erişilemiyor, değişiklikler senkronize edilmiyor. <span onclick="this.parentElement.remove()" style="margin-left:8px;cursor:pointer;opacity:.8">✕</span>';
   document.body.prepend(b);
 }
+
+/* ═══════════════════════════════════════════
+   ① SWIPE-TO-DELETE GESTURE + UNDO TOAST
+═══════════════════════════════════════════ */
+(function initSwipeToDelete(){
+  var SWIPE_THRESHOLD=80;
+  var activeEl=null,startX=0,startY=0,swiping=false,moved=false;
+
+  document.addEventListener('touchstart',function(e){
+    var wrapper=e.target.closest('.swipe-wrapper');
+    if(!wrapper)return;
+    activeEl=wrapper;
+    startX=e.touches[0].clientX;
+    startY=e.touches[0].clientY;
+    swiping=false;moved=false;
+    var fi=wrapper.querySelector('.food-item');
+    if(fi)fi.style.transition='none';
+  },{passive:true});
+
+  document.addEventListener('touchmove',function(e){
+    if(!activeEl)return;
+    var dx=e.touches[0].clientX-startX;
+    var dy=e.touches[0].clientY-startY;
+    if(!moved){
+      if(Math.abs(dy)>Math.abs(dx)){activeEl=null;return;}
+      if(Math.abs(dx)>8)moved=true;
+    }
+    if(!moved)return;
+    swiping=true;
+    dx=Math.min(0,dx); // only left swipe
+    var fi=activeEl.querySelector('.food-item');
+    var bg=activeEl.querySelector('.swipe-delete-bg');
+    if(fi)fi.style.transform='translateX('+dx+'px)';
+    if(bg)bg.style.opacity=Math.min(1,Math.abs(dx)/SWIPE_THRESHOLD);
+    if(Math.abs(dx)>10)e.preventDefault();
+  },{passive:false});
+
+  document.addEventListener('touchend',function(e){
+    if(!activeEl||!swiping){activeEl=null;return;}
+    var fi=activeEl.querySelector('.food-item');
+    var bg=activeEl.querySelector('.swipe-delete-bg');
+    var dx=e.changedTouches[0].clientX-startX;
+    dx=Math.min(0,dx);
+
+    if(Math.abs(dx)>=SWIPE_THRESHOLD){
+      // Swipe confirmed — delete with animation
+      var mealId=activeEl.getAttribute('data-meal');
+      var idx=parseInt(activeEl.getAttribute('data-idx'));
+      if(fi){fi.style.transition='transform .25s ease,opacity .25s';fi.style.transform='translateX(-120%)';fi.style.opacity='0';}
+      activeEl.style.transition='max-height .3s ease,margin .3s ease,padding .3s ease';
+      activeEl.style.overflow='hidden';
+      var wrapRef=activeEl;
+      setTimeout(function(){
+        wrapRef.style.maxHeight='0';wrapRef.style.margin='0';wrapRef.style.padding='0';
+      },100);
+      setTimeout(function(){
+        swipeDeleteFood(mealId,idx);
+      },350);
+    } else {
+      // Snap back
+      if(fi){fi.style.transition='transform .25s cubic-bezier(.25,1,.5,1)';fi.style.transform='';}
+      if(bg){bg.style.opacity='0';}
+    }
+    activeEl=null;swiping=false;moved=false;
+  },{passive:true});
+})();
+
+var _undoData=null,_undoTimer=null;
+function swipeDeleteFood(mealId,idx){
+  var data=getDayData();
+  if(!data[mealId]||!data[mealId][idx]){renderMeals();updateHeader();return;}
+  var rm=data[mealId].splice(idx,1)[0];
+  saveDayData(null,data);
+  _undoData={mealId:mealId,idx:idx,food:rm};
+  renderMeals();updateHeader();
+  showUndoToast('🗑️ '+rm.name+' silindi');
+}
+
+function showUndoToast(msg){
+  var el=document.getElementById('undoToast');
+  var msgEl=document.getElementById('undoMsg');
+  if(!el||!msgEl)return;
+  msgEl.textContent=msg;
+  el.classList.add('show');
+  clearTimeout(_undoTimer);
+  _undoTimer=setTimeout(function(){
+    el.classList.remove('show');
+    _undoData=null;
+  },5000);
+}
+
+function undoDelete(){
+  if(!_undoData)return;
+  var data=getDayData();
+  if(!data[_undoData.mealId])data[_undoData.mealId]=[];
+  data[_undoData.mealId].splice(_undoData.idx,0,_undoData.food);
+  saveDayData(null,data);
+  renderMeals();updateHeader();
+  document.getElementById('undoToast').classList.remove('show');
+  showToast('↩️ '+_undoData.food.name+' geri alındı');
+  clearTimeout(_undoTimer);
+  _undoData=null;
+}
+
+/* ═══════════════════════════════════════════
+   ② PORSİYON HAFIZASI
+═══════════════════════════════════════════ */
+var _origOpenPortionModal=openPortionModal;
+openPortionModal=function(){
+  _origOpenPortionModal();
+  // Apply last used portion if available
+  if(pendingFood){
+    var freq=JSON.parse(localStorage.getItem('fs_food_freq')||'{}');
+    var key=(pendingFood.name||'').toLowerCase().trim();
+    if(freq[key]&&freq[key].lastPortion){
+      var lp=freq[key].lastPortion;
+      // Find matching unit or set gram directly
+      var matched=false;
+      if(typeof currentUnits!=='undefined'&&currentUnits.length){
+        for(var u=0;u<currentUnits.length;u++){
+          if(Math.abs(currentUnits[u].g-lp)<2){
+            selectUnit(u);matched=true;break;
+          }
+        }
+      }
+      if(!matched){
+        document.getElementById('portionInput').value=Math.round(lp);
+        updatePortionPreview();
+      }
+      // Show hint
+      var hint=document.getElementById('portionMemoryHint');
+      if(!hint){
+        hint=document.createElement('div');
+        hint.id='portionMemoryHint';
+        hint.style.cssText='font-size:.68rem;color:var(--accent);font-weight:600;text-align:center;padding:4px 0;opacity:.8';
+        var pModal=document.querySelector('#portionModal .modal');
+        if(pModal){
+          var previewEl=document.getElementById('portionPreview');
+          if(previewEl&&previewEl.parentNode)previewEl.parentNode.insertBefore(hint,previewEl);
+        }
+      }
+      hint.textContent='💡 Son kullandığın porsiyon: '+Math.round(lp)+'g';
+      hint.style.display='block';
+    } else {
+      var hint2=document.getElementById('portionMemoryHint');
+      if(hint2)hint2.style.display='none';
+    }
+  }
+};
+
+/* ═══════════════════════════════════════════
+   ③ DÜNÜ KOPYALA — Boş gün için hızlı aksiyon
+═══════════════════════════════════════════ */
+var _origUpdateDailyBanner=updateDailyBanner;
+updateDailyBanner=function(){
+  _origUpdateDailyBanner();
+  // Check if today is empty and yesterday has data
+  var t=getTotals();
+  if(t.cal>0)return; // already has food
+  var yesterday=new Date(currentDate);
+  yesterday.setDate(yesterday.getDate()-1);
+  var ydKey=dateKey(yesterday);
+  var ydRaw=localStorage.getItem('fs_day_'+ydKey);
+  if(!ydRaw)return;
+  var ydData=JSON.parse(ydRaw);
+  var ydHasFoods=Object.values(ydData).some(function(f){return f.length>0;});
+  if(!ydHasFoods)return;
+  // Count yesterday's foods
+  var ydCount=0,ydCal=0;
+  Object.values(ydData).forEach(function(foods){foods.forEach(function(f){ydCount++;ydCal+=f.cal||0;});});
+  // Show copy yesterday button in banner
+  var banner=document.getElementById('dailyBanner');
+  if(banner&&banner.style.display!=='none'){
+    banner.innerHTML+='<div style="margin-top:8px"><button onclick="quickCopyYesterday()" style="width:100%;padding:10px;background:linear-gradient(135deg,var(--blue),var(--purple));border:none;border-radius:10px;color:#fff;font-family:var(--font,system-ui);font-size:.8rem;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px">📋 Dünü Kopyala <span style="font-weight:400;opacity:.7">'+ydCount+' yemek · '+Math.round(ydCal)+' kcal</span></button></div>';
+  }
+};
+
+function quickCopyYesterday(){
+  var yesterday=new Date(currentDate);
+  yesterday.setDate(yesterday.getDate()-1);
+  var ydKey=dateKey(yesterday);
+  var ydRaw=localStorage.getItem('fs_day_'+ydKey);
+  if(!ydRaw){showToast('⚠️ Dünün verisi bulunamadı');return;}
+  var ydData=JSON.parse(ydRaw);
+  var todayData=getDayData();
+  var count=0;
+  MEAL_DEFS.forEach(function(meal){
+    var foods=ydData[meal.id]||[];
+    if(foods.length){
+      todayData[meal.id]=(todayData[meal.id]||[]).concat(JSON.parse(JSON.stringify(foods)));
+      count+=foods.length;
+    }
+  });
+  saveDayData(null,todayData);
+  renderMeals();updateHeader();
+  showToast('📋 Dünden '+count+' yemek kopyalandı!');
+}
+
+/* ═══════════════════════════════════════════
+   ④ STREAK ANA EKRANDA
+═══════════════════════════════════════════ */
+function updateStreakBadge(){
+  var badge=document.getElementById('streakBadge');
+  var countEl=document.getElementById('streakCount');
+  if(!badge||!countEl)return;
+  var streak=calculateStreak();
+  if(streak>0){
+    countEl.textContent=streak;
+    badge.style.display='inline-flex';
+    badge.classList.remove('pop');
+    void badge.offsetWidth; // reflow
+    badge.classList.add('pop');
+  } else {
+    badge.style.display='none';
+  }
+}
+// Hook into updateHeader to also update streak
+var _origUpdateHeader=updateHeader;
+updateHeader=function(){
+  _origUpdateHeader();
+  updateStreakBadge();
+};
+
+/* ═══════════════════════════════════════════
+   ⑤ KİLO GRAFİĞİ İSTATİSTİK SEKMESİNE
+═══════════════════════════════════════════ */
+var _origRenderStats=renderStats;
+renderStats=function(){
+  _origRenderStats();
+  // Append weight chart to stats container
+  var container=document.getElementById('statsContainer');
+  if(!container)return;
+  var log=getWeightLog();
+  if(log.length<2)return; // Need at least 2 entries
+  
+  var goalWeight=70;
+  try{goalWeight=parseFloat(document.getElementById('pGoalWeight').value)||70;}catch(e){}
+  
+  var chartData=log.slice(-30);
+  var weights=chartData.map(function(e){return e.weight;});
+  var minW=Math.min.apply(null,weights.concat([goalWeight]))-1;
+  var maxW=Math.max.apply(null,weights)+1;
+  var range=maxW-minW||1;
+  var startW=chartData[0].weight;
+  var endW=chartData[chartData.length-1].weight;
+  var diff=Math.round((endW-startW)*10)/10;
+  var toGoal=Math.round((endW-goalWeight)*10)/10;
+  
+  var goalY=100-((goalWeight-minW)/range)*100;
+  var points=chartData.map(function(e,i){
+    var x=(i/(chartData.length-1))*100;
+    var y=100-((e.weight-minW)/range)*100;
+    return x+','+y;
+  }).join(' ');
+  
+  var dots=chartData.map(function(e,i){
+    var x=(i/(chartData.length-1))*100;
+    var y=100-((e.weight-minW)/range)*100;
+    var isLast=i===chartData.length-1;
+    return '<circle cx="'+x+'" cy="'+y+'" r="'+(isLast?'3':'1.8')+'" fill="'+(isLast?'var(--accent)':'var(--purple)')+'"/>';
+  }).join('');
+  
+  var weightStatHtml='<div class="stat-card" style="animation-delay:.1s">'
+    +'<h3>⚖️ Kilo Trendi <span style="font-size:.68rem;color:var(--text2);font-weight:400">('+chartData.length+' kayıt)</span></h3>'
+    +'<div style="display:flex;gap:8px;margin-bottom:12px">'
+    +'<div style="flex:1;padding:10px;background:var(--glass);border-radius:10px;border:1px solid var(--border);text-align:center"><div style="font-size:.66rem;color:var(--text2)">Şu an</div><div style="font-weight:800;font-size:1.05rem;color:var(--accent)">'+endW+' kg</div></div>'
+    +'<div style="flex:1;padding:10px;background:var(--glass);border-radius:10px;border:1px solid var(--border);text-align:center"><div style="font-size:.66rem;color:var(--text2)">Değişim</div><div style="font-weight:800;font-size:1.05rem;color:'+(diff<=0?'var(--green)':'var(--red)')+'">'+(diff>0?'+':'')+diff+' kg</div></div>'
+    +'<div style="flex:1;padding:10px;background:var(--glass);border-radius:10px;border:1px solid var(--border);text-align:center"><div style="font-size:.66rem;color:var(--text2)">Hedefe</div><div style="font-weight:800;font-size:1.05rem;color:'+(toGoal<=0?'var(--green)':'var(--orange)')+'">'+(toGoal>0?'-':'+')+Math.abs(toGoal)+' kg</div></div>'
+    +'</div>'
+    +'<div style="position:relative;margin:0 -4px">'
+    +'<svg viewBox="-2 -8 104 120" preserveAspectRatio="none" style="width:100%;height:160px">'
+    +'<defs><linearGradient id="wgFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--purple)" stop-opacity="0.15"/><stop offset="100%" stop-color="var(--purple)" stop-opacity="0"/></linearGradient></defs>'
+    +'<polygon points="0,100 '+points+' 100,100" fill="url(#wgFill)"/>'
+    +'<line x1="0" y1="'+goalY+'" x2="100" y2="'+goalY+'" stroke="var(--green)" stroke-width="0.5" stroke-dasharray="2,2" opacity="0.6"/>'
+    +'<text x="101" y="'+(goalY+3)+'" font-size="4" fill="var(--green)" opacity="0.7">'+goalWeight+'</text>'
+    +'<polyline points="'+points+'" fill="none" stroke="var(--purple)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>'
+    +dots
+    +'</svg>'
+    +'<div style="display:flex;justify-content:space-between;font-size:.6rem;color:var(--text2);margin-top:2px;padding:0 4px">'
+    +'<span>'+chartData[0].date.slice(5).replace('-','/')+'</span>'
+    +'<span style="color:var(--green)">🎯 Hedef: '+goalWeight+'kg</span>'
+    +'<span>'+chartData[chartData.length-1].date.slice(5).replace('-','/')+'</span>'
+    +'</div></div></div>';
+  
+  // Insert before the weekly summary card (last stat-card)
+  var cards=container.querySelectorAll('.stat-card');
+  if(cards.length>0){
+    var lastCard=cards[cards.length-1];
+    lastCard.insertAdjacentHTML('beforebegin',weightStatHtml);
+  } else {
+    container.insertAdjacentHTML('beforeend',weightStatHtml);
+  }
+};
+
+// Initial streak update
+setTimeout(updateStreakBadge,100);
 </script>
 </body>
 </html>
