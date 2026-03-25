@@ -107,7 +107,7 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
 .confetti-piece{position:absolute;width:10px;height:10px;top:-20px;opacity:1;animation:confettiFall 2.5s ease-in forwards}
 @keyframes confettiFall{0%{transform:translateY(0) rotate(0deg) scale(1);opacity:1}80%{opacity:1}100%{transform:translateY(110vh) rotate(720deg) scale(.4);opacity:0}}
 /* ── Başarım Rozetleri ── */
-.badge-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.badge-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}
 .badge-item{text-align:center;padding:10px 4px;background:var(--glass);border:1px solid var(--border);border-radius:12px;transition:all .3s}
 .badge-item.earned{background:var(--accent-glow);border-color:rgba(255,107,61,.25)}
 .badge-item.earned .badge-icon{filter:none;transform:scale(1)}
@@ -402,12 +402,13 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
     <div style="display:flex;align-items:center;gap:8px"><div style="filter:drop-shadow(0 3px 12px rgba(255,107,61,.4))"><svg width="54" height="54" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="hg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6b3d"/><stop offset="100%" stop-color="#ffaa55"/></linearGradient><linearGradient id="hfg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ff8f5a" stop-opacity=".7"/><stop offset="100%" stop-color="#ff6b3d" stop-opacity=".25"/></linearGradient><linearGradient id="hkg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#aab0c8" stop-opacity=".6"/><stop offset="100%" stop-color="#7a8099" stop-opacity=".2"/></linearGradient></defs><path d="M55 32 C55 28 57 26 57 32 L57 52" stroke="url(#hfg)" stroke-width="2.2" stroke-linecap="round" fill="none"/><path d="M60 31 C60 27 62 25 62 31 L62 52" stroke="url(#hfg)" stroke-width="2.2" stroke-linecap="round" fill="none"/><path d="M65 31 C65 27 67 25 67 31 L67 52" stroke="url(#hfg)" stroke-width="2.2" stroke-linecap="round" fill="none"/><path d="M70 32 C70 28 72 26 72 32 L72 52" stroke="url(#hfg)" stroke-width="2.2" stroke-linecap="round" fill="none"/><path d="M57 52 Q57 59 63 60 Q69 61 72 52" fill="none" stroke="url(#hfg)" stroke-width="2.2" stroke-linecap="round"/><path d="M63 60 Q62.5 65 63 68" stroke="url(#hfg)" stroke-width="2.8" stroke-linecap="round" fill="none"/><path d="M63 68 Q62 80 62.5 96 Q63 110 63.5 128" stroke="url(#hfg)" stroke-width="3" stroke-linecap="round" fill="none"/><path d="M62 126 Q63.5 130 65 126" fill="none" stroke="url(#hfg)" stroke-width="2.2" stroke-linecap="round"/><line x1="93" y1="30" x2="93" y2="60" stroke="url(#hkg)" stroke-width="2" stroke-linecap="round"/><path d="M93 30 Q103 32 104 42 Q105 52 98 60 L93 60" fill="rgba(170,176,200,.07)" stroke="url(#hkg)" stroke-width="2.2" stroke-linecap="round"/><rect x="91.5" y="60" width="5" height="5" rx="1" fill="rgba(170,176,200,.2)"/><path d="M93.5 65 Q92.5 80 93 100 Q93.5 115 93 128" stroke="url(#hkg)" stroke-width="3.2" stroke-linecap="round" fill="none"/><path d="M95.5 65 Q94.5 80 95 100 Q95.5 115 95 128" stroke="url(#hkg)" stroke-width="1.2" stroke-linecap="round" fill="none" opacity=".5"/><path d="M91.5 126 Q93 130 94.5 126" fill="none" stroke="url(#hkg)" stroke-width="2" stroke-linecap="round"/><circle cx="80" cy="80" r="60" fill="rgba(255,107,61,.05)"/><circle cx="80" cy="80" r="54" stroke="rgba(255,107,61,.1)" stroke-width="9"/><circle cx="80" cy="80" r="54" fill="none" stroke="url(#hg)" stroke-width="9" stroke-linecap="round" stroke-dasharray="283 94" transform="rotate(135 80 80)"/><circle cx="80" cy="64" r="4.5" fill="#ff6b3d"/><circle cx="80" cy="80" r="3.5" fill="#ff8f5a" opacity=".75"/><circle cx="80" cy="96" r="2.5" fill="#ffaa55" opacity=".5"/></svg></div><div><h1><span style="color:#ff6b3d">Fit</span><span>Sofra</span></h1><div class="date" id="todayDate"></div><div id="weeklyPlanBadge" style="display:none;font-size:.6rem;font-weight:700;color:var(--accent);opacity:.8;margin-top:1px">📆 Haftalık plan aktif</div></div></div>
     <div style="display:flex;align-items:center;gap:6px">
       <span id="headerSyncIcon" style="font-size:.75rem;opacity:.5;display:none">☁️</span>
-      <button class="icon-btn" onclick="openInsightModal()" id="insightBtn" title="Beslenme Yorumu" style="font-size:.78rem">📓</button>
+      <button class="icon-btn" onclick="openInsightModal()" id="insightBtn" title="İlerlemeler" style="font-size:.78rem">📊</button>
       <button class="icon-btn" onclick="openPrepModal()" id="prepBtn" title="Hazırla" style="font-size:.78rem">🍱</button>
-      <button class="icon-btn" onclick="openGoalsModal()" id="goalsBtn" title="Hedefler" style="font-size:.7rem;font-weight:800;letter-spacing:-.3px">🎯</button>
+      <button class="icon-btn" onclick="openGoalsModal()" id="goalsBtn" title="Kalori Planlaması" style="font-size:.7rem;font-weight:800;letter-spacing:-.3px">🎯</button>
       <button class="icon-btn" onclick="toggleTheme()" id="themeBtn" title="Tema değiştir">🌙</button>
     </div>
   </div>
+  <div id="streakBadge" style="display:none;text-align:right;padding:0 2px 4px 0;position:relative;z-index:2"><span style="font-size:.56rem;font-weight:700;color:rgba(255,255,255,.5);letter-spacing:.3px">🔥 <span id="streakCount">0</span> gün seri</span></div>
   <div class="calorie-ring-section">
     <div class="ring-container">
       <svg width="105" height="105" viewBox="0 0 105 105">
@@ -435,7 +436,6 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
   <button onclick="changeDate(1)">▶</button>
   <button class="today-btn" id="todayBtn" onclick="goToday()">Bugün</button>
 </div>
-<div id="streakBadge" style="display:none;text-align:center;padding:5px 16px;font-size:.7rem;font-weight:700;color:var(--text2);background:var(--card);border-bottom:1px solid var(--border)"><span style="font-size:.82rem">🔥</span> <span id="streakCount">0</span> gün seri</div>
 
 <!-- Tarih Seçici Modal -->
 <div class="modal-overlay" id="datePickerModal" onclick="if(event.target===this)closeDatePicker()" style="justify-content:stretch">
@@ -482,11 +482,15 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
     <div class="modal">
       <div class="modal-handle"></div>
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-        <h2 style="margin:0">📓 Bugünün Yorumu</h2>
+        <h2 style="margin:0">📊 İlerlemeler</h2>
         <button onclick="closeInsightModal()" style="background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:5px 12px;font-family:var(--font,system-ui);font-size:.75rem;font-weight:700;color:var(--text2);cursor:pointer">Kapat</button>
       </div>
       <div id="insightSummaryBar" style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:14px"></div>
       <div id="insightModalContent" style="font-size:.83rem;line-height:1.7;color:var(--text)"></div>
+      <div style="margin-top:16px;border-top:1px solid var(--border);padding-top:14px">
+        <h3 style="font-size:.88rem;font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:6px">🏆 Başarımlar</h3>
+        <div id="badgesContainer"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -550,7 +554,7 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
     <div class="modal" id="goalsModalInner" style="max-height:94vh;width:100%;max-width:100%;border-radius:20px 20px 0 0">
       <div class="modal-handle"></div>
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
-        <h2 style="margin:0">🎯 Hedefler</h2>
+        <h2 style="margin:0">🎯 Kalori Planlaması</h2>
         <button onclick="closeGoalsModal()" style="background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:5px 12px;font-family:var(--font,system-ui);font-size:.75rem;font-weight:700;color:var(--text2);cursor:pointer">Kapat</button>
       </div>
 
@@ -876,16 +880,6 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
         <div id="bmiComment" style="margin-top:8px;font-size:.78rem;color:var(--text2);line-height:1.5"></div>
       </div>
     </div>
-    <div class="profile-card" style="animation-delay:.015s">
-      <h3>📓 Günlük Beslenme Yorumu</h3>
-      <div id="dailyInsight" style="font-size:.82rem;line-height:1.6;color:var(--text)">
-        <p style="color:var(--text2);font-size:.78rem">Gün boyunca yemek ekledikçe kişisel yorumunuz burada güncellenir.</p>
-      </div>
-    </div>
-    <div class="profile-card" style="animation-delay:.12s">
-      <h3 style="font-size:.9rem;font-weight:800;display:flex;align-items:center;gap:8px">🏆 Başarımlar</h3>
-      <div id="badgesContainer"></div>
-    </div>
     <div id="weightCardProfile"></div>
 
 
@@ -957,7 +951,7 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
         <div class="acc-body">
           <p style="font-size:.76rem;color:var(--text2);margin-bottom:10px">Bir oruç protokolü seç, yeme penceren dışında yemek eklemeye çalışırsan uyarı alırsın.</p>
           <div style="margin-bottom:10px">
-            <select id="ifProtocol" onchange="saveIFSettings()" style="width:100%;font-family:var(--font,system-ui);font-size:.82rem;padding:10px;border:1.5px solid var(--border);border-radius:10px;background:var(--glass);color:var(--text)">
+            <select id="ifProtocol" onchange="saveIFSettings()" style="width:100%;font-family:var(--font,system-ui);font-size:.9rem;padding:12px;border:1.5px solid var(--border);border-radius:10px;background:var(--glass);color:var(--text)">
               <option value="off">Kapalı</option>
               <option value="12:12">12:12 — Başlangıç (12s oruç / 12s yeme)</option>
               <option value="14:10">14:10 — Hafif (14s oruç / 10s yeme)</option>
@@ -970,8 +964,8 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
           </div>
           <div id="ifTimeSettings" style="display:none">
             <div style="display:flex;gap:8px;margin-bottom:8px">
-              <div style="flex:1"><label style="font-size:.72rem;color:var(--text2);font-weight:600;display:block;margin-bottom:3px">Yeme başlangıcı</label><input type="time" id="ifEatStart" value="12:00" onchange="saveIFSettings()" style="width:100%;padding:8px;background:var(--glass);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font,system-ui);font-size:.82rem"></div>
-              <div style="flex:1"><label style="font-size:.72rem;color:var(--text2);font-weight:600;display:block;margin-bottom:3px">Yeme bitişi</label><input type="time" id="ifEatEnd" value="20:00" onchange="saveIFSettings()" style="width:100%;padding:8px;background:var(--glass);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font,system-ui);font-size:.82rem"></div>
+              <div style="flex:1"><label style="font-size:.72rem;color:var(--text2);font-weight:600;display:block;margin-bottom:3px">Yeme başlangıcı</label><input type="time" id="ifEatStart" value="12:00" onchange="saveIFSettings()" style="width:100%;padding:12px;background:var(--glass);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font,system-ui);font-size:.88rem"></div>
+              <div style="flex:1"><label style="font-size:.72rem;color:var(--text2);font-weight:600;display:block;margin-bottom:3px">Yeme bitişi</label><input type="time" id="ifEatEnd" value="20:00" onchange="saveIFSettings()" style="width:100%;padding:12px;background:var(--glass);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font,system-ui);font-size:.88rem"></div>
             </div>
             <div id="ifProtocolInfo" style="font-size:.72rem;color:var(--text2);padding:8px;background:var(--glass);border-radius:8px;border:1px solid var(--border);line-height:1.5"></div>
           </div>
@@ -2076,7 +2070,7 @@ function renderMeals(){const container=document.getElementById('mealsContainer')
     html+=`<div class="meal-section${collapsed}" id="ms-${meal.id}"><div class="meal-header"><div class="meal-title" onclick="toggleMealSection('${meal.id}')" style="flex:1;cursor:pointer"><div class="meal-icon" style="background:${meal.colorLight}">${meal.icon}</div>${meal.name}</div><div class="meal-right">${mealCal?`<div class="meal-kcal">${mealCal}</div><div class="meal-pct">${mealPct}%</div>`:''}<button onclick="event.stopPropagation();openMealTemplates('${meal.id}')" style="padding:3px 7px;border-radius:6px;border:1.5px solid var(--border);background:var(--glass);color:var(--text2);font-size:.65rem;font-weight:700;cursor:pointer;font-family:var(--font,system-ui)" title="Öğün Şablonları">📋</button><span class="meal-chevron" onclick="toggleMealSection('${meal.id}')" style="cursor:pointer">‹</span></div></div><div class="meal-body"><div class="meal-card">${fHTML}<div style="display:flex;border-top:1px dashed rgba(255,107,61,.12)">
 <div class="add-food-btn" onclick="openAddFood('${meal.id}')" style="flex:1;border-top:none">＋ Yemek Ekle</div>
 <div onclick="openCopyMealModal('${meal.id}')" style="padding:12px 14px;color:var(--text2);font-size:.78rem;font-weight:700;cursor:pointer;border-left:1px dashed rgba(255,255,255,.06);display:flex;align-items:center;gap:4px;transition:all .2s" onmouseover="this.style.color='var(--blue)'" onmouseout="this.style.color='var(--text2)'">📋 Kopyala</div>
-</div></div>${foods.length?`<div class="daily-summary"><span style="color:#ff7a7a">P ${mealProt}g</span><span style="color:#22d3ee">K ${mealCarb}g</span><span style="color:#ffcc55">Y ${mealFat}g</span></div>`:''}</div></div>`});html+='<div class="water-card" id="waterCard" data-collapsed="1"></div><div class="exercise-card" id="exerciseCard" data-collapsed="1"></div>';container.innerHTML=html;renderWater();renderExerciseCard();updateDailyBanner()}
+</div></div>${foods.length?`<div class="daily-summary"><span style="color:#ff7a7a">P ${mealProt}g</span><span style="color:#22d3ee">K ${mealCarb}g</span><span style="color:#ffcc55">Y ${mealFat}g</span></div>`:''}</div></div>`});html+='<div class="water-card" id="waterCard" data-collapsed="1"></div><div class="exercise-card" id="exerciseCard" data-collapsed="1"></div><div id="ifTimerSlot"></div>';container.innerHTML=html;renderWater();renderExerciseCard();renderIFTimerInMeals();updateDailyBanner()}
 function openAddFood(mealId){currentMealId=mealId;const meal=MEAL_DEFS.find(m=>m.id===mealId);document.getElementById('modalTitle').textContent=`${meal.icon} ${meal.name} — Yemek Ekle`;document.getElementById('foodSearch').value='';selectedCat='all';currentSource='freq';switchSource('freq');document.getElementById('addFoodModal').classList.add('show');setTimeout(()=>document.getElementById('foodSearch').focus(),300)}
 function closeModal(){document.getElementById('addFoodModal').classList.remove('show')}
 
@@ -5369,6 +5363,32 @@ function scheduleNotifications(){
       notifTimers.push(timer);
     }
   }
+  
+  // Aralıklı Oruç bildirimleri
+  var ifRaw=localStorage.getItem('fs_if');
+  if(ifRaw){
+    var ifS=JSON.parse(ifRaw);
+    if(ifS.protocol!=='off'&&ifS.protocol!=='5:2'&&ifS.eatStart&&ifS.eatEnd){
+      var eParts=ifS.eatStart.split(':').map(Number);
+      var eatStartTarget=new Date(now);
+      eatStartTarget.setHours(eParts[0],eParts[1],0,0);
+      if(eatStartTarget<=now)eatStartTarget.setDate(eatStartTarget.getDate()+1);
+      var eatStartDelay=eatStartTarget-now;
+      if(eatStartDelay>0&&eatStartDelay<86400000){
+        var t1=setTimeout(function(){sendNotification('🟢 Yeme Penceresi Açıldı!','IF ('+ifS.protocol+') — pencere: '+ifS.eatStart+' – '+ifS.eatEnd);scheduleNotifications();},eatStartDelay);
+        notifTimers.push(t1);
+      }
+      var eeParts=ifS.eatEnd.split(':').map(Number);
+      var eatEndTarget=new Date(now);
+      eatEndTarget.setHours(eeParts[0],eeParts[1]-15,0,0);
+      if(eatEndTarget<=now)eatEndTarget.setDate(eatEndTarget.getDate()+1);
+      var eatEndDelay=eatEndTarget-now;
+      if(eatEndDelay>0&&eatEndDelay<86400000){
+        var t2=setTimeout(function(){sendNotification('🔴 Oruç 15dk Sonra!','Yeme penceren kapanıyor ('+ifS.eatEnd+'). Son yemeğini şimdi ye!');scheduleNotifications();},eatEndDelay);
+        notifTimers.push(t2);
+      }
+    }
+  }
 }
 
 function sendNotification(title,body){
@@ -6195,69 +6215,62 @@ function closeInsightModal(){
 
 function updateInsightModalContent(){
   var el=document.getElementById('insightModalContent');
-  var src=document.getElementById('dailyInsight');
-  if(el&&src) el.innerHTML=src.innerHTML;
+  if(!el)return;
+  el.innerHTML=generateInsightHTML();
+  // Also render badges
+  renderBadgesInProfile();
 }
 
 function updateProfileInsight(){
-  const el=document.getElementById('dailyInsight');
-  if(!el)return;
+  // Profile insight div removed — now only used for insight modal
+}
+
+function generateInsightHTML(){
   const t=getTotals();
   const h=new Date().getHours();
-  const calPct=Math.round((t.cal/dailyTarget)*100);
-  const protPct=Math.round((t.prot/protTarget)*100);
-  const carbPct=Math.round((t.carb/carbTarget)*100);
-  const fatPct=Math.round((t.fat/fatTarget)*100);
+  const tgt=getTodayTargets();
+  const calPct=Math.round((t.cal/tgt.cal)*100);
+  const protPct=Math.round((t.prot/tgt.prot)*100);
+  const carbPct=Math.round((t.carb/tgt.carb)*100);
+  const fatPct=Math.round((t.fat/tgt.fat)*100);
   const waterMl=typeof getWaterMl==='function'?getWaterMl():0;
-  const waterPct=Math.round((waterMl/waterTarget)*100);
-  
+  const waterPct=Math.round((waterMl/tgt.water)*100);
   const profile=JSON.parse(localStorage.getItem('fs_profile')||'{}');
   const goal=parseInt(profile.goal)||0;
   const goalLabel=goal<0?'kilo verme':goal>0?'kilo alma':'kilo koruma';
-  
   let insights=[];
-  
-  // Kalori durumu
   if(t.cal===0){
     if(h<10)insights.push('☀️ Günaydın! Güne sağlıklı bir kahvaltıyla başla — metabolizmanı harekete geçir.');
-    else if(h<14)insights.push('⚠️ Öğle oldu ve henüz bir şey yememişsin. Öğün atlamak metabolizmayı yavaşlatır, en azından hafif bir öğle yemeği ekle.');
-    else insights.push('🚨 Bugün henüz hiç kalori almamışsın. Uzun süreli açlık kas kaybına yol açabilir. Bir an önce dengeli bir öğün yap.');
+    else if(h<14)insights.push('⚠️ Öğle oldu ve henüz bir şey yememişsin. Öğün atlamak metabolizmayı yavaşlatır.');
+    else insights.push('🚨 Bugün henüz hiç kalori almamışsın. Bir an önce dengeli bir öğün yap.');
   } else {
-    if(calPct<30&&h>14)insights.push(`📉 Günün yarısı geçti ama kalori alımın çok düşük (%${calPct}). Kalan ${dailyTarget-t.cal} kcal'yi öğle ve akşam yemeğine dengeli böl.`);
-    else if(calPct>85&&h<18)insights.push(`⚡ Günlük kalori hedefinizin %${calPct}'ına ulaştın! Akşam için çok hafif bir öğün planla — salata veya çorba iyi bir seçim olabilir.`);
-    else if(calPct>100)insights.push(`🔴 Günlük hedefinizi ${t.cal-dailyTarget} kcal aştın. ${goalLabel==='kilo verme'?'Kilo verme hedefiniz açısından yarın buna dikkat et. Bugün fazla hareket etmeye çalış.':'Endişe etme, bu ara sıra olabilir. Yarın dengeye dön.'}`);
-    else if(calPct>60&&calPct<85)insights.push(`✅ İyi gidiyorsun! Kalori alımın %${calPct} — kalan ${dailyTarget-t.cal} kcal ile akşam yemeğini planlayabilirsin.`);
+    if(calPct<30&&h>14)insights.push('📉 Günün yarısı geçti ama kalori alımın çok düşük (%'+calPct+'). Kalan '+(tgt.cal-t.cal)+' kcal\'yi dengeli böl.');
+    else if(calPct>85&&h<18)insights.push('⚡ Günlük hedefinizin %'+calPct+'\'ına ulaştın! Akşam için hafif bir öğün planla.');
+    else if(calPct>100)insights.push('🔴 Hedefinizi '+(t.cal-tgt.cal)+' kcal aştın. Yarın dengeye dön.');
+    else if(calPct>60)insights.push('✅ İyi gidiyorsun! Kalori alımın %'+calPct+' — kalan '+(tgt.cal-t.cal)+' kcal.');
   }
-  
-  // Makro dengesi
   if(t.cal>300){
-    const protRatio=(t.prot*4)/t.cal;
-    const carbRatio=(t.carb*4)/t.cal;
-    const fatRatio=(t.fat*9)/t.cal;
-    
-    if(protRatio<0.15&&protPct<50)insights.push(`💪 Protein alımın düşük (${Math.round(t.prot)}g / ${protTarget}g). ${goalLabel==='kilo verme'?'Kilo verirken kas kaybını önlemek için protein çok önemli.':'Protein oranını artırmak için et, tavuk, yumurta veya baklagil ekle.'}`);
-    if(protPct>120)insights.push(`💪 Protein hedefini aştın (${Math.round(t.prot)}g) — harika! Kas yapısını korumak için mükemmel.`);
-    if(carbRatio>0.6&&t.carb>100)insights.push(`🍞 Karbonhidrat oranın yüksek (%${Math.round(carbRatio*100)}). Yarın açlık hissedebilirsin — bir sonraki öğünde protein ve yağ dengesini artır.`);
-    if(fatRatio>0.45&&t.fat>40)insights.push(`🧈 Yağ oranın günlük alımın %${Math.round(fatRatio*100)}'ü — biraz yüksek. Kalan öğünlerde ızgara veya haşlama tercih et.`);
+    if(protPct<50)insights.push('💪 Protein alımın düşük ('+Math.round(t.prot)+'g / '+tgt.prot+'g). Protein oranını artır.');
+    if(protPct>120)insights.push('💪 Protein hedefini aştın — harika!');
+    var carbRatio=(t.carb*4)/t.cal;
+    if(carbRatio>0.6)insights.push('🍞 Karbonhidrat oranın yüksek. Bir sonraki öğünde protein ve yağ dengesini artır.');
   }
-  
-  // Su durumu
-  if(h>12&&waterPct<30)insights.push(`💧 Su alımın çok düşük! Gün ortasında en az ${Math.round(waterTarget*0.5)}ml içmiş olmalısın. Hemen bir bardak su iç.`);
-  else if(h>18&&waterPct<60)insights.push(`💧 Akşam oldu ama su hedefinin sadece %${waterPct}'ına ulaştın. Yatmadan önce suyu tamamlamaya çalış.`);
-  else if(waterPct>=90)insights.push('💧 Su hedefine neredeyse ulaştın — harika! Hidrasyon vücudun en temel ihtiyacı.');
-  
-  // Hedefe yönelik
-  if(goal<0&&t.cal>0&&calPct<90){
-    const deficit=dailyTarget-t.cal;
-    if(deficit>200)insights.push(`📊 ${goalLabel} hedefinle uyumlu gidiyorsun. Günlük ${Math.abs(goal)} kcal açık hedefin için doğru yoldasın.`);
+  if(h>12&&waterPct<30)insights.push('💧 Su alımın çok düşük! Hemen bir bardak su iç.');
+  else if(waterPct>=90)insights.push('💧 Su hedefine neredeyse ulaştın — harika!');
+  // IF durumu
+  var ifStatus=getIFStatus();
+  if(ifStatus){
+    if(ifStatus.isFasting)insights.push('⏱️ Oruç periyodundasın ('+ifStatus.type+'). Devam et!');
+    else if(ifStatus.type!=='5:2')insights.push('⏱️ Yeme penceresin açık ('+ifStatus.eatStart+'–'+ifStatus.eatEnd+'). '+ifStatus.remaining+' kaldı.');
   }
-  
+  // Streak bilgisi
+  var streak=calculateStreak();
+  if(streak>=7)insights.push('🔥 '+streak+' gün seridesin — muhteşem!');
+  else if(streak>=3)insights.push('🔥 '+streak+' gün seri — devam et!');
   if(!insights.length){
-    if(h<8)insights.push('🌅 Günaydın! Bugün sağlıklı seçimler yaparak hedefe bir adım daha yaklaş.');
-    else insights.push('📋 Yemek ekledikçe kişisel beslenme yorumun burada görünecek.');
+    insights.push('📋 Yemek ekledikçe kişisel beslenme yorumun burada görünecek.');
   }
-  
-  el.innerHTML=insights.map(i=>`<div style="padding:6px 0;border-bottom:1px solid var(--border)">${i}</div>`).join('');
+  return insights.map(function(i){return '<div style="padding:6px 0;border-bottom:1px solid var(--border)">'+i+'</div>';}).join('');
 }
 
 function updateDailyBanner(){
@@ -8298,16 +8311,26 @@ function fireConfetti(count){
 var ACHIEVEMENTS=[
   {id:'first_food',icon:'🍽️',name:'İlk Adım',desc:'İlk yemeğini kaydet',check:function(){return getTotalFoodCount()>=1;}},
   {id:'food_10',icon:'📝',name:'10 Kayıt',desc:'10 yemek kaydet',check:function(){return getTotalFoodCount()>=10;}},
+  {id:'food_50',icon:'📋',name:'50 Kayıt',desc:'50 yemek kaydet',check:function(){return getTotalFoodCount()>=50;}},
   {id:'food_100',icon:'📚',name:'100 Kayıt',desc:'100 yemek kaydet',check:function(){return getTotalFoodCount()>=100;}},
-  {id:'streak_3',icon:'🔥',name:'3 Gün Seri',desc:'3 gün üst üste kayıt yap',check:function(){return calculateStreak()>=3;}},
+  {id:'food_500',icon:'🗂️',name:'500 Kayıt',desc:'500 yemek kaydet',check:function(){return getTotalFoodCount()>=500;}},
+  {id:'streak_3',icon:'🔥',name:'3 Gün Seri',desc:'3 gün üst üste kayıt',check:function(){return calculateStreak()>=3;}},
   {id:'streak_7',icon:'⚡',name:'7 Gün Seri',desc:'1 hafta boyunca kayıt',check:function(){return calculateStreak()>=7;}},
+  {id:'streak_14',icon:'🌟',name:'14 Gün Seri',desc:'2 hafta boyunca kayıt',check:function(){return calculateStreak()>=14;}},
   {id:'streak_30',icon:'🏆',name:'30 Gün Seri',desc:'1 ay boyunca kayıt',check:function(){return calculateStreak()>=30;}},
-  {id:'streak_100',icon:'💎',name:'100 Gün Seri',desc:'100 gün boyunca kayıt',check:function(){return calculateStreak()>=100;}},
-  {id:'target_hit',icon:'🎯',name:'Hedefe Ulaş',desc:'Günlük kalori hedefinle ±%10 farkla bitir',check:function(){var t=getTotals(),tgt=getTodayTargets();var pct=t.cal/tgt.cal*100;return t.cal>0&&pct>=90&&pct<=110;}},
-  {id:'water_champ',icon:'💧',name:'Su Şampiyonu',desc:'Su hedefini 5 gün üst üste tamamla',check:function(){return getWaterStreak()>=5;}},
-  {id:'under_1000',icon:'🥗',name:'Hafif Gün',desc:'1000 kcal altında bir gün tamamla',check:function(){var t=getTotals();return t.cal>0&&t.cal<1000;}},
-  {id:'protein_pro',icon:'💪',name:'Protein Pro',desc:'Protein hedefini aş',check:function(){var t=getTotals(),tgt=getTodayTargets();return t.prot>=tgt.prot&&t.prot>0;}},
-  {id:'weight_start',icon:'⚖️',name:'Kilo Takibi',desc:'İlk kilo kaydını yap',check:function(){return getWeightLog().length>=1;}},
+  {id:'streak_100',icon:'💎',name:'100 Gün',desc:'100 gün boyunca kayıt',check:function(){return calculateStreak()>=100;}},
+  {id:'target_hit',icon:'🎯',name:'Hedefe Ulaş',desc:'Kalori hedefinle ±%10 farkla bitir',check:function(){var t=getTotals(),tgt=getTodayTargets();var pct=t.cal/tgt.cal*100;return t.cal>0&&pct>=90&&pct<=110;}},
+  {id:'water_3',icon:'💧',name:'Su İçici',desc:'Su hedefini 3 gün üst üste tamamla',check:function(){return getWaterStreak()>=3;}},
+  {id:'water_champ',icon:'🌊',name:'Su Şampiyonu',desc:'Su hedefini 7 gün üst üste tamamla',check:function(){return getWaterStreak()>=7;}},
+  {id:'under_1500',icon:'🥗',name:'Hafif Gün',desc:'1500 kcal altı gün tamamla',check:function(){var t=getTotals();return t.cal>0&&t.cal<1500;}},
+  {id:'under_1000',icon:'🌿',name:'Detoks Günü',desc:'1000 kcal altı gün tamamla',check:function(){var t=getTotals();return t.cal>0&&t.cal<1000;}},
+  {id:'protein_pro',icon:'💪',name:'Protein Pro',desc:'Protein hedefini tamamla',check:function(){var t=getTotals(),tgt=getTodayTargets();return t.prot>=tgt.prot&&t.prot>0;}},
+  {id:'balanced',icon:'⚖️',name:'Dengeci',desc:'Tüm makro hedeflerini ±%15 farkla tamamla',check:function(){var t=getTotals(),g=getTodayTargets();if(t.cal<=0)return false;var pp=t.prot/g.prot*100,cp=t.carb/g.carb*100,fp=t.fat/g.fat*100;return pp>=85&&pp<=115&&cp>=85&&cp<=115&&fp>=85&&fp<=115;}},
+  {id:'weight_start',icon:'📊',name:'Kilo Takibi',desc:'İlk kilo kaydını yap',check:function(){return getWeightLog().length>=1;}},
+  {id:'weight_5',icon:'📈',name:'Kilo Yolcusu',desc:'5 kilo kaydı yap',check:function(){return getWeightLog().length>=5;}},
+  {id:'early_bird',icon:'🌅',name:'Erken Kuş',desc:'Sabah 9 öncesi yemek kaydet',check:function(){return new Date().getHours()<9&&getTotals().cal>0;}},
+  {id:'night_owl',icon:'🦉',name:'Gece Kuşu',desc:'Gece 22 sonrası yemek kaydet',check:function(){return new Date().getHours()>=22&&getTotals().cal>0;}},
+  {id:'if_starter',icon:'⏱️',name:'Oruç Başlangıcı',desc:'Aralıklı oruç aktifleştir',check:function(){var s=localStorage.getItem('fs_if');return s&&JSON.parse(s).protocol!=='off';}},
 ];
 
 function getTotalFoodCount(){
@@ -8610,39 +8633,49 @@ function getIFStatus(){
   return{active:true,type:s.protocol,isFasting:!isEating,eatStart:eatStart,eatEnd:eatEnd,remaining:nextH+'s '+nextM+'dk',remainLabel:nextLabel,remainMin:nextEvent,proto:IF_PROTOCOLS[s.protocol]};
 }
 
-function renderIFTimer(){
-  var existing=document.getElementById('ifTimerCard');
-  if(existing)existing.remove();
+function renderIFTimer(){} // Legacy — now uses renderIFTimerInMeals
+function renderIFTimerInMeals(){
+  var slot=document.getElementById('ifTimerSlot');
+  if(!slot){slot=document.getElementById('ifTimerCard');if(slot)slot.remove();return;}
   var status=getIFStatus();
-  if(!status)return;
-  var card=document.createElement('div');
-  card.id='ifTimerCard';
-  card.className='if-timer-card';
+  if(!status){slot.innerHTML='';return;}
+  var proto=status.proto||{};
+  var desc=proto.desc||'';
+  
   if(status.type==='5:2'){
-    card.innerHTML='<div style="display:flex;align-items:center;gap:10px">'
-      +'<div style="font-size:1.5rem">⏱️</div>'
-      +'<div style="flex:1"><div style="font-weight:800;font-size:.85rem">5:2 Oruç</div>'
-      +'<div style="font-size:.72rem;color:var(--text2)">Bugün: '+(status.isFasting?'<span class="if-status fasting">ORUÇ GÜNÜ (max 500 kcal)</span>':'<span class="if-status eating">Normal gün</span>')+'</div></div></div>';
-  } else {
-    var totalMin=status.proto?status.proto.eat*60:480;
-    var elapsed=totalMin-(status.isFasting?0:(status.remainMin));
-    var pct=status.isFasting?100:Math.min(100,Math.max(0,(elapsed/totalMin)*100));
-    var circ=2*Math.PI*20;
-    var offset=circ-(pct/100)*circ;
-    var ringColor=status.isFasting?'var(--red)':'var(--green)';
-    card.innerHTML='<div style="display:flex;align-items:center;gap:12px">'
-      +'<div class="if-ring-mini"><svg viewBox="0 0 48 48" width="52" height="52"><circle cx="24" cy="24" r="20" fill="none" stroke="var(--border)" stroke-width="4"/><circle cx="24" cy="24" r="20" fill="none" stroke="'+ringColor+'" stroke-width="4" stroke-dasharray="'+circ+'" stroke-dashoffset="'+offset+'" stroke-linecap="round" transform="rotate(-90 24 24)"/><text x="24" y="27" text-anchor="middle" fill="var(--text)" font-size="11" font-weight="800">'+status.type+'</text></svg></div>'
-      +'<div style="flex:1"><div style="display:flex;align-items:center;gap:6px;margin-bottom:2px"><span class="if-status '+(status.isFasting?'fasting':'eating')+'">'+(status.isFasting?'🔴 Oruç':'🟢 Yeme penceresi')+'</span></div>'
-      +'<div style="font-size:.72rem;color:var(--text2)">'+status.remainLabel+': <strong style="color:var(--text)">'+status.remaining+'</strong></div>'
-      +'<div style="font-size:.64rem;color:var(--text2);margin-top:1px">Yeme: '+status.eatStart+' – '+status.eatEnd+'</div></div></div>';
+    slot.innerHTML='<div class="exercise-card" style="animation-delay:.26s">'
+      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">'
+      +'<div style="display:flex;align-items:center;gap:8px"><span style="font-size:1.2rem">⏱️</span><span style="font-weight:800;font-size:.92rem">Aralıklı Oruç</span><span style="font-size:.68rem;padding:2px 6px;border-radius:5px;background:rgba(160,124,248,.1);color:var(--purple);font-weight:700">5:2</span></div>'
+      +'<span class="if-status '+(status.isFasting?'fasting':'eating')+'" style="font-size:.72rem">'+(status.isFasting?'🔴 Oruç Günü':'🟢 Normal Gün')+'</span></div>'
+      +(status.isFasting?'<div style="padding:8px 10px;background:rgba(255,92,92,.06);border:1px solid rgba(255,92,92,.12);border-radius:10px;font-size:.76rem;color:var(--text2);line-height:1.5">Bugün oruç günü — maksimum <strong style="color:var(--red)">500 kcal</strong> alımı önerilir.</div>':'')
+      +'<div style="margin-top:8px;font-size:.7rem;color:var(--text2);line-height:1.4;padding:6px 8px;background:var(--glass);border-radius:8px">'+escHTML(desc)+'</div>'
+      +'</div>';
+    return;
   }
-  // Insert after streak badge or date-nav
-  var streakEl=document.getElementById('streakBadge');
-  if(streakEl){streakEl.parentNode.insertBefore(card,streakEl.nextSibling);}
-  else{
-    var dateNav=document.querySelector('.date-nav');
-    if(dateNav)dateNav.parentNode.insertBefore(card,dateNav.nextSibling);
-  }
+  
+  var totalMin=proto.eat?proto.eat*60:480;
+  var elapsed=totalMin-(status.isFasting?0:(status.remainMin));
+  var pct=status.isFasting?100:Math.min(100,Math.max(0,(elapsed/totalMin)*100));
+  var circ=2*Math.PI*28;
+  var offset=circ-(pct/100)*circ;
+  var ringColor=status.isFasting?'var(--red)':'var(--green)';
+  
+  slot.innerHTML='<div class="exercise-card" style="animation-delay:.26s">'
+    +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">'
+    +'<div style="display:flex;align-items:center;gap:8px"><span style="font-size:1.2rem">⏱️</span><span style="font-weight:800;font-size:.92rem">Aralıklı Oruç</span><span style="font-size:.68rem;padding:2px 6px;border-radius:5px;background:rgba(160,124,248,.1);color:var(--purple);font-weight:700">'+escHTML(status.type)+'</span></div>'
+    +'<span class="if-status '+(status.isFasting?'fasting':'eating')+'" style="font-size:.72rem">'+(status.isFasting?'🔴 Oruç':'🟢 Yeme')+'</span></div>'
+    // Ring + info
+    +'<div style="display:flex;align-items:center;gap:14px">'
+    +'<div><svg viewBox="0 0 64 64" width="68" height="68"><circle cx="32" cy="32" r="28" fill="none" stroke="var(--border)" stroke-width="5"/><circle cx="32" cy="32" r="28" fill="none" stroke="'+ringColor+'" stroke-width="5" stroke-dasharray="'+circ+'" stroke-dashoffset="'+offset+'" stroke-linecap="round" transform="rotate(-90 32 32)" style="transition:stroke-dashoffset .8s ease"/><text x="32" y="30" text-anchor="middle" fill="var(--text)" font-size="10" font-weight="800">'+escHTML(status.type)+'</text><text x="32" y="41" text-anchor="middle" fill="var(--text2)" font-size="7">'+(status.isFasting?'oruç':'yeme')+'</text></svg></div>'
+    +'<div style="flex:1">'
+    +'<div style="font-size:.82rem;font-weight:700;margin-bottom:4px;color:var(--text)">'+status.remainLabel+'</div>'
+    +'<div style="font-size:1.1rem;font-weight:900;color:'+(status.isFasting?'var(--red)':'var(--green)')+'">'+status.remaining+'</div>'
+    +'<div style="margin-top:6px;display:flex;gap:8px;font-size:.7rem;color:var(--text2)">'
+    +'<span>🍽️ '+status.eatStart+' – '+status.eatEnd+'</span>'
+    +'<span>⏸️ '+(proto.fast||0)+'s oruç</span></div></div></div>'
+    // Açıklama
+    +'<div style="margin-top:10px;font-size:.7rem;color:var(--text2);line-height:1.4;padding:8px 10px;background:var(--glass);border-radius:8px;border:1px solid var(--border)">'+escHTML(desc)+'</div>'
+    +'</div>';
 }
 
 // IF check when adding food
@@ -8675,9 +8708,9 @@ switchTab=function(tab){
 setTimeout(function(){
   loadAllergens();
   loadIFSettings();
-  renderIFTimer();
+  renderIFTimerInMeals();
   // Update IF timer every minute
-  setInterval(renderIFTimer,60000);
+  setInterval(renderIFTimerInMeals,60000);
   // Check achievements on load
   checkAchievements(true);
   // Hook goal confetti into updateHeader
