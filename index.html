@@ -425,7 +425,7 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
       <div class="macro-row"><div class="macro-dot" style="background:#ff7a7a"></div><span class="macro-name">Protein</span><div class="macro-bar-bg" style="position:relative;overflow:visible"><div class="macro-bar-fill" id="protBar" style="width:0%;background:#ff7a7a"></div><div class="macro-bar-over" id="protOver" style="width:0%;background:#7a1a1a"></div></div><span class="macro-val" id="protVal">0g</span></div>
       <div class="macro-row"><div class="macro-dot" style="background:#22d3ee"></div><span class="macro-name">Karb</span><div class="macro-bar-bg" style="position:relative;overflow:visible"><div class="macro-bar-fill" id="carbBar" style="width:0%;background:#22d3ee"></div><div class="macro-bar-over" id="carbOver" style="width:0%;background:#0a4a55"></div></div><span class="macro-val" id="carbVal">0g</span></div>
       <div class="macro-row"><div class="macro-dot" style="background:#ffcc55"></div><span class="macro-name">Yağ</span><div class="macro-bar-bg" style="position:relative;overflow:visible"><div class="macro-bar-fill" id="fatBar" style="width:0%;background:#ffcc55"></div><div class="macro-bar-over" id="fatOver" style="width:0%;background:#5a4200"></div></div><span class="macro-val" id="fatVal">0g</span></div>
-      <div class="macro-row"><div class="macro-dot" style="background:#22d3ee"></div><span class="macro-name">Su</span><div class="macro-bar-bg"><div class="macro-bar-fill" id="waterBar" style="width:0%;background:#22d3ee"></div></div><span class="macro-val" id="waterVal">0L</span></div>
+      <div class="macro-row" style="margin-top:4px"><div class="macro-dot" style="background:#22d3ee"></div><span class="macro-name">Su</span><div class="macro-bar-bg" style="position:relative;overflow:visible"><div class="macro-bar-fill" id="waterBar" style="width:0%;background:linear-gradient(90deg,#3aaff0,#22d3ee)"></div><div class="macro-bar-over" id="waterBarOver" style="width:0%;background:#0ea5d4;position:absolute;top:0;left:0;height:100%;border-radius:4px;transition:width .8s cubic-bezier(.25,1,.5,1);opacity:.85"></div><div class="macro-bar-over" id="waterBarOver2" style="width:0%;background:#ff8c3a;position:absolute;top:0;left:0;height:100%;border-radius:4px;transition:width .8s cubic-bezier(.25,1,.5,1);opacity:.8"></div></div><span class="macro-val" id="waterVal">0L</span></div>
     </div>
   </div>
 </div>
@@ -478,8 +478,8 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
 ═══════════════════════════════════════════ -->
 <!-- GÜNLÜK BESLENME YORUMU MODAL -->
 <div class="modal-overlay" id="insightModal" onclick="if(event.target===this)closeInsightModal()">
-  <div class="modal-content">
-    <div class="modal">
+  <div class="modal-content" style="width:100%">
+    <div class="modal" style="max-width:100%;width:100%">
       <div class="modal-handle"></div>
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
         <h2 style="margin:0">📊 İlerlemeler</h2>
@@ -846,7 +846,7 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
 
 
 <div class="page active" id="page-gunluk"><div id="dailyBanner" style="margin:0 16px 0;padding:12px 14px;border-radius:var(--radius-sm);background:linear-gradient(135deg,var(--accent-glow),rgba(160,124,248,.05));border:1px solid var(--border);font-size:.78rem;line-height:1.5;display:none;animation:fadeUp .3s ease"></div><div class="content" id="mealsContainer"></div></div>
-<div class="page" id="page-istatistik"><div class="content" id="statsContainer"></div></div>
+<div class="page" id="page-istatistik"><div class="content" id="statsContainer" style="padding-left:8px;padding-right:8px"></div></div>
 <div class="page" id="page-profil">
   <div class="content">
     <div class="profile-card">
@@ -945,7 +945,7 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
           </div>
         </div>
       </div>
-      <!-- Aralıklı Oruç ayarları buradan kaldırıldı — günlük sayfasındaki IF kartından yönetilir -->
+      <!-- Aralıklı Oruç ayarları günlük sayfasındaki IF kartından yönetilir -->
       <!-- İletişim & Destek -->
       <div class="acc-item">
         <div class="acc-header" onclick="toggleAcc(this)"><span>💬 İletişim & Destek</span><span class="acc-arrow">›</span></div>
@@ -1034,7 +1034,7 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
   </div>
 </div>
 <div class="page" id="page-oneri">
-  <div class="content">
+  <div class="content" style="padding-left:8px;padding-right:8px">
     <div class="profile-card" style="animation-delay:.06s;padding:14px 0 18px">
       <h3 style="padding:0 18px;margin-bottom:10px">📖 Tarifler</h3>
 
@@ -1338,7 +1338,7 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
 <style>@keyframes lbZoomIn{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}</style>
 
 <div class="modal-overlay" id="recipeDetailModal">
-  <div class="modal" id="recipeDetailContent"></div>
+  <div class="modal" id="recipeDetailContent" style="max-width:100%;width:100%"></div>
 </div>
 
 <!-- Edit Food Modal -->
@@ -1995,17 +1995,21 @@ function updateHeader(){
   document.getElementById('ringCarb').setAttribute('transform',`rotate(${-90+(protCal/_dailyTarget)*360} 52.5 52.5)`);
   document.getElementById('ringFat').style.strokeDashoffset=circ-Math.min(fatArc,circ);
   document.getElementById('ringFat').setAttribute('transform',`rotate(${-90+((protCal+carbCal)/_dailyTarget)*360} 52.5 52.5)`);
-  // Aşım iç çemberi — aşım miktarına göre dolar (hedef referans %100)
+  // Aşım iç çemberi — aşım yüzdesine göre renk kademeli
   const overInnerEl=document.getElementById('ringOverInner');
   if(overInnerEl){
     if(isOver){
-      const overCirc=2*Math.PI*32; // ~201.06
+      const overCirc=2*Math.PI*32;
       const overAmount=t.cal-_dailyTarget;
-      const overPct=Math.min(overAmount/_dailyTarget,1); // hedef kadar aşım = tam daire
+      const overPct=Math.min(overAmount/_dailyTarget,1);
       const overOffset=overCirc-(overPct*overCirc);
-      overInnerEl.style.opacity='0.85';
+      // Renk: %0–10 sarı, %10–25 turuncu, >%25 kırmızı
+      const overRatio=overAmount/_dailyTarget;
+      const overColor=overRatio>0.25?'#ff3b3b':overRatio>0.10?'#ff8c3a':'#ffcc00';
+      overInnerEl.setAttribute('stroke',overColor);
+      overInnerEl.style.opacity='0.9';
       overInnerEl.style.strokeDashoffset=overOffset;
-      overInnerEl.style.transition='stroke-dashoffset .8s cubic-bezier(.25,1,.5,1),opacity .4s';
+      overInnerEl.style.transition='stroke-dashoffset .8s cubic-bezier(.25,1,.5,1),opacity .4s,stroke .4s';
     } else {
       overInnerEl.style.opacity='0';
       overInnerEl.style.strokeDashoffset='201.06';
@@ -3251,6 +3255,80 @@ function addWeightEntry(){
   showToast(`⚖️ ${val} kg kaydedildi!`);
 }
 
+function toggleWeightHistoryEdit(){
+  const panel=document.getElementById('weightHistoryAddPanel');
+  const btn=document.getElementById('weightEditToggleBtn');
+  const list=document.getElementById('weightHistoryList');
+  if(!panel)return;
+  const isOpen=panel.style.display!=='none';
+  panel.style.display=isOpen?'none':'block';
+  if(btn)btn.textContent=isOpen?'✏️ Düzenle':'✕ Kapat';
+  // Satırlardaki edit panellerini toggle
+  document.querySelectorAll('[id^="wh-edit-"]').forEach(el=>{
+    el.style.display=isOpen?'none':'flex';
+  });
+  document.querySelectorAll('[id^="wh-val-"]').forEach(el=>{
+    el.style.display=isOpen?'':'none';
+  });
+}
+
+function addWeightHistoryEntry(){
+  const dateEl=document.getElementById('weightHistDate');
+  const valEl=document.getElementById('weightHistVal');
+  if(!dateEl||!valEl)return;
+  const date=dateEl.value;
+  const val=parseFloat(valEl.value);
+  if(!date){showToast('⚠️ Tarih seçin');return;}
+  if(!val||val<20||val>400){showToast('⚠️ Geçerli bir kilo girin');return;}
+  const log=getWeightLog();
+  const existing=log.findIndex(e=>e.date===date);
+  if(existing>=0){
+    if(!confirm(`${date} için zaten ${log[existing].weight}kg kaydı var. Üzerine yazılsın mı?`))return;
+    log[existing].weight=val;
+    log[existing].time=Date.now();
+  } else {
+    log.push({date,weight:val,time:Date.now()});
+  }
+  log.sort((a,b)=>a.date.localeCompare(b.date));
+  setWeightLog(log);
+  dateEl.value='';
+  valEl.value='';
+  renderWeightCard();
+  showToast(`⚖️ ${date} → ${val}kg eklendi`);
+}
+
+function saveWeightEdit(idx){
+  const input=document.getElementById('wh-input-'+idx);
+  if(!input)return;
+  const val=parseFloat(input.value);
+  if(!val||val<20||val>400){showToast('⚠️ Geçerli kilo girin');return;}
+  const log=getWeightLog();
+  if(!log[idx])return;
+  log[idx].weight=val;
+  log[idx].time=Date.now();
+  log.sort((a,b)=>a.date.localeCompare(b.date));
+  setWeightLog(log);
+  document.getElementById('pWeight').value=log[log.length-1].weight;
+  saveProfile();
+  renderWeightCard();
+  showToast(`⚖️ ${val}kg güncellendi`);
+}
+
+function deleteWeightEntry(idx){
+  const log=getWeightLog();
+  if(!log[idx])return;
+  const entry=log[idx];
+  if(!confirm(`${entry.date} tarihli ${entry.weight}kg kaydı silinsin mi?`))return;
+  log.splice(idx,1);
+  setWeightLog(log);
+  if(log.length){
+    document.getElementById('pWeight').value=log[log.length-1].weight;
+    saveProfile();
+  }
+  renderWeightCard();
+  showToast('🗑️ Kayıt silindi');
+}
+
 function renderWeightCard(){
   const container=document.getElementById('weightCardProfile')||document.getElementById('weightCardContainer');
   if(!container)return;
@@ -3316,10 +3394,47 @@ function renderWeightCard(){
         <div class="ws-item"><div class="ws-val" style="color:${toGoal<=0?'var(--green)':'var(--orange)'}">${toGoal>0?'-':'+'} ${Math.abs(toGoal)} kg</div><div class="ws-label">Kalan</div></div>
       </div>
       ${chartHtml}
-      ${log.length?`<div style="max-height:120px;overflow-y:auto;margin-top:8px">${log.slice().reverse().slice(0,10).map(e=>{
-        const d=e.date.split('-');
-        return`<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:.78rem"><span style="color:var(--text2)">${d[2]}.${d[1]}.${d[0]}</span><span style="font-weight:700">${e.weight} kg</span></div>`;
-      }).join('')}</div>`:''}
+      ${log.length?`
+      <div style="margin-top:10px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <span style="font-size:.78rem;font-weight:700;color:var(--text2)">📋 Geçmiş Kayıtlar</span>
+          <button onclick="toggleWeightHistoryEdit()" id="weightEditToggleBtn"
+            style="font-size:.68rem;font-weight:700;padding:4px 10px;border-radius:8px;border:1.5px solid var(--border);background:var(--glass);color:var(--accent);cursor:pointer;font-family:var(--font,system-ui)">
+            ✏️ Düzenle
+          </button>
+        </div>
+        <!-- Geçmiş tarih ekleme paneli (başlangıçta gizli) -->
+        <div id="weightHistoryAddPanel" style="display:none;margin-bottom:10px;padding:10px;background:var(--glass);border:1.5px solid var(--border);border-radius:12px">
+          <div style="font-size:.74rem;font-weight:700;color:var(--text2);margin-bottom:8px">📅 Geçmiş Tarih Girişi</div>
+          <div style="display:flex;gap:6px;align-items:center">
+            <input type="date" id="weightHistDate" style="flex:1;padding:8px;border:1.5px solid var(--border);border-radius:8px;background:var(--glass);color:var(--text);font-family:var(--font,system-ui);font-size:.82rem;outline:none" max="${new Date().toISOString().split('T')[0]}">
+            <input type="number" id="weightHistVal" placeholder="kg" step="0.1" min="20" max="400"
+              style="width:70px;padding:8px;border:1.5px solid var(--border);border-radius:8px;background:var(--glass);color:var(--text);font-family:var(--font,system-ui);font-size:.88rem;font-weight:700;text-align:center;outline:none">
+            <button onclick="addWeightHistoryEntry()"
+              style="padding:8px 14px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-family:var(--font,system-ui);font-weight:700;font-size:.8rem;cursor:pointer;white-space:nowrap">
+              ✓ Ekle
+            </button>
+          </div>
+        </div>
+        <div id="weightHistoryList" style="max-height:200px;overflow-y:auto">
+          ${log.slice().reverse().map((e,ri)=>{
+            const actualIdx=log.length-1-ri;
+            const d=e.date.split('-');
+            return`<div style="display:flex;align-items:center;gap:6px;padding:6px 2px;border-bottom:1px solid var(--border);font-size:.78rem">
+              <span style="color:var(--text2);flex:1">${d[2]}.${d[1]}.${d[0]}</span>
+              <span id="wh-val-${actualIdx}" style="font-weight:700;min-width:52px;text-align:right">${e.weight} kg</span>
+              <div id="wh-edit-${actualIdx}" style="display:none;gap:4px;align-items:center">
+                <input type="number" id="wh-input-${actualIdx}" value="${e.weight}" step="0.1" min="20" max="400"
+                  style="width:60px;padding:4px 6px;border:1.5px solid var(--accent);border-radius:6px;background:var(--glass);color:var(--text);font-family:var(--font,system-ui);font-size:.82rem;font-weight:700;text-align:center;outline:none">
+                <button onclick="saveWeightEdit(${actualIdx})"
+                  style="padding:4px 8px;background:var(--green);color:#fff;border:none;border-radius:6px;font-size:.7rem;font-weight:700;cursor:pointer">✓</button>
+                <button onclick="deleteWeightEntry(${actualIdx})"
+                  style="padding:4px 8px;background:rgba(255,92,92,.12);color:var(--red);border:1.5px solid rgba(255,92,92,.2);border-radius:6px;font-size:.7rem;font-weight:700;cursor:pointer">✕</button>
+              </div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>`:''}
     </div>
   `;
 }
@@ -5638,21 +5753,44 @@ function renderWater(){
   if(!el)return;
   const currentMl=getWaterMl();
   const targetMl=getTodayTargets().water;
-  const pct=Math.min(100,(currentMl/targetMl)*100);
-  const pctLabel=Math.round(pct);
+  const rawPct=(currentMl/targetMl)*100;
+  const pctLabel=Math.round(rawPct);
   const isCollapsed=el.dataset.collapsed==='1';
   var borderR=isCollapsed?'var(--radius)':'var(--radius) var(--radius) 0 0';
+
+  // Çok katmanlı bar hesapları
+  const layer1=Math.min(100,rawPct);
+  const layer2=rawPct>100?Math.min(100,((rawPct-100)/50)*100):0;
+  const layer3=rawPct>150?Math.min(100,((rawPct-150)/50)*100):0;
+
+  // Renk ve etiket
+  let pctColor='#22d3ee';
+  let pctExtra='';
+  if(rawPct>=200){pctColor='#ff5c5c';pctExtra=' 🔥';}
+  else if(rawPct>=150){pctColor='#ff8c3a';pctExtra=' 🌊';}
+  else if(rawPct>=100){pctColor='#3dd68c';pctExtra=' ✅';}
+
   el.innerHTML='<div class="meal-header" onclick="toggleWaterCard()" style="cursor:pointer;border-radius:'+borderR+'">'
     +'<div class="meal-title"><div class="meal-icon" style="background:rgba(34,211,238,.12)">💧</div>Su Takibi</div>'
     +'<div class="meal-right">'
-    +(currentMl?'<div class="meal-kcal" style="color:#22d3ee">'+currentMl+'ml</div><div class="meal-pct">%'+pctLabel+'</div>':'')
+    +(currentMl?'<div class="meal-kcal" style="color:'+pctColor+'">'+currentMl+'ml</div><div class="meal-pct" style="color:'+pctColor+'">%'+pctLabel+pctExtra+'</div>':'')
     +'<span class="meal-chevron" style="transition:transform .25s;'+(isCollapsed?'transform:rotate(-90deg)':'')+'">‹</span>'
     +'</div></div>'
     +'<div style="overflow:hidden;transition:max-height .3s ease;max-height:'+(isCollapsed?'0':'500px')+'">'
     +'<div class="meal-card" style="border-radius:0 0 var(--radius) var(--radius)">'
     +'<div style="padding:12px 14px 8px">'
-    +'<div class="water-progress" style="height:8px;margin-bottom:12px">'
-    +'<div class="water-progress-fill" style="width:'+pct+'%"></div>'
+    // Çok katmanlı progress bar
+    +'<div style="position:relative;height:10px;background:rgba(34,211,238,.06);border-radius:6px;overflow:hidden;margin-bottom:4px">'
+    +'<div style="position:absolute;top:0;left:0;height:100%;width:'+layer1+'%;background:linear-gradient(90deg,#3aaff0,#22d3ee,#8ddfff);border-radius:6px;transition:width .6s cubic-bezier(.25,1,.5,1);box-shadow:0 0 8px rgba(34,211,238,.3)"></div>'
+    +(layer2>0?'<div style="position:absolute;top:0;left:0;height:100%;width:'+layer2+'%;background:linear-gradient(90deg,#0ea5d4,#3dd68c);border-radius:6px;transition:width .6s cubic-bezier(.25,1,.5,1);opacity:.9"></div>':'')
+    +(layer3>0?'<div style="position:absolute;top:0;left:0;height:100%;width:'+layer3+'%;background:linear-gradient(90deg,#ff8c3a,#ff5c5c);border-radius:6px;transition:width .6s cubic-bezier(.25,1,.5,1);opacity:.85"></div>':'')
+    +'</div>'
+    // Hedef etiketleri
+    +'<div style="display:flex;justify-content:space-between;font-size:.62rem;color:var(--text2);margin-bottom:10px">'
+    +'<span>0</span>'
+    +(rawPct>=100?'<span style="color:var(--green);font-weight:700">🎯 '+( targetMl/1000).toFixed(1)+'L</span>':'<span>'+( targetMl/1000).toFixed(1)+'L</span>')
+    +(rawPct>=150?'<span style="color:#ff8c3a;font-weight:700">×1.5</span>':'')
+    +(rawPct>=200?'<span style="color:#ff5c5c;font-weight:700">×2.0 🔥</span>':'')
     +'</div>'
     +'<div class="water-actions" style="flex-wrap:wrap;gap:6px">'
     +'<button class="water-btn add" onclick="addWater(150)" style="flex:1;min-width:60px;padding:10px 4px;font-size:.74rem">+150ml</button>'
@@ -5685,9 +5823,22 @@ function setWaterDirect(ml){
 function updateWaterHeader(){
   const currentMl=getWaterMl();
   const targetMl=getTodayTargets().water;
-  const pct=Math.min(100,(currentMl/targetMl)*100);
+  const rawPct=(currentMl/targetMl)*100;
   const totalL=(currentMl/1000).toFixed(1);
-  document.getElementById('waterBar').style.width=pct+'%';
+
+  // Katman 1: %0–100 normal (cyan gradient)
+  const layer1=Math.min(100,rawPct);
+  // Katman 2: %100–150 aşım (koyu cyan)
+  const layer2=rawPct>100?Math.min(100,((rawPct-100)/50)*100):0;
+  // Katman 3: >%150 üçüncü katman (turuncu)
+  const layer3=rawPct>150?Math.min(100,((rawPct-150)/50)*100):0;
+
+  const barEl=document.getElementById('waterBar');
+  const over1El=document.getElementById('waterBarOver');
+  const over2El=document.getElementById('waterBarOver2');
+  if(barEl)barEl.style.width=layer1+'%';
+  if(over1El)over1El.style.width=layer2+'%';
+  if(over2El)over2El.style.width=layer3+'%';
   document.getElementById('waterVal').textContent=totalL+'L';
 }
 function renderStats(){
@@ -6477,7 +6628,6 @@ function importData(event){
   event.target.value='';
 }
 function switchTab(tab){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));document.getElementById('page-'+tab).classList.add('active');document.getElementById('nav-'+tab).classList.add('active');
-  // Header ve tarih şeridini sadece günlük sayfasında göster
   var showHeader=tab==='gunluk';
   var headerEl=document.querySelector('.header');
   var dateNavEl=document.querySelector('.date-nav');
@@ -8521,50 +8671,6 @@ var IF_PROTOCOLS={
   '5:2':{fast:0,eat:24,defStart:'',defEnd:'',desc:'Haftada 2 gün max 500 kcal, 5 gün normal yeme. Oruç günleri ardışık olmamalı.'}
 };
 
-function saveIFSettings(){
-  var protoEl=document.getElementById('ifProtocol');
-  if(!protoEl)return;
-  var proto=protoEl.value;
-  var eatStartEl=document.getElementById('ifEatStart');
-  var eatEndEl=document.getElementById('ifEatEnd');
-  var settings={
-    protocol:proto,
-    eatStart:eatStartEl?eatStartEl.value:'12:00',
-    eatEnd:eatEndEl?eatEndEl.value:'20:00',
-    days52:[]
-  };
-  if(proto==='5:2'){
-    document.querySelectorAll('#if52Days input:checked').forEach(function(cb){
-      settings.days52.push(parseInt(cb.value));
-    });
-  }
-  localStorage.setItem('fs_if',JSON.stringify(settings));
-  updateIFUI();
-  renderIFTimerInMeals();
-}
-
-function loadIFSettings(){
-  // IF kartı DOM'dan okur; bu fonksiyon sadece init için çağrılır, kart zaten render edilmiş olur
-  return JSON.parse(localStorage.getItem('fs_if')||'{"protocol":"off","eatStart":"12:00","eatEnd":"20:00","days52":[]}');
-}
-
-function updateIFUI(){
-  var proto=document.getElementById('ifProtocol');
-  if(!proto)return;
-  var val=proto.value;
-  var timeDiv=document.getElementById('ifTimeSettings');
-  var div52=document.getElementById('if52Settings');
-  var infoDiv=document.getElementById('ifProtocolInfo');
-  if(timeDiv)timeDiv.style.display=(val!=='off'&&val!=='5:2')?'block':'none';
-  if(div52)div52.style.display=(val==='5:2')?'block':'none';
-  if(val!=='off'&&val!=='5:2'){
-    var p=IF_PROTOCOLS[val];
-    if(p&&infoDiv)infoDiv.innerHTML='<strong>'+val+'</strong> — '+p.fast+'s oruç / '+p.eat+'s yeme<br>'+p.desc;
-  } else if(infoDiv){
-    infoDiv.innerHTML='';
-  }
-}
-
 function getIFStatus(){
   var raw=localStorage.getItem('fs_if');
   var s=raw?JSON.parse(raw):null;
@@ -8597,61 +8703,54 @@ function getIFStatus(){
 function renderIFTimerInMeals(){
   var slot=document.getElementById('ifTimerSlot');
   if(!slot)return;
-
-  // IF kartı için collapse state
   if(typeof window._ifCardCollapsed==='undefined')window._ifCardCollapsed=true;
   var isCollapsed=window._ifCardCollapsed;
-
   var raw=localStorage.getItem('fs_if');
   var s=raw?JSON.parse(raw):{protocol:'off',eatStart:'12:00',eatEnd:'20:00',days52:[]};
   var proto=s.protocol||'off';
   var status=getIFStatus();
 
-  // Durum badge
   var statusBadge='';
   if(status){
-    var badgeClass=status.isFasting?'fasting':'eating';
-    var badgeText=status.type==='5:2'?(status.isFasting?'🔴 Oruç Günü':'🟢 Normal Gün'):(status.isFasting?'🔴 Oruç':'🟢 Yeme');
-    statusBadge='<span class="if-status '+badgeClass+'" style="font-size:.72rem">'+badgeText+'</span>';
+    var bc=status.isFasting?'fasting':'eating';
+    var bt=status.type==='5:2'?(status.isFasting?'🔴 Oruç Günü':'🟢 Normal Gün'):(status.isFasting?'🔴 Oruç':'🟢 Yeme');
+    statusBadge='<span class="if-status '+bc+'" style="font-size:.72rem">'+bt+'</span>';
   } else {
-    statusBadge='<span style="font-size:.72rem;color:var(--text2);font-weight:600">Kapalı</span>';
+    statusBadge='<span style="font-size:.72rem;color:var(--text2);font-weight:600;padding:3px 8px;background:var(--glass);border-radius:6px">Kapalı</span>';
   }
 
   var headerR=isCollapsed?'var(--radius)':'var(--radius) var(--radius) 0 0';
   var chevronStyle='transition:transform .25s;'+(isCollapsed?'transform:rotate(-90deg)':'');
 
-  var html='<div class="exercise-card" id="ifCard" style="animation-delay:.3s;--if-bottom-color:linear-gradient(90deg,#22d3ee,#3dd68c)">'
-    // Override ::before rengi — CSS custom property ile
+  var html='<div class="exercise-card" id="ifCard" style="animation-delay:.3s">'
+    // Renk efektini inline style ile override
     +'<style>#ifCard::before{background:linear-gradient(90deg,#22d3ee,#3dd68c)!important}</style>'
     +'<div class="meal-header" onclick="toggleIFCard()" style="cursor:pointer;border-radius:'+headerR+';margin:-16px -16px '+(isCollapsed?'-16px':'0')+'px -16px;padding:12px 16px">'
       +'<div class="meal-title">'
         +'<div class="meal-icon" style="background:rgba(34,211,238,.15)">⏱️</div>'
         +'Aralıklı Oruç'
       +'</div>'
-      +'<div class="meal-right" style="gap:6px">'
-        +statusBadge
+      +'<div class="meal-right" style="gap:8px">'+statusBadge
         +'<span class="meal-chevron" style="'+chevronStyle+'">‹</span>'
       +'</div>'
     +'</div>'
+    +'<div style="overflow:hidden;transition:max-height .35s ease;max-height:'+(isCollapsed?'0':'1000px')+'">'
+    +'<div style="padding-top:16px">';
 
-    // Body
-    +'<div style="overflow:hidden;transition:max-height .35s ease;max-height:'+(isCollapsed?'0':'900px')+'">'
-      +'<div style="padding-top:14px">';
-
-  // Timer içeriği (sadece protokol aktifse)
+  // Timer içeriği
   if(status){
     if(status.type==='5:2'){
-      html+=(status.isFasting?'<div style="padding:8px 10px;background:rgba(255,92,92,.06);border:1px solid rgba(255,92,92,.12);border-radius:10px;font-size:.76rem;color:var(--text2);line-height:1.5;margin-bottom:10px">Bugün oruç günü — maksimum <strong style="color:var(--red)">500 kcal</strong> alımı önerilir.</div>':'');
+      if(status.isFasting)html+='<div style="padding:8px 10px;background:rgba(255,92,92,.06);border:1px solid rgba(255,92,92,.12);border-radius:10px;font-size:.76rem;color:var(--text2);line-height:1.5;margin-bottom:12px">Bugün oruç günü — maksimum <strong style="color:var(--red)">500 kcal</strong> alımı önerilir.</div>';
     } else {
       var p=status.proto||{};
-      var totalMin=p.eat?p.eat*60:480;
-      var elapsed=totalMin-(status.isFasting?0:(status.remainMin));
-      var pct=status.isFasting?100:Math.min(100,Math.max(0,(elapsed/totalMin)*100));
-      var circ=2*Math.PI*28;
-      var offset=circ-(pct/100)*circ;
-      var ringColor=status.isFasting?'var(--red)':'var(--green)';
+      var totalMin2=p.eat?p.eat*60:480;
+      var elapsed2=totalMin2-(status.isFasting?0:(status.remainMin));
+      var pct2=status.isFasting?100:Math.min(100,Math.max(0,(elapsed2/totalMin2)*100));
+      var circ2=2*Math.PI*28;
+      var offset2=circ2-(pct2/100)*circ2;
+      var rc=status.isFasting?'var(--red)':'var(--green)';
       html+='<div style="display:flex;align-items:center;gap:14px;margin-bottom:12px">'
-        +'<svg viewBox="0 0 64 64" width="68" height="68"><circle cx="32" cy="32" r="28" fill="none" stroke="var(--border)" stroke-width="5"/><circle cx="32" cy="32" r="28" fill="none" stroke="'+ringColor+'" stroke-width="5" stroke-dasharray="'+circ+'" stroke-dashoffset="'+offset+'" stroke-linecap="round" transform="rotate(-90 32 32)" style="transition:stroke-dashoffset .8s ease"/><text x="32" y="30" text-anchor="middle" fill="var(--text)" font-size="10" font-weight="800">'+escHTML(status.type)+'</text><text x="32" y="41" text-anchor="middle" fill="var(--text2)" font-size="7">'+(status.isFasting?'oruç':'yeme')+'</text></svg>'
+        +'<svg viewBox="0 0 64 64" width="68" height="68"><circle cx="32" cy="32" r="28" fill="none" stroke="var(--border)" stroke-width="5"/><circle cx="32" cy="32" r="28" fill="none" stroke="'+rc+'" stroke-width="5" stroke-dasharray="'+circ2+'" stroke-dashoffset="'+offset2+'" stroke-linecap="round" transform="rotate(-90 32 32)" style="transition:stroke-dashoffset .8s ease"/><text x="32" y="30" text-anchor="middle" fill="var(--text)" font-size="10" font-weight="800">'+escHTML(status.type)+'</text><text x="32" y="41" text-anchor="middle" fill="var(--text2)" font-size="7">'+(status.isFasting?'oruç':'yeme')+'</text></svg>'
         +'<div style="flex:1">'
           +'<div style="font-size:.82rem;font-weight:700;margin-bottom:4px;color:var(--text)">'+status.remainLabel+'</div>'
           +'<div style="font-size:1.1rem;font-weight:900;color:'+(status.isFasting?'var(--red)':'var(--green)')+'">'+status.remaining+'</div>'
@@ -8665,48 +8764,50 @@ function renderIFTimerInMeals(){
     }
   }
 
-  // Ayarlar bölümü — her zaman görünür (body açıkken)
-  html+='<div style="border-top:1px solid var(--border);padding-top:12px;margin-top:4px">'
-    +'<div style="font-size:.76rem;font-weight:700;color:var(--text2);margin-bottom:8px">⚙️ Protokol Ayarları</div>'
-    +'<select id="ifProtocol" onchange="saveIFSettings()" style="width:100%;font-family:var(--font,system-ui);font-size:.85rem;padding:10px;border:1.5px solid var(--border);border-radius:10px;background:var(--glass);color:var(--text);margin-bottom:8px">'
-      +'<option value="off"'+(proto==='off'?' selected':'')+'>Kapalı</option>'
-      +'<option value="12:12"'+(proto==='12:12'?' selected':'')+'>12:12 — Başlangıç</option>'
-      +'<option value="14:10"'+(proto==='14:10'?' selected':'')+'>14:10 — Hafif</option>'
-      +'<option value="16:8"'+(proto==='16:8'?' selected':'')+'>16:8 — Klasik ⭐</option>'
-      +'<option value="18:6"'+(proto==='18:6'?' selected':'')+'>18:6 — Orta</option>'
-      +'<option value="20:4"'+(proto==='20:4'?' selected':'')+'>20:4 — Savaşçı</option>'
-      +'<option value="omad"'+(proto==='omad'?' selected':'')+'>OMAD — Günde tek öğün</option>'
+  // Ayarlar bölümü
+  html+='<div style="border-top:1px solid var(--border);padding-top:12px">'
+    +'<div style="font-size:.74rem;font-weight:700;color:var(--text2);margin-bottom:8px">⚙️ Protokol Ayarları</div>'
+    // Select — yüksek padding
+    +'<select id="ifProtocol" onchange="saveIFSettings()" style="width:100%;font-family:var(--font,system-ui);font-size:.88rem;padding:13px 12px;border:1.5px solid var(--border);border-radius:10px;background:var(--glass);color:var(--text);margin-bottom:10px;appearance:auto">'
+      +'<option value="off"'+(proto==='off'?' selected':'')+'>⭕ Kapalı</option>'
+      +'<option value="12:12"'+(proto==='12:12'?' selected':'')+'>12:12 — Başlangıç (12s oruç / 12s yeme)</option>'
+      +'<option value="14:10"'+(proto==='14:10'?' selected':'')+'>14:10 — Hafif (14s oruç / 10s yeme)</option>'
+      +'<option value="16:8"'+(proto==='16:8'?' selected':'')+'>16:8 — Klasik (16s oruç / 8s yeme) ⭐</option>'
+      +'<option value="18:6"'+(proto==='18:6'?' selected':'')+'>18:6 — Orta (18s oruç / 6s yeme)</option>'
+      +'<option value="20:4"'+(proto==='20:4'?' selected':'')+'>20:4 — Savaşçı (20s oruç / 4s yeme)</option>'
+      +'<option value="omad"'+(proto==='omad'?' selected':'')+'>OMAD — Günde tek öğün (23s oruç / 1s yeme)</option>'
       +'<option value="5:2"'+(proto==='5:2'?' selected':'')+'>5:2 — Haftada 2 gün 500 kcal</option>'
     +'</select>'
-
-    // Saat ayarları
-    +'<div id="ifTimeSettings" style="display:'+(proto!=='off'&&proto!=='5:2'?'block':'none')+'">'
-      +'<div style="display:flex;gap:8px;margin-bottom:8px">'
-        +'<div style="flex:1"><label style="font-size:.72rem;color:var(--text2);font-weight:600;display:block;margin-bottom:3px">Yeme başlangıcı</label>'
-          +'<input type="time" id="ifEatStart" value="'+(s.eatStart||'12:00')+'" onchange="saveIFSettings()" style="width:100%;padding:10px;background:var(--glass);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font,system-ui);font-size:.88rem"></div>'
-        +'<div style="flex:1"><label style="font-size:.72rem;color:var(--text2);font-weight:600;display:block;margin-bottom:3px">Yeme bitişi</label>'
-          +'<input type="time" id="ifEatEnd" value="'+(s.eatEnd||'20:00')+'" onchange="saveIFSettings()" style="width:100%;padding:10px;background:var(--glass);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font,system-ui);font-size:.88rem"></div>'
+    // Saat ayarları — ayrı satırlarda, iç içe geçmesin
+    +'<div id="ifTimeSettings" style="display:'+(proto!=='off'&&proto!=='5:2'?'block':'none')+';margin-bottom:10px">'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">'
+        +'<div>'
+          +'<label style="font-size:.72rem;color:var(--text2);font-weight:600;display:block;margin-bottom:4px">🍽️ Yeme başlangıcı</label>'
+          +'<input type="time" id="ifEatStart" value="'+(s.eatStart||'12:00')+'" onchange="saveIFSettings()" style="width:100%;padding:12px 8px;background:var(--glass);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font,system-ui);font-size:.88rem;font-weight:600;box-sizing:border-box">'
+        +'</div>'
+        +'<div>'
+          +'<label style="font-size:.72rem;color:var(--text2);font-weight:600;display:block;margin-bottom:4px">🔒 Yeme bitişi</label>'
+          +'<input type="time" id="ifEatEnd" value="'+(s.eatEnd||'20:00')+'" onchange="saveIFSettings()" style="width:100%;padding:12px 8px;background:var(--glass);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font,system-ui);font-size:.88rem;font-weight:600;box-sizing:border-box">'
+        +'</div>'
       +'</div>'
       +'<div id="ifProtocolInfo" style="font-size:.72rem;color:var(--text2);padding:8px;background:var(--glass);border-radius:8px;border:1px solid var(--border);line-height:1.5"></div>'
     +'</div>'
-
     // 5:2 gün seçimi
-    +'<div id="if52Settings" style="display:'+(proto==='5:2'?'block':'none')+';margin-top:4px">'
-      +'<p style="font-size:.72rem;color:var(--text2);margin-bottom:6px">Oruç günlerini seç (haftada 2, ardışık olmamalı):</p>'
-      +'<div style="display:flex;gap:4px;flex-wrap:wrap" id="if52Days">'
-        +['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'].map(function(d,i){
-          var val=i===6?0:i+1;
-          var checked=s.days52&&s.days52.indexOf(val)>=0?' checked':'';
-          return '<label style="font-size:.76rem;padding:6px 10px;background:var(--glass);border:1px solid var(--border);border-radius:8px;cursor:pointer"><input type="checkbox" value="'+val+'"'+checked+' onchange="saveIFSettings()"> '+d+'</label>';
+    +'<div id="if52Settings" style="display:'+(proto==='5:2'?'block':'none')+'">'
+      +'<p style="font-size:.72rem;color:var(--text2);margin-bottom:8px">Oruç günlerini seç (haftada 2, ardışık olmamalı):</p>'
+      +'<div style="display:flex;gap:5px;flex-wrap:wrap" id="if52Days">'
+        +[{v:1,n:'Pzt'},{v:2,n:'Sal'},{v:3,n:'Çar'},{v:4,n:'Per'},{v:5,n:'Cum'},{v:6,n:'Cmt'},{v:0,n:'Paz'}].map(function(d){
+          var chk=s.days52&&s.days52.indexOf(d.v)>=0?' checked':'';
+          return'<label style="font-size:.76rem;padding:7px 11px;background:var(--glass);border:1.5px solid var(--border);border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:4px"><input type="checkbox" value="'+d.v+'"'+chk+' onchange="saveIFSettings()"> '+d.n+'</label>';
         }).join('')
       +'</div>'
     +'</div>'
   +'</div>'
-
   +'</div></div></div>';
 
   slot.innerHTML=html;
-  // IF protocol info güncelle
+
+  // Protocol info güncelle
   if(proto!=='off'&&proto!=='5:2'){
     var infoDiv=document.getElementById('ifProtocolInfo');
     var pp=IF_PROTOCOLS[proto];
@@ -8717,6 +8818,37 @@ function renderIFTimerInMeals(){
 function toggleIFCard(){
   window._ifCardCollapsed=!window._ifCardCollapsed;
   renderIFTimerInMeals();
+}
+
+function saveIFSettings(){
+  var protoEl=document.getElementById('ifProtocol');
+  if(!protoEl)return;
+  var proto=protoEl.value;
+  var eatStartEl=document.getElementById('ifEatStart');
+  var eatEndEl=document.getElementById('ifEatEnd');
+  var settings={protocol:proto,eatStart:eatStartEl?eatStartEl.value:'12:00',eatEnd:eatEndEl?eatEndEl.value:'20:00',days52:[]};
+  if(proto==='5:2'){
+    document.querySelectorAll('#if52Days input:checked').forEach(function(cb){settings.days52.push(parseInt(cb.value));});
+  }
+  localStorage.setItem('fs_if',JSON.stringify(settings));
+  updateIFUI();
+  renderIFTimerInMeals();
+}
+
+function loadIFSettings(){
+  return JSON.parse(localStorage.getItem('fs_if')||'{"protocol":"off","eatStart":"12:00","eatEnd":"20:00","days52":[]}');
+}
+
+function updateIFUI(){
+  var proto=document.getElementById('ifProtocol');if(!proto)return;
+  var val=proto.value;
+  var timeDiv=document.getElementById('ifTimeSettings');
+  var div52=document.getElementById('if52Settings');
+  var infoDiv=document.getElementById('ifProtocolInfo');
+  if(timeDiv)timeDiv.style.display=(val!=='off'&&val!=='5:2')?'block':'none';
+  if(div52)div52.style.display=(val==='5:2')?'block':'none';
+  if(val!=='off'&&val!=='5:2'){var p=IF_PROTOCOLS[val];if(p&&infoDiv)infoDiv.innerHTML='<strong>'+val+'</strong> — '+p.fast+'s oruç / '+p.eat+'s yeme<br>'+p.desc;}
+  else if(infoDiv)infoDiv.innerHTML='';
 }
 
 // IF check when adding food
