@@ -953,7 +953,7 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
         <div class="acc-body">
           <p style="font-size:.78rem;color:var(--text2);margin-bottom:10px">Yemek ekleme talebi veya destek bileti oluşturun.</p>
           <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px">
-            <select id="ticketType" style="font-family:var(--font,system-ui);font-size:.82rem;padding:8px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text)">
+            <select id="ticketType" onchange="onTicketTypeChange()" style="font-family:var(--font,system-ui);font-size:.82rem;padding:8px;border:1.5px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text)">
               <option value="food">🍽️ Yemek Ekleme Talebi</option>
               <option value="bug">🐛 Hata Bildirimi</option>
               <option value="feature">💡 Özellik Önerisi</option>
@@ -974,29 +974,70 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
             </div>
           </div>
           <button style="width:100%;padding:10px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-family:var(--font,system-ui);font-weight:700;font-size:.85rem;cursor:pointer" onclick="submitTicket()">📩 Gönder</button>
+          <!-- Gelen Yanıtlarım -->
+          <div style="margin-top:12px;border-top:1px solid var(--border);padding-top:10px">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;cursor:pointer" onclick="toggleMyFeedbacks()">
+              <span style="font-size:.82rem;font-weight:700;display:flex;align-items:center;gap:6px">📬 Gelen Yanıtlarım <span id="feedbackBadge" style="display:none;background:var(--accent);color:#fff;font-size:.6rem;padding:1px 6px;border-radius:10px;font-weight:800">0</span></span>
+              <span id="feedbackChevron" style="color:var(--text2);font-size:.8rem;transition:transform .2s">›</span>
+            </div>
+            <div id="myFeedbacksPanel" style="display:none;max-height:250px;overflow-y:auto"></div>
+          </div>
         </div>
       </div>
       <!-- Hakkında -->
       <div class="acc-item">
         <div class="acc-header" onclick="toggleAcc(this)"><span>ℹ️ Hakkında</span><span class="acc-arrow">›</span></div>
-        <div class="acc-body">
-          <p style="margin-bottom:6px"><strong style="color:var(--text)">FitSofra v3.0</strong> — Sağlıklı beslenmenin dijital yol arkadaşı</p>
-          <p style="margin-bottom:6px">900+ Türk mutfağı yemeği, akıllı öğün planlama, su takibi, kilo yönetimi ve daha fazlası.</p>
-          <p style="font-size:.68rem;color:var(--text2)">© 2025 FitSofra. Tüm hakları saklıdır.<br>Bu uygulama bilgilendirme amaçlıdır, tıbbi tavsiye yerine geçmez.</p>
+        <div class="acc-body" style="font-size:.75rem;line-height:1.6">
+          <div style="text-align:center;margin-bottom:12px">
+            <div style="font-size:2rem;margin-bottom:6px">🍽️</div>
+            <div style="font-weight:900;font-size:1.1rem;color:var(--text)">FitSofra <span style="color:var(--accent)">v3.1</span></div>
+            <div style="color:var(--text2);font-size:.72rem;margin-top:2px">Sağlıklı beslenmenin dijital yol arkadaşı</div>
+          </div>
+          <div style="background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:10px">
+            <div style="font-weight:700;margin-bottom:6px;color:var(--text)">🎯 Neler Sunuyoruz?</div>
+            <p style="margin-bottom:4px">• 900+ Türk mutfağı yemeği ile kapsamlı beslenme veritabanı</p>
+            <p style="margin-bottom:4px">• Akıllı öğün planlama ve kalori takibi</p>
+            <p style="margin-bottom:4px">• Su tüketimi takibi ve hatırlatmaları</p>
+            <p style="margin-bottom:4px">• Kilo yönetimi ve VKİ hesaplama</p>
+            <p style="margin-bottom:4px">• Aralıklı oruç (IF) zamanlayıcı</p>
+            <p style="margin-bottom:4px">• Egzersiz kaydı ve kalori yakımı takibi</p>
+            <p style="margin-bottom:4px">• Detaylı istatistik ve raporlama</p>
+            <p style="margin-bottom:4px">• Barkod ile ürün tanıma (Open Food Facts)</p>
+            <p>• Günlük beslenme yorumları ve başarım rozetleri</p>
+          </div>
+          <div style="background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:10px">
+            <div style="font-weight:700;margin-bottom:4px;color:var(--text)">💡 Misyonumuz</div>
+            <p>FitSofra, herkesin sağlıklı beslenme alışkanlıkları edinmesini kolaylaştırmak için tasarlandı. Karmaşık diyet takibini basit, eğlenceli ve erişilebilir bir deneyime dönüştürüyoruz.</p>
+          </div>
+          <div style="background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:10px">
+            <div style="font-weight:700;margin-bottom:4px;color:var(--text)">⚠️ Sorumluluk Reddi</div>
+            <p>Bu uygulama bilgilendirme amaçlıdır ve tıbbi tavsiye yerine geçmez. Besin değerleri tahminidir. Sağlık kararlarınız için mutlaka bir uzman hekime veya diyetisyene danışınız.</p>
+          </div>
+          <p style="font-size:.68rem;color:var(--text2);text-align:center">© 2025-2026 FitSofra. Tüm hakları saklıdır.</p>
         </div>
       </div>
       <!-- Gizlilik Politikası -->
       <div class="acc-item">
         <div class="acc-header" onclick="toggleAcc(this)"><span>🔒 Gizlilik Politikası</span><span class="acc-arrow">›</span></div>
         <div class="acc-body" style="font-size:.75rem;line-height:1.6">
-          <p style="margin-bottom:6px"><strong>1. Toplanan Veriler:</strong> Profil bilgileri, beslenme kayıtları, su ve kilo verileri. Tamamen sizin kontrolünüzde.</p>
-          <p style="margin-bottom:6px"><strong>2. Veri Saklama:</strong> Cihazınızda (localStorage) + isteğe bağlı Firebase bulut.</p>
-          <p style="margin-bottom:6px"><strong>3. Google Hesabı:</strong> Sadece ad, e-posta, fotoğraf. Şifre erişimi yok.</p>
-          <p style="margin-bottom:6px"><strong>4. Üçüncü Taraflar:</strong> Veriler paylaşılmaz/satılmaz. Barkod için Open Food Facts API.</p>
-          <p style="margin-bottom:6px"><strong>5. İzleme:</strong> Reklam, Analytics, Pixel kullanılmaz.</p>
-          <p style="margin-bottom:6px"><strong>6. Silme:</strong> İstediğiniz zaman tüm verileri silebilirsiniz.</p>
-          <p style="margin-bottom:6px"><strong>7. Güvenlik:</strong> Firebase Auth + Firestore kuralları.</p>
-          <p style="font-size:.68rem">Son güncelleme: Mart 2026</p>
+          <div style="background:rgba(61,214,140,.06);border:1px solid rgba(61,214,140,.15);border-radius:10px;padding:10px 12px;margin-bottom:10px;display:flex;align-items:center;gap:8px">
+            <span style="font-size:1.2rem">🛡️</span>
+            <div>
+              <div style="font-weight:700;color:var(--green);font-size:.78rem">Gizliliğiniz Bizim Önceliğimiz</div>
+              <div style="font-size:.68rem;color:var(--text2)">Verileriniz sizindir — biz sadece sizin için saklıyoruz.</div>
+            </div>
+          </div>
+          <p style="margin-bottom:6px"><strong>1. Toplanan Veriler:</strong> Profil bilgileri (ad, yaş, boy, kilo), beslenme kayıtları, su ve kilo verileri. Tüm bu bilgiler yalnızca uygulama içi deneyiminizi kişiselleştirmek için kullanılır.</p>
+          <p style="margin-bottom:6px"><strong>2. Veri Saklama:</strong> Verileriniz öncelikli olarak cihazınızda (localStorage) saklanır. İsteğe bağlı olarak Firebase bulut yedeklemesi kullanabilirsiniz. Bulut verileriniz şifreli bağlantı (SSL/TLS) ile aktarılır ve Firebase güvenlik kurallarıyla korunur.</p>
+          <p style="margin-bottom:6px"><strong>3. Google Hesabı:</strong> Google ile giriş yaptığınızda yalnızca adınız, e-posta adresiniz ve profil fotoğrafınız alınır. Google hesap şifrenize hiçbir zaman erişim sağlanmaz. OAuth 2.0 güvenlik standardı kullanılır.</p>
+          <p style="margin-bottom:6px"><strong>4. Üçüncü Taraflar:</strong> Verileriniz asla üçüncü kişi, kurum veya reklam şirketleriyle paylaşılmaz ya da satılmaz. Barkod tarama için Open Food Facts API kullanılır — bu servise yalnızca barkod numarası gönderilir, kişisel bilgi aktarılmaz.</p>
+          <p style="margin-bottom:6px"><strong>5. İzleme & Reklam:</strong> FitSofra'da hiçbir reklam gösterilmez. Google Analytics, Facebook Pixel veya benzeri takip araçları kullanılmaz. Kullanıcı davranışlarınız izlenmez.</p>
+          <p style="margin-bottom:6px"><strong>6. Veri Silme:</strong> İstediğiniz zaman "Hesabı Sil" butonu ile tüm yerel ve bulut verilerinizi kalıcı olarak silebilirsiniz. Silme işlemi geri alınamaz ve verileriniz tüm sistemlerden tamamen kaldırılır.</p>
+          <p style="margin-bottom:6px"><strong>7. Güvenlik:</strong> Firebase Authentication ile güvenli oturum yönetimi, Firestore güvenlik kuralları ile veri erişim kontrolü, HTTPS şifreli bağlantı kullanılır.</p>
+          <p style="margin-bottom:6px"><strong>8. Çerezler:</strong> FitSofra üçüncü taraf çerez kullanmaz. Yalnızca oturum bilginiz için gerekli olan teknik çerezler saklanır.</p>
+          <p style="margin-bottom:6px"><strong>9. Çocukların Gizliliği:</strong> FitSofra 13 yaş altı çocuklara yönelik bir hizmet sunmamaktadır. 13 yaş altı kullanıcılardan bilerek veri toplamayız.</p>
+          <p style="margin-bottom:6px"><strong>10. Değişiklikler:</strong> Gizlilik politikamız güncellendiğinde, uygulama içinden bilgilendirilirsiniz. Güncellenmiş politikayı kabul etmeden kullanıma devam edemezsiniz.</p>
+          <p style="font-size:.68rem;color:var(--text2)">Son güncelleme: Mart 2026 · Sorularınız için İletişim & Destek bölümünden bize ulaşabilirsiniz.</p>
         </div>
       </div>
       <!-- Şartlar ve Koşullar -->
@@ -6152,7 +6193,20 @@ function renderStats(){
     </div>`}
   </div>`;
 
-  document.getElementById('statsContainer').innerHTML=statsHtml+html;
+  document.getElementById('statsContainer').innerHTML=statsHtml+html+generateReportSection();
+
+  // Init report date defaults
+  requestAnimationFrame(function(){
+    var today=new Date();
+    var todayStr=today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
+    var weekAgo=new Date(today);weekAgo.setDate(weekAgo.getDate()-7);
+    var weekAgoStr=weekAgo.getFullYear()+'-'+String(weekAgo.getMonth()+1).padStart(2,'0')+'-'+String(weekAgo.getDate()).padStart(2,'0');
+    var rStart=document.getElementById('reportStartDate');
+    var rEnd=document.getElementById('reportEndDate');
+    if(rStart)rStart.value=weekAgoStr;
+    if(rEnd)rEnd.value=todayStr;
+    onReportPeriodChange();
+  });
 
   // Grafikleri çiz — innerHTML set edildikten sonra
   requestAnimationFrame(function(){
@@ -6239,6 +6293,199 @@ function renderStats(){
       });
     }
   });
+}
+
+function generateReportSection(){
+  return `<div class="stat-card" style="animation-delay:.12s">
+    <h3>📄 Rapor Oluştur</h3>
+    <p style="font-size:.74rem;color:var(--text2);margin-bottom:10px">Günlük, haftalık, aylık veya özel tarih aralığında raporunuzu çıkartın.</p>
+    <div style="display:flex;gap:4px;margin-bottom:10px;background:var(--glass);border-radius:10px;padding:3px;border:1px solid var(--border)">
+      <button onclick="setReportPeriod('daily')" id="rp-daily" class="cat-pill active" style="flex:1;text-align:center;border:none;margin:0;border-radius:8px;padding:8px 4px;font-size:.72rem">📅 Günlük</button>
+      <button onclick="setReportPeriod('weekly')" id="rp-weekly" class="cat-pill" style="flex:1;text-align:center;border:none;margin:0;border-radius:8px;padding:8px 4px;font-size:.72rem">📆 Haftalık</button>
+      <button onclick="setReportPeriod('monthly')" id="rp-monthly" class="cat-pill" style="flex:1;text-align:center;border:none;margin:0;border-radius:8px;padding:8px 4px;font-size:.72rem">🗓️ Aylık</button>
+      <button onclick="setReportPeriod('custom')" id="rp-custom" class="cat-pill" style="flex:1;text-align:center;border:none;margin:0;border-radius:8px;padding:8px 4px;font-size:.72rem">📐 Özel</button>
+    </div>
+    <div id="reportDateRange" style="display:none;margin-bottom:10px">
+      <div style="display:flex;gap:6px">
+        <div style="flex:1">
+          <label style="font-size:.68rem;color:var(--text2);font-weight:600;display:block;margin-bottom:3px">Başlangıç</label>
+          <input type="date" id="reportStartDate" style="width:100%;padding:8px;background:var(--glass);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font,system-ui);font-size:.8rem">
+        </div>
+        <div style="flex:1">
+          <label style="font-size:.68rem;color:var(--text2);font-weight:600;display:block;margin-bottom:3px">Bitiş</label>
+          <input type="date" id="reportEndDate" style="width:100%;padding:8px;background:var(--glass);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font,system-ui);font-size:.8rem">
+        </div>
+      </div>
+    </div>
+    <div id="reportEmptyOption" style="display:none;margin-bottom:10px">
+      <label style="display:flex;align-items:center;gap:6px;font-size:.76rem;font-weight:600;padding:8px 10px;background:var(--glass);border:1px solid var(--border);border-radius:8px;cursor:pointer">
+        <input type="checkbox" id="reportIncludeEmpty" checked> Boş günleri dahil et
+      </label>
+    </div>
+    <button onclick="generateReport()" style="width:100%;padding:11px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;border-radius:var(--radius-sm);font-family:var(--font,system-ui);font-weight:800;font-size:.85rem;cursor:pointer;box-shadow:0 4px 12px rgba(255,107,61,.2)">📊 Rapor Oluştur</button>
+    <div id="reportResult" style="margin-top:12px"></div>
+  </div>`;
+}
+
+var _reportPeriod='daily';
+
+function setReportPeriod(p){
+  _reportPeriod=p;
+  ['daily','weekly','monthly','custom'].forEach(function(k){
+    var btn=document.getElementById('rp-'+k);
+    if(btn){
+      btn.classList.toggle('active',k===p);
+      btn.style.background=k===p?'var(--accent)':'transparent';
+      btn.style.color=k===p?'#fff':'var(--text2)';
+      btn.style.borderColor=k===p?'var(--accent)':'var(--border)';
+    }
+  });
+  onReportPeriodChange();
+}
+
+function onReportPeriodChange(){
+  var dateRange=document.getElementById('reportDateRange');
+  var emptyOpt=document.getElementById('reportEmptyOption');
+  if(dateRange)dateRange.style.display=_reportPeriod==='custom'?'block':'none';
+  if(emptyOpt)emptyOpt.style.display=_reportPeriod==='daily'?'none':'block';
+}
+
+function getReportDateRange(){
+  var today=new Date();
+  var start,end;
+  if(_reportPeriod==='daily'){
+    start=new Date(currentDate);end=new Date(currentDate);
+  } else if(_reportPeriod==='weekly'){
+    end=new Date(today);start=new Date(today);start.setDate(start.getDate()-6);
+  } else if(_reportPeriod==='monthly'){
+    end=new Date(today);start=new Date(today.getFullYear(),today.getMonth(),1);
+  } else {
+    var sv=document.getElementById('reportStartDate').value;
+    var ev=document.getElementById('reportEndDate').value;
+    start=sv?new Date(sv):new Date(today);
+    end=ev?new Date(ev):new Date(today);
+  }
+  start.setHours(0,0,0,0);end.setHours(23,59,59,999);
+  return{start:start,end:end};
+}
+
+function generateReport(){
+  var range=getReportDateRange();
+  var includeEmpty=_reportPeriod==='daily'?true:!!(document.getElementById('reportIncludeEmpty')&&document.getElementById('reportIncludeEmpty').checked);
+  var container=document.getElementById('reportResult');
+  if(!container)return;
+
+  var days=[];var d=new Date(range.start);
+  while(d<=range.end){
+    var dk=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    var dayData=getDayData(dk);
+    var dayCal=0,dayProt=0,dayCarb=0,dayFat=0,foodCount=0;
+    Object.values(dayData).forEach(function(foods){foods.forEach(function(f){dayCal+=f.cal;dayProt+=f.prot||0;dayCarb+=f.carb||0;dayFat+=f.fat||0;foodCount++;});});
+    var dayWater=parseInt(localStorage.getItem('fs_water_'+dk))||0;
+    var isEmpty=dayCal===0&&foodCount===0;
+    if(!isEmpty||includeEmpty){
+      days.push({dk:dk,date:new Date(d),cal:Math.round(dayCal),prot:Math.round(dayProt),carb:Math.round(dayCarb),fat:Math.round(dayFat),water:dayWater,foods:foodCount,isEmpty:isEmpty});
+    }
+    d.setDate(d.getDate()+1);
+  }
+
+  if(!days.length){
+    container.innerHTML='<div style="text-align:center;padding:16px;color:var(--text2);font-size:.82rem">Seçilen aralıkta veri bulunamadı.</div>';
+    return;
+  }
+
+  var tgt=getTodayTargets();
+  var activeDays=days.filter(function(d){return !d.isEmpty;});
+  var totalDays=days.length;
+  var totalCal=days.reduce(function(s,d){return s+d.cal;},0);
+  var totalProt=days.reduce(function(s,d){return s+d.prot;},0);
+  var totalCarb=days.reduce(function(s,d){return s+d.carb;},0);
+  var totalFat=days.reduce(function(s,d){return s+d.fat;},0);
+  var totalWater=days.reduce(function(s,d){return s+d.water;},0);
+  var totalFoods=days.reduce(function(s,d){return s+d.foods;},0);
+  var avgBase=activeDays.length||1;
+  var avgCal=Math.round(totalCal/avgBase);
+  var avgProt=Math.round(totalProt/avgBase);
+  var avgCarb=Math.round(totalCarb/avgBase);
+  var avgFat=Math.round(totalFat/avgBase);
+  var avgWater=Math.round(totalWater/avgBase);
+  var maxCalDay=days.reduce(function(m,d){return d.cal>m.cal?d:m;},days[0]);
+  var minCalDay=activeDays.length?activeDays.reduce(function(m,d){return d.cal<m.cal?d:m;},activeDays[0]):days[0];
+  var onTargetDays=activeDays.filter(function(d){return d.cal>=tgt.cal*0.85&&d.cal<=tgt.cal*1.15;}).length;
+  var overDays=activeDays.filter(function(d){return d.cal>tgt.cal*1.15;}).length;
+  var underDays=activeDays.filter(function(d){return d.cal<tgt.cal*0.85;}).length;
+
+  var periodLabel=_reportPeriod==='daily'?'Günlük':_reportPeriod==='weekly'?'Haftalık':_reportPeriod==='monthly'?'Aylık':'Özel Aralık';
+  var dateLabel=days.length===1?days[0].date.toLocaleDateString('tr-TR'):days[0].date.toLocaleDateString('tr-TR')+' — '+days[days.length-1].date.toLocaleDateString('tr-TR');
+
+  var html='<div style="background:var(--glass);border:1px solid var(--border);border-radius:12px;padding:14px;animation:fadeUp .3s ease">';
+  html+='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">';
+  html+='<div style="font-weight:800;font-size:.9rem">📄 '+periodLabel+' Rapor</div>';
+  html+='<span style="font-size:.68rem;color:var(--text2)">'+dateLabel+'</span>';
+  html+='</div>';
+
+  // Özet kartlar
+  html+='<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:12px">';
+  html+='<div style="padding:8px;background:var(--glass);border-radius:8px;border:1px solid var(--border);text-align:center"><div style="font-size:.62rem;color:var(--text2)">Toplam Kalori</div><div style="font-weight:900;font-size:1rem;color:var(--accent)">'+totalCal+'</div><div style="font-size:.58rem;color:var(--text2)">kcal</div></div>';
+  html+='<div style="padding:8px;background:var(--glass);border-radius:8px;border:1px solid var(--border);text-align:center"><div style="font-size:.62rem;color:var(--text2)">Ort. Kalori/Gün</div><div style="font-weight:900;font-size:1rem;color:var(--accent)">'+avgCal+'</div><div style="font-size:.58rem;color:var(--text2)">kcal ('+(activeDays.length)+' aktif gün)</div></div>';
+  html+='<div style="padding:8px;background:var(--glass);border-radius:8px;border:1px solid var(--border);text-align:center"><div style="font-size:.62rem;color:var(--text2)">Toplam Yemek</div><div style="font-weight:900;font-size:1rem;color:var(--blue)">'+totalFoods+'</div><div style="font-size:.58rem;color:var(--text2)">kalem</div></div>';
+  html+='<div style="padding:8px;background:var(--glass);border-radius:8px;border:1px solid var(--border);text-align:center"><div style="font-size:.62rem;color:var(--text2)">Ort. Su/Gün</div><div style="font-weight:900;font-size:1rem;color:#22d3ee">'+(avgWater/1000).toFixed(1)+'L</div><div style="font-size:.58rem;color:var(--text2)">'+(totalWater/1000).toFixed(1)+'L toplam</div></div>';
+  html+='</div>';
+
+  // Makro özet
+  html+='<div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap">';
+  html+='<div style="flex:1;min-width:70px;padding:6px;background:rgba(255,122,122,.06);border-radius:8px;text-align:center"><div style="font-size:.58rem;color:var(--text2)">Ort. Protein</div><div style="font-weight:800;font-size:.88rem;color:#ff7a7a">'+avgProt+'g</div></div>';
+  html+='<div style="flex:1;min-width:70px;padding:6px;background:rgba(34,211,238,.06);border-radius:8px;text-align:center"><div style="font-size:.58rem;color:var(--text2)">Ort. Karb</div><div style="font-weight:800;font-size:.88rem;color:#22d3ee">'+avgCarb+'g</div></div>';
+  html+='<div style="flex:1;min-width:70px;padding:6px;background:rgba(255,204,85,.06);border-radius:8px;text-align:center"><div style="font-size:.58rem;color:var(--text2)">Ort. Yağ</div><div style="font-weight:800;font-size:.88rem;color:#ffcc55">'+avgFat+'g</div></div>';
+  html+='</div>';
+
+  // Hedef uyum
+  if(totalDays>1){
+    html+='<div style="padding:10px;background:var(--glass);border-radius:8px;border:1px solid var(--border);margin-bottom:12px">';
+    html+='<div style="font-size:.74rem;font-weight:700;margin-bottom:6px">🎯 Hedef Uyumu (±%15)</div>';
+    html+='<div style="display:flex;gap:8px;font-size:.76rem">';
+    html+='<span style="color:var(--green)">✅ '+onTargetDays+' gün hedefe uygun</span>';
+    html+='<span style="color:var(--red)">⬆️ '+overDays+' gün aşım</span>';
+    html+='<span style="color:var(--orange)">⬇️ '+underDays+' gün düşük</span>';
+    html+='</div>';
+    html+='</div>';
+  }
+
+  // En yüksek/düşük gün
+  if(activeDays.length>1){
+    html+='<div style="display:flex;gap:6px;margin-bottom:12px">';
+    html+='<div style="flex:1;padding:8px;background:rgba(255,92,92,.06);border-radius:8px;border:1px solid rgba(255,92,92,.1)"><div style="font-size:.62rem;color:var(--text2)">📈 En Yüksek</div><div style="font-weight:800;font-size:.85rem;color:var(--red)">'+maxCalDay.cal+' kcal</div><div style="font-size:.58rem;color:var(--text2)">'+maxCalDay.date.toLocaleDateString('tr-TR')+'</div></div>';
+    html+='<div style="flex:1;padding:8px;background:rgba(61,214,140,.06);border-radius:8px;border:1px solid rgba(61,214,140,.1)"><div style="font-size:.62rem;color:var(--text2)">📉 En Düşük</div><div style="font-weight:800;font-size:.85rem;color:var(--green)">'+minCalDay.cal+' kcal</div><div style="font-size:.58rem;color:var(--text2)">'+minCalDay.date.toLocaleDateString('tr-TR')+'</div></div>';
+    html+='</div>';
+  }
+
+  // Günlük detay listesi
+  if(totalDays>1){
+    html+='<div style="border-top:1px solid var(--border);padding-top:10px">';
+    html+='<div style="display:flex;justify-content:space-between;align-items:center;cursor:pointer;margin-bottom:4px" onclick="toggleDayDetail(\'reportDayList\')">';
+    html+='<span style="font-size:.78rem;font-weight:700">📋 Günlük Detaylar ('+totalDays+' gün)</span>';
+    html+='<span style="color:var(--text2);font-size:.8rem">›</span>';
+    html+='</div>';
+    html+='<div id="reportDayList" style="display:none;max-height:300px;overflow-y:auto">';
+    days.forEach(function(day){
+      var dayNames=['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'];
+      var dn=dayNames[day.date.getDay()];
+      var pctCal=tgt.cal?Math.round((day.cal/tgt.cal)*100):0;
+      var barColor=day.isEmpty?'var(--border)':pctCal>115?'var(--red)':pctCal>85?'var(--green)':'var(--orange)';
+      html+='<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--border);opacity:'+(day.isEmpty?'0.4':'1')+'">';
+      html+='<div style="width:28px;font-size:.68rem;font-weight:700;color:var(--text2)">'+dn+'</div>';
+      html+='<div style="flex:1;min-width:0"><div style="font-size:.72rem;font-weight:600">'+day.date.toLocaleDateString('tr-TR')+'</div>';
+      if(!day.isEmpty) html+='<div style="font-size:.58rem;color:var(--text2)">P:'+day.prot+'g K:'+day.carb+'g Y:'+day.fat+'g 💧'+(day.water/1000).toFixed(1)+'L</div>';
+      html+='</div>';
+      html+='<div style="text-align:right"><div style="font-weight:800;font-size:.8rem;color:'+(day.isEmpty?'var(--text2)':barColor)+'">'+(day.isEmpty?'—':day.cal)+'</div>';
+      if(!day.isEmpty) html+='<div style="font-size:.56rem;color:var(--text2)">%'+pctCal+'</div>';
+      html+='</div></div>';
+    });
+    html+='</div></div>';
+  }
+
+  html+='</div>';
+  container.innerHTML=html;
 }
 
 function toggleDayDetail(id){
@@ -6458,6 +6705,88 @@ document.addEventListener('change',e=>{
   }
 });
 
+function onTicketTypeChange(){
+  var type=document.getElementById('ticketType').value;
+  var foodFields=document.getElementById('foodRequestFields');
+  var calFields=document.getElementById('foodCalFields');
+  if(foodFields)foodFields.style.display=type==='food'?'flex':'none';
+  if(calFields)calFields.style.display=type==='food'?'flex':'none';
+}
+
+function toggleMyFeedbacks(){
+  var panel=document.getElementById('myFeedbacksPanel');
+  var chev=document.getElementById('feedbackChevron');
+  if(!panel)return;
+  if(panel.style.display==='none'){
+    panel.style.display='block';
+    if(chev)chev.style.transform='rotate(90deg)';
+    loadMyFeedbacks();
+  } else {
+    panel.style.display='none';
+    if(chev)chev.style.transform='';
+  }
+}
+
+async function loadMyFeedbacks(){
+  var panel=document.getElementById('myFeedbacksPanel');
+  var badge=document.getElementById('feedbackBadge');
+  if(!panel||!currentUser)return;
+  panel.innerHTML='<div style="text-align:center;padding:10px;color:var(--text2);font-size:.78rem"><div class="spinner"></div></div>';
+  try{
+    var snap=await db.collection('user_feedbacks').where('userId','==',currentUser.uid).orderBy('createdAt','desc').limit(20).get();
+    if(snap.empty){
+      panel.innerHTML='<p style="text-align:center;color:var(--text2);font-size:.78rem;padding:8px">Henüz yanıt yok</p>';
+      if(badge)badge.style.display='none';
+      return;
+    }
+    var unread=0;
+    var html='';
+    snap.forEach(function(doc){
+      var f=doc.data();
+      var dt=f.createdAt?new Date(f.createdAt).toLocaleDateString('tr-TR',''):'';
+      var isUnread=!f.readByUser;
+      if(isUnread)unread++;
+      var typeMap={food:'🍽️',bug:'🐛',feature:'💡',other:'📩'};
+      var icon=typeMap[f.ticketType]||'📩';
+      html+='<div style="padding:8px 10px;background:'+(isUnread?'rgba(255,107,61,.04)':'var(--glass)')+';border:1px solid '+(isUnread?'rgba(255,107,61,.15)':'var(--border)')+';border-radius:8px;margin-bottom:6px'+(isUnread?';border-left:3px solid var(--accent)':'')+'" onclick="markFeedbackRead(\''+doc.id+'\')">'
+        +'<div style="display:flex;justify-content:space-between;align-items:flex-start">'
+        +'<div style="font-weight:700;font-size:.78rem">'+icon+' '+escHTML(f.ticketSubject||'Yanıt')+'</div>'
+        +'<span style="font-size:.6rem;color:var(--text2);flex-shrink:0">'+dt+'</span>'
+        +'</div>'
+        +'<div style="font-size:.76rem;color:var(--text);margin-top:4px;line-height:1.4">'+escHTML(f.message||'')+'</div>'
+        +'<div style="font-size:.62rem;color:var(--text2);margin-top:3px">Yanıtlayan: Admin</div>'
+        +'</div>';
+    });
+    panel.innerHTML=html;
+    if(badge){
+      if(unread>0){badge.textContent=unread;badge.style.display='inline';}
+      else badge.style.display='none';
+    }
+  }catch(e){
+    panel.innerHTML='<p style="text-align:center;color:var(--text2);font-size:.78rem;padding:8px">Yanıtlar yüklenemedi</p>';
+  }
+}
+
+async function markFeedbackRead(docId){
+  if(!currentUser)return;
+  try{
+    await db.collection('user_feedbacks').doc(docId).update({readByUser:true});
+    loadMyFeedbacks();
+  }catch(e){}
+}
+
+async function checkUnreadFeedbacks(){
+  if(!currentUser)return;
+  try{
+    var snap=await db.collection('user_feedbacks').where('userId','==',currentUser.uid).where('readByUser','==',false).limit(5).get();
+    var badge=document.getElementById('feedbackBadge');
+    if(badge){
+      if(!snap.empty){badge.textContent=snap.size;badge.style.display='inline';}
+      else badge.style.display='none';
+    }
+  }catch(e){}
+}
+
 async function submitTicket(){
   const type=document.getElementById('ticketType').value;
   const subject=document.getElementById('ticketSubject').value.trim();
@@ -6499,7 +6828,7 @@ async function submitTicket(){
   if(!sent||type!=='food'){
     const ticket={
       type,subject,body,userId,userName,
-      status:'open',createdAt:Date.now(),...foodData
+      status:'open',createdAt:Date.now()
     };
     try{
       await db.collection('tickets').add(ticket);
@@ -7746,6 +8075,9 @@ function setupPWA(){
   }
 }
 
+// ── FCM Push Token alma ve kaydetme ──────────────────────────────────────────
+// VAPID_KEY: Firebase Console → Proje Ayarları → Cloud Messaging →
+// Web Push sertifikaları → Anahtar Çifti Oluştur → kopyala
 const VAPID_KEY = 'BAECQq9oBU8ziQc6cAitxhZizB312wqtan8LPAbo61UdWWO8BdllURkXCFY_NRWgNzZIVP7xHb8wjCaPIpqezwQ';
 
 async function initFCM(){
@@ -8858,7 +9190,7 @@ function renderIFTimerInMeals(){
   html+='<div style="border-top:1px solid var(--border);padding-top:12px">'
     +'<div style="font-size:.74rem;font-weight:700;color:var(--text2);margin-bottom:8px">⚙️ Protokol Ayarları</div>'
     // Select — yüksek padding
-    +'<select id="ifProtocol" onchange="saveIFSettings()" style="width:100%;font-family:var(--font,system-ui);font-size:.88rem;padding:13px 12px;border:1.5px solid var(--border);border-radius:10px;background:var(--glass);color:var(--text);margin-bottom:10px;appearance:auto">'
+    +'<select id="ifProtocol" onchange="onIFProtocolChange()" style="width:100%;font-family:var(--font,system-ui);font-size:.88rem;padding:16px 12px;border:1.5px solid var(--border);border-radius:10px;background:var(--glass);color:var(--text);margin-bottom:10px;appearance:auto;min-height:52px">'
       +'<option value="off"'+(proto==='off'?' selected':'')+'>⭕ Kapalı</option>'
       +'<option value="12:12"'+(proto==='12:12'?' selected':'')+'>12:12 — Başlangıç (12s oruç / 12s yeme)</option>'
       +'<option value="14:10"'+(proto==='14:10'?' selected':'')+'>14:10 — Hafif (14s oruç / 10s yeme)</option>'
@@ -8870,14 +9202,14 @@ function renderIFTimerInMeals(){
     +'</select>'
     // Saat ayarları — ayrı satırlarda, iç içe geçmesin
     +'<div id="ifTimeSettings" style="display:'+(proto!=='off'&&proto!=='5:2'?'block':'none')+';margin-bottom:10px">'
-      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">'
-        +'<div>'
+      +'<div style="display:flex;gap:6px;margin-bottom:8px;max-width:100%">'
+        +'<div style="flex:1;min-width:0">'
           +'<label style="font-size:.68rem;color:var(--text2);font-weight:600;display:block;margin-bottom:3px">🍽️ Başlangıç</label>'
-          +'<input type="time" id="ifEatStart" value="'+(s.eatStart||'12:00')+'" onchange="saveIFSettings()" style="width:100%;padding:9px 6px;background:var(--glass);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font,system-ui);font-size:.82rem;font-weight:600;box-sizing:border-box;min-width:0">'
+          +'<input type="time" id="ifEatStart" value="'+(s.eatStart||'12:00')+'" onchange="onIFTimeChange(\'start\')" style="width:100%;padding:9px 6px;background:var(--glass);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font,system-ui);font-size:.82rem;font-weight:600;box-sizing:border-box;min-width:0">'
         +'</div>'
-        +'<div>'
+        +'<div style="flex:1;min-width:0">'
           +'<label style="font-size:.68rem;color:var(--text2);font-weight:600;display:block;margin-bottom:3px">🔒 Bitiş</label>'
-          +'<input type="time" id="ifEatEnd" value="'+(s.eatEnd||'20:00')+'" onchange="saveIFSettings()" style="width:100%;padding:9px 6px;background:var(--glass);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font,system-ui);font-size:.82rem;font-weight:600;box-sizing:border-box;min-width:0">'
+          +'<input type="time" id="ifEatEnd" value="'+(s.eatEnd||'20:00')+'" onchange="onIFTimeChange(\'end\')" style="width:100%;padding:9px 6px;background:var(--glass);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font,system-ui);font-size:.82rem;font-weight:600;box-sizing:border-box;min-width:0">'
         +'</div>'
       +'</div>'
       +'<div id="ifProtocolInfo" style="font-size:.72rem;color:var(--text2);padding:8px;background:var(--glass);border-radius:8px;border:1px solid var(--border);line-height:1.5"></div>'
@@ -8908,6 +9240,44 @@ function renderIFTimerInMeals(){
 function toggleIFCard(){
   window._ifCardCollapsed=!window._ifCardCollapsed;
   renderIFTimerInMeals();
+}
+
+function onIFProtocolChange(){
+  var protoEl=document.getElementById('ifProtocol');
+  if(!protoEl)return;
+  var proto=protoEl.value;
+  var p=IF_PROTOCOLS[proto];
+  if(p&&p.defStart&&p.defEnd){
+    var startEl=document.getElementById('ifEatStart');
+    var endEl=document.getElementById('ifEatEnd');
+    if(startEl)startEl.value=p.defStart;
+    if(endEl)endEl.value=p.defEnd;
+  }
+  saveIFSettings();
+}
+
+function onIFTimeChange(changed){
+  var protoEl=document.getElementById('ifProtocol');
+  if(!protoEl)return;
+  var proto=protoEl.value;
+  var p=IF_PROTOCOLS[proto];
+  if(!p||!p.eat)return saveIFSettings();
+  var startEl=document.getElementById('ifEatStart');
+  var endEl=document.getElementById('ifEatEnd');
+  if(!startEl||!endEl)return saveIFSettings();
+  var eatHours=p.eat;
+  if(changed==='start'){
+    var parts=startEl.value.split(':');
+    var h=parseInt(parts[0]),m=parseInt(parts[1]||0);
+    var endH=(h+eatHours)%24;
+    endEl.value=String(endH).padStart(2,'0')+':'+String(m).padStart(2,'0');
+  } else {
+    var parts=endEl.value.split(':');
+    var h=parseInt(parts[0]),m=parseInt(parts[1]||0);
+    var startH=(h-eatHours+24)%24;
+    startEl.value=String(startH).padStart(2,'0')+':'+String(m).padStart(2,'0');
+  }
+  saveIFSettings();
 }
 
 function saveIFSettings(){
@@ -8972,6 +9342,8 @@ setTimeout(function(){
   loadAllergens();
   loadIFSettings();
   renderIFTimerInMeals();
+  onTicketTypeChange();
+  setTimeout(function(){checkUnreadFeedbacks();},2000);
   // Update IF timer every minute
   setInterval(renderIFTimerInMeals,60000);
   // Check achievements on load
