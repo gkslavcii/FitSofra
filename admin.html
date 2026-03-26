@@ -130,6 +130,33 @@ input:focus{border-color:#ff6b3d}
   </div>
 </div>
 
+<!-- Feedback Modal -->
+<div class="edit-modal" id="feedbackModal">
+  <div class="edit-box" style="max-width:420px">
+    <h2>💬 Kullanıcıya Yanıt Gönder</h2>
+    <div id="feedbackTicketInfo" style="font-size:.75rem;color:#8a8d9b;margin-bottom:10px;padding:8px;background:#0d0f14;border-radius:8px;border:1px solid #2a2d38"></div>
+    <select id="feedbackTemplate" onchange="onFeedbackTemplateChange()" style="margin-bottom:6px">
+      <option value="">Şablon seçin (opsiyonel)...</option>
+      <option value="received">✅ Talebiniz alındı, inceleniyor</option>
+      <option value="done">🎉 Talebiniz tamamlandı</option>
+      <option value="rejected">❌ Talebiniz reddedildi</option>
+      <option value="info">ℹ️ Ek bilgi gerekli</option>
+      <option value="fixed">🔧 Hata düzeltildi</option>
+      <option value="planned">📋 Özellik plana alındı</option>
+    </select>
+    <textarea id="feedbackMessage" placeholder="Yanıt mesajınız..." style="width:100%;padding:10px;border:1.5px solid #2a2d38;border-radius:10px;background:#0d0f14;color:#e8e8ec;font-family:inherit;font-size:.82rem;resize:vertical;min-height:80px;margin-bottom:6px;outline:none"></textarea>
+    <input type="hidden" id="feedbackTicketId">
+    <input type="hidden" id="feedbackUserId">
+    <input type="hidden" id="feedbackTicketSubject">
+    <input type="hidden" id="feedbackTicketType">
+    <div class="row">
+      <button class="btn-u" onclick="sendFeedback()">📩 Yanıt Gönder</button>
+      <button class="btn-o" onclick="closeFeedbackModal()">İptal</button>
+    </div>
+    <div id="feedbackStatus" style="font-size:.75rem;color:#8a8d9b;margin-top:6px;min-height:16px"></div>
+  </div>
+</div>
+
 <div id="log"></div>
 <script>
 // Config firebase-config.js'den geliyor (ortak dosya)
@@ -370,6 +397,9 @@ function renderTickets(){
     var closeBtn=(t.status==='open'||t.status==='pending')
       ? '<button class="btn-sm btn-u" onclick="closeTicket(\''+t.id+'\',\''+t.src+'\')">✅ Kapat</button>'
       : '';
+    var feedbackBtn=(t.userId&&t.userId!=='anonymous')
+      ? '<button class="btn-sm btn-e" onclick="openFeedbackModal(\''+t.id+'\',\''+escAttr(t.subject||t.name||'')+'\',\''+escAttr(t.userId)+'\',\''+escAttr(t.type||'other')+'\')">💬 Yanıtla</button>'
+      : '';
     var delBtn='<button class="btn-sm btn-o" style="border:1px solid #ff5c5c;color:#ff5c5c" onclick="deleteTicket(\''+t.id+'\',\''+t.src+'\')">🗑️</button>';
 
     html+='<div class="req-card" style="border-left:3px solid '+sc+'">'
@@ -380,7 +410,7 @@ function renderTickets(){
       +'<div class="rd">'+tl+' · '+user+' · '+dt+'</div>'
       +(bodySnip?'<div class="rd" style="margin-top:4px;color:#c0c2cc;font-size:.72rem">'+bodySnip+'</div>':'')
       +macroLine
-      +'<div class="ra">'+closeBtn+delBtn+'</div>'
+      +'<div class="ra">'+feedbackBtn+closeBtn+delBtn+'</div>'
       +'</div>';
   });
   el.innerHTML=html;
@@ -2287,6 +2317,72 @@ async function loadAdminNotifHistory(){
 }
 // Sekme açıldığında yükle
 // notifs tab load handled in showTab
+
+// ═══════ FEEDBACK (YANITLAMA) FONKSİYONLARI ═══════
+function escAttr(s){return String(s||'').replace(/'/g,'&#39;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+var _feedbackTemplates={
+  received:'Merhaba! Talebiniz başarıyla alındı ve inceleme sürecindedir. En kısa sürede geri dönüş yapılacaktır. Teşekkürler!',
+  done:'Merhaba! Talebiniz başarıyla tamamlandı. Uygulamayı yenileyerek kontrol edebilirsiniz. İyi günler!',
+  rejected:'Merhaba, talebiniz incelendi ancak şu an için uygun bulunmadı. Anlayışınız için teşekkür ederiz.',
+  info:'Merhaba! Talebinizi daha iyi değerlendirebilmemiz için ek bilgi gereklidir. Lütfen detay ekleyerek tekrar gönderin.',
+  fixed:'Merhaba! Bildirdiğiniz hata düzeltildi. Teşekkürler!',
+  planned:'Merhaba! Öneriniz gelecek güncellemeler için plana alındı. Katkınız için teşekkürler!'
+};
+
+function openFeedbackModal(ticketId,subject,userId,type){
+  document.getElementById('feedbackTicketId').value=ticketId;
+  document.getElementById('feedbackUserId').value=userId;
+  document.getElementById('feedbackTicketSubject').value=subject;
+  document.getElementById('feedbackTicketType').value=type;
+  var typeMap={food:'🍽️ Yemek Talebi',bug:'🐛 Hata Bildirimi',feature:'💡 Özellik Önerisi',other:'📩 Diğer'};
+  document.getElementById('feedbackTicketInfo').innerHTML='<strong>'+escAttr(subject)+'</strong><br><span style="color:#ff6b3d">'+(typeMap[type]||type)+'</span> · Kullanıcı: '+userId.substring(0,12)+'...';
+  document.getElementById('feedbackMessage').value='';
+  document.getElementById('feedbackTemplate').value='';
+  document.getElementById('feedbackStatus').textContent='';
+  document.getElementById('feedbackModal').classList.add('show');
+}
+
+function closeFeedbackModal(){
+  document.getElementById('feedbackModal').classList.remove('show');
+}
+
+function onFeedbackTemplateChange(){
+  var tpl=document.getElementById('feedbackTemplate').value;
+  if(tpl&&_feedbackTemplates[tpl]){
+    document.getElementById('feedbackMessage').value=_feedbackTemplates[tpl];
+  }
+}
+
+async function sendFeedback(){
+  var ticketId=document.getElementById('feedbackTicketId').value;
+  var userId=document.getElementById('feedbackUserId').value;
+  var subject=document.getElementById('feedbackTicketSubject').value;
+  var type=document.getElementById('feedbackTicketType').value;
+  var message=document.getElementById('feedbackMessage').value.trim();
+  var statusEl=document.getElementById('feedbackStatus');
+  if(!message){statusEl.textContent='⚠️ Yanıt mesajı gerekli';return;}
+  if(!userId){statusEl.textContent='⚠️ Kullanıcı ID bulunamadı';return;}
+  statusEl.textContent='📩 Gönderiliyor...';
+  try{
+    await db.collection('user_feedbacks').add({
+      ticketId:ticketId,
+      userId:userId,
+      ticketSubject:subject,
+      ticketType:type,
+      message:message,
+      sentBy:auth.currentUser?auth.currentUser.uid:'admin',
+      readByUser:false,
+      createdAt:Date.now()
+    });
+    statusEl.textContent='✅ Yanıt gönderildi!';
+    log('💬 Feedback gönderildi: '+subject+' → '+userId.substring(0,10)+'...');
+    setTimeout(closeFeedbackModal,1200);
+  }catch(e){
+    statusEl.textContent='❌ Hata: '+e.message;
+  }
+}
 </script>
 
+</body>
 </body>
