@@ -20,6 +20,7 @@
 <script src="firebase-config.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-messaging-compat.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@700;800;900&display=swap');
 html{scroll-behavior:smooth}
@@ -845,7 +846,7 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
 
 
 
-<div class="page active" id="page-gunluk"><div id="dailyBanner" style="margin:0 16px 0;padding:12px 14px;border-radius:var(--radius-sm);background:linear-gradient(135deg,var(--accent-glow),rgba(160,124,248,.05));border:1px solid var(--border);font-size:.78rem;line-height:1.5;display:none;animation:fadeUp .3s ease"></div><div class="content" id="mealsContainer"></div></div>
+<div class="page active" id="page-gunluk"><div id="dailyBanner" style="margin:10px 16px 0;padding:12px 14px;border-radius:var(--radius-sm);background:linear-gradient(135deg,var(--accent-glow),rgba(160,124,248,.05));border:1px solid var(--border);font-size:.78rem;line-height:1.5;display:none;animation:fadeUp .3s ease"></div><div class="content" id="mealsContainer"></div></div>
 <div class="page" id="page-istatistik"><div class="content" id="statsContainer" style="padding-left:8px;padding-right:8px"></div></div>
 <div class="page" id="page-profil">
   <div class="content">
@@ -5348,6 +5349,8 @@ async function toggleNotifications(){
     saveNotifSettings();
     updateNotifUI();
     scheduleNotifications();
+    // FCM push token al ve kaydet (uygulama kapalıyken bildirim için)
+    setTimeout(initFCM, 500);
     showToast('🔔 Bildirimler aktifleştirildi!');
   }else{
     showToast('⚠️ Bildirim izni reddedildi. Tarayıcı ayarlarından izin verin.');
@@ -5939,24 +5942,24 @@ function renderStats(){
 
   // --- GRAFİKLER: trend + makro pasta ---
   var statsHtml=`
-  <div style="padding:0 16px 16px;overflow:hidden;box-sizing:border-box">
+  <div style="padding:0 0 16px;overflow:hidden;box-sizing:border-box">
 
-    <!-- Kalori Trend Grafiği -->
+    <!-- Kalori Trend Grafiği — tam genişlik -->
     <div style="background:var(--card);border-radius:var(--radius);padding:16px;margin-bottom:14px;border:1px solid var(--border)">
       <div style="font-weight:700;font-size:.88rem;margin-bottom:12px">📈 Kalori Trendi (7 Gün)</div>
-      <div style="position:relative;height:160px">
+      <div style="position:relative;height:160px;width:100%">
         <canvas id="calTrendChart"></canvas>
       </div>
     </div>
 
-    <!-- Makro Dağılım — mini yan yana -->
-    <div style="display:flex;gap:8px;margin-bottom:14px;overflow:hidden">
-      <div style="flex:1;min-width:0;background:var(--card);border-radius:var(--radius-sm);padding:10px;border:1px solid var(--border);overflow:hidden">
-        <div style="font-weight:700;font-size:.72rem;margin-bottom:6px;white-space:nowrap">🥗 Bugün</div>
-        <div style="position:relative;height:80px;width:80px;margin:0 auto">
+    <!-- Makro Dağılım — yan yana, tam genişlik -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
+      <div style="background:var(--card);border-radius:var(--radius-sm);padding:12px;border:1px solid var(--border)">
+        <div style="font-weight:700;font-size:.74rem;margin-bottom:8px;text-align:center">🥗 Bugün</div>
+        <div style="position:relative;height:100px;width:100px;margin:0 auto">
           <canvas id="macroDonutChart"></canvas>
         </div>
-        <div style="display:flex;flex-wrap:wrap;gap:2px;margin-top:6px;font-size:.6rem;justify-content:center">
+        <div style="display:flex;flex-wrap:wrap;gap:3px;margin-top:8px;font-size:.62rem;justify-content:center">
           <span style="color:#ff7a7a">P ${Math.round(t.prot)}g</span>
           <span style="color:var(--text2)">·</span>
           <span style="color:#60a5fa">K ${Math.round(t.carb)}g</span>
@@ -5964,12 +5967,12 @@ function renderStats(){
           <span style="color:#ffcc55">Y ${Math.round(t.fat)}g</span>
         </div>
       </div>
-      <div style="flex:1;min-width:0;background:var(--card);border-radius:var(--radius-sm);padding:10px;border:1px solid var(--border);overflow:hidden">
-        <div style="font-weight:700;font-size:.72rem;margin-bottom:6px;white-space:nowrap">📊 Hafta Ort.</div>
-        <div style="position:relative;height:80px;width:80px;margin:0 auto">
+      <div style="background:var(--card);border-radius:var(--radius-sm);padding:12px;border:1px solid var(--border)">
+        <div style="font-weight:700;font-size:.74rem;margin-bottom:8px;text-align:center">📊 Hafta Ort.</div>
+        <div style="position:relative;height:100px;width:100px;margin:0 auto">
           <canvas id="weeklyMacroChart"></canvas>
         </div>
-        <div style="display:flex;flex-wrap:wrap;gap:2px;margin-top:6px;font-size:.6rem;justify-content:center">
+        <div style="display:flex;flex-wrap:wrap;gap:3px;margin-top:8px;font-size:.62rem;justify-content:center">
           <span style="color:#ff7a7a">P ${avgProt}g</span>
           <span style="color:var(--text2)">·</span>
           <span style="color:#60a5fa">K ${avgCarb}g</span>
@@ -7713,7 +7716,94 @@ document.getElementById('tplModal').addEventListener('click',e=>{if(e.target.id=
 document.getElementById('barcodeModal').addEventListener('click',e=>{if(e.target.id==='barcodeModal')closeBarcodeScanner()});
 document.getElementById('editFoodModal').addEventListener('click',e=>{if(e.target.id==='editFoodModal')closeEditFood()});
 document.getElementById('recipeDetailModal').addEventListener('click',e=>{if(e.target.id==='recipeDetailModal')e.target.classList.remove('show')});
-function setupPWA(){const manifest={name:"FitSofra - Beslenme Takibi",short_name:"FitSofra",description:"Günlük kalori ve beslenme takip uygulaması",start_url:location.href,display:"standalone",background_color:"#0d0f14",theme_color:"#0d0f14",orientation:"portrait",icons:[{src:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%23ff6b3d'/><stop offset='100%25' stop-color='%23e85530'/></linearGradient></defs><rect fill='url(%23g)' width='512' height='512' rx='110'/><circle cx='256' cy='230' r='120' fill='none' stroke='%23fff' stroke-width='12' opacity='.9'/><line x1='256' y1='110' x2='256' y2='170' stroke='%23fff' stroke-width='12' stroke-linecap='round' opacity='.9'/><text x='256' y='400' text-anchor='middle' font-family='sans-serif' font-size='72' font-weight='900' fill='%23fff'>FitSofra</text></svg>",sizes:"512x512",type:"image/svg+xml",purpose:"any maskable"}]};const blob=new Blob([JSON.stringify(manifest)],{type:'application/json'});document.getElementById('manifestLink').href=URL.createObjectURL(blob);if('serviceWorker' in navigator){const swCode=`const CACHE_NAME='fitsofra-v2';self.addEventListener('install',e=>{self.skipWaiting()});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(n=>Promise.all(n.filter(n=>n!==CACHE_NAME).map(n=>caches.delete(n)))));self.clients.claim()});self.addEventListener('fetch',e=>{e.respondWith(fetch(e.request).catch(()=>caches.match(e.request)))})`;const swBlob=new Blob([swCode],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(()=>{})}}
+function setupPWA(){
+  // Manifest
+  const manifest={name:"FitSofra - Beslenme Takibi",short_name:"FitSofra",description:"Günlük kalori ve beslenme takip uygulaması",start_url:'/',display:"standalone",background_color:"#0d0f14",theme_color:"#0d0f14",orientation:"portrait",icons:[{src:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%23ff6b3d'/><stop offset='100%25' stop-color='%23e85530'/></linearGradient></defs><rect fill='url(%23g)' width='512' height='512' rx='110'/><circle cx='256' cy='230' r='120' fill='none' stroke='%23fff' stroke-width='12' opacity='.9'/><line x1='256' y1='110' x2='256' y2='170' stroke='%23fff' stroke-width='12' stroke-linecap='round' opacity='.9'/><text x='256' y='400' text-anchor='middle' font-family='sans-serif' font-size='72' font-weight='900' fill='%23fff'>FitSofra</text></svg>",sizes:"512x512",type:"image/svg+xml",purpose:"any maskable"}]};
+  const blob=new Blob([JSON.stringify(manifest)],{type:'application/json'});
+  document.getElementById('manifestLink').href=URL.createObjectURL(blob);
+
+  if('serviceWorker' in navigator){
+    // FCM için Service Worker — domain kökünde /firebase-messaging-sw.js olmalı
+    navigator.serviceWorker.register('/firebase-messaging-sw.js')
+      .then(reg=>{
+        console.log('[PWA] FCM Service Worker kayıtlı:', reg.scope);
+        window._swRegistration = reg;
+        // SW'den gelen mesajları dinle (bildirim tıklaması vs)
+        navigator.serviceWorker.addEventListener('message', e=>{
+          if(e.data?.type === 'NOTIFICATION_CLICK'){
+            const tab = e.data?.data?.tab;
+            if(tab) switchTab(tab);
+          }
+        });
+      })
+      .catch(err=>{
+        console.warn('[PWA] SW kaydedilemedi (geliştirme ortamı?):', err.message);
+        // Fallback: blob SW (FCM çalışmaz ama offline cache çalışır)
+        const swCode=`const CACHE_NAME='fitsofra-v3';self.addEventListener('install',e=>{self.skipWaiting()});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(n=>Promise.all(n.filter(n=>n!==CACHE_NAME).map(n=>caches.delete(n)))));self.clients.claim()});self.addEventListener('fetch',e=>{e.respondWith(fetch(e.request).catch(()=>caches.match(e.request)))})`;
+        const swBlob=new Blob([swCode],{type:'application/javascript'});
+        navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(()=>{});
+      });
+  }
+}
+
+const VAPID_KEY = 'BAECQq9oBU8ziQc6cAitxhZizB312wqtan8LPAbo61UdWWO8BdllURkXCFY_NRWgNzZIVP7xHb8wjCaPIpqezwQ';
+
+async function initFCM(){
+  try{
+    if(!window.firebase || !firebase.messaging) return;
+    const messaging = firebase.messaging();
+
+    // FCM token al
+    const currentToken = await messaging.getToken({ vapidKey: VAPID_KEY, serviceWorkerRegistration: window._swRegistration });
+    if(currentToken){
+      console.log('[FCM] Token alındı:', currentToken);
+      await saveFCMTokenToFirestore(currentToken);
+    } else {
+      console.warn('[FCM] Token alınamadı — bildirim izni gerekli');
+    }
+
+    // Uygulama ÖN PLANDA iken gelen mesajları yakala
+    messaging.onMessage(payload=>{
+      console.log('[FCM] Ön plan mesajı:', payload);
+      const n = payload.notification || payload.data || {};
+      // Ön planda iken uygulama içi toast + sistem bildirimi
+      showToast((n.title||'') + (n.body?' — '+n.body:''));
+      if(Notification.permission==='granted'){
+        new Notification(n.title||'FitSofra',{
+          body: n.body||'',
+          icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect fill="%23ff6b3d" width="100" height="100" rx="20"/><text x="50" y="68" text-anchor="middle" font-size="55">🥗</text></svg>',
+          tag: 'fitsofra-fg-'+Date.now()
+        });
+      }
+    });
+  } catch(err){
+    console.warn('[FCM] initFCM hatası:', err.message);
+  }
+}
+
+async function saveFCMTokenToFirestore(token){
+  try{
+    if(!db || !auth.currentUser) return;
+    const uid = auth.currentUser.uid;
+    await db.collection('users').doc(uid).set({
+      fcmToken: token,
+      fcmUpdatedAt: Date.now(),
+      platform: 'web'
+    }, { merge: true });
+    console.log('[FCM] Token Firestore\'a kaydedildi');
+  } catch(err){
+    console.warn('[FCM] Token kaydetme hatası:', err.message);
+  }
+}
+
+// Auth değişince FCM token kaydet
+if(typeof auth !== 'undefined'){
+  auth.onAuthStateChanged(user=>{
+    if(user && notifEnabled && Notification.permission==='granted'){
+      setTimeout(initFCM, 1000);
+    }
+  });
+}
 function loadTheme(){
   const saved=localStorage.getItem('fs_theme');
   if(saved==='light'){document.documentElement.setAttribute('data-theme','light');document.getElementById('themeBtn').textContent='☀️'}
@@ -8780,14 +8870,14 @@ function renderIFTimerInMeals(){
     +'</select>'
     // Saat ayarları — ayrı satırlarda, iç içe geçmesin
     +'<div id="ifTimeSettings" style="display:'+(proto!=='off'&&proto!=='5:2'?'block':'none')+';margin-bottom:10px">'
-      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px">'
         +'<div>'
-          +'<label style="font-size:.72rem;color:var(--text2);font-weight:600;display:block;margin-bottom:4px">🍽️ Yeme başlangıcı</label>'
-          +'<input type="time" id="ifEatStart" value="'+(s.eatStart||'12:00')+'" onchange="saveIFSettings()" style="width:100%;padding:12px 8px;background:var(--glass);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font,system-ui);font-size:.88rem;font-weight:600;box-sizing:border-box">'
+          +'<label style="font-size:.68rem;color:var(--text2);font-weight:600;display:block;margin-bottom:3px">🍽️ Başlangıç</label>'
+          +'<input type="time" id="ifEatStart" value="'+(s.eatStart||'12:00')+'" onchange="saveIFSettings()" style="width:100%;padding:9px 6px;background:var(--glass);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font,system-ui);font-size:.82rem;font-weight:600;box-sizing:border-box;min-width:0">'
         +'</div>'
         +'<div>'
-          +'<label style="font-size:.72rem;color:var(--text2);font-weight:600;display:block;margin-bottom:4px">🔒 Yeme bitişi</label>'
-          +'<input type="time" id="ifEatEnd" value="'+(s.eatEnd||'20:00')+'" onchange="saveIFSettings()" style="width:100%;padding:12px 8px;background:var(--glass);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font,system-ui);font-size:.88rem;font-weight:600;box-sizing:border-box">'
+          +'<label style="font-size:.68rem;color:var(--text2);font-weight:600;display:block;margin-bottom:3px">🔒 Bitiş</label>'
+          +'<input type="time" id="ifEatEnd" value="'+(s.eatEnd||'20:00')+'" onchange="saveIFSettings()" style="width:100%;padding:9px 6px;background:var(--glass);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font,system-ui);font-size:.82rem;font-weight:600;box-sizing:border-box;min-width:0">'
         +'</div>'
       +'</div>'
       +'<div id="ifProtocolInfo" style="font-size:.72rem;color:var(--text2);padding:8px;background:var(--glass);border-radius:8px;border:1px solid var(--border);line-height:1.5"></div>'
