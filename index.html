@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="FitSofra">
 <meta name="description" content="FitSofra - Günlük kalori ve beslenme takip uygulaması">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https:; img-src 'self' https: data: blob:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com https://world.openfoodfacts.org https://images.unsplash.com https://oauth.fatsecret.com https://platform.fatsecret.com; font-src 'self' https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https:; img-src 'self' https: data: blob:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com https://world.openfoodfacts.org https://images.unsplash.com https://*.cloudfunctions.net; font-src 'self' https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com">
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <link rel="manifest" id="manifestLink">
@@ -2363,65 +2363,17 @@ async function searchOFF(query){
 }
 
 
-// ═══════ FATSECRET API ENTEGRASYONU ═══════
+// ═══════ FATSECRET API ENTEGRASYONU (Cloud Function Proxy) ═══════
 var FatSecret={
-  _token:null,_tokenExpiry:0,_credentials:null,_credentialsLoaded:false,
   _searchCache:{},_cacheExpiry:{},
   CACHE_TTL:24*60*60*1000,
-
-  loadCredentials:async function(){
-    if(this._credentialsLoaded&&this._credentials)return this._credentials;
-    try{
-      var cached=localStorage.getItem('fs_fatsecret_creds');
-      var cacheTime=parseInt(localStorage.getItem('fs_fatsecret_creds_time'))||0;
-      if(cached&&(Date.now()-cacheTime)<this.CACHE_TTL){
-        try{this._credentials=JSON.parse(cached);this._credentialsLoaded=true;return this._credentials;}catch(e){}
-      }
-      var doc=await db.collection('settings').doc('fatsecret').get();
-      if(doc.exists){
-        var data=doc.data();
-        if(data.clientId&&data.clientSecret){
-          this._credentials={clientId:data.clientId,clientSecret:data.clientSecret};
-          this._credentialsLoaded=true;
-          localStorage.setItem('fs_fatsecret_creds',JSON.stringify(this._credentials));
-          localStorage.setItem('fs_fatsecret_creds_time',String(Date.now()));
-          return this._credentials;
-        }
-      }
-    }catch(e){console.warn('FatSecret creds error:',e)}
-    this._credentialsLoaded=true;
-    return null;
-  },
-
-  getToken:async function(){
-    if(this._token&&Date.now()<this._tokenExpiry-60000)return this._token;
-    var cachedToken=localStorage.getItem('fs_fatsecret_token');
-    var cachedExpiry=parseInt(localStorage.getItem('fs_fatsecret_token_expiry'))||0;
-    if(cachedToken&&Date.now()<cachedExpiry-60000){
-      this._token=cachedToken;this._tokenExpiry=cachedExpiry;return this._token;
-    }
-    var creds=await this.loadCredentials();
-    if(!creds)return null;
-    try{
-      var resp=await fetch('https://oauth.fatsecret.com/connect/token',{
-        method:'POST',
-        headers:{'Content-Type':'application/x-www-form-urlencoded'},
-        body:'grant_type=client_credentials&scope=basic&client_id='+encodeURIComponent(creds.clientId)+'&client_secret='+encodeURIComponent(creds.clientSecret)
-      });
-      if(!resp.ok)throw new Error('Token error: '+resp.status);
-      var data=await resp.json();
-      this._token=data.access_token;
-      this._tokenExpiry=Date.now()+(data.expires_in||86400)*1000;
-      localStorage.setItem('fs_fatsecret_token',this._token);
-      localStorage.setItem('fs_fatsecret_token_expiry',String(this._tokenExpiry));
-      return this._token;
-    }catch(e){console.warn('FatSecret token error:',e);return null;}
-  },
 
   search:async function(query){
     if(!query||query.length<2)return[];
     var cacheKey='fatsecret_'+query.toLowerCase().trim();
+    // Memory cache
     if(this._searchCache[cacheKey]&&this._cacheExpiry[cacheKey]>Date.now())return this._searchCache[cacheKey];
+    // localStorage cache (24h)
     try{
       var lsCache=localStorage.getItem(cacheKey);
       var lsExpiry=parseInt(localStorage.getItem(cacheKey+'_exp'))||0;
@@ -2431,82 +2383,45 @@ var FatSecret={
         return parsed;
       }
     }catch(e){}
-    var token=await this.getToken();
-    if(!token)return[];
+    // Cloud Function proxy call
     try{
-      var url='https://platform.fatsecret.com/rest/server.api?method=foods.search&search_expression='+encodeURIComponent(query)+'&format=json&max_results=20&page_number=0';
-      var resp=await fetch(url,{headers:{'Authorization':'Bearer '+token}});
-      if(!resp.ok){
-        if(resp.status===401){
-          this._token=null;this._tokenExpiry=0;
-          localStorage.removeItem('fs_fatsecret_token');
-          localStorage.removeItem('fs_fatsecret_token_expiry');
-          var rt=await this.getToken();if(!rt)return[];
-          var r2=await fetch(url,{headers:{'Authorization':'Bearer '+rt}});
-          if(!r2.ok)return[];
-          return this._parseResults(await r2.json(),cacheKey);
-        }
-        return[];
-      }
-      return this._parseResults(await resp.json(),cacheKey);
-    }catch(e){console.warn('FatSecret search error:',e);return[];}
-  },
-
-  _parseResults:function(data,cacheKey){
-    try{
-      var foods=data&&data.foods&&data.foods.food;
-      if(!foods)return[];
-      var arr=Array.isArray(foods)?foods:[foods];
+      var fn=firebase.functions().httpsCallable('fatSecretSearch');
+      var result=await fn({query:query});
+      var foods=result.data&&result.data.foods?result.data.foods:[];
+      // Filter dupes against local DB
       var dbNames=new Set(FOOD_DB.map(function(f){return f.name.toLowerCase().trim();}));
-      var results=[];
-      for(var i=0;i<arr.length;i++){
-        var f=arr[i];
-        var desc=f.food_description||'';
-        var cal=0,prot=0,carb=0,fat=0,servingInfo='';
-        var perMatch=desc.match(/^Per\s+(.+?)\s*-/i);
-        if(perMatch)servingInfo=perMatch[1];
-        var calM=desc.match(/Calories:\s*([\d.]+)/i);
-        var fatM=desc.match(/Fat:\s*([\d.]+)/i);
-        var carbM=desc.match(/Carbs:\s*([\d.]+)/i);
-        var protM=desc.match(/Protein:\s*([\d.]+)/i);
-        if(calM)cal=Math.round(parseFloat(calM[1]));
-        if(fatM)fat=Math.round(parseFloat(fatM[1]));
-        if(carbM)carb=Math.round(parseFloat(carbM[1]));
-        if(protM)prot=Math.round(parseFloat(protM[1]));
-        var brand=f.brand_name||'';
-        var name=f.food_name||'';
-        if(brand&&name.toLowerCase().indexOf(brand.toLowerCase())===-1)name=brand+' '+name;
-        if(cal>0&&!dbNames.has(name.toLowerCase().trim())){
-          results.push({name:name,cal:cal,prot:prot,carb:carb,fat:fat,brand:brand,serving:servingInfo,src:'fatsecret'});
-        }
-      }
       var seen=new Set();
-      var deduped=results.filter(function(f){var k=f.name.toLowerCase();if(seen.has(k))return false;seen.add(k);return true;});
-      var final=deduped.slice(0,20);
-      this._searchCache[cacheKey]=final;
+      var filtered=foods.filter(function(f){
+        var k=f.name.toLowerCase().trim();
+        if(dbNames.has(k)||seen.has(k))return false;
+        seen.add(k);return f.cal>0;
+      }).slice(0,20);
+      // Cache 24h
+      this._searchCache[cacheKey]=filtered;
       this._cacheExpiry[cacheKey]=Date.now()+this.CACHE_TTL;
-      try{localStorage.setItem(cacheKey,JSON.stringify(final));localStorage.setItem(cacheKey+'_exp',String(Date.now()+this.CACHE_TTL));}catch(e){}
-      return final;
-    }catch(e){console.warn('FatSecret parse error:',e);return[];}
+      try{localStorage.setItem(cacheKey,JSON.stringify(filtered));localStorage.setItem(cacheKey+'_exp',String(Date.now()+this.CACHE_TTL));}catch(e){}
+      return filtered;
+    }catch(e){
+      console.warn('FatSecret proxy error:',e.message||e);
+      return[];
+    }
   },
 
   isAvailable:function(){
-    var cached=localStorage.getItem('fs_fatsecret_creds');
-    return !!(cached||this._credentials);
+    // Cloud Function varsa kullanılabilir (credentials sunucuda)
+    return typeof firebase!=='undefined'&&typeof firebase.functions==='function';
   },
 
   clearCache:function(){
     this._searchCache={};this._cacheExpiry={};
-    this._token=null;this._tokenExpiry=0;
     var keysToRemove=[];
     for(var i=0;i<localStorage.length;i++){
       var k=localStorage.key(i);
-      if(k&&(k.indexOf('fatsecret_')===0||k.indexOf('fs_fatsecret_')===0))keysToRemove.push(k);
+      if(k&&k.indexOf('fatsecret_')===0)keysToRemove.push(k);
     }
     for(var j=0;j<keysToRemove.length;j++)localStorage.removeItem(keysToRemove[j]);
   }
 };
-setTimeout(function(){FatSecret.loadCredentials();},2000);
 
 
 function renderApiResults(foods){
