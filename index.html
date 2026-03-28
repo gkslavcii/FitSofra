@@ -1511,31 +1511,47 @@ let syncInProgress=false;
 
 async function firebaseLogin(){
   try{
-    const provider=new firebase.auth.GoogleAuthProvider();
-    // PWA standalone modda popup çalışmaz, redirect kullan
+    var provider=new firebase.auth.GoogleAuthProvider();
     var isStandalone=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true;
-    if(isStandalone){
-      await auth.signInWithRedirect(provider);
-    }else{
-      const result=await auth.signInWithPopup(provider);
-      currentUser=result.user;
-      updateSyncUI();
-      showToast('✅ Giriş başarılı! Veriler senkronize ediliyor...');
-      await syncFromCloud();
+    var isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent);
+
+    if(isStandalone&&isIOS){
+      // iOS PWA'da popup/redirect çalışmıyor — Safari'de aç
+      window.open(window.location.href.split('?')[0]+'?forceLogin=1','_blank');
+      showToast('🔑 Safari\'de giriş yapın, sonra uygulamaya dönün');
+      return;
     }
+
+    // Diğer tüm platformlar — orijinal popup yöntemi
+    const result=await auth.signInWithPopup(provider);
+    currentUser=result.user;
+    updateSyncUI();
+    showToast('✅ Giriş başarılı! Veriler senkronize ediliyor...');
+    await syncFromCloud();
   }catch(e){
     if(e.code==='auth/popup-closed-by-user')return;
     if(e.code==='auth/popup-blocked'){
-      // Popup engellenirse redirect'e düş
-      try{
-        const provider=new firebase.auth.GoogleAuthProvider();
-        await auth.signInWithRedirect(provider);
-      }catch(e2){showToast('⚠️ Giriş hatası: '+e2.message);}
+      showToast('⚠️ Popup engellendi. Lütfen popup izni verin.');
       return;
     }
     showToast('⚠️ Giriş hatası: '+e.message);
   }
 }
+
+// iOS PWA → Safari yönlendirmesi sonrası otomatik giriş
+(function(){
+  if(new URLSearchParams(window.location.search).get('forceLogin')==='1'){
+    history.replaceState(null,'',window.location.pathname);
+    setTimeout(function(){
+      var provider=new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider).then(function(result){
+        showToast('✅ Giriş başarılı! Uygulamaya dönebilirsiniz.');
+      }).catch(function(e){
+        if(e.code!=='auth/popup-closed-by-user') showToast('⚠️ '+e.message);
+      });
+    },1000);
+  }
+})();
 
 async function firebaseLogout(){
   if(!confirm('Çıkış yapılacak. Yerel verileriniz silinmeyecek.'))return;
