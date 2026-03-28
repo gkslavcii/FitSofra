@@ -2563,6 +2563,8 @@ const FatSecret={
 
 // FatSecret credentials'ı arka planda yükle
 setTimeout(()=>FatSecret.loadCredentials(),1000);
+
+function renderApiResults(foods){
   if(!foods.length){document.getElementById('apiStatus').innerHTML='Sonuç bulunamadı 😕';document.getElementById('apiResults').innerHTML='';return}
   document.getElementById('apiStatus').style.display='none';
   document.getElementById('apiResults').innerHTML=foods.map(f=>{
