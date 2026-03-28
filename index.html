@@ -2179,52 +2179,46 @@ function runUnifiedSearch(q){
   if(localMatches.length||recipeMatches.length)status.style.display='none';
   else if(!ql){status.innerHTML='Bu kategoride ürün yok';status.style.display='block';return}
   else{status.innerHTML='<div class="spinner"></div> Aranıyor...';status.style.display='block'}
-
   if(ql&&ql.length>=2){
-    // Tüm isimleri topla (dedup için)
-    const allNames=new Set();
-    localMatches.forEach(f=>allNames.add(f.name.toLowerCase().trim()));
-    recipeMatches.forEach(r=>allNames.add(r.name.toLowerCase().trim()));
-    let apiResultsAdded=false;
+    var allNames=new Set();
+    localMatches.forEach(function(f){allNames.add(f.name.toLowerCase().trim());});
+    recipeMatches.forEach(function(r){allNames.add(r.name.toLowerCase().trim());});
 
-    // FatSecret arama (öncelikli, daha kapsamlı veritabanı)
-    const fsPromise=FatSecret.isAvailable()?FatSecret.search(q).then(foods=>{
+    var fsPromise=FatSecret.isAvailable()?FatSecret.search(q).then(function(foods){
       if(foods.length){
-        const fsHtml='<div style="padding:8px 4px 4px;font-size:.7rem;font-weight:700;color:var(--green);border-top:1px solid var(--border);margin-top:4px;display:flex;align-items:center;gap:4px">🟢 FatSecret <span style="font-weight:500;color:var(--text2);font-size:.62rem">('+foods.length+' sonuç)</span></div>'+
-          foods.filter(f=>!allNames.has(f.name.toLowerCase().trim())).map(f=>{
+        var fsHtml='<div style="padding:8px 4px 4px;font-size:.7rem;font-weight:700;color:var(--green);border-top:1px solid var(--border);margin-top:4px;display:flex;align-items:center;gap:4px">\u{1F7E2} FatSecret <span style="font-weight:500;color:var(--text2);font-size:.62rem">('+foods.length+' sonu\u00e7)</span></div>';
+        foods.forEach(function(f){
+          if(allNames.has(f.name.toLowerCase().trim()))return;
           allNames.add(f.name.toLowerCase().trim());
-          const dn=f.name.length>45?f.name.substring(0,45)+'...':f.name;
-          const extra=f.brand?` <span style="color:var(--green);font-size:.62rem">${escHTML(f.brand)}</span>`:'';
-          const servInfo=f.serving?' • '+f.serving:'';
-          return`<div class="food-db-item" style="border-left:3px solid var(--green)" onclick="selectApiFood(${JSON.stringify({name:f.name,cal:f.cal,prot:f.prot,carb:f.carb,fat:f.fat}).replace(/"/g,'&quot;')})"><div class="fdb-info"><div class="fdb-name">${dn}${extra}</div><div class="fdb-detail">P:${f.prot}g K:${f.carb}g Y:${f.fat}g${servInfo}</div></div><div class="fdb-cal">${f.cal||'?'}</div></div>`;
-        }).join('');
+          var dn=f.name.length>45?f.name.substring(0,45)+'...':f.name;
+          var extra=f.brand?' <span style="color:var(--green);font-size:.62rem">'+escHTML(f.brand)+'</span>':'';
+          var servInfo=f.serving?' \u2022 '+f.serving:'';
+          fsHtml+='<div class="food-db-item" style="border-left:3px solid var(--green)" onclick="selectApiFood('+JSON.stringify({name:f.name,cal:f.cal,prot:f.prot,carb:f.carb,fat:f.fat}).replace(/"/g,'&quot;')+')"><div class="fdb-info"><div class="fdb-name">'+dn+extra+'</div><div class="fdb-detail">P:'+f.prot+'g K:'+f.carb+'g Y:'+f.fat+'g'+servInfo+'</div></div><div class="fdb-cal">'+(f.cal||'?')+'</div></div>';
+        });
         container.innerHTML=(container.innerHTML||'')+fsHtml;
-        apiResultsAdded=true;
       }
       return foods;
-    }).catch(()=>[]):Promise.resolve([]);
+    }).catch(function(){return[];}):Promise.resolve([]);
 
-    // OpenFoodFacts arama (paralel)
-    const offPromise=searchOFF(q).then(foods=>{
+    var offPromise=searchOFF(q).then(function(foods){
       if(foods.length){
-        const offHtml='<div style="padding:8px 4px 4px;font-size:.7rem;font-weight:700;color:var(--blue);border-top:1px solid var(--border);margin-top:4px;display:flex;align-items:center;gap:4px">🔵 OpenFoodFacts <span style="font-weight:500;color:var(--text2);font-size:.62rem">('+foods.length+' sonuç)</span></div>'+
-          foods.filter(f=>!allNames.has(f.name.toLowerCase().trim())).map(f=>{
+        var offHtml='<div style="padding:8px 4px 4px;font-size:.7rem;font-weight:700;color:var(--blue);border-top:1px solid var(--border);margin-top:4px;display:flex;align-items:center;gap:4px">\u{1F535} OpenFoodFacts <span style="font-weight:500;color:var(--text2);font-size:.62rem">('+foods.length+' sonu\u00e7)</span></div>';
+        foods.forEach(function(f){
+          if(allNames.has(f.name.toLowerCase().trim()))return;
           allNames.add(f.name.toLowerCase().trim());
-          const dn=f.name.length>45?f.name.substring(0,45)+'...':f.name;
-          const extra=f.brand?` <span style="color:var(--blue);font-size:.62rem">${escHTML(f.brand)}</span>`:'';
-          const qtyInfo=f.qty?' • '+f.qty:'';
-          return`<div class="food-db-item" style="border-left:3px solid var(--blue)" onclick="selectApiFood(${JSON.stringify({name:f.name,cal:f.cal,prot:f.prot,carb:f.carb,fat:f.fat}).replace(/"/g,'&quot;')})"><div class="fdb-info"><div class="fdb-name">${dn}${extra}</div><div class="fdb-detail">P:${f.prot}g K:${f.carb}g Y:${f.fat}g • 100g${qtyInfo}</div></div><div class="fdb-cal">${f.cal||'?'}</div></div>`;
-        }).join('');
+          var dn=f.name.length>45?f.name.substring(0,45)+'...':f.name;
+          var extra=f.brand?' <span style="color:var(--blue);font-size:.62rem">'+escHTML(f.brand)+'</span>':'';
+          var qtyInfo=f.qty?' \u2022 '+f.qty:'';
+          offHtml+='<div class="food-db-item" style="border-left:3px solid var(--blue)" onclick="selectApiFood('+JSON.stringify({name:f.name,cal:f.cal,prot:f.prot,carb:f.carb,fat:f.fat}).replace(/"/g,'&quot;')+')"><div class="fdb-info"><div class="fdb-name">'+dn+extra+'</div><div class="fdb-detail">P:'+f.prot+'g K:'+f.carb+'g Y:'+f.fat+'g \u2022 100g'+qtyInfo+'</div></div><div class="fdb-cal">'+(f.cal||'?')+'</div></div>';
+        });
         container.innerHTML=(container.innerHTML||'')+offHtml;
-        apiResultsAdded=true;
       }
       return foods;
-    }).catch(()=>[]);
+    }).catch(function(){return[];});
 
-    // Her iki API tamamlanınca status güncelle
-    Promise.allSettled([fsPromise,offPromise]).then(()=>{
+    Promise.allSettled([fsPromise,offPromise]).then(function(){
       status.style.display='none';
-      if(!container.innerHTML){status.innerHTML='Sonuç bulunamadı 😕';status.style.display='block'}
+      if(!container.innerHTML){status.innerHTML='Sonuç bulunamadı \u{1F615}';status.style.display='block';}
     });
   }else{status.style.display='none'}
 }
@@ -2368,25 +2362,24 @@ async function searchOFF(query){
   }catch(e){return[]}
 }
 
+
 // ═══════ FATSECRET API ENTEGRASYONU ═══════
-const FatSecret={
+var FatSecret={
   _token:null,_tokenExpiry:0,_credentials:null,_credentialsLoaded:false,
   _searchCache:{},_cacheExpiry:{},
-  CACHE_TTL:24*60*60*1000, // 24 saat
+  CACHE_TTL:24*60*60*1000,
 
-  async loadCredentials(){
+  loadCredentials:async function(){
     if(this._credentialsLoaded&&this._credentials)return this._credentials;
     try{
-      // Önce localStorage cache kontrol
-      const cached=localStorage.getItem('fs_fatsecret_creds');
-      const cacheTime=parseInt(localStorage.getItem('fs_fatsecret_creds_time'))||0;
+      var cached=localStorage.getItem('fs_fatsecret_creds');
+      var cacheTime=parseInt(localStorage.getItem('fs_fatsecret_creds_time'))||0;
       if(cached&&(Date.now()-cacheTime)<this.CACHE_TTL){
         try{this._credentials=JSON.parse(cached);this._credentialsLoaded=true;return this._credentials;}catch(e){}
       }
-      // Firestore'dan çek
-      const doc=await db.collection('settings').doc('fatsecret').get();
+      var doc=await db.collection('settings').doc('fatsecret').get();
       if(doc.exists){
-        const data=doc.data();
+        var data=doc.data();
         if(data.clientId&&data.clientSecret){
           this._credentials={clientId:data.clientId,clientSecret:data.clientSecret};
           this._credentialsLoaded=true;
@@ -2395,174 +2388,126 @@ const FatSecret={
           return this._credentials;
         }
       }
-    }catch(e){console.warn('FatSecret credentials yüklenemedi:',e)}
+    }catch(e){console.warn('FatSecret creds error:',e)}
     this._credentialsLoaded=true;
     return null;
   },
 
-  async getToken(){
-    // Mevcut token hâlâ geçerliyse kullan
+  getToken:async function(){
     if(this._token&&Date.now()<this._tokenExpiry-60000)return this._token;
-
-    // localStorage'daki cached token kontrol
-    const cachedToken=localStorage.getItem('fs_fatsecret_token');
-    const cachedExpiry=parseInt(localStorage.getItem('fs_fatsecret_token_expiry'))||0;
+    var cachedToken=localStorage.getItem('fs_fatsecret_token');
+    var cachedExpiry=parseInt(localStorage.getItem('fs_fatsecret_token_expiry'))||0;
     if(cachedToken&&Date.now()<cachedExpiry-60000){
       this._token=cachedToken;this._tokenExpiry=cachedExpiry;return this._token;
     }
-
-    const creds=await this.loadCredentials();
+    var creds=await this.loadCredentials();
     if(!creds)return null;
-
     try{
-      const resp=await fetch('https://oauth.fatsecret.com/connect/token',{
+      var resp=await fetch('https://oauth.fatsecret.com/connect/token',{
         method:'POST',
         headers:{'Content-Type':'application/x-www-form-urlencoded'},
-        body:'grant_type=client_credentials&scope=basic'+
-          '&client_id='+encodeURIComponent(creds.clientId)+
-          '&client_secret='+encodeURIComponent(creds.clientSecret)
+        body:'grant_type=client_credentials&scope=basic&client_id='+encodeURIComponent(creds.clientId)+'&client_secret='+encodeURIComponent(creds.clientSecret)
       });
-      if(!resp.ok)throw new Error('Token alınamadı: '+resp.status);
-      const data=await resp.json();
+      if(!resp.ok)throw new Error('Token error: '+resp.status);
+      var data=await resp.json();
       this._token=data.access_token;
-      // expires_in saniye cinsinden, ms'ye çevir
       this._tokenExpiry=Date.now()+(data.expires_in||86400)*1000;
       localStorage.setItem('fs_fatsecret_token',this._token);
       localStorage.setItem('fs_fatsecret_token_expiry',String(this._tokenExpiry));
       return this._token;
-    }catch(e){
-      console.warn('FatSecret token hatası:',e);
-      return null;
-    }
+    }catch(e){console.warn('FatSecret token error:',e);return null;}
   },
 
-  async search(query){
+  search:async function(query){
     if(!query||query.length<2)return[];
-    const cacheKey='fatsecret_'+query.toLowerCase().trim();
-    // 24 saat cache kontrolü
-    if(this._searchCache[cacheKey]&&this._cacheExpiry[cacheKey]>Date.now()){
-      return this._searchCache[cacheKey];
-    }
-    // localStorage cache kontrolü
+    var cacheKey='fatsecret_'+query.toLowerCase().trim();
+    if(this._searchCache[cacheKey]&&this._cacheExpiry[cacheKey]>Date.now())return this._searchCache[cacheKey];
     try{
-      const lsCache=localStorage.getItem(cacheKey);
-      const lsExpiry=parseInt(localStorage.getItem(cacheKey+'_exp'))||0;
+      var lsCache=localStorage.getItem(cacheKey);
+      var lsExpiry=parseInt(localStorage.getItem(cacheKey+'_exp'))||0;
       if(lsCache&&lsExpiry>Date.now()){
-        const parsed=JSON.parse(lsCache);
-        this._searchCache[cacheKey]=parsed;
-        this._cacheExpiry[cacheKey]=lsExpiry;
+        var parsed=JSON.parse(lsCache);
+        this._searchCache[cacheKey]=parsed;this._cacheExpiry[cacheKey]=lsExpiry;
         return parsed;
       }
     }catch(e){}
-
-    const token=await this.getToken();
+    var token=await this.getToken();
     if(!token)return[];
-
     try{
-      const url='https://platform.fatsecret.com/rest/server.api'+
-        '?method=foods.search'+
-        '&search_expression='+encodeURIComponent(query)+
-        '&format=json'+
-        '&max_results=20'+
-        '&page_number=0';
-      const resp=await fetch(url,{
-        headers:{'Authorization':'Bearer '+token}
-      });
+      var url='https://platform.fatsecret.com/rest/server.api?method=foods.search&search_expression='+encodeURIComponent(query)+'&format=json&max_results=20&page_number=0';
+      var resp=await fetch(url,{headers:{'Authorization':'Bearer '+token}});
       if(!resp.ok){
-        // Token expired, temizle ve tekrar dene
         if(resp.status===401){
           this._token=null;this._tokenExpiry=0;
           localStorage.removeItem('fs_fatsecret_token');
           localStorage.removeItem('fs_fatsecret_token_expiry');
-          // Tek retry
-          const retryToken=await this.getToken();
-          if(!retryToken)return[];
-          const resp2=await fetch(url,{headers:{'Authorization':'Bearer '+retryToken}});
-          if(!resp2.ok)return[];
-          const data2=await resp2.json();
-          return this._parseResults(data2,cacheKey);
+          var rt=await this.getToken();if(!rt)return[];
+          var r2=await fetch(url,{headers:{'Authorization':'Bearer '+rt}});
+          if(!r2.ok)return[];
+          return this._parseResults(await r2.json(),cacheKey);
         }
         return[];
       }
-      const data=await resp.json();
-      return this._parseResults(data,cacheKey);
-    }catch(e){
-      console.warn('FatSecret arama hatası:',e);
-      return[];
-    }
+      return this._parseResults(await resp.json(),cacheKey);
+    }catch(e){console.warn('FatSecret search error:',e);return[];}
   },
 
-  _parseResults(data,cacheKey){
+  _parseResults:function(data,cacheKey){
     try{
-      const foods=data?.foods?.food;
+      var foods=data&&data.foods&&data.foods.food;
       if(!foods)return[];
-      const arr=Array.isArray(foods)?foods:[foods];
-      const dbNames=new Set(FOOD_DB.map(f=>f.name.toLowerCase().trim()));
-      const results=arr.map(f=>{
-        // FatSecret food_description formatı: "Per 100g - Calories: 52kcal | Fat: 0.17g | Carbs: 13.81g | Protein: 0.26g"
-        const desc=f.food_description||'';
-        let cal=0,prot=0,carb=0,fat=0,servingInfo='';
-        // Parse serving bilgisi
-        const perMatch=desc.match(/^Per\s+(.+?)\s*-/i);
+      var arr=Array.isArray(foods)?foods:[foods];
+      var dbNames=new Set(FOOD_DB.map(function(f){return f.name.toLowerCase().trim();}));
+      var results=[];
+      for(var i=0;i<arr.length;i++){
+        var f=arr[i];
+        var desc=f.food_description||'';
+        var cal=0,prot=0,carb=0,fat=0,servingInfo='';
+        var perMatch=desc.match(/^Per\s+(.+?)\s*-/i);
         if(perMatch)servingInfo=perMatch[1];
-        // Parse macro değerleri
-        const calMatch=desc.match(/Calories:\s*([\d.]+)/i);
-        const fatMatch=desc.match(/Fat:\s*([\d.]+)/i);
-        const carbMatch=desc.match(/Carbs:\s*([\d.]+)/i);
-        const protMatch=desc.match(/Protein:\s*([\d.]+)/i);
-        if(calMatch)cal=Math.round(parseFloat(calMatch[1]));
-        if(fatMatch)fat=Math.round(parseFloat(fatMatch[1])*10)/10;
-        if(carbMatch)carb=Math.round(parseFloat(carbMatch[1])*10)/10;
-        if(protMatch)prot=Math.round(parseFloat(protMatch[1])*10)/10;
-
-        const brand=f.brand_name||'';
-        let name=f.food_name||'';
-        if(brand&&!name.toLowerCase().includes(brand.toLowerCase()))name=brand+' '+name;
-
-        return{name,cal,prot:Math.round(prot),carb:Math.round(carb),fat:Math.round(fat),brand,serving:servingInfo,src:'fatsecret'};
-      }).filter(f=>f.cal>0&&!dbNames.has(f.name.toLowerCase().trim()));
-
-      // Dedup
-      const seen=new Set();
-      const deduped=results.filter(f=>{const k=f.name.toLowerCase();if(seen.has(k))return false;seen.add(k);return true;});
-      const final=deduped.slice(0,20);
-
-      // Cache'e kaydet (24 saat)
+        var calM=desc.match(/Calories:\s*([\d.]+)/i);
+        var fatM=desc.match(/Fat:\s*([\d.]+)/i);
+        var carbM=desc.match(/Carbs:\s*([\d.]+)/i);
+        var protM=desc.match(/Protein:\s*([\d.]+)/i);
+        if(calM)cal=Math.round(parseFloat(calM[1]));
+        if(fatM)fat=Math.round(parseFloat(fatM[1]));
+        if(carbM)carb=Math.round(parseFloat(carbM[1]));
+        if(protM)prot=Math.round(parseFloat(protM[1]));
+        var brand=f.brand_name||'';
+        var name=f.food_name||'';
+        if(brand&&name.toLowerCase().indexOf(brand.toLowerCase())===-1)name=brand+' '+name;
+        if(cal>0&&!dbNames.has(name.toLowerCase().trim())){
+          results.push({name:name,cal:cal,prot:prot,carb:carb,fat:fat,brand:brand,serving:servingInfo,src:'fatsecret'});
+        }
+      }
+      var seen=new Set();
+      var deduped=results.filter(function(f){var k=f.name.toLowerCase();if(seen.has(k))return false;seen.add(k);return true;});
+      var final=deduped.slice(0,20);
       this._searchCache[cacheKey]=final;
       this._cacheExpiry[cacheKey]=Date.now()+this.CACHE_TTL;
-      try{
-        localStorage.setItem(cacheKey,JSON.stringify(final));
-        localStorage.setItem(cacheKey+'_exp',String(Date.now()+this.CACHE_TTL));
-      }catch(e){}
-
+      try{localStorage.setItem(cacheKey,JSON.stringify(final));localStorage.setItem(cacheKey+'_exp',String(Date.now()+this.CACHE_TTL));}catch(e){}
       return final;
-    }catch(e){
-      console.warn('FatSecret parse hatası:',e);
-      return[];
-    }
+    }catch(e){console.warn('FatSecret parse error:',e);return[];}
   },
 
-  isAvailable(){
-    // Hızlı kontrol: credentials var mı?
-    const cached=localStorage.getItem('fs_fatsecret_creds');
+  isAvailable:function(){
+    var cached=localStorage.getItem('fs_fatsecret_creds');
     return !!(cached||this._credentials);
   },
 
-  clearCache(){
+  clearCache:function(){
     this._searchCache={};this._cacheExpiry={};
     this._token=null;this._tokenExpiry=0;
-    // localStorage FatSecret cache temizle
-    const keysToRemove=[];
-    for(let i=0;i<localStorage.length;i++){
-      const k=localStorage.key(i);
-      if(k&&(k.startsWith('fatsecret_')||k.startsWith('fs_fatsecret_')))keysToRemove.push(k);
+    var keysToRemove=[];
+    for(var i=0;i<localStorage.length;i++){
+      var k=localStorage.key(i);
+      if(k&&(k.indexOf('fatsecret_')===0||k.indexOf('fs_fatsecret_')===0))keysToRemove.push(k);
     }
-    keysToRemove.forEach(k=>localStorage.removeItem(k));
+    for(var j=0;j<keysToRemove.length;j++)localStorage.removeItem(keysToRemove[j]);
   }
 };
+setTimeout(function(){FatSecret.loadCredentials();},2000);
 
-// FatSecret credentials'ı arka planda yükle
-setTimeout(()=>FatSecret.loadCredentials(),1000);
 
 function renderApiResults(foods){
   if(!foods.length){document.getElementById('apiStatus').innerHTML='Sonuç bulunamadı 😕';document.getElementById('apiResults').innerHTML='';return}
