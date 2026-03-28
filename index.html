@@ -2179,7 +2179,7 @@ function runUnifiedSearch(q){
   if(localMatches.length||recipeMatches.length)status.style.display='none';
   else if(!ql){status.innerHTML='Bu kategoride ürün yok';status.style.display='block';return}
   else{status.innerHTML='<div class="spinner"></div> Aranıyor...';status.style.display='block'}
-  if(ql&&ql.length>=2&&searchCat==='all'){
+  if(ql&&ql.length>=2){
     searchOFF(q).then(foods=>{
       if(foods.length){
         const offHtml=foods.map(f=>{
@@ -2216,6 +2216,26 @@ async function loadCloudFoods(){
       }
     });
     if(added){rebuildSearchIndex()}
+  }catch(e){}
+  // Also load crowd-sourced foods
+  loadCrowdFoods();
+}
+
+async function loadCrowdFoods(){
+  try{
+    const snap=await db.collection('crowd_foods').limit(500).get();
+    if(snap.empty)return;
+    let added=0;
+    var existingNames=new Set(FOOD_DB.map(function(f){return f.name.toLowerCase().trim();}));
+    snap.forEach(function(doc){
+      var f=doc.data();
+      if(f.name&&!existingNames.has(f.name.toLowerCase().trim())){
+        FOOD_DB.push({name:f.name,emoji:f.emoji||'🌍',cal:f.cal||0,prot:f.prot||0,carb:f.carb||0,fat:f.fat||0,cat:f.cat||'ambalajli',src:'crowd'});
+        existingNames.add(f.name.toLowerCase().trim());
+        added++;
+      }
+    });
+    if(added){rebuildSearchIndex();}
   }catch(e){}
 }
 
@@ -2271,24 +2291,47 @@ async function searchOFF(query){
   const cacheKey='off_'+query.toLowerCase();
   if(searchCache[cacheKey])return searchCache[cacheKey];
   try{
-    const url=`https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=20&fields=product_name,nutriments,brands,quantity,countries_tags&tagtype_0=countries&tag_contains_0=contains&tag_0=turkey`;
-    const res=await fetch(url);
-    if(!res.ok)return[];
-    const data=await res.json();
-    const foods=(data.products||[]).filter(p=>p.product_name&&p.nutriments).map(p=>{
+    // First try Turkey-specific, then global
+    var results=[];
+    var url1=`https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=15&fields=product_name,nutriments,brands,quantity,countries_tags&tagtype_0=countries&tag_contains_0=contains&tag_0=turkey`;
+    var res1=await fetch(url1);
+    if(res1.ok){
+      var data1=await res1.json();
+      results=results.concat(data1.products||[]);
+    }
+    // If we got fewer than 5 results, also search globally
+    if(results.length<5){
+      var url2=`https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=15&fields=product_name,nutriments,brands,quantity`;
+      var res2=await fetch(url2);
+      if(res2.ok){
+        var data2=await res2.json();
+        var existingNames=new Set(results.map(function(p){return(p.product_name||'').toLowerCase();}));
+        (data2.products||[]).forEach(function(p){
+          if(!existingNames.has((p.product_name||'').toLowerCase())) results.push(p);
+        });
+      }
+    }
+    // Also check existing DB names to avoid showing dupes
+    var dbNames=new Set(FOOD_DB.map(function(f){return f.name.toLowerCase().trim();}));
+    const foods=results.filter(p=>p.product_name&&p.nutriments).map(p=>{
       const n=p.nutriments||{};
-      const brand=p.brands?p.brands.split(',')[0]:'';
+      const brand=p.brands?p.brands.split(',')[0].trim():'';
+      var displayName=p.product_name.trim();
+      if(brand&&!displayName.toLowerCase().includes(brand.toLowerCase())) displayName=brand+' '+displayName;
       return{
-        name:brand?brand+' '+p.product_name:p.product_name,
+        name:displayName,
         cal:Math.round(n['energy-kcal_100g']||n['energy-kcal']||0),
         prot:Math.round(n.proteins_100g||0),
         carb:Math.round(n.carbohydrates_100g||0),
         fat:Math.round(n.fat_100g||0),
         brand,qty:p.quantity||''
       };
-    });
-    searchCache[cacheKey]=foods;
-    return foods;
+    }).filter(f=>f.cal>0&&!dbNames.has(f.name.toLowerCase().trim()));
+    // Dedup by name
+    var seen=new Set();
+    var deduped=foods.filter(function(f){var k=f.name.toLowerCase();if(seen.has(k))return false;seen.add(k);return true;});
+    searchCache[cacheKey]=deduped.slice(0,20);
+    return searchCache[cacheKey];
   }catch(e){return[]}
 }
 
@@ -2510,7 +2553,52 @@ let currentUnit = 'gram';
 let currentUnits = [];
 let currentUnitG = 100; // grams per unit for qty calc
 
-function selectApiFood(f){pendingFood={name:f.name,emoji:'🌍',cal:f.cal,prot:f.prot,carb:f.carb,fat:f.fat,portion:100,cat:'api'};closeModal();openPortionModal()}
+function selectApiFood(f){
+  pendingFood={name:f.name,emoji:'🌍',cal:f.cal,prot:f.prot,carb:f.carb,fat:f.fat,portion:100,cat:'api'};
+  // Auto-save to Firebase DB if not already there (crowd-sourced DB growth)
+  autoSaveToFoodDB(f);
+  closeModal();openPortionModal();
+}
+
+function autoSaveToFoodDB(f){
+  if(!f||!f.name||!f.cal)return;
+  var nameL=f.name.toLowerCase().trim();
+  // Check if already in local DB
+  if(FOOD_DB.some(function(x){return x.name.toLowerCase().trim()===nameL;}))return;
+  // Determine category
+  var cat=guessFoodCategory(f.name);
+  var newFood={name:f.name,emoji:f.emoji||'🌍',cal:Math.round(f.cal)||0,prot:Math.round(f.prot)||0,carb:Math.round(f.carb)||0,fat:Math.round(f.fat)||0,cat:cat};
+  // Add to local FOOD_DB immediately
+  FOOD_DB.push(newFood);
+  rebuildSearchIndex();
+  // Save to Firebase in background (if logged in)
+  if(typeof db!=='undefined'&&currentUser){
+    try{
+      db.collection('crowd_foods').doc(nameL.replace(/[\/\.]/g,'_').substring(0,100)).set({
+        ...newFood,addedBy:currentUser.uid,addedAt:Date.now()
+      }).catch(function(){});
+    }catch(e){}
+  }
+}
+
+function guessFoodCategory(name){
+  var n=(name||'').toLowerCase();
+  if(n.includes('süt')||n.includes('yoğurt')||n.includes('peynir')||n.includes('ayran')||n.includes('kefir'))return 'sut';
+  if(n.includes('çorba')||n.includes('soup'))return 'corba';
+  if(n.includes('et')||n.includes('tavuk')||n.includes('köfte')||n.includes('kebap')||n.includes('döner')||n.includes('sucuk'))return 'et';
+  if(n.includes('balık')||n.includes('somon')||n.includes('ton')||n.includes('karides'))return 'balik';
+  if(n.includes('makarna')||n.includes('pilav')||n.includes('bulgur')||n.includes('noodle'))return 'pilav';
+  if(n.includes('börek')||n.includes('pide')||n.includes('gözleme')||n.includes('simit'))return 'hamur';
+  if(n.includes('çikolata')||n.includes('gofret')||n.includes('bisküvi')||n.includes('cips')||n.includes('kraker'))return 'atistirmalik';
+  if(n.includes('meyve')||n.includes('elma')||n.includes('muz')||n.includes('portakal'))return 'meyve';
+  if(n.includes('sebze')||n.includes('salata'))return 'sebze';
+  if(n.includes('su ')||n.includes('cola')||n.includes('kola')||n.includes('çay')||n.includes('kahve')||n.includes('juice'))return 'icecek';
+  if(n.includes('baklava')||n.includes('tatlı')||n.includes('helva')||n.includes('dondurma'))return 'tatli';
+  if(n.includes('nohut')||n.includes('mercimek')||n.includes('fasulye'))return 'baklagil';
+  if(n.includes('fıstık')||n.includes('ceviz')||n.includes('badem')||n.includes('fındık'))return 'kuruyemis';
+  if(n.includes('sos')||n.includes('ketçap')||n.includes('mayonez'))return 'sos';
+  return 'ambalajli';
+}
 function selectDbFood(name){pendingFood=FOOD_DB.find(f=>f.name===name);if(!pendingFood)return;pendingFood={...pendingFood,portion:100};closeModal();openPortionModal()}
 
 function openPortionModal(){
