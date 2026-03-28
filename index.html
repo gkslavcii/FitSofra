@@ -1512,15 +1512,25 @@ let syncInProgress=false;
 async function firebaseLogin(){
   try{
     const provider=new firebase.auth.GoogleAuthProvider();
-    const result=await auth.signInWithPopup(provider);
-    currentUser=result.user;
-    updateSyncUI();
-    showToast('✅ Giriş başarılı! Veriler senkronize ediliyor...');
-    await syncFromCloud();
+    // PWA standalone modda popup çalışmaz, redirect kullan
+    var isStandalone=window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true;
+    if(isStandalone){
+      await auth.signInWithRedirect(provider);
+    }else{
+      const result=await auth.signInWithPopup(provider);
+      currentUser=result.user;
+      updateSyncUI();
+      showToast('✅ Giriş başarılı! Veriler senkronize ediliyor...');
+      await syncFromCloud();
+    }
   }catch(e){
     if(e.code==='auth/popup-closed-by-user')return;
     if(e.code==='auth/popup-blocked'){
-      showToast('⚠️ Popup engellendi. Lütfen popup izni verin.');
+      // Popup engellenirse redirect'e düş
+      try{
+        const provider=new firebase.auth.GoogleAuthProvider();
+        await auth.signInWithRedirect(provider);
+      }catch(e2){showToast('⚠️ Giriş hatası: '+e2.message);}
       return;
     }
     showToast('⚠️ Giriş hatası: '+e.message);
