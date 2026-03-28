@@ -1512,28 +1512,8 @@ let syncInProgress=false;
 async function firebaseLogin(){
   try{
     const provider=new firebase.auth.GoogleAuthProvider();
-    // iOS PWA keyboard bug workaround (WebKit Bug #279904)
-    if(window.navigator.standalone===true&&/iPad|iPhone|iPod/.test(navigator.userAgent)){
-      // iOS PWA'da Google giriş sayfasında klavye açılmayabiliyor
-      // Workaround: önce Safari'yi arka planda aç, sonra geri gel
-      var kbTest=document.createElement('input');
-      kbTest.type='text';kbTest.style.cssText='position:fixed;top:-100px;opacity:0;font-size:16px';
-      document.body.appendChild(kbTest);
-      kbTest.focus();
-      var kbWorks=false;
-      await new Promise(function(r){
-        // Klavye açıldıysa visualViewport küçülür
-        var origH=window.innerHeight;
-        setTimeout(function(){
-          if(window.visualViewport&&window.visualViewport.height<origH-50)kbWorks=true;
-          kbTest.blur();document.body.removeChild(kbTest);r();
-        },600);
-      });
-      if(!kbWorks){
-        showToast('⚠️ iOS klavye hatası algılandı. Safari\'yi arka planda açıp tekrar dönün.',4000);
-        // Yine de deneyelim
-      }
-    }
+    // Hesap seçici ekranını göster — klavye gerektirmez, sadece tıklama
+    provider.setCustomParameters({prompt:'select_account'});
     const result=await auth.signInWithPopup(provider);
     currentUser=result.user;
     updateSyncUI();
