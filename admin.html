@@ -433,12 +433,26 @@ async function checkDB(){
   const el=document.getElementById("dbStatus");
   try{const doc=await db.collection("config").doc("food_db").get();
     if(doc.exists&&doc.data().foods){cloudFoods=doc.data().foods;const d=doc.data();const cats={};cloudFoods.forEach(f=>{cats[f.cat]=(cats[f.cat]||0)+1});
-      let h='<div class="stat-row"><span>Toplam</span><span>'+d.count+'</span></div><div class="stat-row"><span>Guncelleme</span><span>'+new Date(d.updatedAt).toLocaleString("tr-TR")+'</span></div><div style="margin-top:6px;font-size:.68rem;color:#8a8d9b">';
-      Object.entries(cats).sort((a,b)=>b[1]-a[1]).forEach(([c,n])=>{h+=c+":"+n+" "});el.innerHTML=h+"</div>";document.getElementById("totalCount").textContent=cloudFoods.length;
+      let h='<div class="stat-row"><span>Toplam Kayıt</span><span style="font-size:1.1rem">'+cloudFoods.length+'</span></div>';
+      h+='<div class="stat-row"><span>Guncelleme</span><span>'+new Date(d.updatedAt).toLocaleString("tr-TR")+'</span></div>';
+      var docSize=JSON.stringify(cloudFoods).length;
+      h+='<div class="stat-row"><span>Doküman Boyutu</span><span>'+(docSize>1000000?'⚠️ ':'')+Math.round(docSize/1024)+'KB / 1024KB</span></div>';
+      h+='<div style="margin-top:6px;font-size:.68rem;color:#8a8d9b">';
+      Object.entries(cats).sort((a,b)=>b[1]-a[1]).forEach(([c,n])=>{h+=c+":"+n+" "});
+      el.innerHTML=h+"</div>";
+      document.getElementById("totalCount").textContent=cloudFoods.length;
     }else{el.innerHTML="<p>Henuz yuklenme yapilmamis</p>";cloudFoods=[]}
   }catch(e){el.innerHTML="<p>❌ "+e.message+"</p>"}
 }
-async function saveDB(){await db.collection("config").doc("food_db").set({foods:cloudFoods,updatedAt:Date.now(),count:cloudFoods.length})}
+async function saveDB(){
+  // Check size before saving — Firestore 1MB limit
+  var jsonStr=JSON.stringify(cloudFoods);
+  if(jsonStr.length>900000){
+    // Split into chunks if too large
+    log('⚠️ DB büyük ('+Math.round(jsonStr.length/1024)+'KB), kayıt deneniyor...');
+  }
+  await db.collection("config").doc("food_db").set({foods:cloudFoods,updatedAt:Date.now(),count:cloudFoods.length});
+}
 async function uploadAll(){
   if(!auth.currentUser){log("Giris yapin");return}
   if(!confirm(ALL_FOODS.length+" yemek yuklenecek? (Silinmis urunler korunur)"))return;
@@ -2522,10 +2536,29 @@ async function loadAdminNotifHistory(){
 // ═══════ TÜRKOMP VERİ ÇEKİCİ FONKSİYONLARI ═══════
 var _turkompFoods=[];
 var TURKOMP_BASE='https://turkomp.tarimorman.gov.tr';
-var TURKOMP_PROXY='https://api.allorigins.win/raw?url=';
+var TURKOMP_PROXIES=[
+  'https://api.allorigins.win/raw?url=',
+  'https://corsproxy.io/?',
+  'https://api.codetabs.com/v1/proxy?quest='
+];
 
 var TURKOMP_GROUP_MAP={'1':'sut','2':'kahvalti','3':'et','4':'balik','5':'sos','6':'pilav','7':'baklagil','8':'sebze','9':'meyve','10':'tatli','11':'icecek','12':'atistirmalik','13':'tatli','14':'sut'};
 var TURKOMP_EMOJI_MAP={sut:'🥛',kahvalti:'🥚',et:'🥩',balik:'🐟',sos:'🫙',pilav:'🍚',baklagil:'🫘',sebze:'🥬',meyve:'🍎',tatli:'🍰',icecek:'🥤',atistirmalik:'🍿',kuruyemis:'🥜',sporcu:'💪',hamur:'🥟',fastfood:'🍔',ambalajli:'📦'};
+
+async function fetchWithProxy(url){
+  for(var i=0;i<TURKOMP_PROXIES.length;i++){
+    try{
+      var resp=await fetch(TURKOMP_PROXIES[i]+encodeURIComponent(url),{signal:AbortSignal.timeout(10000)});
+      if(resp.ok){
+        var text=await resp.text();
+        if(text&&text.length>100) return text;
+      }
+    }catch(e){
+      if(i===TURKOMP_PROXIES.length-1) throw new Error('Tüm proxy\'ler başarısız oldu. Son hata: '+e.message);
+    }
+  }
+  throw new Error('Proxy erişimi sağlanamadı');
+}
 
 async function fetchTurkompList(){
   var query=document.getElementById('turkompQuery').value.trim().toLowerCase();
@@ -2545,9 +2578,7 @@ async function fetchTurkompList(){
   if(letter)url+='&harf='+encodeURIComponent(letter);
 
   try{
-    var resp=await fetch(TURKOMP_PROXY+encodeURIComponent(url));
-    if(!resp.ok) throw new Error('Proxy/TürKomp erişim hatası: '+resp.status);
-    var html=await resp.text();
+    var html=await fetchWithProxy(url);
 
     // Parse food list from HTML table
     var parser=new DOMParser();
@@ -2621,9 +2652,7 @@ async function fetchTurkompDetails(){
   for(var i=0;i<toFetch.length;i++){
     var f=toFetch[i];
     try{
-      var resp=await fetch(TURKOMP_PROXY+encodeURIComponent(f.href));
-      if(!resp.ok){done++;continue;}
-      var html=await resp.text();
+      var html=await fetchWithProxy(f.href);
       var parser=new DOMParser();
       var doc=parser.parseFromString(html,'text/html');
 
@@ -2700,13 +2729,17 @@ async function saveTurkompFoods(){
   var checked=document.querySelectorAll('.turkomp-cb:checked');
   if(!checked.length){saveStatus.textContent='⚠️ Hiç öğe seçilmedi';return;}
 
-  saveStatus.textContent='📦 DB güncelleniyor...';
+  saveStatus.textContent='📦 Mevcut DB yükleniyor...';
   try{
     var doc=await db.collection('config').doc('food_db').get();
     if(doc.exists&&doc.data().foods) cloudFoods=doc.data().foods;
-  }catch(e){}
+  }catch(e){
+    saveStatus.textContent='❌ DB okunamadı: '+e.message;
+    return;
+  }
 
   var existingSet=new Set(cloudFoods.map(function(f){return f.name.toLowerCase().trim();}));
+  var validCats=['kahvalti','corba','et','balik','sebze','baklagil','pilav','hamur','tatli','meyve','kuruyemis','sut','icecek','fastfood','atistirmalik','ambalajli','sos','sporcu'];
   var added=0,skipped=0;
 
   for(var i=0;i<checked.length;i++){
@@ -2715,19 +2748,25 @@ async function saveTurkompFoods(){
     if(!f)continue;
     if(existingSet.has(f.name.toLowerCase().trim())){skipped++;continue;}
     if(!f.cal&&!f.prot&&!f.carb&&!f.fat){skipped++;continue;}
-    cloudFoods.push({name:f.name,emoji:f.emoji||'🍽️',cal:Math.round(f.cal)||0,prot:Math.round(f.prot)||0,carb:Math.round(f.carb)||0,fat:Math.round(f.fat)||0,cat:f.cat||'atistirmalik'});
+    var cat=(f.cat||'').trim();
+    if(!cat||validCats.indexOf(cat)===-1) cat='ambalajli';
+    cloudFoods.push({name:f.name,emoji:f.emoji||'🍽️',cal:Math.round(f.cal)||0,prot:Math.round(f.prot)||0,carb:Math.round(f.carb)||0,fat:Math.round(f.fat)||0,cat:cat});
     existingSet.add(f.name.toLowerCase().trim());
     added++;
   }
 
   if(added>0){
+    saveStatus.textContent='💾 Firebase\'e kaydediliyor ('+added+' öğe)...';
     try{
       await saveDB();
       saveStatus.textContent='✅ '+added+' eklendi! ('+skipped+' atlandı) Toplam: '+cloudFoods.length;
       log('🇹🇷 TürKomp: '+added+' eklendi, toplam: '+cloudFoods.length);
       renderList();checkDB();
       renderTurkompPreview();
-    }catch(e){saveStatus.textContent='❌ '+e.message;}
+    }catch(e){
+      saveStatus.textContent='❌ Kayıt hatası: '+e.message+' (DB boyutu: '+Math.round(JSON.stringify(cloudFoods).length/1024)+'KB)';
+      cloudFoods=cloudFoods.slice(0,cloudFoods.length-added);
+    }
   }else{
     saveStatus.textContent='⚠️ Eklenecek yeni öğe yok ('+skipped+' atlandı)';
   }
@@ -2900,36 +2939,56 @@ async function saveUSDAFoods(){
   var checked=document.querySelectorAll('.usda-cb:checked');
   if(!checked.length){saveStatus.textContent='⚠️ Hiç öğe seçilmedi';return;}
 
-  saveStatus.textContent='📦 DB güncelleniyor...';
+  saveStatus.textContent='📦 Mevcut DB yükleniyor...';
   try{
     var doc=await db.collection('config').doc('food_db').get();
     if(doc.exists&&doc.data().foods) cloudFoods=doc.data().foods;
-  }catch(e){}
+  }catch(e){
+    saveStatus.textContent='❌ DB okunamadı: '+e.message;
+    return;
+  }
 
   var existingSet=new Set(cloudFoods.map(function(f){return f.name.toLowerCase().trim();}));
   var added=0,skipped=0;
+  var validCats=['kahvalti','corba','et','balik','sebze','baklagil','pilav','hamur','tatli','meyve','kuruyemis','sut','icecek','fastfood','atistirmalik','ambalajli','sos','sporcu'];
 
   for(var i=0;i<checked.length;i++){
     var idx=parseInt(checked[i].dataset.idx);
     var f=_usdaFoods[idx];
     if(!f)continue;
-    var name=f.nameTR||f.nameEN;
+    var name=(f.nameTR||f.nameEN||'').trim();
+    if(!name){skipped++;continue;}
     if(existingSet.has(name.toLowerCase().trim())){skipped++;continue;}
-    cloudFoods.push({name:name,emoji:f.emoji||'🍽️',cal:f.cal||0,prot:f.prot||0,carb:f.carb||0,fat:f.fat||0,cat:f.cat||'atistirmalik'});
+    var cat=(f.cat||'').trim();
+    if(!cat||validCats.indexOf(cat)===-1) cat='ambalajli';
+    cloudFoods.push({
+      name:name,
+      emoji:f.emoji||'🍽️',
+      cal:Math.round(f.cal)||0,
+      prot:Math.round(f.prot)||0,
+      carb:Math.round(f.carb)||0,
+      fat:Math.round(f.fat)||0,
+      cat:cat
+    });
     existingSet.add(name.toLowerCase().trim());
     added++;
   }
 
   if(added>0){
+    saveStatus.textContent='💾 Firebase\'e kaydediliyor ('+added+' öğe)...';
     try{
       await saveDB();
-      saveStatus.textContent='✅ '+added+' eklendi! ('+skipped+' mevcut atlandı) Toplam: '+cloudFoods.length;
+      saveStatus.textContent='✅ '+added+' eklendi! ('+skipped+' atlandı) Toplam: '+cloudFoods.length;
       log('🌍 USDA: '+added+' eklendi, toplam: '+cloudFoods.length);
       renderList();checkDB();
       renderUSDAPreview();
-    }catch(e){saveStatus.textContent='❌ '+e.message;}
+    }catch(e){
+      saveStatus.textContent='❌ Kayıt hatası: '+e.message+' (DB boyutu: '+Math.round(JSON.stringify(cloudFoods).length/1024)+'KB)';
+      // Rollback
+      cloudFoods=cloudFoods.slice(0,cloudFoods.length-added);
+    }
   }else{
-    saveStatus.textContent='⚠️ Eklenecek yeni öğe yok ('+skipped+' mevcut)';
+    saveStatus.textContent='⚠️ Eklenecek yeni öğe yok ('+skipped+' atlandı)';
   }
 }
 
