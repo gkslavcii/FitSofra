@@ -74,6 +74,7 @@ input:focus{border-color:#ff6b3d}
   <button class="tab-btn" onclick="showTab('recipes',this)">🍽️ Tarifler</button>
   <button class="tab-btn" onclick="showTab('browse',this)">📋 DB</button>
   <button class="tab-btn" onclick="showTab('notifs',this)">🔔</button>
+  <button class="tab-btn" onclick="showTab('settings',this)">⚙️ API</button>
 </div>
 <div class="section active" id="sec-status">
   <div class="card"><h2>☁️ DB Durumu</h2><div id="dbStatus"><p>Kontrol ediliyor...</p></div><button class="btn-o" onclick="checkDB()">🔄 Yenile</button></div>
@@ -2333,6 +2334,51 @@ setTimeout(renderAdminCatOrder,500);
 
 </div><!-- /sec-notifs -->
 
+<!-- FatSecret API Ayarları -->
+<div id="sec-settings" class="section">
+  <div class="card" style="border-left:3px solid #3dd68c">
+    <h2>🟢 FatSecret API Ayarları</h2>
+    <p>FatSecret Platform API entegrasyonu. OAuth 2.0 Client Credentials flow ile çalışır. Token ve arama sonuçları 24 saat cache'lenir.</p>
+
+    <div style="background:#0d0f14;border:1px solid #2a2d38;border-radius:10px;padding:12px;margin-bottom:12px">
+      <div style="font-size:.72rem;color:#8a8d9b;margin-bottom:8px;line-height:1.5">
+        📋 <strong style="color:#e8e8ec">Nasıl Kurulur?</strong><br>
+        1. <a href="https://platform.fatsecret.com" target="_blank" style="color:#3dd68c">platform.fatsecret.com</a> adresinden hesap oluştur<br>
+        2. "My Apps" → "Create New App" ile uygulama oluştur<br>
+        3. Client ID ve Client Secret bilgilerini aşağıya gir<br>
+        4. Kaydet butonuna bas — bilgiler Firestore'a kaydedilir
+      </div>
+    </div>
+
+    <label style="font-size:.72rem;color:#8a8d9b;font-weight:700;display:block;margin-bottom:3px">🔑 Client ID</label>
+    <input type="text" id="fsClientId" placeholder="ör: abc123def456..." style="font-size:.82rem;margin-bottom:8px">
+
+    <label style="font-size:.72rem;color:#8a8d9b;font-weight:700;display:block;margin-bottom:3px">🔒 Client Secret</label>
+    <input type="password" id="fsClientSecret" placeholder="ör: xyz789..." style="font-size:.82rem;margin-bottom:10px">
+
+    <button class="btn-u" onclick="saveFatSecretCreds()">💾 Firestore'a Kaydet</button>
+    <div id="fsStatus" style="font-size:.78rem;margin-top:8px;min-height:20px"></div>
+  </div>
+
+  <div class="card">
+    <h2>🧪 Bağlantı Testi</h2>
+    <p>Kayıtlı kimlik bilgileriyle FatSecret API bağlantısını test et.</p>
+    <div class="row" style="margin-bottom:6px">
+      <input type="text" id="fsTestQuery" placeholder="Test arama (ör: yogurt, chicken...)" style="flex:3;font-size:.82rem">
+      <button class="btn-u btn-sm" style="flex:1;background:#3dd68c" onclick="testFatSecretAPI()">🧪 Test</button>
+    </div>
+    <div id="fsTestStatus" style="font-size:.75rem;color:#8a8d9b;margin-top:4px;min-height:16px"></div>
+    <div id="fsTestResults" style="margin-top:8px;max-height:300px;overflow-y:auto"></div>
+  </div>
+
+  <div class="card">
+    <h2>📊 API Durumu</h2>
+    <div id="fsApiStatus"><p>Kontrol ediliyor...</p></div>
+    <button class="btn-o" onclick="checkFatSecretStatus()" style="margin-top:6px">🔄 Durumu Kontrol Et</button>
+    <button class="btn-r btn-sm" onclick="clearFatSecretCache()" style="margin-top:6px;background:#ff5c5c22;color:#ff5c5c;border:1px solid #ff5c5c44">🗑️ Cache Temizle</button>
+  </div>
+</div><!-- /sec-settings -->
+
 <script>
 // ── FCM Push Bildirimi fonksiyonları ─────────────────────────────────────────
 
@@ -3275,7 +3321,186 @@ async function sendFeedback(){
     statusEl.textContent='❌ Hata: '+e.message;
   }
 }
+
+// ═══════ FATSECRET API AYARLARI ═══════
+
+async function saveFatSecretCreds(){
+  var clientId=document.getElementById('fsClientId').value.trim();
+  var clientSecret=document.getElementById('fsClientSecret').value.trim();
+  var statusEl=document.getElementById('fsStatus');
+  if(!clientId||!clientSecret){statusEl.innerHTML='<span style="color:#ff5c5c">⚠️ Client ID ve Client Secret gerekli</span>';return;}
+  statusEl.innerHTML='<span style="color:#f0a030">💾 Kaydediliyor...</span>';
+  try{
+    await db.collection('settings').doc('fatsecret').set({
+      clientId:clientId,
+      clientSecret:clientSecret,
+      updatedAt:Date.now(),
+      updatedBy:auth.currentUser?auth.currentUser.uid:'admin'
+    });
+    // Yerel cache'i de güncelle
+    localStorage.setItem('fs_fatsecret_creds',JSON.stringify({clientId,clientSecret}));
+    localStorage.setItem('fs_fatsecret_creds_time',String(Date.now()));
+    // Eski token'ı temizle (yeni credentials ile yeni token alınacak)
+    localStorage.removeItem('fs_fatsecret_token');
+    localStorage.removeItem('fs_fatsecret_token_expiry');
+    statusEl.innerHTML='<span style="color:#3dd68c">✅ FatSecret API kimlik bilgileri kaydedildi!</span>';
+    log('🟢 FatSecret API credentials güncellendi');
+    checkFatSecretStatus();
+  }catch(e){
+    statusEl.innerHTML='<span style="color:#ff5c5c">❌ Hata: '+e.message+'</span>';
+  }
+}
+
+async function loadFatSecretCreds(){
+  try{
+    var doc=await db.collection('settings').doc('fatsecret').get();
+    if(doc.exists){
+      var data=doc.data();
+      if(data.clientId){
+        document.getElementById('fsClientId').value=data.clientId;
+        document.getElementById('fsClientSecret').value=data.clientSecret||'';
+      }
+    }
+  }catch(e){console.warn('FatSecret creds yüklenemedi',e)}
+}
+
+async function testFatSecretAPI(){
+  var query=document.getElementById('fsTestQuery').value.trim()||'yogurt';
+  var statusEl=document.getElementById('fsTestStatus');
+  var resultsEl=document.getElementById('fsTestResults');
+  statusEl.innerHTML='<span style="color:#f0a030">🔄 Token alınıyor...</span>';
+  resultsEl.innerHTML='';
+
+  var clientId=document.getElementById('fsClientId').value.trim();
+  var clientSecret=document.getElementById('fsClientSecret').value.trim();
+  if(!clientId||!clientSecret){
+    // Firestore'dan dene
+    try{
+      var doc=await db.collection('settings').doc('fatsecret').get();
+      if(doc.exists){clientId=doc.data().clientId;clientSecret=doc.data().clientSecret;}
+    }catch(e){}
+  }
+  if(!clientId||!clientSecret){statusEl.innerHTML='<span style="color:#ff5c5c">⚠️ Önce Client ID ve Secret kaydedin</span>';return;}
+
+  try{
+    // Token al
+    var tokenResp=await fetch('https://oauth.fatsecret.com/connect/token',{
+      method:'POST',
+      headers:{'Content-Type':'application/x-www-form-urlencoded'},
+      body:'grant_type=client_credentials&scope=basic&client_id='+encodeURIComponent(clientId)+'&client_secret='+encodeURIComponent(clientSecret)
+    });
+    if(!tokenResp.ok){
+      var errText=await tokenResp.text();
+      statusEl.innerHTML='<span style="color:#ff5c5c">❌ Token hatası ('+tokenResp.status+'): '+errText.substring(0,100)+'</span>';
+      return;
+    }
+    var tokenData=await tokenResp.json();
+    statusEl.innerHTML='<span style="color:#3dd68c">✅ Token alındı!</span> <span style="color:#f0a030">🔍 Aranıyor: "'+query+'"...</span>';
+
+    // Arama yap
+    var searchResp=await fetch('https://platform.fatsecret.com/rest/server.api?method=foods.search&search_expression='+encodeURIComponent(query)+'&format=json&max_results=10&page_number=0',{
+      headers:{'Authorization':'Bearer '+tokenData.access_token}
+    });
+    if(!searchResp.ok){
+      statusEl.innerHTML='<span style="color:#ff5c5c">❌ Arama hatası: '+searchResp.status+'</span>';
+      return;
+    }
+    var searchData=await searchResp.json();
+    var foods=searchData?.foods?.food;
+    if(!foods){statusEl.innerHTML='<span style="color:#f0a030">⚠️ Sonuç bulunamadı</span>';return;}
+    var arr=Array.isArray(foods)?foods:[foods];
+
+    statusEl.innerHTML='<span style="color:#3dd68c">✅ Bağlantı başarılı! '+arr.length+' sonuç bulundu. Token süresi: '+tokenData.expires_in+'s</span>';
+
+    resultsEl.innerHTML=arr.map(function(f){
+      var desc=f.food_description||'';
+      var brand=f.brand_name||'';
+      var name=f.food_name||'';
+      return '<div class="food-row" style="border-left:3px solid #3dd68c;padding-left:8px;margin-bottom:4px">'+
+        '<div class="fn" style="white-space:normal">'+name+(brand?' <span style="color:#3dd68c;font-size:.65rem">'+brand+'</span>':'')+'</div>'+
+        '<div style="font-size:.6rem;color:#8a8d9b;margin-top:2px">'+desc+'</div>'+
+      '</div>';
+    }).join('');
+  }catch(e){
+    statusEl.innerHTML='<span style="color:#ff5c5c">❌ Bağlantı hatası: '+e.message+'</span>';
+  }
+}
+
+async function checkFatSecretStatus(){
+  var el=document.getElementById('fsApiStatus');
+  el.innerHTML='<p>Kontrol ediliyor...</p>';
+
+  var html='';
+  // Firestore credentials
+  try{
+    var doc=await db.collection('settings').doc('fatsecret').get();
+    if(doc.exists&&doc.data().clientId){
+      var d=doc.data();
+      var updDate=d.updatedAt?new Date(d.updatedAt).toLocaleString('tr-TR'):'Bilinmiyor';
+      html+='<div class="stat-row"><span>🔑 Credentials</span><span style="color:#3dd68c">✅ Kayıtlı</span></div>';
+      html+='<div class="stat-row"><span>📝 Client ID</span><span style="color:#8a8d9b;font-size:.72rem">'+d.clientId.substring(0,12)+'...</span></div>';
+      html+='<div class="stat-row"><span>🕐 Güncellenme</span><span style="color:#8a8d9b;font-size:.72rem">'+updDate+'</span></div>';
+    }else{
+      html+='<div class="stat-row"><span>🔑 Credentials</span><span style="color:#ff5c5c">❌ Kayıtlı Değil</span></div>';
+    }
+  }catch(e){
+    html+='<div class="stat-row"><span>🔑 Credentials</span><span style="color:#f0a030">⚠️ Kontrol edilemedi</span></div>';
+  }
+
+  // Cached token
+  var cachedToken=localStorage.getItem('fs_fatsecret_token');
+  var tokenExpiry=parseInt(localStorage.getItem('fs_fatsecret_token_expiry'))||0;
+  if(cachedToken&&tokenExpiry>Date.now()){
+    var remaining=Math.round((tokenExpiry-Date.now())/60000);
+    html+='<div class="stat-row"><span>🎫 Token</span><span style="color:#3dd68c">✅ Geçerli ('+remaining+' dk kaldı)</span></div>';
+  }else if(cachedToken){
+    html+='<div class="stat-row"><span>🎫 Token</span><span style="color:#f0a030">⏰ Süresi Dolmuş</span></div>';
+  }else{
+    html+='<div class="stat-row"><span>🎫 Token</span><span style="color:#8a8d9b">— Henüz alınmadı</span></div>';
+  }
+
+  // Cache count
+  var cacheCount=0;
+  for(var i=0;i<localStorage.length;i++){
+    var k=localStorage.key(i);
+    if(k&&k.startsWith('fatsecret_')&&!k.endsWith('_exp'))cacheCount++;
+  }
+  html+='<div class="stat-row"><span>📦 Arama Cache</span><span>'+cacheCount+' sorgu (24s TTL)</span></div>';
+
+  // Endpoints
+  html+='<div style="margin-top:8px;padding:8px;background:#0d0f14;border-radius:8px;font-size:.65rem;color:#8a8d9b;line-height:1.6">';
+  html+='<strong style="color:#e8e8ec">Endpoints:</strong><br>';
+  html+='Token: <code style="color:#3dd68c">oauth.fatsecret.com/connect/token</code><br>';
+  html+='API: <code style="color:#3dd68c">platform.fatsecret.com/rest/server.api</code><br>';
+  html+='Flow: <code style="color:#f0a030">OAuth 2.0 Client Credentials</code>';
+  html+='</div>';
+
+  el.innerHTML=html;
+}
+
+function clearFatSecretCache(){
+  if(!confirm('FatSecret token ve arama cache\'i temizlenecek. Emin misiniz?'))return;
+  var keysToRemove=[];
+  for(var i=0;i<localStorage.length;i++){
+    var k=localStorage.key(i);
+    if(k&&(k.startsWith('fatsecret_')||k.startsWith('fs_fatsecret_')))keysToRemove.push(k);
+  }
+  keysToRemove.forEach(function(k){localStorage.removeItem(k);});
+  document.getElementById('fsStatus').innerHTML='<span style="color:#3dd68c">✅ Cache temizlendi ('+keysToRemove.length+' öğe silindi)</span>';
+  log('🗑️ FatSecret cache temizlendi: '+keysToRemove.length+' öğe');
+  checkFatSecretStatus();
+}
+
+// Settings sekmesi açılınca credentials yükle
+var _origShowTab=showTab;
+showTab=function(id,btn){
+  _origShowTab(id,btn);
+  if(id==='settings'){
+    loadFatSecretCreds();
+    checkFatSecretStatus();
+  }
+};
 </script>
 
 </body>
-</body>
+</html>
