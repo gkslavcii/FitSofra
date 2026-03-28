@@ -2343,11 +2343,16 @@ setTimeout(renderAdminCatOrder,500);
     <div style="background:#0d0f14;border:1px solid #2a2d38;border-radius:10px;padding:12px;margin-bottom:12px">
       <div style="font-size:.72rem;color:#8a8d9b;margin-bottom:8px;line-height:1.5">
         📋 <strong style="color:#e8e8ec">Kurulum (3 Adım)</strong><br>
-        1. <a href="https://platform.fatsecret.com" target="_blank" style="color:#3dd68c">platform.fatsecret.com</a> → hesap oluştur → "My Apps" → uygulama oluştur<br>
-        2. Client ID ve Client Secret'ı aşağıya gir, <strong>"Kaydet"</strong> butonuna bas<br>
-        3. <strong style="color:#f0a030">⚙️ API</strong> sekmesindeki Cloud Function kodunu <code>functions/index.js</code>'e kopyala ve <code style="color:#3dd68c">firebase deploy --only functions</code> çalıştır<br>
-        <br>
-        <strong style="color:#f0a030">⚠️ IP Whitelist:</strong> FatSecret panelinde "IP Restrictions" bölümünde Cloud Functions IP'lerini ekle (veya kısıtlamayı kaldır)
+        1. <a href="https://platform.fatsecret.com/api/" target="_blank" style="color:#3dd68c">platform.fatsecret.com/api</a> → hesap oluştur → <strong>"Generate API Key"</strong> tıkla<br>
+        2. Aşağıya <strong style="color:#ff5c5c">doğru key'leri</strong> gir, <strong>"Kaydet"</strong> butonuna bas<br>
+        3. Cloud Function'ı deploy et: <code style="color:#3dd68c">firebase deploy --only functions</code>
+      </div>
+      <div style="background:#1a0e0e;border:1px solid #ff5c5c44;border-radius:8px;padding:10px;margin-top:8px;font-size:.72rem;line-height:1.6">
+        <strong style="color:#ff5c5c">⚠️ DİKKAT — İki farklı key seti var, karıştırma!</strong><br><br>
+        <span style="color:#3dd68c">✅ DOĞRU →</span> <strong style="color:#e8e8ec">"REST API OAuth 2.0"</strong> bölümündeki:<br>
+        &nbsp;&nbsp;&nbsp;• <strong>Client ID</strong> (uzun alfanumerik string)<br>
+        &nbsp;&nbsp;&nbsp;• <strong>Client Secret</strong> (sadece 1 kez gösterilir!)<br><br>
+        <span style="color:#ff5c5c">❌ YANLIŞ →</span> <span style="color:#8a8d9b">"REST API Consumer Key" ve "Consumer Secret" (bunlar OAuth 1.0 için, burada işe yaramaz)</span>
       </div>
     </div>
 
@@ -3446,7 +3451,15 @@ async function saveFatSecretCreds(){
     log('🟢 FatSecret API credentials güncellendi');
     checkFatSecretStatus();
   }catch(e){
-    statusEl.innerHTML='<span style="color:#ff5c5c">❌ Hata: '+e.message+'</span>';
+    var msg=e.message||'';
+    if(msg.indexOf('permission')!==-1||msg.indexOf('PERMISSION')!==-1){
+      statusEl.innerHTML='<span style="color:#ff5c5c">❌ Firestore izin hatası!</span><br>'
+        +'<span style="font-size:.68rem;color:#8a8d9b">Firestore Rules\'da <code>config/fatsecret</code> dokümanına yazma izni yok.<br>'
+        +'Çözüm: Firestore Rules\'a şu kuralı ekle:<br>'
+        +'<code style="color:#3dd68c">match /config/{doc} { allow read, write: if request.auth != null; }</code></span>';
+    }else{
+      statusEl.innerHTML='<span style="color:#ff5c5c">❌ Hata: '+msg+'</span>';
+    }
   }
 }
 
