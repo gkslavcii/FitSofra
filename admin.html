@@ -2402,7 +2402,7 @@ let _fsTokenExpiry = 0;
 async function getFatSecretToken() {
   if (_fsToken && Date.now() < _fsTokenExpiry - 60000) return _fsToken;
   
-  const doc = await admin.firestore().collection('settings').doc('fatsecret').get();
+  const doc = await admin.firestore().collection('config').doc('fatsecret').get();
   if (!doc.exists) throw new Error('FatSecret credentials bulunamadı');
   const { clientId, clientSecret } = doc.data();
   if (!clientId || !clientSecret) throw new Error('Client ID/Secret eksik');
@@ -3430,7 +3430,7 @@ async function saveFatSecretCreds(){
   if(!clientId||!clientSecret){statusEl.innerHTML='<span style="color:#ff5c5c">⚠️ Client ID ve Client Secret gerekli</span>';return;}
   statusEl.innerHTML='<span style="color:#f0a030">💾 Kaydediliyor...</span>';
   try{
-    await db.collection('settings').doc('fatsecret').set({
+    await db.collection('config').doc('fatsecret').set({
       clientId:clientId,
       clientSecret:clientSecret,
       updatedAt:Date.now(),
@@ -3452,7 +3452,7 @@ async function saveFatSecretCreds(){
 
 async function loadFatSecretCreds(){
   try{
-    var doc=await db.collection('settings').doc('fatsecret').get();
+    var doc=await db.collection('config').doc('fatsecret').get();
     if(doc.exists){
       var data=doc.data();
       if(data.clientId){
@@ -3504,7 +3504,7 @@ async function checkFatSecretStatus(){
   var html='';
   // Firestore credentials
   try{
-    var doc=await db.collection('settings').doc('fatsecret').get();
+    var doc=await db.collection('config').doc('fatsecret').get();
     if(doc.exists&&doc.data().clientId){
       var d=doc.data();
       var updDate=d.updatedAt?new Date(d.updatedAt).toLocaleString('tr-TR'):'Bilinmiyor';
