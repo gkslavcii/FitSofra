@@ -224,37 +224,106 @@ function translateToTurkish(name) {
   return translated;
 }
 
+// Türkçe → İngilizce arama sözlüğü
+const TR_EN = {
+  'süt':'milk','yoğurt':'yogurt','peynir':'cheese','yumurta':'egg','ekmek':'bread',
+  'tavuk':'chicken','balık':'fish','et':'meat','kıyma':'ground beef','biftek':'steak',
+  'dana':'veal','kuzu':'lamb','hindi':'turkey','somon':'salmon','ton':'tuna','karides':'shrimp',
+  'pilav':'rice','makarna':'pasta','bulgur':'bulgur','nohut':'chickpea','mercimek':'lentil',
+  'fasulye':'bean','bezelye':'pea','patates':'potato','domates':'tomato','salatalık':'cucumber',
+  'biber':'pepper','soğan':'onion','sarımsak':'garlic','havuç':'carrot','brokoli':'broccoli',
+  'ıspanak':'spinach','kabak':'zucchini','patlıcan':'eggplant','marul':'lettuce',
+  'lahana':'cabbage','karnabahar':'cauliflower','mantar':'mushroom','mısır':'corn',
+  'elma':'apple','muz':'banana','portakal':'orange','üzüm':'grape','çilek':'strawberry',
+  'karpuz':'watermelon','kavun':'melon','şeftali':'peach','armut':'pear','kiraz':'cherry',
+  'kayısı':'apricot','erik':'plum','incir':'fig','nar':'pomegranate','ananas':'pineapple',
+  'avokado':'avocado','limon':'lemon','ceviz':'walnut','badem':'almond','fındık':'hazelnut',
+  'fıstık':'peanut','antep fıstığı':'pistachio','kaju':'cashew',
+  'tereyağ':'butter','zeytinyağı':'olive oil','bal':'honey','tahin':'tahini','zeytin':'olive',
+  'çorba':'soup','salata':'salad','köfte':'meatball','döner':'doner','kebap':'kebab',
+  'çay':'tea','kahve':'coffee','ayran':'ayran','su':'water','kola':'cola',
+  'şeker':'sugar','tuz':'salt','un':'flour','yulaf':'oat','pirinç':'rice',
+  'çikolata':'chocolate','dondurma':'ice cream','kek':'cake','kurabiye':'cookie',
+  'protein':'protein','protein tozu':'protein powder','kraker':'cracker','bisküvi':'biscuit',
+  'sosis':'sausage','salam':'salami','sucuk':'sucuk','jambon':'ham',
+  'tavuk göğsü':'chicken breast','tavuk but':'chicken thigh','kırmızı et':'red meat',
+  'ton balığı':'tuna fish','yeşil çay':'green tea','siyah çay':'black tea',
+  'tam yağlı süt':'whole milk','yağsız süt':'skim milk','beyaz peynir':'feta cheese',
+  'kaşar peyniri':'cheddar cheese','lor peyniri':'cottage cheese'
+};
+
 exports.fatSecretSearch = functions.https.onCall(async (data, context) => {
   const query = data.query;
   if (!query || query.length < 2) return { foods: [] };
 
+  // Türkçe → İngilizce çeviri
+  const ql = query.toLowerCase().trim();
+  let searchTerms = [];
+  
+  // Tam eşleşme
+  if (TR_EN[ql]) {
+    searchTerms.push(TR_EN[ql]);
+  }
+  
+  // Kısmi eşleşme — sorgu içinde Türkçe kelime var mı?
+  if (!searchTerms.length) {
+    const sortedKeys = Object.keys(TR_EN).sort((a, b) => b.length - a.length);
+    for (const tr of sortedKeys) {
+      if (ql.includes(tr)) {
+        searchTerms.push(ql.replace(tr, TR_EN[tr]));
+        break;
+      }
+    }
+  }
+  
+  // Orijinal sorguyu da ekle (İngilizce olabilir)
+  searchTerms.push(query);
+
   try {
     const token = await getFatSecretToken();
     const fetch = require('node-fetch');
-    const url = 'https://platform.fatsecret.com/rest/server.api'
-      + '?method=foods.search'
-      + '&search_expression=' + encodeURIComponent(query)
-      + '&format=json&max_results=20&page_number=0';
+    let allFoods = [];
+    const existingNames = new Set();
 
-    let resp = await fetch(url, {
-      headers: { 'Authorization': 'Bearer ' + token }
-    });
+    for (const term of searchTerms) {
+      if (allFoods.length >= 15) break;
+      
+      const url = 'https://platform.fatsecret.com/rest/server.api'
+        + '?method=foods.search'
+        + '&search_expression=' + encodeURIComponent(term)
+        + '&format=json&max_results=20&page_number=0';
 
-    // Token expired → retry
-    if (!resp.ok && resp.status === 401) {
-      _fsToken = null;
-      _fsTokenExpiry = 0;
-      const newToken = await getFatSecretToken();
-      resp = await fetch(url, {
-        headers: { 'Authorization': 'Bearer ' + newToken }
+      let resp = await fetch(url, {
+        headers: { 'Authorization': 'Bearer ' + token }
       });
+
+      // Token expired → retry
+      if (!resp.ok && resp.status === 401) {
+        _fsToken = null;
+        _fsTokenExpiry = 0;
+        const newToken = await getFatSecretToken();
+        resp = await fetch(url, {
+          headers: { 'Authorization': 'Bearer ' + newToken }
+        });
+      }
+
+      if (resp.ok) {
+        const jsonData = await resp.json();
+        console.log('FatSecret term:', term, 'response:', JSON.stringify(jsonData).substring(0, 200));
+        const parsed = parseFatSecretResults(jsonData);
+        if (parsed.foods) {
+          for (const f of parsed.foods) {
+            const key = f.name.toLowerCase();
+            if (!existingNames.has(key)) {
+              allFoods.push(f);
+              existingNames.add(key);
+            }
+          }
+        }
+      }
     }
 
-    if (!resp.ok) {
-      throw new Error('FatSecret API hatası: ' + resp.status);
-    }
-
-    return parseFatSecretResults(await resp.json());
+    return { foods: allFoods.slice(0, 20) };
   } catch (e) {
     console.error('FatSecret error:', e);
     throw new functions.https.HttpsError('internal', e.message);
