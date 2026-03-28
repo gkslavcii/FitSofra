@@ -2384,11 +2384,16 @@ var FatSecret={
         return parsed;
       }
     }catch(e){}
-    // Cloud Function proxy call
+    // Cloud Function proxy call (direct fetch - messaging SDK conflict workaround)
     try{
-      var fn=firebase.functions().httpsCallable('fatSecretSearch');
-      var result=await fn({query:query});
-      var foods=result.data&&result.data.foods?result.data.foods:[];
+      var resp=await fetch('https://us-central1-fitsofra-51176.cloudfunctions.net/fatSecretSearch',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({data:{query:query}})
+      });
+      if(!resp.ok)throw new Error('HTTP '+resp.status);
+      var json=await resp.json();
+      var foods=json.result&&json.result.foods?json.result.foods:[];
       // Filter dupes against local DB
       var dbNames=new Set(FOOD_DB.map(function(f){return f.name.toLowerCase().trim();}));
       var seen=new Set();
