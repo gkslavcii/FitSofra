@@ -1512,15 +1512,27 @@ let syncInProgress=false;
 async function firebaseLogin(){
   try{
     const provider=new firebase.auth.GoogleAuthProvider();
-    // iOS PWA standalone modda Google popup'ında klavye çalışmıyor
-    if(window.navigator.standalone===true){
-      // Kullanıcıya bilgi ver, sonra aynı sayfayı Safari'de aç
-      // Safari'de açılan sayfa doLogin=1 ile gelir ve otomatik popup açar
-      var safariUrl=window.location.origin+window.location.pathname+'?doLogin=1';
-      showToast('🔑 Safari\'de giriş sayfası açılıyor...');
-      // location.href PWA'dan Safari'ye yönlendirir
-      setTimeout(function(){window.location.href=safariUrl;},300);
-      return;
+    // iOS PWA keyboard bug workaround (WebKit Bug #279904)
+    if(window.navigator.standalone===true&&/iPad|iPhone|iPod/.test(navigator.userAgent)){
+      // iOS PWA'da Google giriş sayfasında klavye açılmayabiliyor
+      // Workaround: önce Safari'yi arka planda aç, sonra geri gel
+      var kbTest=document.createElement('input');
+      kbTest.type='text';kbTest.style.cssText='position:fixed;top:-100px;opacity:0;font-size:16px';
+      document.body.appendChild(kbTest);
+      kbTest.focus();
+      var kbWorks=false;
+      await new Promise(function(r){
+        // Klavye açıldıysa visualViewport küçülür
+        var origH=window.innerHeight;
+        setTimeout(function(){
+          if(window.visualViewport&&window.visualViewport.height<origH-50)kbWorks=true;
+          kbTest.blur();document.body.removeChild(kbTest);r();
+        },600);
+      });
+      if(!kbWorks){
+        showToast('⚠️ iOS klavye hatası algılandı. Safari\'yi arka planda açıp tekrar dönün.',4000);
+        // Yine de deneyelim
+      }
     }
     const result=await auth.signInWithPopup(provider);
     currentUser=result.user;
@@ -1535,18 +1547,6 @@ async function firebaseLogin(){
     }
     showToast('⚠️ Giriş hatası: '+e.message);
   }
-}
-// Safari'den doLogin ile açıldığında otomatik Google login popup aç
-if(new URLSearchParams(window.location.search).get('doLogin')==='1'){
-  history.replaceState(null,'',window.location.pathname);
-  setTimeout(function(){
-    var p=new firebase.auth.GoogleAuthProvider();
-    firebase.auth().signInWithPopup(p).then(function(){
-      showToast('✅ Giriş başarılı! Ana ekrandaki uygulamaya dönebilirsiniz.');
-    }).catch(function(e){
-      if(e.code!=='auth/popup-closed-by-user')showToast('⚠️ '+e.message);
-    });
-  },2000);
 }
 
 async function firebaseLogout(){
