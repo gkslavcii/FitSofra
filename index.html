@@ -8307,13 +8307,13 @@ document.getElementById('editFoodModal').addEventListener('click',e=>{if(e.targe
 document.getElementById('recipeDetailModal').addEventListener('click',e=>{if(e.target.id==='recipeDetailModal')e.target.classList.remove('show')});
 function setupPWA(){
   // Manifest
-  const manifest={name:"FitSofra - Beslenme Takibi",short_name:"FitSofra",description:"Günlük kalori ve beslenme takip uygulaması",start_url:'/',display:"standalone",background_color:"#0d0f14",theme_color:"#0d0f14",orientation:"portrait",icons:[{src:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%23ff6b3d'/><stop offset='100%25' stop-color='%23e85530'/></linearGradient></defs><rect fill='url(%23g)' width='512' height='512' rx='110'/><circle cx='256' cy='230' r='120' fill='none' stroke='%23fff' stroke-width='12' opacity='.9'/><line x1='256' y1='110' x2='256' y2='170' stroke='%23fff' stroke-width='12' stroke-linecap='round' opacity='.9'/><text x='256' y='400' text-anchor='middle' font-family='sans-serif' font-size='72' font-weight='900' fill='%23fff'>FitSofra</text></svg>",sizes:"512x512",type:"image/svg+xml",purpose:"any maskable"}]};
+  const manifest={name:"FitSofra - Beslenme Takibi",short_name:"FitSofra",description:"Günlük kalori ve beslenme takip uygulaması",start_url:'./',display:"standalone",background_color:"#0d0f14",theme_color:"#0d0f14",orientation:"portrait",icons:[{src:"data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0%25' stop-color='%23ff6b3d'/><stop offset='100%25' stop-color='%23e85530'/></linearGradient></defs><rect fill='url(%23g)' width='512' height='512' rx='110'/><circle cx='256' cy='230' r='120' fill='none' stroke='%23fff' stroke-width='12' opacity='.9'/><line x1='256' y1='110' x2='256' y2='170' stroke='%23fff' stroke-width='12' stroke-linecap='round' opacity='.9'/><text x='256' y='400' text-anchor='middle' font-family='sans-serif' font-size='72' font-weight='900' fill='%23fff'>FitSofra</text></svg>",sizes:"512x512",type:"image/svg+xml",purpose:"any maskable"}]};
   const blob=new Blob([JSON.stringify(manifest)],{type:'application/json'});
   document.getElementById('manifestLink').href=URL.createObjectURL(blob);
 
   if('serviceWorker' in navigator){
     // FCM için Service Worker — domain kökünde /firebase-messaging-sw.js olmalı
-    navigator.serviceWorker.register('/firebase-messaging-sw.js')
+    navigator.serviceWorker.register('./firebase-messaging-sw.js')
       .then(reg=>{
         console.log('[PWA] FCM Service Worker kayıtlı:', reg.scope);
         window._swRegistration = reg;
