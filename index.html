@@ -5520,6 +5520,15 @@ function saveNotifSettings(){
   };
   localStorage.setItem('fs_notif',JSON.stringify(s));
   scheduleNotifications();
+  // Firestore'a da kaydet (uygulama kapalıyken bildirim için)
+  if(typeof db!=='undefined'&&currentUser){
+    try{
+      db.collection('users').doc(currentUser.uid).set({
+        notifSettings:s,
+        timezone:Intl.DateTimeFormat().resolvedOptions().timeZone||'Europe/Istanbul'
+      },{merge:true}).catch(function(){});
+    }catch(e){}
+  }
 }
 
 function loadNotifSettings(){
@@ -8377,12 +8386,15 @@ async function saveFCMTokenToFirestore(token){
   try{
     if(!db || !auth.currentUser) return;
     const uid = auth.currentUser.uid;
+    var notifS=getNotifSettings();
     await db.collection('users').doc(uid).set({
       fcmToken: token,
       fcmUpdatedAt: Date.now(),
-      platform: 'web'
+      platform: 'web',
+      notifSettings:notifS,
+      timezone:Intl.DateTimeFormat().resolvedOptions().timeZone||'Europe/Istanbul'
     }, { merge: true });
-    console.log('[FCM] Token Firestore\'a kaydedildi');
+    console.log('[FCM] Token + ayarlar Firestore\'a kaydedildi');
   } catch(err){
     console.warn('[FCM] Token kaydetme hatası:', err.message);
   }
