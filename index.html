@@ -2189,13 +2189,13 @@ function runUnifiedSearch(q){
 
     var fsPromise=FatSecret.isAvailable()?FatSecret.search(q).then(function(foods){
       if(foods.length){
-        var fsHtml='<div style="padding:8px 4px 4px;font-size:.7rem;font-weight:700;color:var(--green);border-top:1px solid var(--border);margin-top:4px;display:flex;align-items:center;gap:4px">\u{1F7E2} FatSecret <span style="font-weight:500;color:var(--text2);font-size:.62rem">('+foods.length+' sonu\u00e7)</span></div>';
+        var fsHtml='<div style="padding:8px 4px 4px;font-size:.7rem;font-weight:700;color:var(--green);border-top:1px solid var(--border);margin-top:4px;display:flex;align-items:center;gap:4px">🟢 FatSecret <span style="font-weight:500;color:var(--text2);font-size:.62rem">('+foods.length+' sonuç)</span></div>';
         foods.forEach(function(f){
           if(allNames.has(f.name.toLowerCase().trim()))return;
           allNames.add(f.name.toLowerCase().trim());
           var dn=f.name.length>45?f.name.substring(0,45)+'...':f.name;
           var extra=f.brand?' <span style="color:var(--green);font-size:.62rem">'+escHTML(f.brand)+'</span>':'';
-          var servInfo=f.serving?' \u2022 '+f.serving:'';
+          var servInfo=f.serving?' • '+f.serving:'';
           fsHtml+='<div class="food-db-item" style="border-left:3px solid var(--green)" onclick="selectApiFood('+JSON.stringify({name:f.name,cal:f.cal,prot:f.prot,carb:f.carb,fat:f.fat}).replace(/"/g,'&quot;')+')"><div class="fdb-info"><div class="fdb-name">'+dn+extra+'</div><div class="fdb-detail">P:'+f.prot+'g K:'+f.carb+'g Y:'+f.fat+'g'+servInfo+'</div></div><div class="fdb-cal">'+(f.cal||'?')+'</div></div>';
         });
         container.innerHTML=(container.innerHTML||'')+fsHtml;
@@ -2205,14 +2205,14 @@ function runUnifiedSearch(q){
 
     var offPromise=searchOFF(q).then(function(foods){
       if(foods.length){
-        var offHtml='<div style="padding:8px 4px 4px;font-size:.7rem;font-weight:700;color:var(--blue);border-top:1px solid var(--border);margin-top:4px;display:flex;align-items:center;gap:4px">\u{1F535} OpenFoodFacts <span style="font-weight:500;color:var(--text2);font-size:.62rem">('+foods.length+' sonu\u00e7)</span></div>';
+        var offHtml='<div style="padding:8px 4px 4px;font-size:.7rem;font-weight:700;color:var(--blue);border-top:1px solid var(--border);margin-top:4px;display:flex;align-items:center;gap:4px">🔵 OpenFoodFacts <span style="font-weight:500;color:var(--text2);font-size:.62rem">('+foods.length+' sonuç)</span></div>';
         foods.forEach(function(f){
           if(allNames.has(f.name.toLowerCase().trim()))return;
           allNames.add(f.name.toLowerCase().trim());
           var dn=f.name.length>45?f.name.substring(0,45)+'...':f.name;
           var extra=f.brand?' <span style="color:var(--blue);font-size:.62rem">'+escHTML(f.brand)+'</span>':'';
-          var qtyInfo=f.qty?' \u2022 '+f.qty:'';
-          offHtml+='<div class="food-db-item" style="border-left:3px solid var(--blue)" onclick="selectApiFood('+JSON.stringify({name:f.name,cal:f.cal,prot:f.prot,carb:f.carb,fat:f.fat}).replace(/"/g,'&quot;')+')"><div class="fdb-info"><div class="fdb-name">'+dn+extra+'</div><div class="fdb-detail">P:'+f.prot+'g K:'+f.carb+'g Y:'+f.fat+'g \u2022 100g'+qtyInfo+'</div></div><div class="fdb-cal">'+(f.cal||'?')+'</div></div>';
+          var qtyInfo=f.qty?' • '+f.qty:'';
+          offHtml+='<div class="food-db-item" style="border-left:3px solid var(--blue)" onclick="selectApiFood('+JSON.stringify({name:f.name,cal:f.cal,prot:f.prot,carb:f.carb,fat:f.fat}).replace(/"/g,'&quot;')+')"><div class="fdb-info"><div class="fdb-name">'+dn+extra+'</div><div class="fdb-detail">P:'+f.prot+'g K:'+f.carb+'g Y:'+f.fat+'g • 100g'+qtyInfo+'</div></div><div class="fdb-cal">'+(f.cal||'?')+'</div></div>';
         });
         container.innerHTML=(container.innerHTML||'')+offHtml;
       }
@@ -2221,7 +2221,7 @@ function runUnifiedSearch(q){
 
     Promise.all([fsPromise,offPromise]).then(function(){
       status.style.display='none';
-      if(!container.innerHTML){status.innerHTML='Sonuç bulunamadı \u{1F615}';status.style.display='block';}
+      if(!container.innerHTML){status.innerHTML='Sonuç bulunamadı 😕';status.style.display='block';}
     }).catch(function(){
       status.style.display='none';
     });
@@ -7969,7 +7969,7 @@ function renderExerciseCard(){
         +'<span class="exercise-item-icon">'+(e.emoji||'🏃')+'</span>'
         +'<div class="exercise-item-info">'
         +'<div class="exercise-item-name">'+e.name+'</div>'
-        +'<div class="exercise-item-detail">'+(e.duration?e.duration+' dk':'')+(e.met?' \u2022 MET '+e.met:'')+'</div>'
+        +'<div class="exercise-item-detail">'+(e.duration?e.duration+' dk':'')+(e.met?' • MET '+e.met:'')+'</div>'
         +'</div>'
         +'<div class="exercise-item-cal">+'+e.cal+' kcal</div>'
         +'<button class="exercise-item-del" onclick="removeExercise('+i+')">&#x2715;</button>'
