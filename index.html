@@ -2219,9 +2219,11 @@ function runUnifiedSearch(q){
       return foods;
     }).catch(function(){return[];});
 
-    Promise.allSettled([fsPromise,offPromise]).then(function(){
+    Promise.all([fsPromise,offPromise]).then(function(){
       status.style.display='none';
       if(!container.innerHTML){status.innerHTML='Sonuç bulunamadı \u{1F615}';status.style.display='block';}
+    }).catch(function(){
+      status.style.display='none';
     });
   }else{status.style.display='none'}
 }
