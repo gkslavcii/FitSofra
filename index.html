@@ -1057,6 +1057,7 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
 
     <!-- ALT BUTONLAR -->
     <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px">
+      <button onclick="startAppTour()" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--accent-glow),rgba(160,124,248,.08));border:1.5px solid var(--accent);border-radius:var(--radius-sm);font-family:var(--font,system-ui);font-weight:700;font-size:.85rem;cursor:pointer;color:var(--accent);display:flex;align-items:center;justify-content:center;gap:8px">📖 Uygulama Rehberi</button>
       <button onclick="firebaseLogout()" style="width:100%;padding:13px;background:var(--glass);border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:var(--font,system-ui);font-weight:700;font-size:.85rem;cursor:pointer;color:var(--text);display:flex;align-items:center;justify-content:center;gap:8px">🚪 Çıkış Yap</button>
       <button onclick="deleteAccount()" style="width:100%;padding:13px;background:none;border:1.5px solid var(--red);border-radius:var(--radius-sm);font-family:var(--font,system-ui);font-weight:700;font-size:.85rem;cursor:pointer;color:var(--red);display:flex;align-items:center;justify-content:center;gap:8px">⚠️ Hesabı Sil</button>
     </div>
@@ -9624,6 +9625,256 @@ setTimeout(function(){
   var _origUH2=updateHeader;
   updateHeader=function(){_origUH2();checkGoalConfetti();};
 },200);
+
+// ═══════════════════════════════════════════
+//  UYGULAMA REHBERİ (İnteraktif Tur)
+// ═══════════════════════════════════════════
+
+var tourSteps=[
+  {
+    title:'🍽️ FitSofra\'ya Hoş Geldin!',
+    text:'Sağlıklı beslenme yolculuğunda dijital yol arkadaşın. Bu rehber sana uygulamanın tüm özelliklerini tanıtacak.',
+    icon:'👋',
+    target:null
+  },
+  {
+    title:'📊 Kalori Halkası',
+    text:'Günlük kalori hedefini ve ne kadar tükettiğini anlık olarak gösterir. Protein, karbonhidrat ve yağ çubukları makro dengesini takip eder.',
+    icon:'🎯',
+    target:'.calorie-ring-section',
+    tab:'gunluk'
+  },
+  {
+    title:'🍽️ Öğün Takibi',
+    text:'Kahvaltı, öğle, akşam ve ara öğünlerine yemek ekle. Her öğünün kalori ve makro dağılımını gör. Yemekleri sola kaydırarak silebilirsin.',
+    icon:'🥗',
+    target:'.meal-section',
+    tab:'gunluk'
+  },
+  {
+    title:'➕ Yemek Ekleme',
+    text:'Yemek eklemek için öğüne dokun. 1000+ yerel yemek veritabanı, FatSecret global veritabanı, OpenFoodFacts ve barkod tarama ile yemek bulabilirsin.',
+    icon:'🔍',
+    target:'.add-food-btn',
+    tab:'gunluk'
+  },
+  {
+    title:'📷 Barkod & 🎤 Sesli Arama',
+    text:'Yemek ekleme ekranında barkod tarayıcı ile ambalajlı ürünleri anında bul. Sesli arama ile konuşarak yemek arayabilirsin.',
+    icon:'📷',
+    target:null
+  },
+  {
+    title:'💧 Su Takibi',
+    text:'Günlük su tüketimini bardak bardak kaydet. Hedefe ne kadar yaklaştığını görsel olarak takip et. Bildirimlerle hatırlatma alabilirsin.',
+    icon:'💧',
+    target:'#waterCard',
+    tab:'gunluk'
+  },
+  {
+    title:'🏋️ Egzersiz Kaydı',
+    text:'Yaptığın egzersizleri kaydet ve yakılan kalorileri hesapla. Günlük net kalorine egzersiz de dahil edilir.',
+    icon:'🏃',
+    target:'#exerciseCard',
+    tab:'gunluk'
+  },
+  {
+    title:'⏱️ Aralıklı Oruç (IF)',
+    text:'16:8, 18:6, 20:4, 5:2 gibi oruç protokollerini ayarla. Yeme pencereni takip et, oruç süresini gör.',
+    icon:'⏱️',
+    target:'#ifTimerSlot',
+    tab:'gunluk'
+  },
+  {
+    title:'📖 Tarifler',
+    text:'Sağlıklı tarif önerilerini keşfet. Malzemeleri, besin değerlerini gör ve direkt öğününe ekle.',
+    icon:'📖',
+    target:'#nav-oneri',
+    tab:'oneri'
+  },
+  {
+    title:'👥 Arkadaşlar',
+    text:'Arkadaşlarını ekle ve birlikte motive ol! Birbirinizin günlük kalori durumunu görebilir, sağlıklı bir rekabet ortamı oluşturabilirsiniz.',
+    icon:'👥',
+    target:'#nav-arkadaslar',
+    tab:'arkadaslar'
+  },
+  {
+    title:'📊 İstatistikler',
+    text:'Haftalık ve aylık beslenme trendlerini, kalori grafiklerini, makro dağılımını ve kilo değişimini detaylı grafiklerle takip et.',
+    icon:'📈',
+    target:'#nav-istatistik',
+    tab:'istatistik'
+  },
+  {
+    title:'👤 Profil & Ayarlar',
+    text:'Kişisel bilgilerin, kalori hedefin, VKİ hesaplama, bildirim ayarları, alerjen tercihleri, tema değiştirme ve bulut senkronizasyon.',
+    icon:'⚙️',
+    target:'#nav-profil',
+    tab:'profil'
+  },
+  {
+    title:'☁️ Bulut Senkronizasyon',
+    text:'Google hesabınla giriş yap, tüm verilerin otomatik olarak yedeklensin. Farklı cihazlardan erişebilirsin.',
+    icon:'☁️',
+    target:null
+  },
+  {
+    title:'🔔 Bildirimler',
+    text:'Öğün hatırlatıcıları, su içme hatırlatması, günlük özet ve haftalık rapor bildirimlerini kişiselleştir. Uygulama kapalıyken bile çalışır!',
+    icon:'🔔',
+    target:null
+  },
+  {
+    title:'🌙 Tema & Kişiselleştirme',
+    text:'Sağ üstteki ay ikonuyla karanlık/aydınlık tema arasında geçiş yap. Gözlerine uygun temayı seç.',
+    icon:'🎨',
+    target:'#themeBtn',
+    tab:'gunluk'
+  },
+  {
+    title:'🏆 Başarım Rozetleri',
+    text:'Hedeflerini tuttur, serileri sürdür ve rozetler kazan! İlk giriş, 7 günlük seri, su şampiyonu ve daha fazlası seni bekliyor.',
+    icon:'🏆',
+    target:null
+  },
+  {
+    title:'🎉 Hazırsın!',
+    text:'Artık FitSofra\'nın tüm özelliklerini biliyorsun. Sağlıklı beslenme yolculuğunda başarılar! Bu rehberi Profil → Uygulama Rehberi\'nden tekrar açabilirsin.',
+    icon:'🚀',
+    target:null
+  }
+];
+
+var currentTourStep=0;
+var tourOverlay=null;
+
+function startAppTour(){
+  currentTourStep=0;
+  // Günlük sekmesine git
+  switchTab('gunluk');
+  setTimeout(function(){showTourStep(0);},300);
+}
+
+function showTourStep(idx){
+  currentTourStep=idx;
+  var step=tourSteps[idx];
+  if(!step)return endTour();
+
+  // Sekme değiştir gerekiyorsa
+  if(step.tab)switchTab(step.tab);
+
+  // Overlay oluştur veya güncelle
+  removeTourOverlay();
+
+  var overlay=document.createElement('div');
+  overlay.id='tourOverlay';
+  overlay.style.cssText='position:fixed;inset:0;z-index:200;pointer-events:none;transition:opacity .3s';
+
+  // Arka plan karartma
+  var bg=document.createElement('div');
+  bg.style.cssText='position:absolute;inset:0;background:rgba(0,0,0,.7);pointer-events:auto';
+  bg.onclick=function(){};
+  overlay.appendChild(bg);
+
+  // Spotlight (hedef eleman varsa)
+  if(step.target){
+    setTimeout(function(){
+      var el=document.querySelector(step.target);
+      if(el){
+        var r=el.getBoundingClientRect();
+        var pad=8;
+        bg.style.cssText='position:absolute;inset:0;pointer-events:auto;'
+          +'background:none;'
+          +'box-shadow:0 0 0 9999px rgba(0,0,0,.7);'
+          +'border-radius:16px;'
+          +'top:'+(r.top-pad)+'px;left:'+(r.left-pad)+'px;'
+          +'width:'+(r.width+pad*2)+'px;height:'+(r.height+pad*2)+'px;'
+          +'transition:all .4s ease';
+        // Scroll into view
+        el.scrollIntoView({behavior:'smooth',block:'center'});
+      }
+    },100);
+  }
+
+  // Tooltip kartı
+  var card=document.createElement('div');
+  card.style.cssText='position:absolute;bottom:80px;left:16px;right:16px;background:var(--card,#181b23);border:1px solid var(--border,#2a2d38);border-radius:20px;padding:24px 20px 20px;pointer-events:auto;animation:fadeUp .4s ease;box-shadow:0 12px 48px rgba(0,0,0,.5)';
+
+  // Progress bar
+  var progress=document.createElement('div');
+  progress.style.cssText='position:absolute;top:0;left:0;height:3px;border-radius:20px 20px 0 0;background:linear-gradient(90deg,var(--accent,#ff6b3d),var(--accent2,#ff8f5a));transition:width .3s;width:'+((idx+1)/tourSteps.length*100)+'%';
+  card.appendChild(progress);
+
+  // Icon + Title
+  var header=document.createElement('div');
+  header.style.cssText='display:flex;align-items:center;gap:12px;margin-bottom:10px';
+  header.innerHTML='<div style="width:48px;height:48px;border-radius:14px;background:var(--accent-glow,rgba(255,107,61,.15));display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0">'+step.icon+'</div>'
+    +'<div><div style="font-weight:800;font-size:1rem;color:var(--text,#f0f0f5)">'+step.title+'</div>'
+    +'<div style="font-size:.68rem;color:var(--text2,#6b7094);margin-top:2px">'+(idx+1)+' / '+tourSteps.length+'</div></div>';
+  card.appendChild(header);
+
+  // Text
+  var text=document.createElement('p');
+  text.style.cssText='font-size:.84rem;line-height:1.6;color:var(--text2,#6b7094);margin-bottom:18px';
+  text.textContent=step.text;
+  card.appendChild(text);
+
+  // Buttons
+  var btns=document.createElement('div');
+  btns.style.cssText='display:flex;gap:8px';
+
+  if(idx>0){
+    var prevBtn=document.createElement('button');
+    prevBtn.textContent='\u2190 Geri';
+    prevBtn.style.cssText='flex:1;padding:12px;background:var(--glass,rgba(255,255,255,.04));border:1px solid var(--border,#2a2d38);border-radius:12px;font-family:var(--font,system-ui);font-size:.82rem;font-weight:700;color:var(--text2,#6b7094);cursor:pointer';
+    prevBtn.onclick=function(){showTourStep(idx-1);};
+    btns.appendChild(prevBtn);
+  }
+
+  var skipBtn=document.createElement('button');
+  skipBtn.textContent='Atla';
+  skipBtn.style.cssText='padding:12px 16px;background:none;border:none;font-family:var(--font,system-ui);font-size:.78rem;font-weight:600;color:var(--text2,#6b7094);cursor:pointer';
+  skipBtn.onclick=endTour;
+  btns.appendChild(skipBtn);
+
+  var nextBtn=document.createElement('button');
+  nextBtn.textContent=idx===tourSteps.length-1?'Tamamla \u2713':'Sonraki \u2192';
+  nextBtn.style.cssText='flex:2;padding:12px;background:linear-gradient(135deg,var(--accent,#ff6b3d),var(--accent2,#ff8f5a));border:none;border-radius:12px;font-family:var(--font,system-ui);font-size:.82rem;font-weight:800;color:#fff;cursor:pointer';
+  nextBtn.onclick=function(){
+    if(idx===tourSteps.length-1)endTour();
+    else showTourStep(idx+1);
+  };
+  btns.appendChild(nextBtn);
+
+  card.appendChild(btns);
+  overlay.appendChild(card);
+  document.body.appendChild(overlay);
+  tourOverlay=overlay;
+}
+
+function removeTourOverlay(){
+  var old=document.getElementById('tourOverlay');
+  if(old)old.remove();
+  tourOverlay=null;
+}
+
+function endTour(){
+  removeTourOverlay();
+  switchTab('gunluk');
+  showToast('Rehber tamamlandi! Iyi kullanimlar.');
+}
+
+// İlk kullanımda onboarding sonrası turu otomatik başlat
+var _origCompleteOnboarding=completeOnboarding;
+completeOnboarding=function(){
+  _origCompleteOnboarding();
+  setTimeout(function(){
+    if(confirm('Uygulamanin ozelliklerini taniyan bir tur ister misin?')){
+      startAppTour();
+    }
+  },1500);
+};
 </script>
 </body>
 </html>
