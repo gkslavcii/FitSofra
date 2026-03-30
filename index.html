@@ -26,21 +26,42 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@700;800;900&display=swap');
 html{scroll-behavior:smooth}
 :root{--font:"Plus Jakarta Sans",system-ui,sans-serif;--bg:#080a10;--card:rgba(20,23,32,.85);--card2:rgba(28,31,42,.7);--text:#f0f0f5;--text2:#6b7094;--accent:#ff6b3d;--accent2:#ff8f5a;--accent-glow:rgba(255,107,61,.15);--green:#3dd68c;--green-light:rgba(61,214,140,.1);--blue:#5b9cf6;--blue-light:rgba(91,156,246,.1);--orange:#f0a030;--orange-light:rgba(240,160,48,.1);--red:#ff5c5c;--red-light:rgba(255,92,92,.1);--purple:#a07cf8;--purple-light:rgba(160,124,248,.1);--border:rgba(255,255,255,.06);--shadow:0 4px 24px rgba(0,0,0,.4);--shadow-lg:0 12px 48px rgba(0,0,0,.6);--radius:20px;--radius-sm:14px;--glass:rgba(255,255,255,.04);--glow:0 0 20px rgba(255,107,61,.1)}
-[data-theme="light"]{--bg:#f0f2f5;--card:rgba(255,255,255,.9);--card2:rgba(245,246,250,.8);--text:#0f1118;--text2:#6b7084;--accent:#e85d3a;--accent2:#ff7a54;--accent-glow:rgba(232,93,58,.1);--green:#2daa6e;--green-light:rgba(45,170,110,.08);--blue:#3a8fe8;--blue-light:rgba(58,143,232,.08);--orange:#e8a23a;--orange-light:rgba(232,162,58,.08);--red:#e84d4d;--red-light:rgba(232,77,77,.08);--purple:#7c5ce6;--purple-light:rgba(124,92,230,.08);--border:rgba(0,0,0,.06);--shadow:0 2px 20px rgba(0,0,0,.06);--shadow-lg:0 8px 40px rgba(0,0,0,.08);--glass:rgba(0,0,0,.02);--glow:none}
+[data-theme="light"]{--bg:#faf8f5;--card:rgba(255,255,255,.95);--card2:rgba(248,246,242,.9);--text:#1a1a2e;--text2:#5a5d7a;--accent:#e85d3a;--accent2:#ff7a54;--accent-glow:rgba(232,93,58,.08);--green:#1d9960;--green-light:rgba(29,153,96,.07);--blue:#2d7dd2;--blue-light:rgba(45,125,210,.07);--orange:#d4922a;--orange-light:rgba(212,146,42,.07);--red:#d94444;--red-light:rgba(217,68,68,.07);--purple:#6b4fcf;--purple-light:rgba(107,79,207,.07);--border:rgba(0,0,0,.08);--shadow:0 2px 16px rgba(0,0,0,.05);--shadow-lg:0 8px 32px rgba(0,0,0,.07);--glass:rgba(0,0,0,.025);--glow:none}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{font-family:var(--font,system-ui),system-ui,sans-serif;background:var(--bg);color:var(--text);max-width:430px;margin:0 auto;min-height:100vh;min-height:100dvh;position:relative;-webkit-font-smoothing:antialiased;overscroll-behavior-x:none}
 body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(ellipse at 30% 20%,rgba(255,107,61,.04) 0%,transparent 50%),radial-gradient(ellipse at 70% 80%,rgba(91,156,246,.03) 0%,transparent 50%),radial-gradient(ellipse at 50% 50%,rgba(160,124,248,.02) 0%,transparent 60%);pointer-events:none;z-index:0}
 .header{padding:18px 14px 20px;background:linear-gradient(165deg,#1a0e28 0%,#0d1018 40%,#081520 100%);color:#fff;position:relative;overflow:hidden;border-bottom:1px solid rgba(255,255,255,.05)}
-[data-theme="light"] .header{background:linear-gradient(165deg,#1a0e28 0%,#0d1018 40%,#081520 100%)}
-[data-theme="light"] body::before{background:radial-gradient(ellipse at 30% 20%,rgba(255,107,61,.03) 0%,transparent 50%),radial-gradient(ellipse at 70% 80%,rgba(58,143,232,.02) 0%,transparent 50%)}
-[data-theme="light"] .modal{background:rgba(255,255,255,.95);border-top:1px solid rgba(0,0,0,.08)}
-[data-theme="light"] .modal-handle{background:rgba(0,0,0,.12)}
-[data-theme="light"] .source-tab.active{box-shadow:0 2px 8px rgba(232,93,58,.2)}
-[data-theme="light"] .cat-pill.active{box-shadow:0 2px 8px rgba(232,93,58,.15)}
-[data-theme="light"] .water-progress-fill{box-shadow:0 0 8px rgba(58,143,232,.2)}
-[data-theme="light"] .combo-card{background:rgba(255,255,255,.9)}
-[data-theme="light"] .food-item:active{background:rgba(232,93,58,.06)}
-[data-theme="light"] .date-nav{background:rgba(255,255,255,.85)}
+[data-theme="light"] .header{background:linear-gradient(165deg,#2a1840 0%,#1a2038 40%,#162040 100%)}
+[data-theme="light"] body::before{background:radial-gradient(ellipse at 30% 20%,rgba(232,93,58,.03) 0%,transparent 50%),radial-gradient(ellipse at 70% 80%,rgba(45,125,210,.02) 0%,transparent 50%)}
+[data-theme="light"] .modal{background:#fff;border-top:1px solid rgba(0,0,0,.06)}
+[data-theme="light"] .modal-handle{background:rgba(0,0,0,.1)}
+[data-theme="light"] .source-tab.active{box-shadow:0 2px 8px rgba(232,93,58,.18)}
+[data-theme="light"] .cat-pill.active{box-shadow:0 2px 8px rgba(232,93,58,.12)}
+[data-theme="light"] .water-progress-fill{box-shadow:0 0 6px rgba(45,125,210,.2)}
+[data-theme="light"] .combo-card{background:#fff}
+[data-theme="light"] .food-item:active{background:rgba(232,93,58,.04)}
+[data-theme="light"] .date-nav{background:rgba(255,255,255,.92);backdrop-filter:blur(20px)}
+[data-theme="light"] .meal-header{background:rgba(255,255,255,.9);border-color:rgba(0,0,0,.06)}
+[data-theme="light"] .meal-section.collapsed .meal-header{border-color:rgba(0,0,0,.06)}
+[data-theme="light"] .food-db-item{border-bottom-color:rgba(0,0,0,.04)}
+[data-theme="light"] .food-db-item:active{background:rgba(232,93,58,.03)}
+[data-theme="light"] .profile-card{background:#fff;border-color:rgba(0,0,0,.06)}
+[data-theme="light"] .stat-card{background:#fff;border-color:rgba(0,0,0,.06)}
+[data-theme="light"] .water-card{background:#fff;border-color:rgba(0,0,0,.06)}
+[data-theme="light"] .exercise-card{background:#fff;border-color:rgba(0,0,0,.06)}
+[data-theme="light"] .acc-header{color:#1a1a2e}
+[data-theme="light"] .acc-body{background:rgba(248,246,242,.5)}
+[data-theme="light"] .search-box{background:#fff;border-color:rgba(0,0,0,.08);color:#1a1a2e}
+[data-theme="light"] .search-box::placeholder{color:#9a9db8}
+[data-theme="light"] .submit-btn{box-shadow:0 4px 12px rgba(232,93,58,.2)}
+[data-theme="light"] .nav-bar{background:rgba(255,255,255,.92);border-top:1px solid rgba(0,0,0,.06);backdrop-filter:blur(20px)}
+[data-theme="light"] .nav-item{color:#8a8da8}
+[data-theme="light"] .nav-item.active{color:#e85d3a}
+[data-theme="light"] .calorie-result{background:rgba(248,246,242,.8);border-color:rgba(0,0,0,.06)}
+[data-theme="light"] .swipe-delete-bg{background:#d94444}
+[data-theme="light"] .macro-bar-bg{background:rgba(0,0,0,.05)}
+[data-theme="light"] input,[data-theme="light"] select,[data-theme="light"] textarea{background:#fff;border-color:rgba(0,0,0,.08);color:#1a1a2e}
+[data-theme="light"] .calc-btn{box-shadow:0 2px 8px rgba(0,0,0,.06)}
 .header::before{content:'';position:absolute;top:-100px;right:-60px;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(255,107,61,.12),transparent 60%);animation:pulse 4s ease-in-out infinite alternate}
 .header::after{content:'';position:absolute;bottom:-60px;left:-40px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(160,124,248,.08),transparent 60%);animation:pulse 5s ease-in-out infinite alternate-reverse}
 @keyframes pulse{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.15);opacity:1}}
@@ -9631,129 +9652,37 @@ setTimeout(function(){
 // ═══════════════════════════════════════════
 
 var tourSteps=[
-  {
-    title:'🍽️ FitSofra\'ya Hoş Geldin!',
-    text:'Sağlıklı beslenme yolculuğunda dijital yol arkadaşın. Bu rehber sana uygulamanın tüm özelliklerini tanıtacak.',
-    icon:'👋',
-    target:null
-  },
-  {
-    title:'📊 Kalori Halkası',
-    text:'Günlük kalori hedefini ve ne kadar tükettiğini anlık olarak gösterir. Protein, karbonhidrat ve yağ çubukları makro dengesini takip eder.',
-    icon:'🎯',
-    target:'.calorie-ring-section',
-    tab:'gunluk'
-  },
-  {
-    title:'🍽️ Öğün Takibi',
-    text:'Kahvaltı, öğle, akşam ve ara öğünlerine yemek ekle. Her öğünün kalori ve makro dağılımını gör. Yemekleri sola kaydırarak silebilirsin.',
-    icon:'🥗',
-    target:'.meal-section',
-    tab:'gunluk'
-  },
-  {
-    title:'➕ Yemek Ekleme',
-    text:'Yemek eklemek için öğüne dokun. 1000+ yerel yemek veritabanı, FatSecret global veritabanı, OpenFoodFacts ve barkod tarama ile yemek bulabilirsin.',
-    icon:'🔍',
-    target:'.add-food-btn',
-    tab:'gunluk'
-  },
-  {
-    title:'📷 Barkod & 🎤 Sesli Arama',
-    text:'Yemek ekleme ekranında barkod tarayıcı ile ambalajlı ürünleri anında bul. Sesli arama ile konuşarak yemek arayabilirsin.',
-    icon:'📷',
-    target:null
-  },
-  {
-    title:'💧 Su Takibi',
-    text:'Günlük su tüketimini bardak bardak kaydet. Hedefe ne kadar yaklaştığını görsel olarak takip et. Bildirimlerle hatırlatma alabilirsin.',
-    icon:'💧',
-    target:'#waterCard',
-    tab:'gunluk'
-  },
-  {
-    title:'🏋️ Egzersiz Kaydı',
-    text:'Yaptığın egzersizleri kaydet ve yakılan kalorileri hesapla. Günlük net kalorine egzersiz de dahil edilir.',
-    icon:'🏃',
-    target:'#exerciseCard',
-    tab:'gunluk'
-  },
-  {
-    title:'⏱️ Aralıklı Oruç (IF)',
-    text:'16:8, 18:6, 20:4, 5:2 gibi oruç protokollerini ayarla. Yeme pencereni takip et, oruç süresini gör.',
-    icon:'⏱️',
-    target:'#ifTimerSlot',
-    tab:'gunluk'
-  },
-  {
-    title:'📖 Tarifler',
-    text:'Sağlıklı tarif önerilerini keşfet. Malzemeleri, besin değerlerini gör ve direkt öğününe ekle.',
-    icon:'📖',
-    target:'#nav-oneri',
-    tab:'oneri'
-  },
-  {
-    title:'👥 Arkadaşlar',
-    text:'Arkadaşlarını ekle ve birlikte motive ol! Birbirinizin günlük kalori durumunu görebilir, sağlıklı bir rekabet ortamı oluşturabilirsiniz.',
-    icon:'👥',
-    target:'#nav-arkadaslar',
-    tab:'arkadaslar'
-  },
-  {
-    title:'📊 İstatistikler',
-    text:'Haftalık ve aylık beslenme trendlerini, kalori grafiklerini, makro dağılımını ve kilo değişimini detaylı grafiklerle takip et.',
-    icon:'📈',
-    target:'#nav-istatistik',
-    tab:'istatistik'
-  },
-  {
-    title:'👤 Profil & Ayarlar',
-    text:'Kişisel bilgilerin, kalori hedefin, VKİ hesaplama, bildirim ayarları, alerjen tercihleri, tema değiştirme ve bulut senkronizasyon.',
-    icon:'⚙️',
-    target:'#nav-profil',
-    tab:'profil'
-  },
-  {
-    title:'☁️ Bulut Senkronizasyon',
-    text:'Google hesabınla giriş yap, tüm verilerin otomatik olarak yedeklensin. Farklı cihazlardan erişebilirsin.',
-    icon:'☁️',
-    target:null
-  },
-  {
-    title:'🔔 Bildirimler',
-    text:'Öğün hatırlatıcıları, su içme hatırlatması, günlük özet ve haftalık rapor bildirimlerini kişiselleştir. Uygulama kapalıyken bile çalışır!',
-    icon:'🔔',
-    target:null
-  },
-  {
-    title:'🌙 Tema & Kişiselleştirme',
-    text:'Sağ üstteki ay ikonuyla karanlık/aydınlık tema arasında geçiş yap. Gözlerine uygun temayı seç.',
-    icon:'🎨',
-    target:'#themeBtn',
-    tab:'gunluk'
-  },
-  {
-    title:'🏆 Başarım Rozetleri',
-    text:'Hedeflerini tuttur, serileri sürdür ve rozetler kazan! İlk giriş, 7 günlük seri, su şampiyonu ve daha fazlası seni bekliyor.',
-    icon:'🏆',
-    target:null
-  },
-  {
-    title:'🎉 Hazırsın!',
-    text:'Artık FitSofra\'nın tüm özelliklerini biliyorsun. Sağlıklı beslenme yolculuğunda başarılar! Bu rehberi Profil → Uygulama Rehberi\'nden tekrar açabilirsin.',
-    icon:'🚀',
-    target:null
-  }
+  {title:'FitSofra\'ya Hoş Geldin!',text:'Sağlıklı beslenme yolculuğunda dijital yol arkadaşın. Bu rehber sana uygulamanın tüm özelliklerini adım adım tanıtacak.',icon:'👋',target:null},
+  {title:'Kalori Halkası',text:'Günlük kalori hedefinizi ve ne kadar tükettiğinizi anlık olarak gösterir. Altındaki renkli çubuklar protein, karbonhidrat ve yağ dengesini takip eder.',icon:'🎯',target:'.calorie-ring-section',tab:'gunluk',scroll:'none'},
+  {title:'Gün Seri Takibi',text:'Üst kısımdaki 🔥 seri sayacı art arda kaç gün kalori kaydı yaptığını gösterir. Seriyi koruyarak motivasyonunu yüksek tut!',icon:'🔥',target:'#streakBadge',tab:'gunluk',scroll:'none'},
+  {title:'Öğün Takibi',text:'Kahvaltı, öğle, akşam ve ara öğünlerine yemek ekle. Her öğünün toplam kalori ve makro dağılımını anlık gör. Yemekleri sola kaydırarak silebilirsin.',icon:'🥗',target:'.meal-section:first-child',tab:'gunluk'},
+  {title:'Yemek Ekleme',text:'Öğüne dokunarak yemek ekle. 1000+ yerel Türk yemeği, FatSecret global veritabanı, OpenFoodFacts ve barkod tarama ile istediğin yemeği kolayca bul.',icon:'🔍',target:'.meal-section:first-child .add-food-btn',tab:'gunluk'},
+  {title:'Barkod & Sesli Arama',text:'Yemek ekleme ekranında 📷 barkod tarayıcı ile ambalajlı ürünleri anında tanı. 🎤 Sesli arama ile konuşarak yemek arayabilirsin.',icon:'📷',target:null},
+  {title:'Anlık Beslenme Yorumu',text:'Günlük sayfanın üstündeki renkli banner, o anki beslenme durumuna göre kişisel yorum ve öneriler sunar. Yemek ekledikçe güncellenir.',icon:'💬',target:'#dailyBanner',tab:'gunluk'},
+  {title:'Su Takibi',text:'Günlük su tüketimini bardak bardak kaydet. İlerleme çubuğu hedefe ne kadar yaklaştığını gösterir. Bildirimlerle hatırlatma alabilirsin.',icon:'💧',target:'#waterCard',tab:'gunluk'},
+  {title:'Egzersiz Kaydı',text:'Yaptığın egzersizleri kaydet ve yakılan kalorileri hesapla. Net kalori hesabına egzersiz de dahil edilir.',icon:'🏋️',target:'#exerciseCard',tab:'gunluk'},
+  {title:'Aralıklı Oruç (IF)',text:'16:8, 18:6, 20:4 ve 5:2 gibi oruç protokollerini ayarla. Yeme/oruç pencereni canlı zamanlayıcıyla takip et.',icon:'⏱️',target:'#ifTimerSlot',tab:'gunluk'},
+  {title:'Tarifler',text:'Sağlıklı ve lezzetli tarif önerilerini keşfet. Malzemeleri, pişirme adımlarını ve besin değerlerini gör. Tarifi direkt öğününe ekle!',icon:'📖',target:null,tab:'oneri',tabTarget:'#nav-oneri'},
+  {title:'Akıllı Öğün Önerici',text:'Tarifler sekmesinde kalan kalori ve makro değerlerine göre akıllı öğün önerileri alabilirsin. İhtiyacına uygun yemekler otomatik önerilir.',icon:'🤖',target:null,tab:'oneri'},
+  {title:'Arkadaşlar',text:'Arkadaşlarını ekle ve birlikte motive ol! Birbirinizin günlük kalori durumunu görebilir, sağlıklı rekabet ortamı oluşturabilirsiniz.',icon:'👥',target:null,tab:'arkadaslar',tabTarget:'#nav-arkadaslar'},
+  {title:'İstatistikler',text:'Haftalık-aylık kalori trendleri, makro dağılım grafikleri, kilo değişim tablosu ve detaylı beslenme analizleri.',icon:'📊',target:null,tab:'istatistik',tabTarget:'#nav-istatistik'},
+  {title:'Haftalık Kalori Planı',text:'Profil ayarlarından haftalık plan oluşturabilirsin. Her güne farklı kalori ve makro hedefi belirle — pazartesi düşük karbonhidrat, cumartesi serbest gün gibi.',icon:'📆',target:null,tab:'profil'},
+  {title:'Profil & Hedefler',text:'Kişisel bilgilerini gir, TDEE otomatik hesaplansın. VKİ takibi, kilo hedefi ve aktivite seviyeni buradan yönet.',icon:'👤',target:null,tab:'profil',tabTarget:'#nav-profil'},
+  {title:'Bulut Senkronizasyon',text:'Google hesabınla giriş yap, tüm verilerin otomatik yedeklensin. Farklı cihazlardan aynı verilere erişebilirsin.',icon:'☁️',target:null},
+  {title:'Bildirimler',text:'Öğün hatırlatıcıları, su içme uyarıları, günlük özet ve haftalık rapor. Uygulama kapalıyken bile push bildirim alırsın!',icon:'🔔',target:null},
+  {title:'Tema Değiştirme',text:'Sağ üstteki ay/güneş ikonuyla karanlık ve aydınlık tema arasında geçiş yap.',icon:'🎨',target:'#themeBtn',tab:'gunluk',scroll:'none'},
+  {title:'Başarım Rozetleri',text:'Hedeflerini tuttur, serileri sürdür ve özel rozetler kazan! İlk giriş, 7 günlük seri, su şampiyonu, makro ustası ve daha fazlası.',icon:'🏆',target:null},
+  {title:'Alerjen Uyarıları',text:'Profil → Alerjen ayarlarından hassasiyetlerini belirle. İşaretlediğin alerjenleri içerebilecek yemeklerde otomatik uyarı alırsın.',icon:'⚠️',target:null},
+  {title:'Hazırsın!',text:'Artık FitSofra\'nın tüm özelliklerini biliyorsun! Bu rehberi istediğin zaman Profil → Uygulama Rehberi\'nden tekrar açabilirsin. Sağlıklı günler!',icon:'🚀',target:null}
 ];
 
 var currentTourStep=0;
-var tourOverlay=null;
 
 function startAppTour(){
   currentTourStep=0;
-  // Günlük sekmesine git
   switchTab('gunluk');
-  setTimeout(function(){showTourStep(0);},300);
+  window.scrollTo(0,0);
+  setTimeout(function(){showTourStep(0);},400);
 }
 
 function showTourStep(idx){
@@ -9761,116 +9690,165 @@ function showTourStep(idx){
   var step=tourSteps[idx];
   if(!step)return endTour();
 
-  // Sekme değiştir gerekiyorsa
-  if(step.tab)switchTab(step.tab);
+  // Sekme değiştir
+  if(step.tab){
+    switchTab(step.tab);
+    if(step.tabTarget){
+      var navEl=document.querySelector(step.tabTarget);
+      if(navEl)navEl.classList.add('active');
+    }
+  }
 
-  // Overlay oluştur veya güncelle
   removeTourOverlay();
 
+  // Ana container
   var overlay=document.createElement('div');
   overlay.id='tourOverlay';
-  overlay.style.cssText='position:fixed;inset:0;z-index:200;pointer-events:none;transition:opacity .3s';
+  overlay.style.cssText='position:fixed;inset:0;z-index:200;';
 
-  // Arka plan karartma
-  var bg=document.createElement('div');
-  bg.style.cssText='position:absolute;inset:0;background:rgba(0,0,0,.7);pointer-events:auto';
-  bg.onclick=function(){};
-  overlay.appendChild(bg);
+  // SVG mask ile spotlight deliği
+  var svgNS='http://www.w3.org/2000/svg';
+  var svg=document.createElementNS(svgNS,'svg');
+  svg.setAttribute('width','100%');
+  svg.setAttribute('height','100%');
+  svg.style.cssText='position:absolute;inset:0;z-index:1';
 
-  // Spotlight (hedef eleman varsa)
+  var defs=document.createElementNS(svgNS,'defs');
+  var mask=document.createElementNS(svgNS,'mask');
+  mask.id='tourMask';
+
+  // Beyaz arkaplan (tümü görünür)
+  var fullRect=document.createElementNS(svgNS,'rect');
+  fullRect.setAttribute('width','100%');fullRect.setAttribute('height','100%');
+  fullRect.setAttribute('fill','white');
+  mask.appendChild(fullRect);
+
+  // Siyah delik (spotlight)
+  var hole=document.createElementNS(svgNS,'rect');
+  hole.id='tourHole';
+  hole.setAttribute('rx','16');hole.setAttribute('ry','16');
+  hole.setAttribute('fill','black');
+  hole.setAttribute('x','0');hole.setAttribute('y','0');
+  hole.setAttribute('width','0');hole.setAttribute('height','0');
+  mask.appendChild(hole);
+  defs.appendChild(mask);
+  svg.appendChild(defs);
+
+  var bgRect=document.createElementNS(svgNS,'rect');
+  bgRect.setAttribute('width','100%');bgRect.setAttribute('height','100%');
+  bgRect.setAttribute('fill','rgba(0,0,0,0.75)');
+  bgRect.setAttribute('mask','url(#tourMask)');
+  svg.appendChild(bgRect);
+  overlay.appendChild(svg);
+
+  // Hedef elemana spotlight aç
   if(step.target){
     setTimeout(function(){
       var el=document.querySelector(step.target);
       if(el){
-        var r=el.getBoundingClientRect();
-        var pad=8;
-        bg.style.cssText='position:absolute;inset:0;pointer-events:auto;'
-          +'background:none;'
-          +'box-shadow:0 0 0 9999px rgba(0,0,0,.7);'
-          +'border-radius:16px;'
-          +'top:'+(r.top-pad)+'px;left:'+(r.left-pad)+'px;'
-          +'width:'+(r.width+pad*2)+'px;height:'+(r.height+pad*2)+'px;'
-          +'transition:all .4s ease';
-        // Scroll into view
-        el.scrollIntoView({behavior:'smooth',block:'center'});
+        if(step.scroll!=='none')el.scrollIntoView({behavior:'smooth',block:'center'});
+        setTimeout(function(){
+          var r=el.getBoundingClientRect();
+          var pad=10;
+          var h=document.getElementById('tourHole');
+          if(h){
+            h.setAttribute('x',r.left-pad);
+            h.setAttribute('y',r.top-pad);
+            h.setAttribute('width',r.width+pad*2);
+            h.setAttribute('height',r.height+pad*2);
+          }
+        },step.scroll==='none'?50:400);
       }
-    },100);
+    },150);
   }
 
   // Tooltip kartı
   var card=document.createElement('div');
-  card.style.cssText='position:absolute;bottom:80px;left:16px;right:16px;background:var(--card,#181b23);border:1px solid var(--border,#2a2d38);border-radius:20px;padding:24px 20px 20px;pointer-events:auto;animation:fadeUp .4s ease;box-shadow:0 12px 48px rgba(0,0,0,.5)';
+  var isTop=step.target?true:false;
+  if(step.target){
+    var el=document.querySelector(step.target);
+    if(el){
+      var r=el.getBoundingClientRect();
+      isTop=r.top>window.innerHeight*0.5;
+    }
+  }
+  card.style.cssText='position:fixed;'+(isTop?'top:60px':'bottom:90px')+';left:12px;right:12px;z-index:2;'
+    +'background:var(--card,#181b23);border:1.5px solid var(--border,#2a2d38);border-radius:20px;'
+    +'padding:22px 18px 18px;box-shadow:0 16px 48px rgba(0,0,0,.6);animation:fadeUp .35s ease';
 
   // Progress bar
-  var progress=document.createElement('div');
-  progress.style.cssText='position:absolute;top:0;left:0;height:3px;border-radius:20px 20px 0 0;background:linear-gradient(90deg,var(--accent,#ff6b3d),var(--accent2,#ff8f5a));transition:width .3s;width:'+((idx+1)/tourSteps.length*100)+'%';
-  card.appendChild(progress);
+  var prog=document.createElement('div');
+  prog.style.cssText='position:absolute;top:0;left:0;height:3px;border-radius:20px 20px 0 0;'
+    +'background:linear-gradient(90deg,#ff6b3d,#ff8f5a);transition:width .4s;'
+    +'width:'+((idx+1)/tourSteps.length*100)+'%';
+  card.appendChild(prog);
 
-  // Icon + Title
-  var header=document.createElement('div');
-  header.style.cssText='display:flex;align-items:center;gap:12px;margin-bottom:10px';
-  header.innerHTML='<div style="width:48px;height:48px;border-radius:14px;background:var(--accent-glow,rgba(255,107,61,.15));display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0">'+step.icon+'</div>'
-    +'<div><div style="font-weight:800;font-size:1rem;color:var(--text,#f0f0f5)">'+step.title+'</div>'
-    +'<div style="font-size:.68rem;color:var(--text2,#6b7094);margin-top:2px">'+(idx+1)+' / '+tourSteps.length+'</div></div>';
-  card.appendChild(header);
+  // Header: icon + title + step count
+  var hdr=document.createElement('div');
+  hdr.style.cssText='display:flex;align-items:center;gap:12px;margin-bottom:10px';
+  hdr.innerHTML='<div style="width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,rgba(255,107,61,.15),rgba(160,124,248,.1));display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0">'+step.icon+'</div>'
+    +'<div style="flex:1;min-width:0"><div style="font-weight:800;font-size:.95rem;color:var(--text,#f0f0f5)">'+step.title+'</div>'
+    +'<div style="font-size:.65rem;color:var(--text2,#6b7094);margin-top:2px">Adım '+(idx+1)+' / '+tourSteps.length+'</div></div>';
+  card.appendChild(hdr);
 
-  // Text
-  var text=document.createElement('p');
-  text.style.cssText='font-size:.84rem;line-height:1.6;color:var(--text2,#6b7094);margin-bottom:18px';
-  text.textContent=step.text;
-  card.appendChild(text);
+  // Body text
+  var body=document.createElement('p');
+  body.style.cssText='font-size:.82rem;line-height:1.65;color:var(--text2,#6b7094);margin:0 0 16px';
+  body.textContent=step.text;
+  card.appendChild(body);
 
   // Buttons
   var btns=document.createElement('div');
-  btns.style.cssText='display:flex;gap:8px';
+  btns.style.cssText='display:flex;gap:8px;align-items:center';
 
   if(idx>0){
-    var prevBtn=document.createElement('button');
-    prevBtn.textContent='\u2190 Geri';
-    prevBtn.style.cssText='flex:1;padding:12px;background:var(--glass,rgba(255,255,255,.04));border:1px solid var(--border,#2a2d38);border-radius:12px;font-family:var(--font,system-ui);font-size:.82rem;font-weight:700;color:var(--text2,#6b7094);cursor:pointer';
-    prevBtn.onclick=function(){showTourStep(idx-1);};
-    btns.appendChild(prevBtn);
+    var prev=document.createElement('button');
+    prev.innerHTML='&#8592;';
+    prev.style.cssText='width:40px;height:40px;border-radius:12px;background:var(--glass,rgba(255,255,255,.04));border:1px solid var(--border,#2a2d38);color:var(--text2,#6b7094);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center';
+    prev.onclick=function(){showTourStep(idx-1);};
+    btns.appendChild(prev);
   }
 
-  var skipBtn=document.createElement('button');
-  skipBtn.textContent='Atla';
-  skipBtn.style.cssText='padding:12px 16px;background:none;border:none;font-family:var(--font,system-ui);font-size:.78rem;font-weight:600;color:var(--text2,#6b7094);cursor:pointer';
-  skipBtn.onclick=endTour;
-  btns.appendChild(skipBtn);
+  var skip=document.createElement('button');
+  skip.textContent='Atla';
+  skip.style.cssText='padding:8px 12px;background:none;border:none;font-family:inherit;font-size:.75rem;font-weight:600;color:var(--text2,#6b7094);cursor:pointer;margin-left:auto';
+  skip.onclick=endTour;
+  btns.appendChild(skip);
 
-  var nextBtn=document.createElement('button');
-  nextBtn.textContent=idx===tourSteps.length-1?'Tamamla \u2713':'Sonraki \u2192';
-  nextBtn.style.cssText='flex:2;padding:12px;background:linear-gradient(135deg,var(--accent,#ff6b3d),var(--accent2,#ff8f5a));border:none;border-radius:12px;font-family:var(--font,system-ui);font-size:.82rem;font-weight:800;color:#fff;cursor:pointer';
-  nextBtn.onclick=function(){
-    if(idx===tourSteps.length-1)endTour();
-    else showTourStep(idx+1);
-  };
-  btns.appendChild(nextBtn);
+  var next=document.createElement('button');
+  next.textContent=idx===tourSteps.length-1?'Tamamla ✓':'Sonraki →';
+  next.style.cssText='flex:1;max-width:180px;padding:11px 16px;background:linear-gradient(135deg,#ff6b3d,#ff8f5a);border:none;border-radius:12px;font-family:inherit;font-size:.82rem;font-weight:800;color:#fff;cursor:pointer';
+  next.onclick=function(){idx===tourSteps.length-1?endTour():showTourStep(idx+1);};
+  btns.appendChild(next);
 
   card.appendChild(btns);
   overlay.appendChild(card);
+
+  // Overlay'a tıklayınca sonraki adıma geç (spotlight dışı)
+  svg.style.cursor='pointer';
+  svg.onclick=function(){idx===tourSteps.length-1?endTour():showTourStep(idx+1);};
+
   document.body.appendChild(overlay);
-  tourOverlay=overlay;
 }
 
 function removeTourOverlay(){
   var old=document.getElementById('tourOverlay');
   if(old)old.remove();
-  tourOverlay=null;
 }
 
 function endTour(){
   removeTourOverlay();
   switchTab('gunluk');
-  showToast('Rehber tamamlandi! Iyi kullanimlar.');
+  window.scrollTo(0,0);
+  showToast('🎉 Rehber tamamlandı! İyi kullanımlar.');
 }
 
-// İlk kullanımda onboarding sonrası turu otomatik başlat
+// İlk onboarding sonrası tur teklifi
 var _origCompleteOnboarding=completeOnboarding;
 completeOnboarding=function(){
   _origCompleteOnboarding();
   setTimeout(function(){
-    if(confirm('Uygulamanin ozelliklerini taniyan bir tur ister misin?')){
+    if(confirm('Uygulamanın özelliklerini tanıtan bir tur ister misin?')){
       startAppTour();
     }
   },1500);
