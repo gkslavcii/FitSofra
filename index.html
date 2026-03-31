@@ -926,6 +926,41 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
     <div id="weightCardProfile"></div>
 
 
+    <!-- ARKADAŞLAR (Profil içinde) -->
+    <div class="profile-card" style="animation-delay:.015s">
+      <h3 style="cursor:pointer;display:flex;justify-content:space-between;align-items:center" onclick="var p=document.getElementById('friendsPanelInProfile');p.style.display=p.style.display==='none'?'block':'none';this.querySelector('.acc-arrow').style.transform=p.style.display==='none'?'':'rotate(90deg)'">
+        <span>👥 Arkadaşlar</span><span class="acc-arrow" style="transition:transform .2s;font-size:.8rem;color:var(--text2)">›</span>
+      </h3>
+      <div id="friendsPanelInProfile" style="display:none;margin-top:12px">
+        <div id="friendsLoginPromptInline" style="display:none">
+          <p style="font-size:.78rem;color:var(--text2);margin-bottom:10px">Arkadaş eklemek için Google ile giriş yapmalısın.</p>
+          <button class="calc-btn" onclick="firebaseLogin()" style="background:linear-gradient(135deg,#4285f4,#356ac3)">🔑 Google ile Giriş Yap</button>
+        </div>
+        <div id="friendsContentInline" style="display:none">
+          <div style="margin-bottom:12px">
+            <p style="font-size:.75rem;color:var(--text2);margin-bottom:6px">Senin kodun:</p>
+            <div style="display:flex;gap:8px;margin-bottom:10px">
+              <div id="myFriendCodeInline" style="flex:1;padding:8px;background:var(--bg);border:1.5px dashed var(--accent);border-radius:8px;font-family:monospace;font-size:.82rem;font-weight:700;text-align:center;color:var(--accent);letter-spacing:1px"></div>
+              <button style="background:var(--accent);color:#fff;border:none;border-radius:8px;padding:8px 12px;font-size:.8rem;cursor:pointer" onclick="copyFriendCodeInline()">📋</button>
+            </div>
+            <p style="font-size:.75rem;color:var(--text2);margin-bottom:6px">Arkadaş kodu gir:</p>
+            <div style="display:flex;gap:8px">
+              <input type="text" class="search-box" placeholder="Kod..." id="friendCodeInputInline" style="margin:0;flex:1;color:var(--text);font-family:monospace;letter-spacing:1px">
+              <button style="background:var(--green);color:#fff;border:none;border-radius:8px;padding:8px 14px;font-weight:700;font-size:.82rem;cursor:pointer" onclick="addFriendInline()">Ekle</button>
+            </div>
+          </div>
+          <div style="border-top:1px solid var(--border);padding-top:10px">
+            <div style="font-size:.78rem;font-weight:700;margin-bottom:8px">👥 Arkadaş Listesi</div>
+            <div id="friendsListInline"></div>
+          </div>
+          <div style="border-top:1px solid var(--border);padding-top:10px;margin-top:10px">
+            <div style="font-size:.78rem;font-weight:700;margin-bottom:8px">🏆 Sıralama</div>
+            <div id="leaderboardInline"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- ACCORDION MENÜLER -->
     <div class="profile-card" style="animation-delay:.02s;padding:0;overflow:hidden">
       <!-- Hesap -->
@@ -1185,7 +1220,7 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
   </div>
 </div>
 
-<div class="page" id="page-arkadaslar">
+<div class="page" id="page-arkadaslar" style="display:none!important">
   <div class="content">
     <div class="profile-card" id="friendsLoginPrompt">
       <h3>👥 Arkadaşlar</h3>
@@ -1221,7 +1256,6 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
 <div class="bottom-nav">
   <button class="nav-item active" onclick="switchTab('gunluk')" id="nav-gunluk"><span class="nav-icon">🍽️</span><span class="nav-label">Günlük</span></button>
   <button class="nav-item" onclick="switchTab('oneri')" id="nav-oneri"><span class="nav-icon">📖</span><span class="nav-label">Tarifler</span></button>
-  <button class="nav-item" onclick="switchTab('arkadaslar')" id="nav-arkadaslar"><span class="nav-icon">👥</span><span class="nav-label">Arkadaş</span></button>
   <button class="nav-item" onclick="switchTab('istatistik')" id="nav-istatistik"><span class="nav-icon">📊</span><span class="nav-label">İstatistik</span></button>
   <button class="nav-item" onclick="switchTab('profil')" id="nav-profil"><span class="nav-icon">👤</span><span class="nav-label">Profil</span></button>
 </div>
@@ -5741,6 +5775,99 @@ function macroBarHTML(label,val,target,color,pct){
     +'<div style="height:100%;width:'+Math.min(100,pct)+'%;background:'+color+';border-radius:4px;transition:width .6s"></div>'
     +'</div></div>';
 }
+
+// ═══ Profil içi Arkadaşlar ═══
+function renderFriendsInline(){
+  if(!currentUser){
+    document.getElementById('friendsLoginPromptInline').style.display='block';
+    document.getElementById('friendsContentInline').style.display='none';
+    return;
+  }
+  document.getElementById('friendsLoginPromptInline').style.display='none';
+  document.getElementById('friendsContentInline').style.display='block';
+  var code=generateFriendCode(currentUser.uid);
+  document.getElementById('myFriendCodeInline').textContent=code;
+  updateMyPublicProfile();
+  loadFriendsListInline();
+}
+
+function copyFriendCodeInline(){
+  var code=document.getElementById('myFriendCodeInline').textContent;
+  navigator.clipboard.writeText(code).then(function(){showToast('📋 Kod kopyalandı: '+code);}).catch(function(){
+    var ta=document.createElement('textarea');ta.value=code;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
+    showToast('📋 Kod kopyalandı: '+code);
+  });
+}
+
+async function addFriendInline(){
+  if(!currentUser){showToast('Önce giriş yapın');return;}
+  var code=document.getElementById('friendCodeInputInline').value.trim().toUpperCase();
+  if(!code){showToast('Arkadaş kodu girin');return;}
+  if(code===generateFriendCode(currentUser.uid)){showToast('Kendi kodunuzu ekleyemezsiniz');return;}
+  try{
+    var q=await db.collection('profiles').where('code','==',code).limit(1).get();
+    if(q.empty){showToast('Bu kodla kullanıcı bulunamadı');return;}
+    var friendDoc=q.docs[0];var friendUid=friendDoc.id;var friendData=friendDoc.data();
+    var existing=await db.collection('profiles').doc(currentUser.uid).collection('friends').doc(friendUid).get();
+    if(existing.exists){showToast('Bu kişi zaten arkadaş listenizde');return;}
+    await db.collection('profiles').doc(currentUser.uid).collection('friends').doc(friendUid).set({name:friendData.name,addedAt:Date.now()});
+    await db.collection('profiles').doc(friendUid).collection('friends').doc(currentUser.uid).set({name:escHTML(currentUser.displayName)||'Kullanıcı',addedAt:Date.now()});
+    document.getElementById('friendCodeInputInline').value='';
+    showToast('✅ '+friendData.name+' arkadaş olarak eklendi!');
+    loadFriendsListInline();
+  }catch(e){showToast('Hata: '+e.message);}
+}
+
+async function loadFriendsListInline(){
+  if(!currentUser)return;
+  var listEl=document.getElementById('friendsListInline');
+  var lbEl=document.getElementById('leaderboardInline');
+  try{
+    var friendsSnap=await db.collection('profiles').doc(currentUser.uid).collection('friends').get();
+    if(friendsSnap.empty){
+      listEl.innerHTML='<div style="text-align:center;padding:12px;color:var(--text2);font-size:.78rem">Henüz arkadaş yok. Kodunu paylaş!</div>';
+      lbEl.innerHTML='';return;
+    }
+    var friendIds=friendsSnap.docs.map(function(d){return d.id;});
+    var profiles=[];
+    for(var i=0;i<friendIds.length;i++){
+      try{var pDoc=await db.collection('profiles').doc(friendIds[i]).get();if(pDoc.exists)profiles.push({uid:friendIds[i],data:pDoc.data()});}catch(e){}
+    }
+    var t=getTotals();var myStreak=calculateStreak();
+    var allProfiles=profiles.map(function(p){return Object.assign({uid:p.uid},p.data);});
+    allProfiles.push({uid:currentUser.uid,name:(currentUser.displayName||'Ben')+' (Sen)',photo:currentUser.photoURL,todayCal:t.cal,todayTarget:dailyTarget,todayProt:Math.round(t.prot),todayWater:getWaterMl(),waterTarget:waterTarget,streak:myStreak,isMe:true});
+
+    listEl.innerHTML=allProfiles.filter(function(p){return !p.isMe;}).map(function(p){
+      var calPct=p.todayTarget?Math.round((p.todayCal/p.todayTarget)*100):0;
+      var initial=(p.name||'?')[0].toUpperCase();
+      var isOnline=(Date.now()-(p.lastActive||0))<3600000;
+      return '<div class="friend-card" onclick="openFriendProfile(\''+p.uid+'\')" style="cursor:pointer">'
+        +'<div class="friend-header">'
+        +(p.photo?'<img src="'+p.photo+'" style="width:32px;height:32px;border-radius:50%">':'<div class="friend-avatar">'+initial+'</div>')
+        +'<div><div class="friend-name" style="font-size:.82rem">'+p.name+'</div>'
+        +'<div class="friend-status" style="font-size:.62rem">'+(isOnline?'🟢 Aktif':'⚪ '+getTimeAgo(p.lastActive||0))+'</div></div></div>'
+        +'<div style="display:flex;gap:12px;margin-top:8px;font-size:.72rem">'
+        +'<span style="color:var(--accent);font-weight:700">'+(p.todayCal||0)+' kcal ('+calPct+'%)</span>'
+        +'<span style="color:var(--green);font-weight:700">'+(p.todayProt||0)+'g prot</span>'
+        +'<span style="color:var(--orange);font-weight:700">🔥'+(p.streak||0)+'</span>'
+        +'</div>'
+        +'<button onclick="event.stopPropagation();removeFriend(\''+p.uid+'\',\''+((p.name||'').replace(/'/g,"\\'"))+'\');setTimeout(loadFriendsListInline,500)" style="position:absolute;top:8px;right:8px;background:none;border:none;font-size:.65rem;color:var(--text2);cursor:pointer">✕</button>'
+        +'</div>';
+    }).join('')||'<div style="text-align:center;padding:12px;color:var(--text2);font-size:.78rem">Arkadaş bulunamadı</div>';
+
+    // Sıralama
+    var sorted=allProfiles.slice().sort(function(a,b){
+      var aAdh=a.todayTarget?Math.abs(1-a.todayCal/a.todayTarget):1;
+      var bAdh=b.todayTarget?Math.abs(1-b.todayCal/b.todayTarget):1;
+      return aAdh-bAdh;
+    });
+    var medals=['🥇','🥈','🥉'];
+    lbEl.innerHTML=sorted.map(function(p,i){
+      var calPct=p.todayTarget?Math.round((p.todayCal/p.todayTarget)*100):0;
+      return '<div style="display:flex;align-items:center;gap:10px;padding:6px 0;'+(p.isMe?'background:rgba(255,107,61,.06);border-radius:6px;padding:8px':'')+'"><div style="font-size:1rem;width:24px;text-align:center">'+(medals[i]||(i+1))+'</div><div style="flex:1;min-width:0"><div style="font-size:.78rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+p.name+'</div><div style="font-size:.62rem;color:var(--text2)">🔥'+(p.streak||0)+' · '+calPct+'% hedefe uyum</div></div><div style="font-size:.78rem;font-weight:700;color:var(--accent)">'+(p.todayCal||0)+'</div></div>';
+    }).join('');
+  }catch(e){listEl.innerHTML='<div style="padding:8px;color:var(--red);font-size:.78rem">Hata: '+e.message+'</div>';}
+}
 let notifEnabled=false;
 let notifTimers=[];
 
@@ -7582,13 +7709,18 @@ function importData(event){
   reader.readAsText(file);
   event.target.value='';
 }
-function switchTab(tab){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));document.getElementById('page-'+tab).classList.add('active');document.getElementById('nav-'+tab).classList.add('active');
+function switchTab(tab){
+  // arkadaslar eski sekme — profil'e yönlendir
+  if(tab==='arkadaslar'){tab='profil';setTimeout(function(){var p=document.getElementById('friendsPanelInProfile');if(p)p.style.display='block';renderFriendsInline();},200);}
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  var pageEl=document.getElementById('page-'+tab);if(pageEl)pageEl.classList.add('active');
+  var navEl=document.getElementById('nav-'+tab);if(navEl)navEl.classList.add('active');
   var showHeader=tab==='gunluk';
   var headerEl=document.querySelector('.header');
   var dateNavEl=document.querySelector('.date-nav');
   if(headerEl)headerEl.style.display=showHeader?'':'none';
   if(dateNavEl)dateNavEl.style.display=showHeader?'':'none';
-  if(tab==='istatistik')renderStats();if(tab==='ogunler')renderSavedMeals();if(tab==='profil')renderWeightCard();if(tab==='oneri')filterRecipes('all');if(tab==='arkadaslar')renderFriendsPage()}
+  if(tab==='istatistik')renderStats();if(tab==='ogunler')renderSavedMeals();if(tab==='profil'){renderWeightCard();renderFriendsInline();}if(tab==='oneri')filterRecipes('all');}
 function getSavedMeals(){const raw=localStorage.getItem('fs_meals');return raw?JSON.parse(raw):[]}
 function setSavedMeals(meals){localStorage.setItem('fs_meals',JSON.stringify(meals))}
 
@@ -10197,6 +10329,73 @@ completeOnboarding=function(){
     }
   },1500);
 };
+
+// ═══════════════════════════════════════════
+//  AI BESLENME ASİSTANI (Floating Bubble)
+// ═══════════════════════════════════════════
+(function(){
+  var bubble=document.createElement('div');
+  bubble.id='aiBubble';
+  bubble.innerHTML='🤖';
+  bubble.style.cssText='position:fixed;bottom:80px;right:14px;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#6b4fcf,#a07cf8);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.4rem;cursor:pointer;z-index:150;box-shadow:0 4px 20px rgba(107,79,207,.4);transition:transform .2s,box-shadow .2s;touch-action:none;user-select:none';
+
+  var isDragging=false,dragSX=0,dragSY=0,bSX=0,bSY=0,hasMoved=false;
+  bubble.addEventListener('touchstart',function(e){isDragging=true;hasMoved=false;var t=e.touches[0];dragSX=t.clientX;dragSY=t.clientY;var r=bubble.getBoundingClientRect();bSX=r.left;bSY=r.top;bubble.style.transition='none';},{passive:true});
+  document.addEventListener('touchmove',function(e){if(!isDragging)return;var t=e.touches[0];var dx=t.clientX-dragSX,dy=t.clientY-dragSY;if(Math.abs(dx)>5||Math.abs(dy)>5)hasMoved=true;bubble.style.left=Math.max(0,Math.min(window.innerWidth-56,bSX+dx))+'px';bubble.style.top=Math.max(0,Math.min(window.innerHeight-56,bSY+dy))+'px';bubble.style.right='auto';bubble.style.bottom='auto';},{passive:true});
+  document.addEventListener('touchend',function(){if(!isDragging)return;isDragging=false;bubble.style.transition='transform .2s,box-shadow .2s,left .3s,right .3s';var r=bubble.getBoundingClientRect();if(r.left+26>window.innerWidth/2){bubble.style.left='auto';bubble.style.right='14px';}else{bubble.style.right='auto';bubble.style.left='14px';}});
+  bubble.addEventListener('click',function(){if(!hasMoved)toggleAIChat();});
+  document.body.appendChild(bubble);
+
+  var chatModal=document.createElement('div');
+  chatModal.id='aiChatModal';
+  chatModal.style.cssText='position:fixed;bottom:0;left:0;right:0;max-width:430px;margin:0 auto;z-index:160;display:none;flex-direction:column;height:70vh;max-height:500px;background:var(--card,#181b23);border-top-left-radius:24px;border-top-right-radius:24px;border:1px solid var(--border);border-bottom:none;box-shadow:0 -8px 40px rgba(0,0,0,.4);transition:transform .3s ease;transform:translateY(100%)';
+  chatModal.innerHTML='<div style="padding:14px 16px 10px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-shrink:0"><div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#6b4fcf,#a07cf8);display:flex;align-items:center;justify-content:center;font-size:1.1rem">🤖</div><div style="flex:1"><div style="font-weight:800;font-size:.88rem">FitSofra AI Asistan</div><div style="font-size:.65rem;color:var(--text2)">Beslenme danışmanın</div></div><button onclick="toggleAIChat()" style="background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:5px 12px;font-size:.75rem;font-weight:700;color:var(--text2);cursor:pointer">✕</button></div>'
+    +'<div id="aiChatMessages" style="flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:10px;-webkit-overflow-scrolling:touch"><div style="background:linear-gradient(135deg,rgba(107,79,207,.1),rgba(160,124,248,.05));border:1px solid rgba(107,79,207,.15);border-radius:14px;padding:12px;font-size:.8rem;line-height:1.6;color:var(--text2)">Merhaba! 👋 Ben FitSofra AI asistanıyım. Beslenme hedeflerin, yemek önerileri veya günlük analiz hakkında sorabilirsin.<br><br><span style="font-size:.7rem;opacity:.7">Günlük 5 mesaj hakkın var</span></div></div>'
+    +'<div style="padding:10px 14px 14px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0;padding-bottom:max(14px,env(safe-area-inset-bottom))"><input type="text" id="aiChatInput" placeholder="Bir şey sor..." style="flex:1;padding:10px 14px;border:1.5px solid var(--border);border-radius:12px;background:var(--glass);color:var(--text);font-family:inherit;font-size:.84rem;outline:none"><button onclick="sendAIMessage()" style="background:linear-gradient(135deg,#6b4fcf,#a07cf8);color:#fff;border:none;border-radius:12px;padding:10px 16px;font-size:.85rem;font-weight:700;cursor:pointer">➤</button></div>';
+  document.body.appendChild(chatModal);
+  setTimeout(function(){var inp=document.getElementById('aiChatInput');if(inp)inp.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendAIMessage();}});},500);
+})();
+
+var aiChatOpen=false;
+function toggleAIChat(){
+  var modal=document.getElementById('aiChatModal');var bubble=document.getElementById('aiBubble');if(!modal)return;
+  aiChatOpen=!aiChatOpen;
+  if(aiChatOpen){modal.style.display='flex';setTimeout(function(){modal.style.transform='translateY(0)';},10);bubble.style.display='none';setTimeout(function(){var inp=document.getElementById('aiChatInput');if(inp)inp.focus();},400);}
+  else{modal.style.transform='translateY(100%)';setTimeout(function(){modal.style.display='none';},300);bubble.style.display='flex';}
+}
+
+var aiDailyCount=parseInt(localStorage.getItem('fs_ai_count_'+dateKey(new Date())))||0;
+function sendAIMessage(){
+  var input=document.getElementById('aiChatInput');var msg=(input.value||'').trim();if(!msg)return;
+  if(aiDailyCount>=5){showToast('Günlük 5 mesaj limitine ulaştın. Yarın tekrar dene!');return;}
+  input.value='';var container=document.getElementById('aiChatMessages');
+  container.innerHTML+='<div style="align-self:flex-end;background:var(--accent);color:#fff;border-radius:14px 14px 4px 14px;padding:10px 14px;font-size:.82rem;max-width:85%;line-height:1.5">'+escHTML(msg)+'</div>';
+  container.innerHTML+='<div id="aiTyping" style="align-self:flex-start;background:var(--glass);border:1px solid var(--border);border-radius:14px 14px 14px 4px;padding:10px 14px;font-size:.78rem;color:var(--text2)"><span class="spinner" style="width:14px;height:14px;border-width:2px;vertical-align:middle"></span> Düşünüyor...</div>';
+  container.scrollTop=container.scrollHeight;
+  aiDailyCount++;localStorage.setItem('fs_ai_count_'+dateKey(new Date()),aiDailyCount);
+  setTimeout(function(){
+    var typing=document.getElementById('aiTyping');if(typing)typing.remove();
+    var reply=getLocalAIReply(msg);
+    container.innerHTML+='<div style="align-self:flex-start;background:linear-gradient(135deg,rgba(107,79,207,.08),rgba(160,124,248,.04));border:1px solid rgba(107,79,207,.12);border-radius:14px 14px 14px 4px;padding:10px 14px;font-size:.82rem;max-width:90%;line-height:1.6;color:var(--text)">'+reply+'<div style="font-size:.6rem;color:var(--text2);margin-top:6px;text-align:right">'+(5-aiDailyCount)+' mesaj kaldı</div></div>';
+    container.scrollTop=container.scrollHeight;
+  },1200);
+}
+
+function getLocalAIReply(msg){
+  var m=msg.toLowerCase();var t=getTotals();var _tgt=getTodayTargets();var remaining=_tgt.cal-t.cal;var waterMl=getWaterMl();
+  if(m.includes('ne yesem')||m.includes('ne yemeliyim')||m.includes('öner')){
+    if(remaining>600)return 'Bugün '+remaining+' kcal kalmış. Izgara tavuk göğsü (200g, ~330 kcal) + bulgur pilavı (150g, ~180 kcal) + mevsim salatası önerebilirim. Protein ihtiyacını da karşılarsın! 💪';
+    if(remaining>300)return remaining+' kcal için mercimek çorbası (~180 kcal) + tam buğday ekmeği (~80 kcal) mükemmel olur. Doyurucu ve besleyici! 🥗';
+    if(remaining>0)return 'Sadece '+remaining+' kcal kalmış. Bir avuç badem (~160 kcal) veya yoğurt (~100 kcal) ile tamamla. 🎯';
+    return 'Kalori hedefini tamamladın! '+Math.abs(remaining)+' kcal fazla. Yarın biraz dikkat et ama stres yapma! 😊';
+  }
+  if(m.includes('su')||m.includes('water')){var wp=_tgt.water?Math.round((waterMl/_tgt.water)*100):0;if(wp>=100)return 'Su hedefini tamamladın — '+waterMl+'ml! 💧🏆';return waterMl+'ml içmişsin, hedef '+_tgt.water+'ml ('+wp+'%). '+(Math.round((_tgt.water-waterMl)/250))+' bardak daha! 💧';}
+  if(m.includes('protein')){var pp=_tgt.prot?Math.round((t.prot/_tgt.prot)*100):0;return Math.round(t.prot)+'g protein almışsın (hedef '+_tgt.prot+'g, '+pp+'%). '+(pp>=100?'Harika! 💪':'Tavuk, yumurta, yoğurt veya mercimek ile artır!');}
+  if(m.includes('analiz')||m.includes('değerlendir')||m.includes('bugün')){var cp=_tgt.cal?Math.round((t.cal/_tgt.cal)*100):0;return 'Bugün: '+t.cal+'/'+_tgt.cal+' kcal ('+cp+'%). P:'+Math.round(t.prot)+'g K:'+Math.round(t.carb)+'g Y:'+Math.round(t.fat)+'g. Su:'+waterMl+'ml. '+(cp>110?'Kalori yüksek!':cp>85?'İyi gidiyorsun!':'Biraz daha yemek ekle.');}
+  if(m.includes('kilo')||m.includes('zayıfla')||m.includes('diyet'))return 'Kilo kontrolü = tutarlılık! Kalori takibi, yüksek protein, bol su, haftada 3+ egzersiz. FitSofra ile takibe devam! 📊';
+  if(m.includes('merhaba')||m.includes('selam')||m.includes('nasıl'))return 'Merhaba! 😊 "Ne yesem", "analiz", "protein durumum", "su içtim mi" gibi sorular sorabilirsin!';
+  return 'Bugün '+t.cal+' kcal (hedef: '+_tgt.cal+'). "Ne yesem", "analiz", "protein" gibi sorular sorabilirsin! 🍽️';
+}
 </script>
 </body>
 </html>
