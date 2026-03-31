@@ -40,9 +40,14 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
 [data-theme="light"] .header .icon-btn{background:rgba(0,0,0,.04);border:1px solid rgba(0,0,0,.08);color:#1a1a2e}
 [data-theme="light"] .ring-text .cal-num{color:#1a1a2e}
 [data-theme="light"] .ring-text .cal-label{color:#5a5d7a}
-[data-theme="light"] .macro-row .macro-name{color:#5a5d7a}
+[data-theme="light"] .macro-row .macro-name{color:rgba(26,26,46,.6)}
 [data-theme="light"] .macro-row .macro-val{color:#1a1a2e}
 [data-theme="light"] #streakBadge span{color:#5a5d7a!important}
+[data-theme="light"] .ring-container svg circle[stroke="rgba(255,255,255,.12)"]{stroke:rgba(0,0,0,.1)}
+[data-theme="light"] .macro-bar-bg{background:rgba(0,0,0,.08)}
+[data-theme="light"] .macro-dot{opacity:.9}
+[data-theme="light"] .calorie-ring-section .ring-container svg circle[stroke="rgba(255,107,61,.1)"]{stroke:rgba(232,93,58,.15)}
+[data-theme="light"] .ring-text .cal-label{opacity:.7}
 [data-theme="light"] body::before{background:radial-gradient(ellipse at 30% 20%,rgba(232,93,58,.03) 0%,transparent 50%),radial-gradient(ellipse at 70% 80%,rgba(45,125,210,.02) 0%,transparent 50%)}
 [data-theme="light"] .modal{background:#fff;border-top:1px solid rgba(0,0,0,.06)}
 [data-theme="light"] .modal-handle{background:rgba(0,0,0,.1)}
@@ -264,6 +269,8 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
 .portion-row input{flex:1;padding:10px;font-family:var(--font,system-ui);font-size:1rem;font-weight:700;text-align:center;border:1.5px solid var(--border);border-radius:var(--radius-sm);background:var(--glass);color:var(--text);outline:none}
 .portion-row input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
 #portionWheelInner::-webkit-scrollbar{display:none}
+#portionWheelGram::-webkit-scrollbar{display:none}
+#portionWheelUnit::-webkit-scrollbar{display:none}
 .portion-row .unit{font-size:.8rem;color:var(--text2);font-weight:600}
 .portion-preview{display:flex;justify-content:space-around;padding:10px 0;font-size:.76rem;color:var(--text2);font-weight:600;flex-wrap:wrap}
 .portion-preview span{display:flex;flex-direction:column;align-items:center;gap:3px}
@@ -1293,10 +1300,17 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
       </div>
       <span class="unit" id="portionUnit">gram</span>
     </div>
-    <!-- Kaydırmalı hızlı seçim (iOS-style dikey wheel) -->
-    <div id="portionScrollPicker" style="position:relative;height:160px;overflow:hidden;margin:6px 0 8px;border-radius:14px;background:var(--glass);border:1px solid var(--border)">
-      <div style="position:absolute;top:50%;left:0;right:0;height:40px;transform:translateY(-50%);background:var(--accent-glow);border-top:1.5px solid var(--accent);border-bottom:1.5px solid var(--accent);pointer-events:none;z-index:1"></div>
-      <div id="portionWheelInner" style="position:absolute;inset:0;overflow-y:scroll;-webkit-overflow-scrolling:touch;scroll-snap-type:y mandatory;padding:60px 0;scrollbar-width:none;-ms-overflow-style:none">
+    <!-- 2 Sütunlu Kaydırmalı Picker (Gram + Birim) -->
+    <div id="portionScrollPicker" style="display:flex;gap:2px;height:180px;margin:6px 0 8px;border-radius:14px;background:var(--glass);border:1px solid var(--border);overflow:hidden">
+      <!-- Sol: Gram değerleri -->
+      <div style="flex:1;position:relative;overflow:hidden">
+        <div id="portionWheelGram" style="position:absolute;inset:0;overflow-y:scroll;-webkit-overflow-scrolling:touch;scroll-snap-type:y mandatory;padding:70px 0;scrollbar-width:none;-ms-overflow-style:none"></div>
+      </div>
+      <!-- Ayırıcı -->
+      <div style="width:1px;background:var(--border);margin:12px 0"></div>
+      <!-- Sağ: Birim seçimi -->
+      <div style="flex:1;position:relative;overflow:hidden">
+        <div id="portionWheelUnit" style="position:absolute;inset:0;overflow-y:scroll;-webkit-overflow-scrolling:touch;scroll-snap-type:y mandatory;padding:70px 0;scrollbar-width:none;-ms-overflow-style:none"></div>
       </div>
     </div>
     <div class="portion-preview" id="portionPreview"></div>
@@ -2794,97 +2808,92 @@ function adjustPortion(delta){
 }
 
 function populatePortionScroller(activeG){
-  var wheel=document.getElementById('portionWheelInner');
-  if(!wheel)return;
-  // 1'den 500'e kadar gram değerleri: 1-10 arası 1'er, 10-100 arası 5'er, 100-500 arası 10'ar
-  var values=[];
-  var i;
-  for(i=1;i<=10;i++)values.push(i);
-  for(i=15;i<=100;i+=5)values.push(i);
-  for(i=110;i<=300;i+=10)values.push(i);
-  for(i=350;i<=500;i+=50)values.push(i);
-  // Aktif gram yoksa ekle
-  var rounded=Math.round(activeG);
-  if(rounded>0&&values.indexOf(rounded)===-1){
-    values.push(rounded);
-    values.sort(function(a,b){return a-b;});
-  }
-  
-  wheel.innerHTML=values.map(function(g){
-    return '<div data-g="'+g+'" style="height:40px;display:flex;align-items:center;justify-content:center;'
-      +'font-family:inherit;font-size:1.1rem;font-weight:700;color:var(--text2);'
-      +'scroll-snap-align:center;cursor:pointer;transition:all .15s;flex-shrink:0'
-      +'" onclick="setPortionFromScroll('+g+')">'+g+' g</div>';
+  var gramWheel=document.getElementById('portionWheelGram');
+  var unitWheel=document.getElementById('portionWheelUnit');
+  if(!gramWheel)return;
+  var values=[];for(var i=1;i<=500;i++)values.push(i);
+  var itemH=40;
+  gramWheel.innerHTML=values.map(function(g){
+    return '<div data-g="'+g+'" style="height:'+itemH+'px;display:flex;align-items:center;justify-content:center;font-family:inherit;font-size:.95rem;font-weight:600;color:var(--text2);scroll-snap-align:center;cursor:pointer;flex-shrink:0;opacity:.3" onclick="setPortionFromScroll('+g+')">'+g+'</div>';
   }).join('');
-  
-  // Aktif değere scroll et
+  if(unitWheel)populateUnitWheel();
+  var rounded=Math.round(activeG);
   setTimeout(function(){
-    var target=wheel.querySelector('[data-g="'+rounded+'"]');
-    if(target){
-      wheel.scrollTop=target.offsetTop-60;
-    }
+    var t=gramWheel.querySelector('[data-g="'+rounded+'"]');
+    if(t)gramWheel.scrollTop=t.offsetTop-70;
+    highlightWheelCenter(gramWheel);
   },50);
-  
-  // Scroll event ile seçimi güncelle
-  var scrollTimer=null;
-  wheel.onscroll=function(){
-    clearTimeout(scrollTimer);
-    scrollTimer=setTimeout(function(){
-      // Ortadaki elemanı bul
-      var centerY=wheel.scrollTop+80;
-      var closest=null;var closestDist=999;
-      wheel.querySelectorAll('[data-g]').forEach(function(el){
-        var dist=Math.abs(el.offsetTop-centerY);
-        if(dist<closestDist){closestDist=dist;closest=el;}
-      });
-      if(closest){
-        var g=parseInt(closest.getAttribute('data-g'));
-        document.getElementById('portionInput').value=g;
-        highlightWheelItem(wheel,g);
-        updatePortionPreview();
-      }
-    },80);
+  var sT=null;
+  gramWheel.onscroll=function(){
+    highlightWheelCenter(gramWheel);
+    clearTimeout(sT);sT=setTimeout(function(){
+      var g=getCenterValue(gramWheel);
+      if(g>0){document.getElementById('portionInput').value=g;updatePortionPreview();}
+    },100);
   };
-  
-  highlightWheelItem(wheel,rounded);
 }
-
-function highlightWheelItem(wheel,g){
-  wheel.querySelectorAll('[data-g]').forEach(function(el){
-    var v=parseInt(el.getAttribute('data-g'));
-    if(v===g){
-      el.style.color='var(--accent)';
-      el.style.fontSize='1.25rem';
-      el.style.fontWeight='800';
-    }else{
-      var dist=Math.abs(v-g);
-      var opacity=Math.max(0.3,1-dist/100);
-      el.style.color='var(--text2)';
-      el.style.fontSize='1rem';
-      el.style.fontWeight='600';
-      el.style.opacity=opacity;
-    }
-  });
+function populateUnitWheel(){
+  var w=document.getElementById('portionWheelUnit');
+  if(!w||!currentUnits)return;
+  w.innerHTML=currentUnits.map(function(u,i){
+    return '<div data-uidx="'+i+'" style="height:40px;display:flex;align-items:center;justify-content:center;font-family:inherit;font-size:.82rem;font-weight:600;color:var(--text2);scroll-snap-align:center;cursor:pointer;flex-shrink:0;opacity:.3;text-align:center;padding:0 6px" onclick="selectUnitFromWheel('+i+')">'+u.label+'</div>';
+  }).join('');
+  setTimeout(function(){highlightWheelCenter(w);},50);
+  var sT2=null;
+  w.onscroll=function(){
+    highlightWheelCenter(w);
+    clearTimeout(sT2);sT2=setTimeout(function(){
+      var idx=getCenterUnitIdx(w);
+      if(idx>=0)selectUnitFromWheel(idx);
+    },100);
+  };
 }
-
-function setPortionFromScroll(g){
-  document.getElementById('portionInput').value=g;
-  var wheel=document.getElementById('portionWheelInner');
-  if(wheel){
-    var target=wheel.querySelector('[data-g="'+g+'"]');
-    if(target)wheel.scrollTo({top:target.offsetTop-60,behavior:'smooth'});
-    highlightWheelItem(wheel,g);
-  }
+function selectUnitFromWheel(idx){
+  if(!currentUnits||!currentUnits[idx])return;
+  var u=currentUnits[idx];
+  currentUnit=u.name;currentUnitG=u.g;
+  var isGram=u.name==='gram';
+  document.getElementById('qtyRow').style.display=isGram?'none':'flex';
+  document.getElementById('qtyInput').value=1;
+  document.getElementById('qtyLabel').textContent=isGram?'':u.name;
+  document.getElementById('portionInput').value=u.g;
+  document.getElementById('portionUnit').textContent='gram';
+  document.querySelectorAll('.unit-btn').forEach(function(b,i){b.classList.toggle('active',i===idx);});
+  var gw=document.getElementById('portionWheelGram');
+  if(gw){var t=gw.querySelector('[data-g="'+Math.round(u.g)+'"]');if(t)gw.scrollTo({top:t.offsetTop-70,behavior:'smooth'});}
   updatePortionPreview();
 }
-
+function getCenterValue(wheel){
+  var cY=wheel.scrollTop+90;var cl=null;var cd=999;
+  wheel.querySelectorAll('[data-g]').forEach(function(el){var d=Math.abs(el.offsetTop+20-cY);if(d<cd){cd=d;cl=el;}});
+  return cl?parseInt(cl.getAttribute('data-g')):0;
+}
+function getCenterUnitIdx(wheel){
+  var cY=wheel.scrollTop+90;var cl=null;var cd=999;
+  wheel.querySelectorAll('[data-uidx]').forEach(function(el){var d=Math.abs(el.offsetTop+20-cY);if(d<cd){cd=d;cl=el;}});
+  return cl?parseInt(cl.getAttribute('data-uidx')):-1;
+}
+function highlightWheelCenter(wheel){
+  var cY=wheel.scrollTop+90;
+  var isG=!!wheel.querySelector('[data-g]');
+  var attr=isG?'data-g':'data-uidx';
+  wheel.querySelectorAll('['+attr+']').forEach(function(el){
+    var d=Math.abs(el.offsetTop+20-cY);
+    if(d<22){el.style.color='var(--accent)';el.style.fontSize=isG?'1.3rem':'1rem';el.style.fontWeight='800';el.style.opacity='1';}
+    else if(d<60){el.style.color='var(--text)';el.style.fontSize=isG?'1rem':'.85rem';el.style.fontWeight='600';el.style.opacity='.6';}
+    else{el.style.color='var(--text2)';el.style.fontSize=isG?'.85rem':'.75rem';el.style.fontWeight='500';el.style.opacity='.25';}
+  });
+}
+function setPortionFromScroll(g){
+  document.getElementById('portionInput').value=g;
+  var w=document.getElementById('portionWheelGram');
+  if(w){var t=w.querySelector('[data-g="'+g+'"]');if(t)w.scrollTo({top:t.offsetTop-70,behavior:'smooth'});}
+  updatePortionPreview();
+}
 function highlightScrollPicker(g){
-  var wheel=document.getElementById('portionWheelInner');
-  if(!wheel)return;
-  var rounded=Math.round(g);
-  var target=wheel.querySelector('[data-g="'+rounded+'"]');
-  if(target)wheel.scrollTo({top:target.offsetTop-60,behavior:'smooth'});
-  highlightWheelItem(wheel,rounded);
+  var w=document.getElementById('portionWheelGram');if(!w)return;
+  var r=Math.round(g);var t=w.querySelector('[data-g="'+r+'"]');
+  if(t)w.scrollTo({top:t.offsetTop-70,behavior:'smooth'});
 }
 
 function selectUnit(idx){
@@ -8570,10 +8579,22 @@ function toggleTheme(){
   const isLight=document.documentElement.getAttribute('data-theme')==='light';
   if(isLight){document.documentElement.removeAttribute('data-theme');localStorage.setItem('fs_theme','dark');document.getElementById('themeBtn').textContent='🌙';showToast('🌙 Gece modu')}
   else{document.documentElement.setAttribute('data-theme','light');localStorage.setItem('fs_theme','light');document.getElementById('themeBtn').textContent='☀️';showToast('☀️ Gündüz modu')}
+  fixLightModeRings();
+}
+function fixLightModeRings(){
+  var isLight=document.documentElement.getAttribute('data-theme')==='light';
+  // Header'daki ring arka plan çemberlerini güncelle
+  document.querySelectorAll('.ring-container svg circle, .calorie-ring-section svg circle').forEach(function(c){
+    var s=c.getAttribute('stroke');
+    if(s==='rgba(255,255,255,.12)')c.setAttribute('stroke',isLight?'rgba(0,0,0,.12)':'rgba(255,255,255,.12)');
+    if(s==='rgba(0,0,0,.12)')c.setAttribute('stroke',isLight?'rgba(0,0,0,.12)':'rgba(255,255,255,.12)');
+    if(s==='rgba(255,107,61,.1)')c.setAttribute('stroke',isLight?'rgba(232,93,58,.18)':'rgba(255,107,61,.1)');
+    if(s==='rgba(232,93,58,.18)')c.setAttribute('stroke',isLight?'rgba(232,93,58,.18)':'rgba(255,107,61,.1)');
+  });
 }
 loadTheme();setHeaderDate();loadProfile();loadNotifSettings();updateDateNav();updateWaterHeader();setupPWA();
 initFoodDB()
-  .then(()=>{renderMeals();updateHeader();loadCloudFoods();loadRecipesFromFirebase();})
+  .then(()=>{renderMeals();updateHeader();loadCloudFoods();loadRecipesFromFirebase();fixLightModeRings();})
   .catch(()=>{
     FOOD_DB=getBuiltinFoodDB();
     rebuildSearchIndex();
