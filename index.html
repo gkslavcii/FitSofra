@@ -6339,6 +6339,118 @@ function renderStats(){
   // HTML oluştur
   let html='';
 
+  // ═══ VÜCUT SKORU ═══
+  var bs={nutrition:0,macro:0,water:0,weight:0,exercise:0,streak:0,meals:0};
+  // 1. Beslenme tutarlılığı (25p) — son 7 günde hedefe yakınlık
+  if(activeDays.length>0&&dailyTarget>0){
+    var calAccuracy=activeDays.reduce(function(s,d){
+      var ratio=d.cal/dailyTarget;
+      // 0.85-1.15 arası ideal
+      if(ratio>=0.85&&ratio<=1.15)return s+1;
+      if(ratio>=0.7&&ratio<=1.3)return s+0.6;
+      return s+0.2;
+    },0)/7;
+    bs.nutrition=Math.round(calAccuracy*25);
+  }
+  // 2. Makro dengesi (20p)
+  if(t.cal>0&&protTarget>0){
+    var protR=Math.min(1,t.prot/protTarget);
+    var carbR=Math.min(1,t.carb/carbTarget);
+    var fatR=Math.min(1,t.fat/fatTarget);
+    var macroAvg=(protR+carbR+fatR)/3;
+    bs.macro=Math.round(macroAvg*20);
+  }
+  // 3. Su tüketimi (15p)
+  if(waterTarget>0){
+    var waterR=Math.min(1,todayWater/waterTarget);
+    var weekWaterR=activeDays.length?activeDays.reduce(function(s,d){return s+Math.min(1,d.water/waterTarget);},0)/7:0;
+    bs.water=Math.round(((waterR+weekWaterR)/2)*15);
+  }
+  // 4. Kilo trendi (15p)
+  var wLog=typeof getWeightLog==='function'?getWeightLog():[];
+  if(wLog.length>=2){
+    var prof=JSON.parse(localStorage.getItem('fs_profile')||'{}');
+    var goalW=parseFloat(prof.goalWeight)||parseFloat(prof.weight)||70;
+    var currentW=wLog[wLog.length-1].weight;
+    var prevW=wLog[Math.max(0,wLog.length-7)].weight;
+    var needLose=currentW>goalW;
+    var moved=needLose?(prevW-currentW):(currentW-prevW);
+    if(Math.abs(currentW-goalW)<1)bs.weight=15;
+    else if(moved>0)bs.weight=Math.min(15,Math.round((moved/2)*15));
+    else bs.weight=3;
+  }else{bs.weight=5;}
+  // 5. Egzersiz (10p)
+  var exData=JSON.parse(localStorage.getItem('fs_ex_'+dateKey(new Date()))||'[]');
+  var weekEx=0;
+  for(var ei=0;ei<7;ei++){var ed=new Date();ed.setDate(ed.getDate()-ei);var exd=JSON.parse(localStorage.getItem('fs_ex_'+dateKey(ed))||'[]');if(exd.length)weekEx++;}
+  bs.exercise=Math.min(10,Math.round((weekEx/3)*10));
+  // 6. Seri (10p)
+  var streakN=parseInt(document.getElementById('streakCount')?.textContent)||0;
+  if(streakN>=30)bs.streak=10;
+  else if(streakN>=14)bs.streak=8;
+  else if(streakN>=7)bs.streak=6;
+  else if(streakN>=3)bs.streak=4;
+  else if(streakN>=1)bs.streak=2;
+  else bs.streak=0;
+  // 7. Öğün düzeni (5p)
+  var todayMeals=Object.keys(todayObj.foods.reduce(function(a,f){a[f.meal]=1;return a;},{})).length;
+  bs.meals=Math.min(5,Math.round((todayMeals/3)*5));
+
+  var totalScore=bs.nutrition+bs.macro+bs.water+bs.weight+bs.exercise+bs.streak+bs.meals;
+  var scoreColor=totalScore>=80?'var(--green)':totalScore>=60?'var(--orange)':totalScore>=40?'var(--accent)':'var(--red)';
+  var scoreLabel=totalScore>=80?'Mükemmel! 🌟':totalScore>=60?'İyi gidiyorsun! 💪':totalScore>=40?'Geliştirebilirsin 📈':'Harekete geç! 🔥';
+  var scorePct=Math.round((totalScore/100)*283);
+
+  // En düşük kategoriyi bul — öneri için
+  var categories=[
+    {name:'Beslenme tutarlılığı',score:bs.nutrition,max:25,tip:'Günlük kalori hedefinize yakın kalmaya çalışın'},
+    {name:'Makro dengesi',score:bs.macro,max:20,tip:'Protein, karb ve yağ dengesini gözden geçirin'},
+    {name:'Su tüketimi',score:bs.water,max:15,tip:'Günlük su hedefinizi tamamlamaya özen gösterin'},
+    {name:'Kilo trendi',score:bs.weight,max:15,tip:'Düzenli tartılın ve hedef kilonuza odaklanın'},
+    {name:'Egzersiz',score:bs.exercise,max:10,tip:'Haftada en az 3 gün egzersiz kaydedin'},
+    {name:'Seri',score:bs.streak,max:10,tip:'Her gün kalori kaydı yaparak serinizi koruyun'},
+    {name:'Öğün düzeni',score:bs.meals,max:5,tip:'3 ana öğün kaydetmeye özen gösterin'}
+  ];
+  categories.sort(function(a,b){return(a.score/a.max)-(b.score/b.max);});
+  var topTip=categories[0];
+
+  var bodyScoreHtml=''
+    +'<div style="background:var(--card);border-radius:var(--radius);padding:20px 16px;margin-bottom:14px;border:1px solid var(--border);text-align:center">'
+    +'<div style="font-weight:800;font-size:.95rem;margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:8px">🏆 Vücut Skoru</div>'
+    // Skor halkası
+    +'<div style="position:relative;width:130px;height:130px;margin:0 auto 16px">'
+    +'<svg viewBox="0 0 100 100" style="transform:rotate(-90deg);width:100%;height:100%">'
+    +'<circle cx="50" cy="50" r="45" fill="none" stroke="var(--border)" stroke-width="8"/>'
+    +'<circle cx="50" cy="50" r="45" fill="none" stroke="'+scoreColor+'" stroke-width="8" stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="'+(283-scorePct)+'" style="transition:stroke-dashoffset 1.2s ease"/>'
+    +'</svg>'
+    +'<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">'
+    +'<div style="font-size:2rem;font-weight:900;color:'+scoreColor+'">'+totalScore+'</div>'
+    +'<div style="font-size:.65rem;color:var(--text2);font-weight:600">/100</div>'
+    +'</div></div>'
+    +'<div style="font-size:.85rem;font-weight:700;color:'+scoreColor+';margin-bottom:14px">'+scoreLabel+'</div>'
+    // Kategori barları
+    +'<div style="text-align:left;display:flex;flex-direction:column;gap:8px">';
+
+  categories.sort(function(a,b){return b.max-a.max;});
+  categories.forEach(function(c){
+    var pct=Math.round((c.score/c.max)*100);
+    var barColor=pct>=80?'var(--green)':pct>=50?'var(--orange)':'var(--red)';
+    bodyScoreHtml+='<div>'
+      +'<div style="display:flex;justify-content:space-between;font-size:.72rem;margin-bottom:3px">'
+      +'<span style="font-weight:600;color:var(--text)">'+c.name+'</span>'
+      +'<span style="font-weight:700;color:'+barColor+'">'+c.score+'/'+c.max+'</span></div>'
+      +'<div style="height:5px;background:var(--glass);border-radius:4px;overflow:hidden;border:1px solid var(--border)">'
+      +'<div style="height:100%;width:'+pct+'%;background:'+barColor+';border-radius:4px;transition:width .8s ease"></div>'
+      +'</div></div>';
+  });
+
+  bodyScoreHtml+='</div>'
+    // Öneri
+    +'<div style="margin-top:14px;padding:10px 12px;background:var(--accent-glow);border:1px solid var(--accent);border-radius:10px;text-align:left">'
+    +'<div style="font-size:.72rem;font-weight:700;color:var(--accent);margin-bottom:2px">💡 Öneri</div>'
+    +'<div style="font-size:.76rem;color:var(--text2);line-height:1.5">'+topTip.tip+'</div>'
+    +'</div></div>';
+
   // --- GRAFİKLER: trend + makro pasta ---
   var statsHtml=`
   <div style="padding:0 0 16px;overflow:hidden;box-sizing:border-box">
@@ -6471,7 +6583,7 @@ function renderStats(){
     </div>`;
   }
 
-  document.getElementById('statsContainer').innerHTML=statsHtml+html+generateReportSection();
+  document.getElementById('statsContainer').innerHTML=bodyScoreHtml+statsHtml+html+generateReportSection();
 
   // Init report date defaults
   requestAnimationFrame(function(){
