@@ -132,8 +132,8 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
 .food-item:active{background:var(--accent-glow);transform:scale(.98)}
 .food-item:last-of-type{border-bottom:none}
 .swipe-wrapper{position:relative;overflow:hidden}
-.swipe-delete-bg{position:absolute;top:0;right:0;bottom:0;width:100%;background:linear-gradient(90deg,transparent 60%,var(--red));display:flex;align-items:center;justify-content:flex-end;padding-right:18px;font-size:.82rem;font-weight:800;color:#fff;pointer-events:none;opacity:0;transition:opacity .15s}
-.swipe-wrapper .food-item{transition:transform .25s cubic-bezier(.25,1,.5,1);will-change:transform;touch-action:pan-y}
+.swipe-delete-bg{position:absolute;top:0;right:0;bottom:0;width:75px;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:.82rem;font-weight:800;color:#fff;pointer-events:none;opacity:0;transition:opacity .15s;z-index:2;border-radius:0 8px 8px 0}
+.swipe-wrapper .food-item{position:relative;z-index:3;background:var(--card,#181b23);transition:transform .25s cubic-bezier(.25,1,.5,1);will-change:transform;touch-action:pan-y}
 .undo-toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--card);color:var(--text);padding:10px 14px;border-radius:var(--radius-sm);font-size:.8rem;font-weight:600;z-index:200;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:10px;border:1px solid var(--border);backdrop-filter:blur(16px);opacity:0;transition:all .3s cubic-bezier(.25,1,.5,1);pointer-events:none;max-width:88%}
 .undo-toast.show{transform:translateX(-50%) translateY(0);opacity:1;pointer-events:auto}
 .undo-toast button{background:var(--accent);color:#fff;border:none;border-radius:8px;padding:6px 14px;font-family:var(--font,system-ui);font-size:.76rem;font-weight:800;cursor:pointer;flex-shrink:0}
@@ -8943,7 +8943,7 @@ function showOfflineBanner(){
     if(!wrapper||wrapper!==activeEl){
       document.querySelectorAll('.swipe-wrapper').forEach(function(w){
         var f=w.querySelector('.food-item');var b=w.querySelector('.swipe-delete-bg');
-        if(f&&f.style.transform&&f.style.transform!==''){f.style.transition='transform .25s ease';f.style.transform='';}
+        if(f&&f.style.transform&&f.style.transform!==''){f.style.transition='transform .25s ease';f.style.transform='';f.style.pointerEvents='';}
         if(b){b.style.opacity='0';b.style.pointerEvents='none';}
       });
     }
@@ -8983,22 +8983,27 @@ function showOfflineBanner(){
 
     if(Math.abs(dx)>=SWIPE_THRESHOLD/2){
       // Sil butonunu göster — iPhone tarzı (75px açık bırak)
-      if(fi){fi.style.transition='transform .25s cubic-bezier(.25,1,.5,1)';fi.style.transform='translateX(-75px)';}
+      if(fi){fi.style.transition='transform .25s cubic-bezier(.25,1,.5,1)';fi.style.transform='translateX(-75px)';fi.style.pointerEvents='none';}
       if(bg){bg.style.opacity='1';bg.style.pointerEvents='auto';bg.style.cursor='pointer';}
       var mealId=activeEl.getAttribute('data-meal');
       var idx=parseInt(activeEl.getAttribute('data-idx'));
       var wrapRef=activeEl;
-      // Sil butonuna tıklama
-      bg.onclick=function(){
+      // Sil butonuna tıklama — hem click hem touchend
+      var deleteHandler=function(ev){
+        ev.stopPropagation();ev.preventDefault();
+        bg.removeEventListener('click',deleteHandler);
+        bg.removeEventListener('touchend',deleteHandler);
         if(fi){fi.style.transition='transform .25s ease,opacity .25s';fi.style.transform='translateX(-120%)';fi.style.opacity='0';}
         wrapRef.style.transition='max-height .3s ease,margin .3s ease,padding .3s ease';
         wrapRef.style.overflow='hidden';
         setTimeout(function(){wrapRef.style.maxHeight='0';wrapRef.style.margin='0';wrapRef.style.padding='0';},100);
         setTimeout(function(){swipeDeleteFood(mealId,idx);},350);
       };
+      bg.addEventListener('click',deleteHandler);
+      bg.addEventListener('touchend',deleteHandler);
     } else {
       // Snap back
-      if(fi){fi.style.transition='transform .25s cubic-bezier(.25,1,.5,1)';fi.style.transform='';}
+      if(fi){fi.style.transition='transform .25s cubic-bezier(.25,1,.5,1)';fi.style.transform='';fi.style.pointerEvents='';}
       if(bg){bg.style.opacity='0';bg.style.pointerEvents='none';}
     }
     activeEl=null;swiping=false;moved=false;
@@ -10376,7 +10381,7 @@ completeOnboarding=function(){
   var chatModal=document.createElement('div');
   chatModal.id='aiChatModal';
   chatModal.style.cssText='position:fixed;bottom:0;left:0;right:0;max-width:430px;margin:0 auto;z-index:160;display:none;flex-direction:column;height:70vh;max-height:500px;background:var(--bg,#080a10);border-top-left-radius:24px;border-top-right-radius:24px;border:1px solid var(--border);border-bottom:none;box-shadow:0 -8px 40px rgba(0,0,0,.5);transition:transform .3s ease;transform:translateY(100%)';
-  chatModal.innerHTML='<div style="padding:14px 16px 10px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-shrink:0"><div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#6b4fcf,#a07cf8);display:flex;align-items:center;justify-content:center;font-size:1.1rem">🤖</div><div style="flex:1"><div style="font-weight:800;font-size:.88rem">FitSofra AI Asistan</div><div style="font-size:.65rem;color:var(--text2)">Beslenme danışmanın</div></div><button onclick="toggleAIChat()" style="background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:5px 12px;font-size:.75rem;font-weight:700;color:var(--text2);cursor:pointer">✕</button></div>'
+  chatModal.innerHTML='<div style="padding:14px 16px 10px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-shrink:0"><div style="width:36px;height:36px;border-radius:50%;background:rgba(20,18,35,.85);display:flex;align-items:center;justify-content:center;box-shadow:inset 0 0 0 1px rgba(160,124,248,.25)"><svg width="22" height="22" viewBox="0 0 100 100" fill="none"><defs><linearGradient id="aig2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#a07cf8"/><stop offset="100%" stop-color="#6b4fcf"/></linearGradient></defs><circle cx="50" cy="45" r="28" fill="none" stroke="url(#aig2)" stroke-width="4.5"/><circle cx="40" cy="38" r="4.5" fill="#a07cf8"/><circle cx="60" cy="38" r="4.5" fill="#8b6cf0"/><circle cx="50" cy="52" r="4.5" fill="#6b4fcf"/><line x1="40" y1="38" x2="60" y2="38" stroke="#a07cf8" stroke-width="1.5" opacity=".5"/><line x1="40" y1="38" x2="50" y2="52" stroke="#a07cf8" stroke-width="1.5" opacity=".5"/><line x1="60" y1="38" x2="50" y2="52" stroke="#8b6cf0" stroke-width="1.5" opacity=".5"/><line x1="42" y1="72" x2="42" y2="82" stroke="#a07cf8" stroke-width="2.5" stroke-linecap="round" opacity=".7"/><line x1="50" y1="72" x2="50" y2="82" stroke="#8b6cf0" stroke-width="2.5" stroke-linecap="round" opacity=".7"/><line x1="58" y1="72" x2="58" y2="82" stroke="#6b4fcf" stroke-width="2.5" stroke-linecap="round" opacity=".7"/><path d="M38 68 Q50 64 62 68" fill="none" stroke="url(#aig2)" stroke-width="2" stroke-linecap="round"/></svg></div><div style="flex:1"><div style="font-weight:800;font-size:.88rem">FitSofra AI Asistan</div><div style="font-size:.65rem;color:var(--text2)">Beslenme danışmanın</div></div><button onclick="toggleAIChat()" style="background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:5px 12px;font-size:.75rem;font-weight:700;color:var(--text2);cursor:pointer">✕</button></div>'
     +'<div id="aiChatMessages" style="flex:1;overflow-y:auto;padding:12px 14px;display:flex;flex-direction:column;gap:10px;-webkit-overflow-scrolling:touch"><div style="background:linear-gradient(135deg,rgba(107,79,207,.1),rgba(160,124,248,.05));border:1px solid rgba(107,79,207,.15);border-radius:14px;padding:12px;font-size:.8rem;line-height:1.6;color:var(--text2)">Merhaba! 👋 Ben FitSofra AI asistanıyım. Beslenme hedeflerin, yemek önerileri veya günlük analiz hakkında sorabilirsin.<br><br><span style="font-size:.7rem;opacity:.7">Günlük 5 mesaj hakkın var</span></div></div>'
     +'<div style="padding:10px 14px 14px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0;padding-bottom:max(14px,env(safe-area-inset-bottom))"><input type="text" id="aiChatInput" placeholder="Bir şey sor..." style="flex:1;padding:10px 14px;border:1.5px solid var(--border);border-radius:12px;background:var(--glass);color:var(--text);font-family:inherit;font-size:.84rem;outline:none"><button onclick="sendAIMessage()" style="background:linear-gradient(135deg,#6b4fcf,#a07cf8);color:#fff;border:none;border-radius:12px;padding:10px 16px;font-size:.85rem;font-weight:700;cursor:pointer">➤</button></div>';
   document.body.appendChild(chatModal);
@@ -10394,18 +10399,41 @@ function toggleAIChat(){
 var aiDailyCount=parseInt(localStorage.getItem('fs_ai_count_'+dateKey(new Date())))||0;
 function sendAIMessage(){
   var input=document.getElementById('aiChatInput');var msg=(input.value||'').trim();if(!msg)return;
-  if(aiDailyCount>=5){showToast('Günlük 5 mesaj limitine ulaştın. Yarın tekrar dene!');return;}
+  if(aiDailyCount>=5){showToast('Günlük 5 mesaj limitine ulaştın!');return;}
   input.value='';var container=document.getElementById('aiChatMessages');
   container.innerHTML+='<div style="align-self:flex-end;background:var(--accent);color:#fff;border-radius:14px 14px 4px 14px;padding:10px 14px;font-size:.82rem;max-width:85%;line-height:1.5">'+escHTML(msg)+'</div>';
   container.innerHTML+='<div id="aiTyping" style="align-self:flex-start;background:var(--glass);border:1px solid var(--border);border-radius:14px 14px 14px 4px;padding:10px 14px;font-size:.78rem;color:var(--text2)"><span class="spinner" style="width:14px;height:14px;border-width:2px;vertical-align:middle"></span> Düşünüyor...</div>';
   container.scrollTop=container.scrollHeight;
   aiDailyCount++;localStorage.setItem('fs_ai_count_'+dateKey(new Date()),aiDailyCount);
-  setTimeout(function(){
+
+  // Beslenme bağlamını hazırla
+  var t=getTotals();var _tgt=getTodayTargets();var waterMl=getWaterMl();
+  var ctx='Kalori: '+t.cal+'/'+_tgt.cal+' kcal. Protein: '+Math.round(t.prot)+'/'+_tgt.prot+'g. Karb: '+Math.round(t.carb)+'/'+_tgt.carb+'g. Yağ: '+Math.round(t.fat)+'/'+_tgt.fat+'g. Su: '+waterMl+'/'+_tgt.water+'ml.';
+  var streakEl=document.getElementById('streakCount');
+  if(streakEl)ctx+=' Seri: '+streakEl.textContent+' gün.';
+
+  // Gemini Cloud Function'ı dene
+  fetch('https://us-central1-fitsofra-51176.cloudfunctions.net/geminiChat',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({data:{message:msg,nutritionContext:ctx}})
+  }).then(function(r){return r.json();}).then(function(data){
     var typing=document.getElementById('aiTyping');if(typing)typing.remove();
-    var reply=getLocalAIReply(msg);
-    container.innerHTML+='<div style="align-self:flex-start;background:linear-gradient(135deg,rgba(107,79,207,.08),rgba(160,124,248,.04));border:1px solid rgba(107,79,207,.12);border-radius:14px 14px 14px 4px;padding:10px 14px;font-size:.82rem;max-width:90%;line-height:1.6;color:var(--text)">'+reply+'<div style="font-size:.6rem;color:var(--text2);margin-top:6px;text-align:right">'+(5-aiDailyCount)+' mesaj kaldı</div></div>';
-    container.scrollTop=container.scrollHeight;
-  },1200);
+    var reply=(data.result&&data.result.reply)?data.result.reply:getLocalAIReply(msg);
+    if(data.result&&data.result.limited)aiDailyCount=5;
+    showAIReply(container,reply);
+  }).catch(function(){
+    // Fallback: lokal cevap
+    var typing=document.getElementById('aiTyping');if(typing)typing.remove();
+    showAIReply(container,getLocalAIReply(msg));
+  });
+}
+
+function showAIReply(container,reply){
+  // Markdown bold/italic basit dönüşüm
+  reply=reply.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>');
+  container.innerHTML+='<div style="align-self:flex-start;background:linear-gradient(135deg,rgba(107,79,207,.08),rgba(160,124,248,.04));border:1px solid rgba(107,79,207,.12);border-radius:14px 14px 14px 4px;padding:10px 14px;font-size:.82rem;max-width:90%;line-height:1.6;color:var(--text)">'+reply+'<div style="font-size:.6rem;color:var(--text2);margin-top:6px;text-align:right">'+(5-aiDailyCount)+' mesaj kaldı</div></div>';
+  container.scrollTop=container.scrollHeight;
 }
 
 function getLocalAIReply(msg){
