@@ -1,0 +1,523 @@
+<!-- FitSofra Haftalık Plan Modülü — index.html içine lazy-load edilir -->
+<style>
+.plan-header{text-align:center;margin-bottom:16px}
+.plan-header h2{font-size:1.1rem;font-weight:900;margin-bottom:4px}
+.plan-header p{font-size:.72rem;color:var(--text2)}
+.plan-week-nav{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:16px}
+.plan-week-nav button{background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:8px 14px;font-size:.78rem;font-weight:700;color:var(--text);cursor:pointer;font-family:var(--font,system-ui)}
+.plan-week-nav span{font-size:.82rem;font-weight:800;color:var(--accent);min-width:140px;text-align:center}
+.plan-days{display:flex;gap:4px;margin-bottom:14px;overflow-x:auto;padding-bottom:4px}
+.plan-day-pill{padding:8px 0;min-width:0;flex:1;text-align:center;border-radius:12px;background:var(--glass);border:1.5px solid var(--border);cursor:pointer;transition:all .2s;font-family:var(--font,system-ui)}
+.plan-day-pill.active{background:var(--accent-glow);border-color:var(--accent);box-shadow:0 2px 12px rgba(255,107,61,.2)}
+.plan-day-pill .pd-name{font-size:.62rem;font-weight:800;color:var(--text2)}
+.plan-day-pill.active .pd-name{color:var(--accent)}
+.plan-day-pill .pd-num{font-size:.85rem;font-weight:900;color:var(--text)}
+.plan-day-pill .pd-cal{font-size:.55rem;color:var(--text2);margin-top:1px}
+.plan-day-pill.active .pd-cal{color:var(--accent)}
+.plan-day-pill.has-meals .pd-num{color:var(--green)}
+.plan-meal-section{margin-bottom:12px}
+.plan-meal-title{font-size:.78rem;font-weight:800;color:var(--text);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.plan-meal-title .pmt-cal{font-size:.65rem;font-weight:600;color:var(--text2);margin-left:auto}
+.plan-food-item{display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--glass);border:1px solid var(--border);border-radius:10px;margin-bottom:4px;font-size:.78rem}
+.plan-food-item .pfi-name{flex:1;font-weight:600;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.plan-food-item .pfi-cal{color:var(--accent);font-weight:700;font-size:.72rem;flex-shrink:0}
+.plan-food-item .pfi-del{background:none;border:none;color:var(--text2);cursor:pointer;font-size:.75rem;padding:2px;flex-shrink:0}
+.plan-add-btn{width:100%;padding:10px;background:var(--glass);border:1.5px dashed var(--border);border-radius:10px;color:var(--text2);font-size:.78rem;font-weight:700;cursor:pointer;font-family:var(--font,system-ui);transition:all .2s}
+.plan-add-btn:active{transform:scale(.97)}
+.plan-summary{background:linear-gradient(135deg,var(--accent-glow),rgba(160,124,248,.05));border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:14px}
+.plan-summary-title{font-size:.82rem;font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.plan-summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.plan-summary-item{text-align:center;padding:6px;background:var(--glass);border-radius:8px}
+.plan-summary-item .psi-val{font-size:.95rem;font-weight:900;color:var(--text)}
+.plan-summary-item .psi-label{font-size:.55rem;color:var(--text2);font-weight:700}
+.plan-actions{display:flex;gap:6px;margin-bottom:14px}
+.plan-actions button{flex:1;padding:10px;border-radius:10px;font-size:.75rem;font-weight:700;cursor:pointer;font-family:var(--font,system-ui);border:none;transition:all .2s}
+.plan-actions button:active{transform:scale(.96)}
+.plan-template-card{background:var(--glass);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:8px;cursor:pointer;transition:all .2s}
+.plan-template-card:active{transform:scale(.98)}
+.plan-template-card h4{font-size:.82rem;font-weight:800;margin-bottom:3px}
+.plan-template-card p{font-size:.68rem;color:var(--text2);line-height:1.4}
+.plan-template-card .ptc-macros{display:flex;gap:8px;margin-top:6px;font-size:.62rem;font-weight:700}
+.plan-template-card .ptc-macros span{padding:2px 6px;border-radius:6px;background:var(--bg)}
+.plan-shopping{background:var(--glass);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:14px}
+.plan-shopping h3{font-size:.85rem;font-weight:800;margin-bottom:8px}
+.plan-shop-item{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:.78rem}
+.plan-shop-item:last-child{border:none}
+.plan-shop-item input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
+.plan-shop-item.checked .psi-text{text-decoration:line-through;color:var(--text2)}
+</style>
+
+<div class="plan-header">
+  <h2>📅 Haftalık Beslenme Planı</h2>
+  <p>Haftanı önceden planla, alışveriş listeni otomatik oluştur</p>
+</div>
+
+<!-- Hafta Navigasyonu -->
+<div class="plan-week-nav">
+  <button onclick="planChangeWeek(-1)">◀</button>
+  <span id="planWeekLabel">Bu Hafta</span>
+  <button onclick="planChangeWeek(1)">▶</button>
+</div>
+
+<!-- Gün Seçici -->
+<div class="plan-days" id="planDayPills"></div>
+
+<!-- Günlük Özet -->
+<div class="plan-summary" id="planDaySummary"></div>
+
+<!-- Öğünler -->
+<div id="planMeals"></div>
+
+<!-- Aksiyon Butonları -->
+<div class="plan-actions">
+  <button onclick="planApplyToday()" style="background:var(--accent);color:#fff">📥 Bugüne Uygula</button>
+  <button onclick="planShowShopping()" style="background:var(--glass);color:var(--text);border:1px solid var(--border)">🛒 Alışveriş Listesi</button>
+</div>
+
+<!-- Alışveriş Listesi (toggle) -->
+<div id="planShoppingSection" style="display:none"></div>
+
+<!-- Şablonlar -->
+<div style="margin-top:8px">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+    <h3 style="font-size:.88rem;font-weight:800">⚡ Hazır Şablonlar</h3>
+    <button onclick="planClearDay()" style="background:var(--glass);border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:.65rem;font-weight:700;color:var(--text2);cursor:pointer;font-family:var(--font,system-ui)">🗑️ Günü Temizle</button>
+  </div>
+  <div id="planTemplates"></div>
+</div>
+
+<!-- Kaydedilmiş Planlar -->
+<div style="margin-top:14px">
+  <h3 style="font-size:.88rem;font-weight:800;margin-bottom:8px">💾 Kaydedilmiş Planlar</h3>
+  <div style="display:flex;gap:6px;margin-bottom:8px">
+    <input type="text" id="planSaveName" placeholder="Plan adı (ör: Diyet Haftası)" style="flex:1;padding:10px;background:var(--glass);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-size:.82rem;font-family:var(--font,system-ui);outline:none">
+    <button onclick="planSaveWeek()" style="background:var(--green);color:#fff;border:none;border-radius:10px;padding:10px 16px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:var(--font,system-ui)">💾</button>
+  </div>
+  <div id="planSavedList"></div>
+</div>
+
+<div style="height:80px"></div>
+
+<script>
+// ═══════════════════════════════════════════
+//  HAFTALIK PLAN MODÜLü
+// ═══════════════════════════════════════════
+
+var PLAN_MEALS=['kahvalti','ogle','aksam','atistirmalik'];
+var PLAN_MEAL_LABELS={kahvalti:'🌅 Kahvaltı',ogle:'☀️ Öğle',aksam:'🌙 Akşam',atistirmalik:'🍿 Atıştırmalık'};
+var PLAN_DAYS_TR=['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'];
+var PLAN_DAYS_FULL=['Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi','Pazar'];
+var planWeekOffset=0;
+var planSelectedDay=0; // 0=Pzt
+
+function getPlanKey(weekOffset,dayIdx){
+  var d=getPlanDate(weekOffset,dayIdx);
+  return 'fs_plan_'+d.toISOString().split('T')[0];
+}
+
+function getPlanDate(weekOffset,dayIdx){
+  var now=new Date();
+  var monday=new Date(now);
+  monday.setDate(now.getDate()-((now.getDay()+6)%7)+weekOffset*7+dayIdx);
+  monday.setHours(0,0,0,0);
+  return monday;
+}
+
+function getPlanData(weekOffset,dayIdx){
+  var key=getPlanKey(weekOffset,dayIdx);
+  var raw=localStorage.getItem(key);
+  return raw?JSON.parse(raw):{kahvalti:[],ogle:[],aksam:[],atistirmalik:[]};
+}
+
+function setPlanData(weekOffset,dayIdx,data){
+  var key=getPlanKey(weekOffset,dayIdx);
+  localStorage.setItem(key,JSON.stringify(data));
+}
+
+function planInit(){
+  // Bugünün gün index'ini bul
+  var today=new Date();
+  var todayDayIdx=(today.getDay()+6)%7; // 0=Pzt
+  planSelectedDay=planWeekOffset===0?todayDayIdx:0;
+  renderPlanDays();
+  renderPlanDay();
+  renderPlanTemplates();
+  renderPlanSavedList();
+}
+
+function planChangeWeek(dir){
+  planWeekOffset+=dir;
+  planSelectedDay=0;
+  var d=getPlanDate(planWeekOffset,0);
+  var dEnd=getPlanDate(planWeekOffset,6);
+  var label=d.getDate()+'.'+(d.getMonth()+1)+' – '+dEnd.getDate()+'.'+(dEnd.getMonth()+1);
+  if(planWeekOffset===0)label='Bu Hafta ('+label+')';
+  else if(planWeekOffset===1)label='Gelecek Hafta';
+  else if(planWeekOffset===-1)label='Geçen Hafta';
+  document.getElementById('planWeekLabel').textContent=label;
+  renderPlanDays();
+  renderPlanDay();
+}
+
+function renderPlanDays(){
+  var html='';
+  var today=new Date();today.setHours(0,0,0,0);
+  for(var i=0;i<7;i++){
+    var d=getPlanDate(planWeekOffset,i);
+    var data=getPlanData(planWeekOffset,i);
+    var totalCal=0;
+    PLAN_MEALS.forEach(function(m){(data[m]||[]).forEach(function(f){totalCal+=f.cal||0;});});
+    var isToday=d.getTime()===today.getTime();
+    var hasMeals=totalCal>0;
+    var cls='plan-day-pill'+(i===planSelectedDay?' active':'')+(hasMeals?' has-meals':'');
+    html+='<div class="'+cls+'" onclick="planSelectDay('+i+')">';
+    html+='<div class="pd-name">'+PLAN_DAYS_TR[i]+'</div>';
+    html+='<div class="pd-num">'+(isToday?'●':d.getDate())+'</div>';
+    html+='<div class="pd-cal">'+(totalCal?totalCal+'':'—')+'</div>';
+    html+='</div>';
+  }
+  document.getElementById('planDayPills').innerHTML=html;
+}
+
+function planSelectDay(idx){
+  planSelectedDay=idx;
+  renderPlanDays();
+  renderPlanDay();
+}
+
+function renderPlanDay(){
+  var data=getPlanData(planWeekOffset,planSelectedDay);
+  var totalCal=0,totalProt=0,totalCarb=0,totalFat=0;
+  PLAN_MEALS.forEach(function(m){
+    (data[m]||[]).forEach(function(f){
+      totalCal+=f.cal||0;totalProt+=f.prot||0;totalCarb+=f.carb||0;totalFat+=f.fat||0;
+    });
+  });
+
+  // Günlük hedefler
+  var target=2000;
+  try{target=typeof dailyTarget!=='undefined'?dailyTarget:2000;}catch(e){}
+
+  // Özet
+  var pct=target?Math.round(totalCal/target*100):0;
+  var summaryHtml='<div class="plan-summary-title">📊 '+PLAN_DAYS_FULL[planSelectedDay]+' Toplamı <span style="margin-left:auto;font-size:.72rem;color:var(--text2)">%'+pct+'</span></div>';
+  summaryHtml+='<div style="height:4px;background:var(--glass);border-radius:2px;margin-bottom:8px;overflow:hidden"><div style="height:100%;width:'+Math.min(pct,100)+'%;background:var(--accent);border-radius:2px;transition:width .3s"></div></div>';
+  summaryHtml+='<div class="plan-summary-grid">';
+  summaryHtml+='<div class="plan-summary-item"><div class="psi-val" style="color:var(--accent)">'+Math.round(totalCal)+'</div><div class="psi-label">kcal</div></div>';
+  summaryHtml+='<div class="plan-summary-item"><div class="psi-val" style="color:#ff7a7a">'+Math.round(totalProt)+'g</div><div class="psi-label">Protein</div></div>';
+  summaryHtml+='<div class="plan-summary-item"><div class="psi-val" style="color:#22d3ee">'+Math.round(totalCarb)+'g</div><div class="psi-label">Karb</div></div>';
+  summaryHtml+='<div class="plan-summary-item"><div class="psi-val" style="color:#ffcc55">'+Math.round(totalFat)+'g</div><div class="psi-label">Yağ</div></div>';
+  summaryHtml+='</div>';
+  document.getElementById('planDaySummary').innerHTML=summaryHtml;
+
+  // Öğünler
+  var mealsHtml='';
+  PLAN_MEALS.forEach(function(mealKey){
+    var foods=data[mealKey]||[];
+    var mealCal=0;foods.forEach(function(f){mealCal+=f.cal||0;});
+    mealsHtml+='<div class="plan-meal-section">';
+    mealsHtml+='<div class="plan-meal-title">'+PLAN_MEAL_LABELS[mealKey]+'<span class="pmt-cal">'+mealCal+' kcal</span></div>';
+    foods.forEach(function(f,fi){
+      mealsHtml+='<div class="plan-food-item">';
+      mealsHtml+='<span>'+(f.emoji||'🍽️')+'</span>';
+      mealsHtml+='<span class="pfi-name">'+f.name+'</span>';
+      mealsHtml+='<span class="pfi-cal">'+f.cal+'</span>';
+      mealsHtml+='<button class="pfi-del" onclick="planRemoveFood(\''+mealKey+'\','+fi+')">✕</button>';
+      mealsHtml+='</div>';
+    });
+    mealsHtml+='<button class="plan-add-btn" onclick="planAddFood(\''+mealKey+'\')">+ Yemek Ekle</button>';
+    mealsHtml+='</div>';
+  });
+  document.getElementById('planMeals').innerHTML=mealsHtml;
+}
+
+function planAddFood(mealKey){
+  // Ana uygulamanın addFood modalını kullan
+  if(typeof openAddFoodModal==='function'){
+    // Geçici olarak meal target'ı override et
+    window._planAddTarget={week:planWeekOffset,day:planSelectedDay,meal:mealKey};
+    openAddFoodModal(mealKey);
+  }else{
+    // Fallback: basit prompt
+    var name=prompt('Yemek adı:');
+    if(!name)return;
+    var cal=parseInt(prompt('Kalori (kcal):'))||0;
+    var data=getPlanData(planWeekOffset,planSelectedDay);
+    if(!data[mealKey])data[mealKey]=[];
+    data[mealKey].push({name:name,cal:cal,prot:0,carb:0,fat:0,emoji:'🍽️',amount:1,unit:'porsiyon'});
+    setPlanData(planWeekOffset,planSelectedDay,data);
+    renderPlanDays();
+    renderPlanDay();
+  }
+}
+
+// Ana uygulamanın addFood callback'ini hook'la — plan moduna yönlendir
+(function(){
+  if(typeof window.addFoodToMeal==='function'){
+    var _origAddFoodToMeal=window.addFoodToMeal;
+    window.addFoodToMeal=function(food,mealKey,amount,unit){
+      if(window._planAddTarget){
+        var t=window._planAddTarget;
+        window._planAddTarget=null;
+        var data=getPlanData(t.week,t.day);
+        if(!data[t.meal])data[t.meal]=[];
+        var f=Object.assign({},food);
+        f.amount=amount||1;f.unit=unit||'porsiyon';
+        // Porsiyon hesapla
+        if(amount&&amount!==100&&food.cal){
+          var ratio=amount/100;
+          f.cal=Math.round(food.cal*ratio);
+          f.prot=Math.round((food.prot||0)*ratio);
+          f.carb=Math.round((food.carb||0)*ratio);
+          f.fat=Math.round((food.fat||0)*ratio);
+        }
+        data[t.meal].push(f);
+        setPlanData(t.week,t.day,data);
+        renderPlanDays();
+        renderPlanDay();
+        if(typeof showToast==='function')showToast('✅ '+f.name+' plana eklendi');
+        return;
+      }
+      return _origAddFoodToMeal(food,mealKey,amount,unit);
+    };
+  }
+})();
+
+function planRemoveFood(mealKey,foodIdx){
+  var data=getPlanData(planWeekOffset,planSelectedDay);
+  if(data[mealKey]){
+    data[mealKey].splice(foodIdx,1);
+    setPlanData(planWeekOffset,planSelectedDay,data);
+    renderPlanDays();
+    renderPlanDay();
+  }
+}
+
+function planClearDay(){
+  if(!confirm(PLAN_DAYS_FULL[planSelectedDay]+' günü temizlensin mi?'))return;
+  setPlanData(planWeekOffset,planSelectedDay,{kahvalti:[],ogle:[],aksam:[],atistirmalik:[]});
+  renderPlanDays();
+  renderPlanDay();
+  if(typeof showToast==='function')showToast('🗑️ Gün temizlendi');
+}
+
+function planApplyToday(){
+  var data=getPlanData(planWeekOffset,planSelectedDay);
+  var totalItems=0;
+  PLAN_MEALS.forEach(function(m){totalItems+=(data[m]||[]).length;});
+  if(!totalItems){if(typeof showToast==='function')showToast('⚠️ Bu günde yemek yok');return;}
+  if(!confirm('Plandaki '+totalItems+' yemek bugünkü günlüğe eklensin mi?'))return;
+
+  // Ana uygulamanın günlük verisine ekle
+  try{
+    var todayKey='fs_day_'+new Date().toISOString().split('T')[0];
+    var todayRaw=localStorage.getItem(todayKey);
+    var todayData=todayRaw?JSON.parse(todayRaw):{kahvalti:[],ogle:[],aksam:[],atistirmalik:[]};
+    PLAN_MEALS.forEach(function(m){
+      (data[m]||[]).forEach(function(f){
+        if(!todayData[m])todayData[m]=[];
+        todayData[m].push(Object.assign({},f));
+      });
+    });
+    localStorage.setItem(todayKey,JSON.stringify(todayData));
+    if(typeof renderMeals==='function')renderMeals();
+    if(typeof updateHeader==='function')updateHeader();
+    if(typeof showToast==='function')showToast('📥 '+totalItems+' yemek bugüne uygulandı!');
+  }catch(e){
+    if(typeof showToast==='function')showToast('❌ Hata: '+e.message);
+  }
+}
+
+// ═══ ALIŞVERİŞ LİSTESİ ═══
+function planShowShopping(){
+  var section=document.getElementById('planShoppingSection');
+  if(section.style.display==='block'){section.style.display='none';return;}
+
+  var allFoods={};
+  for(var d=0;d<7;d++){
+    var data=getPlanData(planWeekOffset,d);
+    PLAN_MEALS.forEach(function(m){
+      (data[m]||[]).forEach(function(f){
+        var key=f.name.toLowerCase();
+        if(!allFoods[key])allFoods[key]={name:f.name,emoji:f.emoji||'🍽️',count:0};
+        allFoods[key].count++;
+      });
+    });
+  }
+
+  var items=Object.values(allFoods).sort(function(a,b){return b.count-a.count;});
+  var checkedItems=JSON.parse(localStorage.getItem('fs_plan_shopping_'+planWeekOffset)||'[]');
+
+  if(!items.length){
+    section.innerHTML='<div class="plan-shopping"><h3>🛒 Alışveriş Listesi</h3><p style="font-size:.78rem;color:var(--text2)">Bu hafta henüz yemek eklenmemiş.</p></div>';
+    section.style.display='block';
+    return;
+  }
+
+  var html='<div class="plan-shopping"><h3>🛒 Alışveriş Listesi <span style="font-size:.68rem;font-weight:600;color:var(--text2)">('+items.length+' kalem)</span></h3>';
+  items.forEach(function(item,i){
+    var isChecked=checkedItems.indexOf(item.name.toLowerCase())>=0;
+    html+='<div class="plan-shop-item'+(isChecked?' checked':'')+'">';
+    html+='<input type="checkbox" '+(isChecked?'checked':'')+' onchange="planToggleShopItem(\''+item.name.toLowerCase().replace(/'/g,"\\'")+'\',this.checked)">';
+    html+='<span>'+item.emoji+'</span>';
+    html+='<span class="psi-text" style="flex:1">'+item.name+'</span>';
+    html+='<span style="font-size:.68rem;color:var(--text2);flex-shrink:0">×'+item.count+'</span>';
+    html+='</div>';
+  });
+  html+='<button onclick="planCopyShopping()" style="width:100%;margin-top:10px;padding:10px;background:var(--glass);border:1px solid var(--border);border-radius:10px;font-size:.78rem;font-weight:700;color:var(--text);cursor:pointer;font-family:var(--font,system-ui)">📋 Listeyi Kopyala</button>';
+  html+='</div>';
+  section.innerHTML=html;
+  section.style.display='block';
+}
+
+function planToggleShopItem(name,checked){
+  var key='fs_plan_shopping_'+planWeekOffset;
+  var items=JSON.parse(localStorage.getItem(key)||'[]');
+  if(checked&&items.indexOf(name)<0)items.push(name);
+  if(!checked)items=items.filter(function(i){return i!==name;});
+  localStorage.setItem(key,JSON.stringify(items));
+}
+
+function planCopyShopping(){
+  var allFoods={};
+  for(var d=0;d<7;d++){
+    var data=getPlanData(planWeekOffset,d);
+    PLAN_MEALS.forEach(function(m){
+      (data[m]||[]).forEach(function(f){
+        var key=f.name.toLowerCase();
+        if(!allFoods[key])allFoods[key]={name:f.name,count:0};
+        allFoods[key].count++;
+      });
+    });
+  }
+  var text='🛒 FitSofra Alışveriş Listesi\n\n';
+  Object.values(allFoods).forEach(function(item){
+    text+='☐ '+item.name+(item.count>1?' (×'+item.count+')':'')+'\n';
+  });
+  navigator.clipboard.writeText(text).then(function(){
+    if(typeof showToast==='function')showToast('📋 Liste panoya kopyalandı!');
+  });
+}
+
+// ═══ ŞABLONLAR ═══
+var PLAN_TEMPLATES=[
+  {name:'🥗 Dengeli Gün',desc:'Protein, karb ve yağ dengeli, ~1800 kcal',cal:1800,
+    data:{
+      kahvalti:[{name:'Haşlanmış Yumurta',emoji:'🥚',cal:155,prot:13,carb:1,fat:11},{name:'Beyaz Peynir',emoji:'🧀',cal:80,prot:5,carb:0,fat:6},{name:'Tam Buğday Ekmeği',emoji:'🍞',cal:70,prot:3,carb:13,fat:1},{name:'Domates',emoji:'🍅',cal:18,prot:1,carb:4,fat:0}],
+      ogle:[{name:'Tavuk Göğsü (ızgara)',emoji:'🍗',cal:165,prot:31,carb:0,fat:4},{name:'Bulgur Pilavı',emoji:'🍚',cal:170,prot:6,carb:38,fat:1},{name:'Karışık Salata',emoji:'🥗',cal:40,prot:2,carb:5,fat:2}],
+      aksam:[{name:'Mercimek Çorbası',emoji:'🍲',cal:145,prot:9,carb:21,fat:3},{name:'Tam Buğday Ekmeği',emoji:'🍞',cal:70,prot:3,carb:13,fat:1},{name:'Süzme Yoğurt',emoji:'🥛',cal:95,prot:8,carb:4,fat:5}],
+      atistirmalik:[{name:'Elma',emoji:'🍎',cal:52,prot:0,carb:14,fat:0},{name:'Badem',emoji:'🥜',cal:80,prot:3,carb:3,fat:7}]
+    }},
+  {name:'💪 Yüksek Protein',desc:'Kas yapımı için protein ağırlıklı, ~2200 kcal',cal:2200,
+    data:{
+      kahvalti:[{name:'Yumurta Beyazı Omlet',emoji:'🍳',cal:100,prot:15,carb:1,fat:4},{name:'Yulaf Ezmesi',emoji:'🥣',cal:150,prot:5,carb:27,fat:3},{name:'Muz',emoji:'🍌',cal:89,prot:1,carb:23,fat:0}],
+      ogle:[{name:'Tavuk Göğsü (ızgara)',emoji:'🍗',cal:330,prot:62,carb:0,fat:8},{name:'Pirinç Pilavı',emoji:'🍚',cal:200,prot:4,carb:44,fat:1},{name:'Brokoli',emoji:'🥦',cal:35,prot:3,carb:7,fat:0}],
+      aksam:[{name:'Somon (ızgara)',emoji:'🐟',cal:310,prot:40,carb:0,fat:15},{name:'Tatlı Patates (fırında)',emoji:'🍠',cal:130,prot:2,carb:30,fat:0},{name:'Karışık Salata',emoji:'🥗',cal:50,prot:2,carb:5,fat:3}],
+      atistirmalik:[{name:'Süzme Yoğurt (protein)',emoji:'🥛',cal:120,prot:20,carb:8,fat:0},{name:'Fıstık Ezmesi',emoji:'🥜',cal:95,prot:4,carb:3,fat:8}]
+    }},
+  {name:'🌿 Hafif Detoks',desc:'Sebze ağırlıklı düşük kalorili, ~1400 kcal',cal:1400,
+    data:{
+      kahvalti:[{name:'Yeşil Smoothie',emoji:'🥤',cal:85,prot:3,carb:16,fat:1},{name:'Yulaf Ezmesi',emoji:'🥣',cal:100,prot:4,carb:18,fat:2}],
+      ogle:[{name:'Mercimek Çorbası',emoji:'🍲',cal:145,prot:9,carb:21,fat:3},{name:'Çoban Salata',emoji:'🥗',cal:70,prot:2,carb:10,fat:2},{name:'Tam Buğday Ekmeği',emoji:'🍞',cal:70,prot:3,carb:13,fat:1}],
+      aksam:[{name:'Zeytinyağlı Fasulye',emoji:'🫛',cal:130,prot:4,carb:16,fat:6},{name:'Cacık',emoji:'🥒',cal:70,prot:4,carb:6,fat:4}],
+      atistirmalik:[{name:'Elma',emoji:'🍎',cal:52,prot:0,carb:14,fat:0},{name:'Ceviz',emoji:'🥜',cal:80,prot:2,carb:2,fat:7}]
+    }},
+  {name:'🔥 Ekonomik Hafta',desc:'Bütçe dostu besleyici öğünler, ~1700 kcal',cal:1700,
+    data:{
+      kahvalti:[{name:'Menemen',emoji:'🍳',cal:140,prot:8,carb:6,fat:10},{name:'Beyaz Ekmek',emoji:'🍞',cal:80,prot:3,carb:15,fat:1}],
+      ogle:[{name:'Kuru Fasulye',emoji:'🫘',cal:210,prot:15,carb:33,fat:3},{name:'Pirinç Pilavı',emoji:'🍚',cal:200,prot:4,carb:44,fat:1},{name:'Ayran',emoji:'🥛',cal:72,prot:4,carb:6,fat:4}],
+      aksam:[{name:'Mercimek Çorbası',emoji:'🍲',cal:145,prot:9,carb:21,fat:3},{name:'Makarna (sade)',emoji:'🍝',cal:200,prot:7,carb:38,fat:2}],
+      atistirmalik:[{name:'Muz',emoji:'🍌',cal:89,prot:1,carb:23,fat:0}]
+    }}
+];
+
+function renderPlanTemplates(){
+  var html='';
+  PLAN_TEMPLATES.forEach(function(t,i){
+    var totalP=0,totalC=0,totalF=0;
+    PLAN_MEALS.forEach(function(m){(t.data[m]||[]).forEach(function(f){totalP+=f.prot||0;totalC+=f.carb||0;totalF+=f.fat||0;});});
+    html+='<div class="plan-template-card" onclick="planApplyTemplate('+i+')">';
+    html+='<h4>'+t.name+'</h4>';
+    html+='<p>'+t.desc+'</p>';
+    html+='<div class="ptc-macros"><span style="color:var(--accent)">🔥 '+t.cal+' kcal</span><span style="color:#ff7a7a">P:'+Math.round(totalP)+'g</span><span style="color:#22d3ee">K:'+Math.round(totalC)+'g</span><span style="color:#ffcc55">Y:'+Math.round(totalF)+'g</span></div>';
+    html+='</div>';
+  });
+  document.getElementById('planTemplates').innerHTML=html;
+}
+
+function planApplyTemplate(idx){
+  var t=PLAN_TEMPLATES[idx];
+  if(!t)return;
+  if(!confirm('"'+t.name+'" şablonu '+PLAN_DAYS_FULL[planSelectedDay]+' gününe uygulanacak. Mevcut veriler silinir.'))return;
+  // Deep copy
+  var data=JSON.parse(JSON.stringify(t.data));
+  setPlanData(planWeekOffset,planSelectedDay,data);
+  renderPlanDays();
+  renderPlanDay();
+  if(typeof showToast==='function')showToast('✅ Şablon uygulandı!');
+}
+
+// ═══ PLAN KAYDET/YÜKLE ═══
+function planSaveWeek(){
+  var name=document.getElementById('planSaveName').value.trim();
+  if(!name){if(typeof showToast==='function')showToast('⚠️ Plan adı girin');return;}
+  var weekData=[];
+  for(var d=0;d<7;d++){weekData.push(getPlanData(planWeekOffset,d));}
+  var saved=JSON.parse(localStorage.getItem('fs_saved_plans')||'[]');
+  saved.unshift({id:Date.now(),name:name,weekData:weekData,createdAt:new Date().toLocaleDateString('tr-TR')});
+  if(saved.length>20)saved=saved.slice(0,20);
+  localStorage.setItem('fs_saved_plans',JSON.stringify(saved));
+  document.getElementById('planSaveName').value='';
+  renderPlanSavedList();
+  if(typeof showToast==='function')showToast('💾 "'+name+'" kaydedildi!');
+}
+
+function renderPlanSavedList(){
+  var saved=JSON.parse(localStorage.getItem('fs_saved_plans')||'[]');
+  if(!saved.length){
+    document.getElementById('planSavedList').innerHTML='<div style="font-size:.78rem;color:var(--text2);text-align:center;padding:12px">Henüz kaydedilmiş plan yok</div>';
+    return;
+  }
+  var html='';
+  saved.forEach(function(p){
+    var totalCal=0,totalDays=0;
+    (p.weekData||[]).forEach(function(dayData){
+      var dayCal=0;
+      PLAN_MEALS.forEach(function(m){(dayData[m]||[]).forEach(function(f){dayCal+=f.cal||0;});});
+      totalCal+=dayCal;
+      if(dayCal>0)totalDays++;
+    });
+    html+='<div style="background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:6px;display:flex;align-items:center;gap:10px">';
+    html+='<div style="flex:1;min-width:0"><div style="font-weight:700;font-size:.82rem">'+p.name+'</div>';
+    html+='<div style="font-size:.65rem;color:var(--text2)">'+p.createdAt+' · '+totalDays+' gün · Ort. '+Math.round(totalCal/(totalDays||1))+' kcal/gün</div></div>';
+    html+='<button onclick="planLoadSaved('+p.id+')" style="background:var(--accent);color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:.68rem;font-weight:700;cursor:pointer">📥</button>';
+    html+='<button onclick="planDeleteSaved('+p.id+')" style="background:none;border:1px solid var(--border);border-radius:8px;padding:6px 8px;font-size:.68rem;cursor:pointer;color:var(--text2)">🗑️</button>';
+    html+='</div>';
+  });
+  document.getElementById('planSavedList').innerHTML=html;
+}
+
+function planLoadSaved(id){
+  var saved=JSON.parse(localStorage.getItem('fs_saved_plans')||'[]');
+  var plan=saved.find(function(p){return p.id===id;});
+  if(!plan)return;
+  if(!confirm('"'+plan.name+'" bu haftaya uygulanacak. Mevcut plan silinir.'))return;
+  (plan.weekData||[]).forEach(function(dayData,i){
+    if(i<7)setPlanData(planWeekOffset,i,dayData);
+  });
+  renderPlanDays();
+  renderPlanDay();
+  if(typeof showToast==='function')showToast('📥 "'+plan.name+'" uygulandı!');
+}
+
+function planDeleteSaved(id){
+  if(!confirm('Bu plan silinsin mi?'))return;
+  var saved=JSON.parse(localStorage.getItem('fs_saved_plans')||'[]');
+  saved=saved.filter(function(p){return p.id!==id;});
+  localStorage.setItem('fs_saved_plans',JSON.stringify(saved));
+  renderPlanSavedList();
+}
+
+// Init
+planInit();
+</script>
