@@ -2334,6 +2334,63 @@ setTimeout(renderAdminCatOrder,500);
 
 </div><!-- /sec-notifs -->
 
+<!-- Gemini AI Ayarları -->
+<div id="sec-gemini" class="section">
+  <div class="card" style="border-left:3px solid #a07cf8">
+    <h2>🤖 Gemini AI Asistan Ayarları</h2>
+    <p style="font-size:.78rem;color:#8a8d9b;margin-bottom:12px">
+      Kullanıcılara yönelik beslenme asistanı. API key Firestore <code>config/gemini</code>'de saklanır.
+      <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:#a07cf8">Google AI Studio'dan ücretsiz key alabilirsin →</a>
+    </p>
+
+    <!-- API Key -->
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
+      <input id="geminiApiKey" type="password" placeholder="Gemini API Key (AIza...)"
+        style="flex:1;background:#1a1d2e;border:1px solid #2e3150;border-radius:8px;padding:8px 12px;color:#e2e8f0;font-size:.85rem">
+      <button class="btn-sm" onclick="toggleGeminiKey()" style="background:#2e3150;color:#8a8d9b;border:none;border-radius:6px;padding:8px 10px;cursor:pointer;font-size:.75rem">👁</button>
+    </div>
+
+    <!-- Limit Ayarları -->
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px">
+      <div>
+        <label style="font-size:.72rem;color:#8a8d9b;display:block;margin-bottom:4px">👤 Kullanıcı / Gün Limiti</label>
+        <input id="geminiUserLimit" type="number" min="1" max="1000" value="5"
+          style="width:100%;background:#1a1d2e;border:1px solid #2e3150;border-radius:8px;padding:8px 10px;color:#e2e8f0;font-size:.85rem;box-sizing:border-box"
+          placeholder="5">
+        <div style="font-size:.65rem;color:#5a5e7a;margin-top:2px">mesaj / kullanıcı / gün</div>
+      </div>
+      <div>
+        <label style="font-size:.72rem;color:#8a8d9b;display:block;margin-bottom:4px">🌐 Global / Gün Limiti</label>
+        <input id="geminiGlobalLimit" type="number" min="1" max="100000" value="500"
+          style="width:100%;background:#1a1d2e;border:1px solid #2e3150;border-radius:8px;padding:8px 10px;color:#e2e8f0;font-size:.85rem;box-sizing:border-box"
+          placeholder="500">
+        <div style="font-size:.65rem;color:#5a5e7a;margin-top:2px">toplam mesaj / gün</div>
+      </div>
+      <div>
+        <label style="font-size:.72rem;color:#8a8d9b;display:block;margin-bottom:4px">🧠 Max Output Tokens</label>
+        <input id="geminiMaxTokens" type="number" min="50" max="8192" value="300"
+          style="width:100%;background:#1a1d2e;border:1px solid #2e3150;border-radius:8px;padding:8px 10px;color:#e2e8f0;font-size:.85rem;box-sizing:border-box"
+          placeholder="300">
+        <div style="font-size:.65rem;color:#5a5e7a;margin-top:2px">token / yanıt (50–8192)</div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8px">
+      <button class="btn-u" onclick="saveGeminiConfig()" style="flex:1">💾 Kaydet</button>
+      <button class="btn-o" onclick="loadGeminiConfig()" style="flex:0 0 auto">🔄 Yükle</button>
+      <button class="btn-o" onclick="testGeminiApi()" style="flex:0 0 auto">🧪 Test</button>
+    </div>
+    <div id="geminiStatus" style="font-size:.78rem;margin-top:8px;min-height:20px"></div>
+  </div>
+
+  <!-- Günlük Kullanım İstatistikleri -->
+  <div class="card">
+    <h2>📊 Bugünkü AI Kullanımı</h2>
+    <div id="geminiUsageStats"><p style="color:#8a8d9b;font-size:.8rem">Yükleniyor...</p></div>
+    <button class="btn-o" onclick="loadGeminiUsage()" style="margin-top:6px">🔄 Yenile</button>
+  </div>
+</div><!-- /sec-gemini -->
+
 <!-- FatSecret API Ayarları -->
 <div id="sec-settings" class="section">
   <div class="card" style="border-left:3px solid #3dd68c">
@@ -3423,6 +3480,128 @@ async function sendFeedback(){
     setTimeout(closeFeedbackModal,1200);
   }catch(e){
     statusEl.textContent='❌ Hata: '+e.message;
+  }
+}
+
+// ═══════ GEMINİ AI AYARLARI ═══════
+
+async function saveGeminiConfig(){
+  var apiKey=document.getElementById('geminiApiKey').value.trim();
+  var userLimit=parseInt(document.getElementById('geminiUserLimit').value)||5;
+  var globalLimit=parseInt(document.getElementById('geminiGlobalLimit').value)||500;
+  var maxTokens=parseInt(document.getElementById('geminiMaxTokens').value)||300;
+  var statusEl=document.getElementById('geminiStatus');
+  if(!apiKey){statusEl.innerHTML='<span style="color:#ff5c5c">⚠️ API Key zorunlu</span>';return;}
+  if(maxTokens<50||maxTokens>8192){statusEl.innerHTML='<span style="color:#ff5c5c">⚠️ Max tokens 50-8192 arasında olmalı</span>';return;}
+  statusEl.innerHTML='<span style="color:#8a8d9b">💾 Kaydediliyor...</span>';
+  try{
+    await db.collection('config').doc('gemini').set({
+      apiKey,
+      userDailyLimit:userLimit,
+      globalDailyLimit:globalLimit,
+      maxOutputTokens:maxTokens,
+      updatedAt:Date.now()
+    },{merge:true});
+    statusEl.innerHTML='<span style="color:#3dd68c">✅ Gemini ayarları kaydedildi!</span>';
+    log('🤖 Gemini config güncellendi (limit:'+userLimit+'/gün, tokens:'+maxTokens+')');
+  }catch(e){
+    statusEl.innerHTML='<span style="color:#ff5c5c">❌ Hata: '+e.message+'</span>';
+  }
+}
+
+async function loadGeminiConfig(){
+  var statusEl=document.getElementById('geminiStatus');
+  try{
+    var doc=await db.collection('config').doc('gemini').get();
+    if(doc.exists){
+      var d=doc.data();
+      if(d.apiKey) document.getElementById('geminiApiKey').value=d.apiKey;
+      if(d.userDailyLimit!=null) document.getElementById('geminiUserLimit').value=d.userDailyLimit;
+      if(d.globalDailyLimit!=null) document.getElementById('geminiGlobalLimit').value=d.globalDailyLimit;
+      if(d.maxOutputTokens!=null) document.getElementById('geminiMaxTokens').value=d.maxOutputTokens;
+      statusEl.innerHTML='<span style="color:#3dd68c">✅ Mevcut ayarlar yüklendi</span>';
+    }else{
+      statusEl.innerHTML='<span style="color:#f0a030">⚠️ Henüz ayar kaydedilmemiş</span>';
+    }
+  }catch(e){
+    statusEl.innerHTML='<span style="color:#ff5c5c">❌ Yüklenemedi: '+e.message+'</span>';
+  }
+}
+
+async function testGeminiApi(){
+  var statusEl=document.getElementById('geminiStatus');
+  statusEl.innerHTML='<span style="color:#8a8d9b">🧪 Test ediliyor...</span>';
+  try{
+    var fn=firebase.functions().httpsCallable('geminiChat');
+    var result=await fn({message:'Merhaba, test mesajı.',nutritionContext:'Test bağlamı'});
+    if(result.data&&result.data.error){
+      statusEl.innerHTML='<span style="color:#ff5c5c">❌ '+result.data.reply+'</span>';
+    }else if(result.data&&result.data.limited){
+      statusEl.innerHTML='<span style="color:#f0a030">⚠️ Limit dolmuş ama API key çalışıyor ✓</span>';
+    }else{
+      statusEl.innerHTML='<span style="color:#3dd68c">✅ API çalışıyor! Yanıt: '+result.data.reply.substring(0,80)+'...</span>';
+    }
+  }catch(e){
+    statusEl.innerHTML='<span style="color:#ff5c5c">❌ Cloud Function hatası: '+e.message+'</span>';
+  }
+}
+
+function toggleGeminiKey(){
+  var inp=document.getElementById('geminiApiKey');
+  inp.type=inp.type==='password'?'text':'password';
+}
+
+async function loadGeminiUsage(){
+  var el=document.getElementById('geminiUsageStats');
+  el.innerHTML='<p style="color:#8a8d9b;font-size:.8rem">Yükleniyor...</p>';
+  try{
+    var today=new Date().toISOString().split('T')[0];
+    var globalRef=await db.collection('ai_limits').doc('global_'+today).get();
+    var globalCount=globalRef.exists?(globalRef.data().count||0):0;
+
+    // Kullanıcı bazlı istatistik
+    var snap=await db.collection('ai_limits').get();
+    var userStats=[];
+    snap.forEach(function(d){
+      var id=d.id;
+      if(id.startsWith('global_')) return;
+      if(id.endsWith('_'+today)){
+        var uid=id.replace('_'+today,'');
+        userStats.push({uid:uid,count:d.data().count||0,lastUsed:d.data().lastUsed||0});
+      }
+    });
+    userStats.sort(function(a,b){return b.count-a.count;});
+
+    // Config'den limitleri al
+    var cfgDoc=await db.collection('config').doc('gemini').get();
+    var userLimit=cfgDoc.exists?(cfgDoc.data().userDailyLimit||5):5;
+    var globalLimit=cfgDoc.exists?(cfgDoc.data().globalDailyLimit||500):500;
+
+    var html='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">'
+      +'<div class="stat-row"><span>🌐 Toplam Bugün</span><span style="color:#a07cf8">'+globalCount+' / '+globalLimit+'</span></div>'
+      +'<div class="stat-row"><span>👤 Aktif Kullanıcı</span><span>'+userStats.length+'</span></div>'
+      +'</div>';
+
+    if(userStats.length){
+      html+='<div style="font-size:.72rem;color:#8a8d9b;margin-bottom:6px">En çok kullananlar:</div>'
+        +'<div style="max-height:160px;overflow-y:auto">';
+      userStats.slice(0,10).forEach(function(u){
+        var pct=Math.min(100,Math.round(u.count/userLimit*100));
+        var bar='<div style="background:#a07cf8;height:4px;border-radius:2px;width:'+pct+'%;margin-top:2px"></div>';
+        var t=u.lastUsed?new Date(u.lastUsed).toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'}):'';
+        html+='<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid #1e2138">'
+          +'<div style="flex:1"><div style="font-size:.72rem;color:#c8cce0">'+u.uid.substring(0,16)+'…</div>'+bar+'</div>'
+          +'<div style="font-size:.72rem;color:#a07cf8;white-space:nowrap">'+u.count+'/'+userLimit+'</div>'
+          +'<div style="font-size:.65rem;color:#5a5e7a">'+t+'</div>'
+          +'</div>';
+      });
+      html+='</div>';
+    }else{
+      html+='<p style="color:#5a5e7a;font-size:.78rem">Bugün henüz kullanım yok.</p>';
+    }
+    el.innerHTML=html;
+  }catch(e){
+    el.innerHTML='<span style="color:#ff5c5c;font-size:.78rem">❌ '+e.message+'</span>';
   }
 }
 
