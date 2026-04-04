@@ -1,0 +1,228 @@
+<!-- FitSofra Topluluk Modülü — Instagram tarzı fotoğraflı sosyal platform -->
+<style>
+.com-h{text-align:center;margin-bottom:14px}
+.com-h h2{font-size:1.1rem;font-weight:900;margin-bottom:4px}
+.com-h p{font-size:.72rem;color:var(--text2)}
+.com-lp{text-align:center;padding:40px 16px}
+.com-lp .cli{font-size:3rem;margin-bottom:12px}
+.com-compose{background:var(--glass);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:14px}
+.com-compose textarea{width:100%;padding:10px;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;color:var(--text);font-size:.82rem;font-family:var(--font,system-ui);resize:none;min-height:50px;outline:none}
+.com-compose textarea:focus{border-color:var(--accent)}
+.com-compose-acts{display:flex;align-items:center;gap:8px;margin-top:8px}
+.com-compose-acts button{border:none;border-radius:10px;padding:8px 14px;font-size:.75rem;font-weight:700;cursor:pointer;font-family:var(--font,system-ui);transition:all .2s}
+.com-img-preview{margin-top:8px;position:relative;border-radius:12px;overflow:hidden;max-height:200px}
+.com-img-preview img{width:100%;max-height:200px;object-fit:cover;display:block}
+.com-img-preview .cip-del{position:absolute;top:6px;right:6px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:50%;width:28px;height:28px;font-size:.8rem;cursor:pointer;backdrop-filter:blur(4px)}
+.com-card{background:var(--glass);border:1px solid var(--border);border-radius:14px;margin-bottom:12px;overflow:hidden;animation:fadeUp .3s ease}
+.com-card-head{display:flex;align-items:center;gap:10px;padding:12px 14px 0}
+.com-av{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid var(--accent)}
+.com-av-ph{width:36px;height:36px;border-radius:50%;background:var(--accent-glow);display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:800;border:2px solid var(--accent);color:var(--accent)}
+.com-uinfo{flex:1;min-width:0}
+.com-uname{font-weight:700;font-size:.82rem}
+.com-time{font-size:.62rem;color:var(--text2)}
+.com-more{background:none;border:none;color:var(--text2);font-size:1.2rem;cursor:pointer;padding:4px 8px;flex-shrink:0;line-height:1}
+.com-card-img{width:100%;max-height:400px;object-fit:cover;display:block;margin-top:10px;cursor:pointer}
+.com-card-img:active{opacity:.9}
+.com-card-body{padding:10px 14px}
+.com-card-text{font-size:.82rem;line-height:1.5;margin-bottom:8px}
+.com-macros{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px}
+.com-macros span{font-size:.62rem;font-weight:700;padding:3px 7px;border-radius:6px;background:var(--bg)}
+.com-card-foot{display:flex;align-items:center;gap:14px;padding:6px 14px 12px;border-top:1px solid var(--border)}
+.com-act{background:none;border:none;color:var(--text2);font-size:.82rem;cursor:pointer;display:flex;align-items:center;gap:4px;font-family:var(--font,system-ui);padding:4px 0;transition:all .15s}
+.com-act:active{transform:scale(.9)}
+.com-act.liked{color:#ff4757}
+.com-comments{padding:0 14px 12px}
+.com-comment{display:flex;gap:8px;margin-bottom:8px;font-size:.78rem}
+.com-comment-name{font-weight:700;flex-shrink:0}
+.com-comment-text{flex:1;color:var(--text2);line-height:1.4}
+.com-comment-input{display:flex;gap:6px;padding:0 14px 10px}
+.com-comment-input input{flex:1;padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:20px;color:var(--text);font-size:.78rem;outline:none;font-family:var(--font,system-ui)}
+.com-comment-input button{background:var(--accent);color:#fff;border:none;border-radius:20px;padding:8px 14px;font-size:.75rem;font-weight:700;cursor:pointer}
+.com-empty{text-align:center;padding:30px 16px;color:var(--text2);font-size:.82rem}
+.com-menu{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--card);border-top:1px solid var(--border);border-radius:20px 20px 0 0;padding:16px;z-index:200;box-shadow:0 -4px 30px rgba(0,0,0,.3)}
+.com-menu-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.5);z-index:199}
+.com-menu button{width:100%;padding:14px;background:var(--glass);border:1px solid var(--border);border-radius:12px;margin-bottom:6px;font-size:.85rem;font-weight:700;color:var(--text);cursor:pointer;font-family:var(--font,system-ui);text-align:left}
+.com-menu button.danger{color:#ff4757;border-color:rgba(255,71,87,.2)}
+.com-img-full{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.95);z-index:250;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.com-img-full img{max-width:100%;max-height:100%;object-fit:contain}
+</style>
+
+<div class="com-h"><h2>👥 Topluluk</h2><p>Beslenme günlüğünü paylaş, ilham al</p></div>
+
+<div id="comLogin" style="display:none">
+  <div class="com-lp"><div class="cli">👥</div><div style="font-size:1rem;font-weight:800;margin-bottom:6px">Topluluğa Katıl!</div><div style="font-size:.78rem;color:var(--text2);line-height:1.5;margin-bottom:16px">Yemek fotoğraflarını paylaş, beğen, yorum bırak.</div>
+  <button onclick="if(typeof firebaseLogin==='function')firebaseLogin()" style="background:linear-gradient(135deg,#4285f4,#356ac3);color:#fff;border:none;border-radius:12px;padding:12px 28px;font-size:.85rem;font-weight:700;cursor:pointer;font-family:var(--font,system-ui)">🔑 Google ile Giriş</button></div>
+</div>
+
+<div id="comMain" style="display:none">
+  <!-- Paylaşım -->
+  <div class="com-compose">
+    <textarea id="comText" placeholder="Bugün ne yedin? Nasıl gidiyor? 🍽️" maxlength="500"></textarea>
+    <!-- Fotoğraf ekleme -->
+    <input type="file" id="comPhotoInput" accept="image/*" style="display:none" onchange="comPreviewPhoto(this)">
+    <div id="comImgPreview"></div>
+    <div id="comDataPreview"></div>
+    <div class="com-compose-acts">
+      <button onclick="document.getElementById('comPhotoInput').click()" style="background:var(--glass);color:var(--text2);border:1px solid var(--border)">📷 Fotoğraf</button>
+      <button onclick="comAttach()" style="background:var(--glass);color:var(--text2);border:1px solid var(--border)">📊 Veri Ekle</button>
+      <button onclick="comPost()" style="background:var(--accent);color:#fff;margin-left:auto">Paylaş</button>
+    </div>
+  </div>
+  <!-- Feed -->
+  <div id="comFeed"><div class="com-empty"><span class="spinner" style="width:20px;height:20px;border-width:2px"></span><br><br>Yükleniyor...</div></div>
+</div>
+
+<!-- Menü overlay (şikayet/engelle) -->
+<div id="comMenuOverlay" style="display:none"></div>
+
+<!-- Tam ekran fotoğraf -->
+<div id="comFullImg" style="display:none"></div>
+
+<div style="height:90px"></div>
+
+<script>
+var _comPhoto=null,_comData=null,_blocked=JSON.parse(localStorage.getItem('fs_blocked_users')||'[]');
+
+function comInit(){
+  if(typeof auth!=='undefined'&&auth.currentUser){comShow();comLoad()}
+  else{document.getElementById('comLogin').style.display='block';document.getElementById('comMain').style.display='none';
+    if(typeof auth!=='undefined')auth.onAuthStateChanged(function(u){if(u){comShow();comLoad()}})}}
+
+function comShow(){document.getElementById('comLogin').style.display='none';document.getElementById('comMain').style.display='block'}
+
+// ═══ FOTOĞRAF ═══
+function comPreviewPhoto(input){
+  if(!input.files||!input.files[0])return;
+  var file=input.files[0];
+  if(file.size>5*1024*1024){if(typeof showToast==='function')showToast('⚠️ Max 5MB');return}
+  var reader=new FileReader();
+  reader.onload=function(e){
+    _comPhoto=e.target.result;
+    document.getElementById('comImgPreview').innerHTML='<div class="com-img-preview"><img src="'+_comPhoto+'"><button class="cip-del" onclick="comRemovePhoto()">✕</button></div>'};
+  reader.readAsDataURL(file)}
+
+function comRemovePhoto(){_comPhoto=null;document.getElementById('comImgPreview').innerHTML='';document.getElementById('comPhotoInput').value=''}
+
+function comAttach(){
+  try{var t=typeof getTotals==='function'?getTotals():{cal:0,prot:0,carb:0,fat:0};
+    var tgt=typeof dailyTarget!=='undefined'?dailyTarget:2000;var w=typeof getWaterMl==='function'?getWaterMl():0;
+    _comData={cal:Math.round(t.cal),prot:Math.round(t.prot),carb:Math.round(t.carb),fat:Math.round(t.fat),target:tgt,water:w};
+    var p=tgt?Math.round(t.cal/tgt*100):0;
+    document.getElementById('comDataPreview').innerHTML='<div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:8px 12px;font-size:.72rem;margin-top:6px"><span style="color:var(--accent);font-weight:700">🔥 '+_comData.cal+'/'+tgt+' kcal ('+p+'%)</span> · P:'+_comData.prot+'g K:'+_comData.carb+'g Y:'+_comData.fat+'g · 💧'+(w/1000).toFixed(1)+'L <button onclick="_comData=null;document.getElementById(\'comDataPreview\').innerHTML=\'\'" style="background:none;border:none;color:var(--text2);cursor:pointer;float:right">✕</button></div>'}
+  catch(e){if(typeof showToast==='function')showToast('⚠️ Veri alınamadı')}}
+
+// ═══ PAYLAŞ ═══
+async function comPost(){
+  if(typeof db==='undefined'||!auth.currentUser){if(typeof showToast==='function')showToast('⚠️ Giriş yap');return}
+  var text=document.getElementById('comText').value.trim();
+  if(!text&&!_comPhoto&&!_comData){if(typeof showToast==='function')showToast('⚠️ Bir şeyler ekle');return}
+  var user=auth.currentUser;
+  var post={uid:user.uid,displayName:user.displayName||'Anonim',photoURL:user.photoURL||'',text:text,image:_comPhoto||'',data:_comData||null,likes:[],likeCount:0,comments:[],createdAt:Date.now()};
+  try{var streakEl=document.getElementById('streakCount');if(streakEl)post.streak=parseInt(streakEl.textContent)||0}catch(e){}
+  try{
+    await db.collection('community_posts').add(post);
+    document.getElementById('comText').value='';comRemovePhoto();_comData=null;
+    document.getElementById('comDataPreview').innerHTML='';
+    if(typeof showToast==='function')showToast('📢 Paylaşıldı!');comLoad()}
+  catch(e){if(typeof showToast==='function')showToast('❌ '+e.message)}}
+
+// ═══ FEED YÜKLE ═══
+async function comLoad(){
+  var el=document.getElementById('comFeed');
+  try{var snap=await db.collection('community_posts').orderBy('createdAt','desc').limit(40).get();
+    if(snap.empty){el.innerHTML='<div class="com-empty">🍽️ İlk paylaşımı sen yap!</div>';return}
+    var html='';snap.forEach(function(doc){var p=doc.data(),id=doc.id;
+      // Engellenen kullanıcıları atla
+      if(_blocked.indexOf(p.uid)>=0)return;
+      var ago=comAgo(p.createdAt);var liked=auth.currentUser&&(p.likes||[]).indexOf(auth.currentUser.uid)>=0;
+      var isMe=auth.currentUser&&p.uid===auth.currentUser.uid;
+      html+='<div class="com-card">';
+      // Header
+      html+='<div class="com-card-head">';
+      if(p.photoURL)html+='<img class="com-av" src="'+p.photoURL+'" onerror="this.outerHTML=\'<div class=com-av-ph>'+((p.displayName||'?')[0].toUpperCase())+'</div>\'">';
+      else html+='<div class="com-av-ph">'+((p.displayName||'?')[0].toUpperCase())+'</div>';
+      html+='<div class="com-uinfo"><div class="com-uname">'+esc(p.displayName||'Anonim');
+      if(p.streak>0)html+=' <span style="font-size:.6rem;color:var(--accent)">🔥'+p.streak+'</span>';
+      html+='</div><div class="com-time">'+ago+'</div></div>';
+      html+='<button class="com-more" onclick="comMenu(\''+id+'\',\''+p.uid+'\','+isMe+')">⋯</button></div>';
+      // Fotoğraf
+      if(p.image)html+='<img class="com-card-img" src="'+p.image+'" onclick="comFullImg(this.src)" loading="lazy">';
+      // Body
+      html+='<div class="com-card-body">';
+      if(p.text)html+='<div class="com-card-text">'+esc(p.text)+'</div>';
+      if(p.data){var d=p.data,pc=d.target?Math.round(d.cal/d.target*100):0;
+        html+='<div class="com-macros"><span style="color:var(--accent)">🔥'+d.cal+' kcal ('+pc+'%)</span><span style="color:#ff7a7a">P:'+d.prot+'g</span><span style="color:#22d3ee">K:'+d.carb+'g</span><span style="color:#ffcc55">Y:'+d.fat+'g</span>';
+        if(d.water)html+='<span>💧'+(d.water/1000).toFixed(1)+'L</span>';
+        html+='</div>';
+        html+='<div style="height:3px;background:var(--glass);border-radius:2px;overflow:hidden"><div style="height:100%;width:'+Math.min(pc,100)+'%;background:var(--accent);border-radius:2px"></div></div>'}
+      html+='</div>';
+      // Footer — beğeni + yorum
+      html+='<div class="com-card-foot">';
+      html+='<button class="com-act'+(liked?' liked':'')+'" onclick="comLike(\''+id+'\')">'+(liked?'❤️':'🤍')+' <span style="font-size:.72rem;font-weight:700">'+(p.likeCount||0)+'</span></button>';
+      html+='<button class="com-act" onclick="comToggleComments(\''+id+'\')">💬 <span style="font-size:.72rem;font-weight:700">'+(p.comments||[]).length+'</span></button>';
+      if(isMe)html+='<button class="com-act" style="margin-left:auto" onclick="comDel(\''+id+'\')">🗑️</button>';
+      html+='</div>';
+      // Yorumlar (gizli)
+      html+='<div id="comCom_'+id+'" style="display:none">';
+      (p.comments||[]).slice(-5).forEach(function(c){
+        html+='<div class="com-comments"><div class="com-comment"><span class="com-comment-name">'+esc(c.name)+'</span><span class="com-comment-text">'+esc(c.text)+'</span></div></div>'});
+      html+='<div class="com-comment-input"><input type="text" id="comIn_'+id+'" placeholder="Yorum yaz..." maxlength="200"><button onclick="comComment(\''+id+'\')">→</button></div>';
+      html+='</div></div>'});
+    el.innerHTML=html}
+  catch(e){el.innerHTML='<div class="com-empty">⚠️ '+e.message+'<br><br><button onclick="comLoad()" style="background:var(--accent);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:.78rem;cursor:pointer">Tekrar Dene</button></div>'}}
+
+// ═══ BEĞENİ ═══
+async function comLike(id){if(!auth.currentUser)return;var uid=auth.currentUser.uid,ref=db.collection('community_posts').doc(id);
+  try{var doc=await ref.get();if(!doc.exists)return;var lk=doc.data().likes||[];var i=lk.indexOf(uid);
+    if(i>=0)lk.splice(i,1);else lk.push(uid);await ref.update({likes:lk,likeCount:lk.length});comLoad()}catch(e){}}
+
+// ═══ YORUM ═══
+function comToggleComments(id){var el=document.getElementById('comCom_'+id);el.style.display=el.style.display==='none'?'block':'none'}
+
+async function comComment(id){var input=document.getElementById('comIn_'+id);var text=(input.value||'').trim();
+  if(!text||!auth.currentUser)return;var ref=db.collection('community_posts').doc(id);
+  try{var doc=await ref.get();if(!doc.exists)return;var cms=doc.data().comments||[];
+    cms.push({uid:auth.currentUser.uid,name:auth.currentUser.displayName||'Anonim',text:text,createdAt:Date.now()});
+    await ref.update({comments:cms});input.value='';comLoad();if(typeof showToast==='function')showToast('💬 Yorum eklendi')}catch(e){}}
+
+// ═══ SİL ═══
+async function comDel(id){if(!confirm('Gönderi silinsin mi?'))return;
+  try{await db.collection('community_posts').doc(id).delete();comLoad();if(typeof showToast==='function')showToast('🗑️ Silindi')}catch(e){}}
+
+// ═══ MENÜ — ŞİKAYET & ENGELLE ═══
+function comMenu(postId,userId,isMe){
+  var ov=document.getElementById('comMenuOverlay');
+  var html='<div class="com-menu-overlay" onclick="comCloseMenu()"></div><div class="com-menu">';
+  if(!isMe){
+    html+='<button onclick="comReport(\''+postId+'\')">🚩 Şikayet Et</button>';
+    html+='<button class="danger" onclick="comBlock(\''+userId+'\')">🚫 Kullanıcıyı Engelle</button>'}
+  if(isMe)html+='<button class="danger" onclick="comDel(\''+postId+'\');comCloseMenu()">🗑️ Gönderiyi Sil</button>';
+  html+='<button onclick="comCloseMenu()" style="margin-top:4px">İptal</button></div>';
+  ov.innerHTML=html;ov.style.display='block'}
+
+function comCloseMenu(){document.getElementById('comMenuOverlay').style.display='none';document.getElementById('comMenuOverlay').innerHTML=''}
+
+async function comReport(postId){
+  comCloseMenu();
+  var reason=prompt('Şikayet sebebi (spam, uygunsuz içerik, vb.):');if(!reason)return;
+  try{await db.collection('reports').add({postId:postId,reportedBy:auth.currentUser?auth.currentUser.uid:'',reason:reason,createdAt:Date.now()});
+    if(typeof showToast==='function')showToast('🚩 Şikayet gönderildi. İncelenecek.')}catch(e){if(typeof showToast==='function')showToast('❌ '+e.message)}}
+
+function comBlock(userId){
+  if(!confirm('Bu kullanıcı engellensin mi? Paylaşımlarını görmezsin.'))return;
+  if(_blocked.indexOf(userId)<0)_blocked.push(userId);
+  localStorage.setItem('fs_blocked_users',JSON.stringify(_blocked));
+  comCloseMenu();comLoad();if(typeof showToast==='function')showToast('🚫 Kullanıcı engellendi')}
+
+// ═══ TAM EKRAN FOTOĞRAF ═══
+function comFullImg(src){
+  var el=document.getElementById('comFullImg');
+  el.innerHTML='<div class="com-img-full" onclick="comCloseFullImg()"><img src="'+src+'"></div>';el.style.display='block'}
+function comCloseFullImg(){document.getElementById('comFullImg').style.display='none'}
+
+// ═══ YARDIMCI ═══
+function comAgo(ts){var d=Date.now()-ts,m=Math.floor(d/60000);if(m<1)return'Az önce';if(m<60)return m+' dk';var h=Math.floor(m/60);if(h<24)return h+' saat';var dy=Math.floor(h/24);if(dy<7)return dy+' gün';return new Date(ts).toLocaleDateString('tr-TR')}
+function esc(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML}
+
+comInit();
+</script>
