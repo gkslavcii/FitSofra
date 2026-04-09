@@ -1,0 +1,162 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ═══════════════════════════════════════════
+    //  YARDIMCI FONKSİYONLAR
+    // ═══════════════════════════════════════════
+
+    // Kullanıcı giriş yapmış mı?
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    // Belirtilen UID'nin sahibi mi?
+    function isOwner(uid) {
+      return isAuth() && request.auth.uid == uid;
+    }
+
+    // Admin mi? (settings/admins belgesindeki uids listesinden kontrol)
+    function isAdmin() {
+      return isAuth() &&
+        exists(/databases/$(database)/documents/settings/admins) &&
+        request.auth.uid in get(/databases/$(database)/documents/settings/admins).data.uids;
+    }
+
+    // Veri boyutu sınırı (DoS koruması)
+    function isReasonableSize() {
+      return request.resource.size() < 1048576; // 1MB
+    }
+
+    // ═══════════════════════════════════════════
+    //  CONFIG — API anahtarları ve ayarlar
+    // ═══════════════════════════════════════════
+    // Sadece admin okuyabilir/yazabilir.
+    // Cloud Functions service account her zaman erişebilir.
+
+    match /config/{configId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin() && isReasonableSize();
+    }
+
+    // ═══════════════════════════════════════════
+    //  SETTINGS — Uygulama ayarları
+    // ═══════════════════════════════════════════
+
+    match /settings/{settingId} {
+      // admins belgesi: sadece admin yazabilir
+      allow read: if isAuth();
+      allow write: if isAdmin();
+    }
+
+    // ═══════════════════════════════════════════
+    //  USERS — Kullanıcı profilleri
+    // ═══════════════════════════════════════════
+
+    match /users/{userId} {
+      // Kendi profilini okuyabilir/yazabilir
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId) && isReasonableSize();
+      allow delete: if isOwner(userId) || isAdmin();
+    }
+
+    // ═══════════════════════════════════════════
+    //  USER_DATA — Beslenme verileri (sync)
+    // ═══════════════════════════════════════════
+
+    match /user_data/{userId} {
+      allow read: if isOwner(userId);
+      allow write: if isOwner(userId) && isReasonableSize();
+
+      // Alt koleksiyonlar (günlük veriler, chunk'lar vs.)
+      match /{subcollection=**} {
+        allow read: if isOwner(userId);
+        allow write: if isOwner(userId) && isReasonableSize();
+      }
+    }
+
+    // ═══════════════════════════════════════════
+    //  RECIPES — Tarifler
+    // ═══════════════════════════════════════════
+
+    match /recipes/{recipeId} {
+      // Herkes okuyabilir (giriş yapmış kullanıcılar)
+      allow read: if isAuth();
+      // Sadece admin ekleyebilir/düzenleyebilir/silebilir
+      allow create: if isAdmin() && isReasonableSize();
+      allow update: if isAdmin() && isReasonableSize();
+      allow delete: if isAdmin();
+    }
+
+    // ═══════════════════════════════════════════
+    //  COMMUNITY — Topluluk paylaşımları
+    // ═══════════════════════════════════════════
+
+    match /community/{postId} {
+      // Giriş yapmış herkes okuyabilir
+      allow read: if isAuth();
+      // Kendi paylaşımını oluşturabilir
+      allow create: if isAuth()
+        && request.resource.data.uid == request.auth.uid
+        && isReasonableSize();
+      // Kendi paylaşımını güncelleyebilir (beğeni hariç - aşağıda)
+      // veya herkes beğeni alanını güncelleyebilir
+      allow update: if isAuth() && isReasonableSize();
+      // Sadece paylaşım sahibi veya admin silebilir
+      allow delete: if isAuth()
+        && (resource.data.uid == request.auth.uid || isAdmin());
+    }
+
+    // ═══════════════════════════════════════════
+    //  FOOD REQUESTS — Yemek istekleri
+    // ═══════════════════════════════════════════
+
+    match /food_requests/{requestId} {
+      allow read: if isAuth();
+      allow create: if isAuth() && isReasonableSize();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ═══════════════════════════════════════════
+    //  TICKETS — Destek talepleri
+    // ═══════════════════════════════════════════
+
+    match /tickets/{ticketId} {
+      allow read: if isAuth()
+        && (resource.data.uid == request.auth.uid || isAdmin());
+      allow create: if isAuth()
+        && request.resource.data.uid == request.auth.uid
+        && isReasonableSize();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ═══════════════════════════════════════════
+    //  REPORTS — İçerik raporları
+    // ═══════════════════════════════════════════
+
+    match /reports/{reportId} {
+      allow read: if isAdmin();
+      allow create: if isAuth() && isReasonableSize();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ═══════════════════════════════════════════
+    //  AI_USAGE — AI kullanım limitleri
+    // ═══════════════════════════════════════════
+
+    match /ai_usage/{dateId} {
+      // Cloud Functions yazar, admin okuyabilir
+      allow read: if isAdmin();
+      allow write: if false; // Sadece Cloud Functions (service account) yazabilir
+    }
+
+    // ═══════════════════════════════════════════
+    //  VARSAYILAN: Her şeyi reddet
+    // ═══════════════════════════════════════════
+    // Yukarıda tanımlanmamış herhangi bir koleksiyon otomatik reddedilir.
+  }
+}
