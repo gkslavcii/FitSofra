@@ -93,7 +93,7 @@ service cloud.firestore {
     //  COMMUNITY — Topluluk paylaşımları
     // ═══════════════════════════════════════════
 
-    match /community/{postId} {
+    match /community_posts/{postId} {
       // Giriş yapmış herkes okuyabilir
       allow read: if isAuth();
       // Kendi paylaşımını oluşturabilir
