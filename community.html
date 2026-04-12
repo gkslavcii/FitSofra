@@ -81,7 +81,7 @@
 <div style="height:90px"></div>
 
 <script>
-var _comPhoto=null,_comData=null,_blocked=JSON.parse(localStorage.getItem('fs_blocked_users')||'[]');
+var _comPhoto=null,_comPhotoFile=null,_comData=null,_blocked=JSON.parse(localStorage.getItem('fs_blocked_users')||'[]');
 var _comLastDoc=null,_comLoading=false,_comAllLoaded=false;
 var COM_PAGE_SIZE=10;
 
@@ -97,13 +97,12 @@ function comPreviewPhoto(input){
   if(!input.files||!input.files[0])return;
   var file=input.files[0];
   if(file.size>5*1024*1024){if(typeof showToast==='function')showToast('⚠️ Max 5MB');return}
-  var reader=new FileReader();
-  reader.onload=function(e){
-    _comPhoto=e.target.result;
-    document.getElementById('comImgPreview').innerHTML='<div class="com-img-preview"><img src="'+_comPhoto+'"><button class="cip-del" onclick="comRemovePhoto()">✕</button></div>'};
-  reader.readAsDataURL(file)}
+  _comPhotoFile=file;
+  _comPhoto=true;
+  var previewUrl=URL.createObjectURL(file);
+  document.getElementById('comImgPreview').innerHTML='<div class="com-img-preview"><img src="'+previewUrl+'"><button class="cip-del" onclick="comRemovePhoto()">✕</button></div>'}
 
-function comRemovePhoto(){_comPhoto=null;document.getElementById('comImgPreview').innerHTML='';document.getElementById('comPhotoInput').value=''}
+function comRemovePhoto(){_comPhoto=null;_comPhotoFile=null;document.getElementById('comImgPreview').innerHTML='';document.getElementById('comPhotoInput').value=''}
 
 function comAttach(){
   try{var t=typeof getTotals==='function'?getTotals():{cal:0,prot:0,carb:0,fat:0};
@@ -127,24 +126,23 @@ async function comPost(){
   var imageUrl='';
   try{
     // Fotoğraf varsa önce Storage'a yükle, Firestore'a URL kaydet
-    if(_comPhoto){
+    if(_comPhoto&&_comPhotoFile){
       if(typeof firebase==='undefined'||!firebase.storage){
         throw new Error('Storage yüklenemedi. Sayfayı yenileyip tekrar dene.');
       }
-      // base64 → Blob dönüşümü
-      var res=await fetch(_comPhoto);
-      var blob=await res.blob();
+
+      var file=_comPhotoFile;
 
       // Boyut kontrolü (5MB)
-      if(blob.size>5*1024*1024){
+      if(file.size>5*1024*1024){
         if(postBtn){postBtn.disabled=false;postBtn.textContent='Paylaş';}
         if(typeof showToast==='function')showToast('⚠️ Fotoğraf max 5MB olabilir');return;
       }
 
-      var ext=blob.type.split('/')[1]||'jpg';
+      var ext=(file.type.split('/')[1]||'jpg').replace('jpeg','jpg');
       var path='community/'+user.uid+'/'+Date.now()+'.'+ext;
       var storageRef=firebase.storage().ref(path);
-      var snapshot=await storageRef.put(blob);
+      var snapshot=await storageRef.put(file);
       imageUrl=await snapshot.ref.getDownloadURL();
     }
 

@@ -59,6 +59,66 @@ service cloud.firestore {
       allow create: if isOwner(userId);
       allow update: if isOwner(userId) && isReasonableSize();
       allow delete: if isOwner(userId) || isAdmin();
+
+      // Alt koleksiyonlar (data chunks — sync)
+      match /{subcollection=**} {
+        allow read: if isOwner(userId);
+        allow write: if isOwner(userId) && isReasonableSize();
+      }
+    }
+
+    // ═══════════════════════════════════════════
+    //  PROFILES — Arkadaşlık sistemi profilleri
+    // ═══════════════════════════════════════════
+
+    match /profiles/{userId} {
+      // Herkes profilleri okuyabilir (arkadaş kodu aramak için)
+      allow read: if isAuth();
+      // Kendi profilini oluşturabilir/güncelleyebilir
+      allow create: if isOwner(userId) && isReasonableSize();
+      allow update: if isOwner(userId) && isReasonableSize();
+      allow delete: if isOwner(userId);
+
+      // Alt koleksiyonlar (friends)
+      match /friends/{friendId} {
+        allow read: if isAuth();
+        allow write: if isAuth() && isReasonableSize();
+      }
+    }
+
+    // ═══════════════════════════════════════════
+    //  FOODS — Kullanıcı eklediği yemekler
+    // ═══════════════════════════════════════════
+
+    match /foods/{foodId} {
+      allow read: if isAuth();
+      allow create: if isAuth() && isReasonableSize();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ═══════════════════════════════════════════
+    //  CROWD_FOODS — Topluluk yemekleri
+    // ═══════════════════════════════════════════
+
+    match /crowd_foods/{foodId} {
+      allow read: if isAuth();
+      allow create: if isAuth() && isReasonableSize();
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // ═══════════════════════════════════════════
+    //  USER_FEEDBACKS — Kullanıcı geri bildirimleri
+    // ═══════════════════════════════════════════
+
+    match /user_feedbacks/{feedbackId} {
+      allow read: if isAuth()
+        && resource.data.userId == request.auth.uid;
+      allow update: if isAuth()
+        && resource.data.userId == request.auth.uid;
+      allow create: if isAdmin();
+      allow delete: if isAdmin();
     }
 
     // ═══════════════════════════════════════════
