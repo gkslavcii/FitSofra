@@ -9,6 +9,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-functions-compat.js"></script>
+<script src="js/turkish-recipes-db.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:system-ui,-apple-system,sans-serif;background:#0d0f14;color:#e8e8ec;max-width:500px;margin:0 auto;padding:16px;min-height:100vh}
@@ -2183,6 +2184,36 @@ setTimeout(renderAdminCatOrder,500);
     </div>
     <div id="seedStatus" style="font-size:.75rem;color:#8a8d9b;margin-top:8px;min-height:18px"></div>
     <button class="btn-r" onclick="reuploadSeedRecipes()" style="margin-top:6px;font-size:.72rem;background:#ff5c5c22;color:#ff5c5c;border:1px solid #ff5c5c33">🔄 Seed Tarifleri Sil & Yeniden Yükle</button>
+    </div>
+
+    <!-- Genişletilmiş Türk Mutfağı DB -->
+    <div class="card" style="margin-top:12px;border-color:#3dd68c44">
+      <h2 style="color:#3dd68c">🇹🇷 Genişletilmiş Türk Mutfağı DB</h2>
+      <p>turkish-recipes-db.js dosyasındaki 80+ tarifi Firebase'e yükle (fotoğraflı, makrolu, adım adım tarifli)</p>
+      <div class="row" style="margin-bottom:8px">
+        <button class="btn-u" onclick="uploadExtendedRecipes('all')">📦 Tüm DB (80+)</button>
+      </div>
+      <div class="row">
+        <button class="btn-o" onclick="uploadExtendedRecipes('klasik')">🍲 Klasik</button>
+        <button class="btn-o" onclick="uploadExtendedRecipes('fit')">💪 Fit</button>
+        <button class="btn-o" onclick="uploadExtendedRecipes('corba')">🍲 Çorba</button>
+      </div>
+      <div class="row" style="margin-top:4px">
+        <button class="btn-o" onclick="uploadExtendedRecipes('pratik')">⚡ Pratik</button>
+        <button class="btn-o" onclick="uploadExtendedRecipes('sebze')">🥬 Sebze</button>
+        <button class="btn-o" onclick="uploadExtendedRecipes('tatli')">🍮 Tatlı</button>
+      </div>
+      <div class="row" style="margin-top:4px">
+        <button class="btn-o" onclick="uploadExtendedRecipes('vegan')">🌱 Vegan</button>
+        <button class="btn-o" onclick="uploadExtendedRecipes('meze')">🫒 Meze</button>
+        <button class="btn-o" onclick="uploadExtendedRecipes('sandvic')">🥪 Sandviç</button>
+      </div>
+      <div class="row" style="margin-top:4px">
+        <button class="btn-o" onclick="uploadExtendedRecipes('salata')">🥗 Salata</button>
+        <button class="btn-o" onclick="uploadExtendedRecipes('hamur')">🫓 Hamur</button>
+      </div>
+      <div id="extDbStatus" style="font-size:.75rem;color:#8a8d9b;margin-top:8px;min-height:18px"></div>
+      <button class="btn-r" onclick="reuploadExtendedRecipes()" style="margin-top:6px;font-size:.72rem;background:#ff5c5c22;color:#ff5c5c;border:1px solid #ff5c5c33">🔄 Genişletilmiş DB Sil & Yeniden Yükle</button>
     </div>
   </div>
 

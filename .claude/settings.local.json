@@ -19,7 +19,9 @@
       "Bash(ls -la /c/Users/Windows/Desktop/FitSofra-main/*.html /c/Users/Windows/Desktop/FitSofra-main/*.js)",
       "Bash(grep -E \"\\\\.\\(html|js\\)$\")",
       "Bash(grep -n \"voice\\\\|microphone\\\\|speech\\\\|recognition\\\\|webkitSpeechRecognition\\\\|SpeechRecognition\" /c/Users/Windows/Desktop/FitSofra-main/js/*.js /c/Users/Windows/Desktop/FitSofra-main/index.html)",
-      "Bash(wc -l /c/Users/Windows/Desktop/FitSofra-main/index.html /c/Users/Windows/Desktop/FitSofra-main/planner.html /c/Users/Windows/Desktop/FitSofra-main/js/*.js)"
+      "Bash(wc -l /c/Users/Windows/Desktop/FitSofra-main/index.html /c/Users/Windows/Desktop/FitSofra-main/planner.html /c/Users/Windows/Desktop/FitSofra-main/js/*.js)",
+      "Bash(grep -E \"cal\\\\s*:\\\\s*0[^0-9]|cal\\\\s*:\\\\s*$\" /c/Users/Windows/Desktop/FitSofra-main/js/turkish-recipes-db.js)",
+      "Bash(python3:*)"
     ]
   }
 }

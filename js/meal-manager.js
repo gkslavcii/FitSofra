@@ -1544,7 +1544,7 @@ function confirmAddRecipeToMeal(){
 
   // Tarifi tek kalem olarak ekle
   // Tariflerdeki değerler toplam (r.serv kişilik) — seçilen porsiyona göre ölçekle
-  var scale=servings/(r.serv||1);
+  var scale=servings/(parseFloat(r.serv)||1);
   var cal=Math.round((r.cal||0)*scale);
   var prot=Math.round((r.prot||0)*scale);
   var carb=Math.round((r.carb||0)*scale);
