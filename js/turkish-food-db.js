@@ -669,3 +669,181 @@ window.TURKISH_FOOD_DB = [
 {name:"Keçiboynuzu Pekmezi (1 yk)",emoji:"🟤",cal:50,prot:0,carb:13,fat:0,cat:"sporcu"},
 {name:"Arı Poleni (1 çk)",emoji:"🐝",cal:16,prot:1,carb:3,fat:0,cat:"sporcu"}
 ];
+
+// ══════════════════════════════════════════════════════════════════
+//  LİF & SODYUM ZENGİNLEŞTİRME (100g başına mg/g tahmini)
+//  Kaynak: TÜBİTAK referans + BeBiS + USDA genel değerler
+// ══════════════════════════════════════════════════════════════════
+(function(){
+  // Kategori bazlı varsayılan değerler {fiber(g), sodium(mg)} per 100g
+  var CAT_DEFAULTS={
+    hammadde:{fiber:2,sodium:5},
+    kahvalti:{fiber:1,sodium:300},
+    corba:{fiber:1.5,sodium:480},
+    et:{fiber:0,sodium:65},
+    balik:{fiber:0,sodium:80},
+    sebze:{fiber:3,sodium:20},
+    meze:{fiber:2,sodium:280},
+    baklagil:{fiber:8,sodium:10},
+    pilav:{fiber:1,sodium:250},
+    hamur:{fiber:1.5,sodium:350},
+    tatli:{fiber:0.5,sodium:60},
+    meyve:{fiber:2,sodium:2},
+    kuruyemis:{fiber:3,sodium:5},
+    sut:{fiber:0,sodium:50},
+    icecek:{fiber:0,sodium:10},
+    fastfood:{fiber:1.5,sodium:650},
+    atistirmalik:{fiber:1,sodium:300},
+    sos:{fiber:0.5,sodium:500},
+    sporcu:{fiber:0.5,sodium:30}
+  };
+
+  // Belirli yiyecekler için override (name substring → {fiber, sodium})
+  var OVERRIDES={
+    'Yulaf':{fiber:10,sodium:2},
+    'Bulgur':{fiber:12,sodium:5},
+    'Mercimek':{fiber:11,sodium:6},
+    'Nohut':{fiber:12,sodium:24},
+    'Kuru Fasulye':{fiber:15,sodium:12},
+    'Brokoli':{fiber:3.3,sodium:33},
+    'Ispanak':{fiber:2.9,sodium:79},
+    'Havuç':{fiber:2.8,sodium:69},
+    'Enginar':{fiber:5.4,sodium:94},
+    'Bamya':{fiber:3.2,sodium:7},
+    'Patlıcan':{fiber:3,sodium:2},
+    'Kabak':{fiber:1,sodium:8},
+    'Biber':{fiber:1.7,sodium:3},
+    'Domates':{fiber:1.2,sodium:5},
+    'Salatalık':{fiber:0.5,sodium:2},
+    'Lahana':{fiber:2.5,sodium:18},
+    'Karnabahar':{fiber:2,sodium:30},
+    'Kereviz':{fiber:1.6,sodium:80},
+    'Turp':{fiber:1.6,sodium:39},
+    'Marul':{fiber:1.3,sodium:28},
+    'Roka':{fiber:1.6,sodium:27},
+    'Semizotu':{fiber:1.5,sodium:45},
+    'Börülce':{fiber:10,sodium:4},
+    'Barbunya':{fiber:9,sodium:5},
+    'Elma':{fiber:2.4,sodium:1},
+    'Armut':{fiber:3.1,sodium:1},
+    'Portakal':{fiber:2.4,sodium:0},
+    'Muz':{fiber:2.6,sodium:1},
+    'Çilek':{fiber:2,sodium:1},
+    'Karpuz':{fiber:0.4,sodium:1},
+    'Kavun':{fiber:0.9,sodium:16},
+    'Üzüm':{fiber:0.9,sodium:2},
+    'İncir':{fiber:2.9,sodium:1},
+    'Kayısı':{fiber:2,sodium:1},
+    'Şeftali':{fiber:1.5,sodium:0},
+    'Erik':{fiber:1.4,sodium:0},
+    'Kiraz':{fiber:2.1,sodium:0},
+    'Vişne':{fiber:1.6,sodium:3},
+    'Nar':{fiber:4,sodium:3},
+    'Ceviz':{fiber:6.7,sodium:2},
+    'Badem':{fiber:12,sodium:1},
+    'Fındık':{fiber:10,sodium:0},
+    'Fıstık':{fiber:8.5,sodium:5},
+    'Kaju':{fiber:3.3,sodium:12},
+    'Ayçekirdeği':{fiber:9,sodium:9},
+    'Kabak Çekirdeği':{fiber:6,sodium:7},
+    'Keten Tohumu':{fiber:27,sodium:30},
+    'Chia':{fiber:34,sodium:16},
+    'Zeytinyağı':{fiber:0,sodium:0},
+    'Tereyağı':{fiber:0,sodium:11},
+    'Simit':{fiber:2.5,sodium:520},
+    'Ekmek':{fiber:2.7,sodium:461},
+    'Tam Buğday Ekmeği':{fiber:6,sodium:400},
+    'Çavdar Ekmeği':{fiber:5.8,sodium:390},
+    'Kepekli Ekmek':{fiber:7,sodium:380},
+    'Lahmacun':{fiber:2,sodium:550},
+    'Pide':{fiber:2,sodium:480},
+    'Pizza':{fiber:2.3,sodium:640},
+    'Hamburger':{fiber:1.5,sodium:500},
+    'Döner':{fiber:1,sodium:550},
+    'Kokoreç':{fiber:0,sodium:450},
+    'Tantuni':{fiber:1,sodium:520},
+    'Beyaz Peynir':{fiber:0,sodium:1150},
+    'Kaşar Peynir':{fiber:0,sodium:700},
+    'Lor Peyniri':{fiber:0,sodium:350},
+    'Süt ':{fiber:0,sodium:44},
+    'Yoğurt':{fiber:0,sodium:46},
+    'Ayran':{fiber:0,sodium:105},
+    'Kefir':{fiber:0,sodium:40},
+    'Çay':{fiber:0,sodium:3},
+    'Kahve':{fiber:0,sodium:2},
+    'Kola':{fiber:0,sodium:12},
+    'Meyve Suyu':{fiber:0.2,sodium:5},
+    'Salça':{fiber:3.9,sodium:35},
+    'Tuz':{fiber:0,sodium:38758},
+    'Bal ':{fiber:0,sodium:4},
+    'Pekmez':{fiber:0,sodium:12},
+    'Tahin':{fiber:5.5,sodium:75},
+    'Sucuk':{fiber:0,sodium:980},
+    'Pastırma':{fiber:0,sodium:2500},
+    'Sosis':{fiber:0,sodium:900},
+    'Salam':{fiber:0,sodium:1100},
+    'Tavuk':{fiber:0,sodium:74},
+    'Dana':{fiber:0,sodium:60},
+    'Kuzu':{fiber:0,sodium:65},
+    'Kıyma':{fiber:0,sodium:66},
+    'Karides':{fiber:0,sodium:148},
+    'Levrek':{fiber:0,sodium:68},
+    'Somon':{fiber:0,sodium:59},
+    'Hamsi':{fiber:0,sodium:104},
+    'Sardalya':{fiber:0,sodium:100},
+    'Alabalık':{fiber:0,sodium:52},
+    'Çipura':{fiber:0,sodium:73},
+    'Protein Bar':{fiber:3,sodium:200},
+    'Protein Shake':{fiber:1,sodium:250},
+    'Whey':{fiber:0,sodium:150},
+    'Kazein':{fiber:0,sodium:120},
+    'BCAA':{fiber:0,sodium:10},
+    'Kreatin':{fiber:0,sodium:5},
+    'Mass Gainer':{fiber:2,sodium:180},
+    'Pirinç':{fiber:1.3,sodium:5},
+    'Makarna':{fiber:1.8,sodium:6},
+    'İrmik':{fiber:3.9,sodium:1},
+    'Un ':{fiber:2.7,sodium:2},
+    'Kinoa':{fiber:7,sodium:5},
+    'Karabuğday':{fiber:10,sodium:1},
+    'Patates':{fiber:2.1,sodium:6},
+    'Pilav':{fiber:0.4,sodium:250},
+    'Çorba':{fiber:1,sodium:450},
+    'Karnıyarık':{fiber:3.5,sodium:280},
+    'İmam Bayıldı':{fiber:3.3,sodium:250},
+    'Dolma':{fiber:2,sodium:320},
+    'Sarma':{fiber:2,sodium:310},
+    'Mantı':{fiber:2,sodium:400},
+    'Börek':{fiber:1.5,sodium:380},
+    'Gözleme':{fiber:2,sodium:350},
+    'Künefe':{fiber:0.5,sodium:180},
+    'Baklava':{fiber:1.5,sodium:150},
+    'Kadayıf':{fiber:0.5,sodium:120},
+    'Sütlaç':{fiber:0.3,sodium:75},
+    'Muhallebi':{fiber:0.2,sodium:70},
+    'Revani':{fiber:0.5,sodium:100},
+    'Lokum':{fiber:0,sodium:10},
+    'Helva':{fiber:1.5,sodium:60}
+  };
+
+  window.TURKISH_FOOD_DB.forEach(function(f){
+    // Skip if already has fiber/sodium
+    if(f.fiber!==undefined&&f.sodium!==undefined)return;
+    // Check overrides first (match by name substring)
+    var matched=false;
+    var keys=Object.keys(OVERRIDES);
+    for(var i=0;i<keys.length;i++){
+      if(f.name.indexOf(keys[i])>=0){
+        f.fiber=OVERRIDES[keys[i]].fiber;
+        f.sodium=OVERRIDES[keys[i]].sodium;
+        matched=true;
+        break;
+      }
+    }
+    if(!matched){
+      var def=CAT_DEFAULTS[f.cat]||{fiber:0,sodium:0};
+      f.fiber=def.fiber;
+      f.sodium=def.sodium;
+    }
+  });
+})();

@@ -529,8 +529,28 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
         <h2 style="margin:0">📊 İlerlemeler</h2>
         <button onclick="closeInsightModal()" aria-label="Kapat" style="background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:5px 12px;font-family:var(--font,system-ui);font-size:.75rem;font-weight:700;color:var(--text2);cursor:pointer">Kapat</button>
       </div>
-      <div id="insightSummaryBar" style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:14px"></div>
+      <div id="insightSummaryBar" style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:14px"></div>
       <div id="insightModalContent" style="font-size:.83rem;line-height:1.7;color:var(--text)"></div>
+
+      <!-- Öğün Zamanlama Analizi -->
+      <div style="margin-top:16px;border-top:1px solid var(--border);padding-top:14px">
+        <h3 style="font-size:.88rem;font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:6px">⏰ Öğün Zamanlama</h3>
+        <div id="mealTimingContainer" style="font-size:.8rem;line-height:1.6"></div>
+      </div>
+
+      <!-- Challenge'lar -->
+      <div style="margin-top:16px;border-top:1px solid var(--border);padding-top:14px">
+        <h3 style="font-size:.88rem;font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:6px">🏅 Challenge'lar</h3>
+        <div id="challengesContainer"></div>
+      </div>
+
+      <!-- Diyet Presetleri -->
+      <div style="margin-top:16px;border-top:1px solid var(--border);padding-top:14px">
+        <h3 style="font-size:.88rem;font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:6px">🍽️ Diyet Planları</h3>
+        <div id="dietPresetsContainer"></div>
+      </div>
+
+      <!-- Başarımlar -->
       <div style="margin-top:16px;border-top:1px solid var(--border);padding-top:14px">
         <h3 style="font-size:.88rem;font-weight:800;margin-bottom:8px;display:flex;align-items:center;gap:6px">🏆 Başarımlar</h3>
         <div id="badgesContainer"></div>
@@ -744,6 +764,16 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
               oninput="onGoalWaterChange()">
             <button onclick="adjustGoalWater(250)" style="width:36px;height:36px;border-radius:10px;border:1.5px solid var(--border);background:var(--glass);color:var(--text);font-size:1.1rem;cursor:pointer;font-weight:700">+</button>
           </div>
+        </div>
+
+        <!-- Diyet Presetleri -->
+        <div style="background:var(--glass);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:16px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+            <div style="font-weight:700;font-size:.88rem">🍽️ Hazır Diyet Planları</div>
+            <button id="dietPresetToggle" onclick="var p=document.getElementById('dietPresetGoalPanel');var v=p.style.display==='none';p.style.display=v?'block':'none';this.textContent=v?'Gizle':'Göster'" style="background:var(--glass);border:1px solid var(--border);border-radius:8px;padding:4px 10px;font-size:.68rem;font-weight:700;color:var(--accent);cursor:pointer;font-family:var(--font,system-ui)">Göster</button>
+          </div>
+          <div style="font-size:.7rem;color:var(--text2);margin-bottom:8px">Bir plan seç, kalori ve makro hedeflerin otomatik ayarlansın</div>
+          <div id="dietPresetGoalPanel" style="display:none"></div>
         </div>
 
         <button onclick="saveGoals()" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;border-radius:var(--radius-sm);font-family:var(--font,system-ui);font-weight:800;font-size:.9rem;cursor:pointer">💾 Kaydet ve Uygula</button>
@@ -1332,12 +1362,16 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
     </div>
     <div class="source-tabs">
       <button class="source-tab active" onclick="switchSource('freq')">⭐ Sık</button>
+      <button class="source-tab" onclick="switchSource('fav')">❤️ Favori</button>
       <button class="source-tab" onclick="switchSource('recent')">🕐 Son</button>
       <button class="source-tab" onclick="switchSource('search')">🔍 Arama</button>
       <button class="source-tab" onclick="switchSource('custom')">✏️ Ekle</button>
     </div>
     <div id="freqPanel">
       <div class="food-db-list" id="freqList"></div>
+    </div>
+    <div id="favPanel" style="display:none">
+      <div class="food-db-list" id="favList"></div>
     </div>
     <div id="recentPanel" style="display:none">
       <div class="food-db-list" id="recentList"></div>
@@ -2290,7 +2324,7 @@ function loadProfile(){const raw=localStorage.getItem('fs_profile');if(!raw)retu
   if(p.macroMode)macroMode=p.macroMode;
   const _b=document.getElementById('weeklyPlanBadge');if(_b)_b.style.display=weeklyPlanActive?'block':'none';
 }
-function getTotals(){const data=getDayData();let cal=0,prot=0,carb=0,fat=0;Object.values(data).forEach(foods=>foods.forEach(f=>{cal+=f.cal;prot+=f.prot;carb+=f.carb;fat+=f.fat}));return{cal:Math.round(cal),prot,carb,fat}}
+function getTotals(){const data=getDayData();let cal=0,prot=0,carb=0,fat=0,fiber=0,sodium=0;Object.values(data).forEach(foods=>foods.forEach(f=>{cal+=f.cal;prot+=f.prot;carb+=f.carb;fat+=f.fat;fiber+=(f.fiber||0);sodium+=(f.sodium||0)}));return{cal:Math.round(cal),prot,carb,fat,fiber:Math.round(fiber*10)/10,sodium:Math.round(sodium)}}
 function updateHeader(){
   const tgt=getTodayTargets();
   const _burned=exBurnActive?getTotalBurned():0;
@@ -2368,7 +2402,7 @@ function renderMeals(){const container=document.getElementById('mealsContainer')
 function openAddFood(mealId){currentMealId=mealId;const meal=MEAL_DEFS.find(m=>m.id===mealId);document.getElementById('modalTitle').textContent=`${meal.icon} ${meal.name} — Yemek Ekle`;document.getElementById('foodSearch').value='';selectedCat='all';currentSource='freq';switchSource('freq');document.getElementById('addFoodModal').classList.add('show');setTimeout(()=>document.getElementById('foodSearch').focus(),300)}
 function closeModal(){document.getElementById('addFoodModal').classList.remove('show')}
 
-const SOURCE_TABS=['freq','recent','search','custom'];
+const SOURCE_TABS=['freq','fav','recent','search','custom'];
 const SEARCH_CATS=[
   {id:'all',name:'Tümü'},
   {id:'hammadde',name:'Hammadde'},
@@ -2408,10 +2442,12 @@ function switchSource(src){
   currentSource=src;
   document.querySelectorAll('.source-tab').forEach((t,i)=>t.classList.toggle('active',SOURCE_TABS[i]===src));
   document.getElementById('freqPanel').style.display=src==='freq'?'block':'none';
+  if(document.getElementById('favPanel'))document.getElementById('favPanel').style.display=src==='fav'?'block':'none';
   document.getElementById('recentPanel').style.display=src==='recent'?'block':'none';
   document.getElementById('searchPanel').style.display=src==='search'?'block':'none';
   document.getElementById('customPanel').style.display=src==='custom'?'block':'none';
   if(src==='freq')renderFreqFoods();
+  if(src==='fav')renderFavFoods();
   if(src==='recent')renderRecentFoods();
   if(src==='search'){renderSearchCatPills();const q=document.getElementById('foodSearch').value.trim();if(q.length>=2)runUnifiedSearch(q);else if(searchCat!=='all')runUnifiedSearch('');else{document.getElementById('searchStatus').innerHTML='🔍 Yemek veya ürün adı yazarak arayın';document.getElementById('searchStatus').style.display='block';document.getElementById('searchResults').innerHTML=''}}
 }
@@ -2441,7 +2477,7 @@ function runUnifiedSearch(q){
     const hasImg=img&&!img.includes('emoji')&&!img.includes('data:');
     return`<div class="food-db-item" onclick="selectDbFood('${f.name.replace(/'/g,"\\'")}')">
       ${hasImg?`<img src="${img}" style="width:36px;height:36px;border-radius:8px;object-fit:cover;flex-shrink:0" onerror="this.style.display='none'">`:`<div style="width:36px;height:36px;border-radius:8px;background:var(--glass);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.7rem;color:var(--text2);font-weight:700;border:1px solid var(--border)">${f.cal}</div>`}
-      <div class="fdb-info"><div class="fdb-name">${escHTML(f.name)}</div><div class="fdb-detail">P:${f.prot}g K:${f.carb}g Y:${f.fat}g • 100g</div></div><div class="fdb-cal">${f.cal}</div></div>`;
+      <div class="fdb-info"><div class="fdb-name">${escHTML(f.name)}</div><div class="fdb-detail">P:${f.prot}g K:${f.carb}g Y:${f.fat}g${f.fiber?' L:'+f.fiber+'g':''}${f.sodium?' Na:'+f.sodium+'mg':''} • 100g</div></div><div class="fdb-cal">${f.cal}</div></div>`;
   }).join('');
 
   // Tarif sonuçlarını ekle
@@ -2932,6 +2968,8 @@ function openInsightModal(){
       {label:'Protein',val:Math.round(t.prot)+'g',pct:protPct,color:'#ff7a7a'},
       {label:'Karb',val:Math.round(t.carb)+'g',pct:carbPct,color:'#60a5fa'},
       {label:'Su',val:waterMl+'ml',pct:waterPct,color:'#22d3ee'},
+      {label:'Lif',val:(t.fiber||0)+'g',pct:Math.min(999,Math.round(((t.fiber||0)/25)*100)),color:'#3dd68c'},
+      {label:'Sodyum',val:(t.sodium||0)+'mg',pct:Math.min(999,Math.round(((t.sodium||0)/2300)*100)),color:'#f0a030'},
     ].map(function(m){
       var bw=Math.min(100,m.pct);
       var bc=m.pct>110?'var(--red)':m.pct>90?'var(--green)':m.color;
@@ -2956,7 +2994,23 @@ function updateInsightModalContent(){
   var el=document.getElementById('insightModalContent');
   if(!el)return;
   el.innerHTML=generateInsightHTML();
-  // Also render badges
+  // Meal Timing
+  var mtc=document.getElementById('mealTimingContainer');
+  if(mtc&&typeof getMealTimingAnalysis==='function'){
+    var timings=getMealTimingAnalysis();
+    mtc.innerHTML=timings.map(function(t){
+      var bgColor=t.type==='warn'?'var(--orange-light)':t.type==='good'?'var(--green-light)':'var(--blue-light)';
+      var borderColor=t.type==='warn'?'var(--orange)':t.type==='good'?'var(--green)':'var(--blue)';
+      return '<div style="background:'+bgColor+';border-left:3px solid '+borderColor+';border-radius:8px;padding:8px 10px;margin-bottom:6px;font-size:.78rem">'+t.icon+' '+t.text+'</div>';
+    }).join('');
+  }
+  // Challenges
+  var cc=document.getElementById('challengesContainer');
+  if(cc&&typeof renderChallengesHTML==='function')cc.innerHTML=renderChallengesHTML();
+  // Diet Presets
+  var dp=document.getElementById('dietPresetsContainer');
+  if(dp&&typeof renderDietPresetsHTML==='function')dp.innerHTML=renderDietPresetsHTML();
+  // Badges
   renderBadgesInProfile();
 }
 
@@ -2996,6 +3050,12 @@ function generateInsightHTML(){
   }
   if(h>12&&waterPct<30)insights.push('💧 Su alımın çok düşük! Hemen bir bardak su iç.');
   else if(waterPct>=90)insights.push('💧 Su hedefine neredeyse ulaştın — harika!');
+  // Lif & Sodyum yorumları
+  if(t.cal>300){
+    if((t.fiber||0)<10&&h>14)insights.push('🌾 Lif alımın düşük ('+Math.round(t.fiber||0)+'g). Günlük hedef 25g. Sebze, baklagil veya tam tahıl ekle.');
+    else if((t.fiber||0)>=25)insights.push('🌾 Lif hedefinize ulaştınız — sindirim sisteminiz teşekkür eder!');
+    if((t.sodium||0)>2300)insights.push('⚠️ Sodyum alımın yüksek ('+Math.round(t.sodium||0)+'mg). Günlük limit 2300mg. Tuzlu yiyecekleri azalt.');
+  }
   // IF durumu
   var ifStatus=getIFStatus();
   if(ifStatus){
@@ -3445,6 +3505,9 @@ function openGoalsModal(){
     buildWeeklyDaysUI();
     syncWeeklyMacroInputs();
     switchGoalsTab('daily');
+    // Diyet presetleri
+    var dpg=document.getElementById('dietPresetGoalPanel');
+    if(dpg&&typeof renderDietPresetsHTML==='function')dpg.innerHTML=renderDietPresetsHTML();
   }catch(err){
     console.warn('openGoalsModal hata:', err);
   }

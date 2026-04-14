@@ -49,6 +49,23 @@
 
 <div class="com-h"><h2>👥 Topluluk</h2><p>Beslenme günlüğünü paylaş, ilham al</p></div>
 
+<!-- Challenge Bölümü -->
+<div style="margin-bottom:14px">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+    <div style="font-size:.92rem;font-weight:800;display:flex;align-items:center;gap:6px">🏅 Challenge'lar</div>
+    <button id="comChallengeToggle" onclick="var p=document.getElementById('comChallengePanel');var v=p.style.display==='none';p.style.display=v?'block':'none';this.textContent=v?'Gizle':'Göster'" style="background:var(--glass);border:1px solid var(--border);border-radius:8px;padding:4px 10px;font-size:.68rem;font-weight:700;color:var(--accent);cursor:pointer;font-family:var(--font,system-ui)">Göster</button>
+  </div>
+  <div id="comChallengePanel" style="display:none"></div>
+</div>
+<script>
+(function(){
+  var panel=document.getElementById('comChallengePanel');
+  if(panel&&typeof renderChallengesHTML==='function'){
+    panel.innerHTML=renderChallengesHTML();
+  }
+})();
+</script>
+
 <div id="comLogin" style="display:none">
   <div class="com-lp"><div class="cli">👥</div><div style="font-size:1rem;font-weight:800;margin-bottom:6px">Topluluğa Katıl!</div><div style="font-size:.78rem;color:var(--text2);line-height:1.5;margin-bottom:16px">Yemek fotoğraflarını paylaş, beğen, yorum bırak.</div>
   <button onclick="if(typeof firebaseLogin==='function')firebaseLogin()" style="background:linear-gradient(135deg,#4285f4,#356ac3);color:#fff;border:none;border-radius:12px;padding:12px 28px;font-size:.85rem;font-weight:700;cursor:pointer;font-family:var(--font,system-ui)">🔑 Google ile Giriş</button></div>

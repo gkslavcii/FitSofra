@@ -1404,7 +1404,7 @@ function renderBadgesInProfile(){
 var _origSaveDayDataForBadges=saveDayData;
 saveDayData=function(dk,data){
   _origSaveDayDataForBadges(dk,data);
-  setTimeout(function(){checkAchievements();},500);
+  setTimeout(function(){checkAchievements();if(typeof checkChallengeProgress==='function')checkChallengeProgress();},500);
 };
 
 // Hedefe ulaşınca konfeti
@@ -2177,6 +2177,276 @@ function showAIReply(container,reply){
   reply=reply.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>');
   container.innerHTML+='<div style="align-self:flex-start;background:linear-gradient(135deg,rgba(107,79,207,.08),rgba(160,124,248,.04));border:1px solid rgba(107,79,207,.12);border-radius:14px 14px 14px 4px;padding:10px 14px;font-size:.82rem;max-width:90%;line-height:1.6;color:var(--text)">'+reply+'<div style="font-size:.6rem;color:var(--text2);margin-top:6px;text-align:right">'+(5-aiDailyCount)+' mesaj kaldı</div></div>';
   container.scrollTop=container.scrollHeight;
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  SESLİ GİRİŞ — DOĞAL DİL AYRIŞTIRMA (NLP)
+//  "iki yumurta bir simit" → [{name:"Yumurta",qty:2},{name:"Simit",qty:1}]
+// ══════════════════════════════════════════════════════════════════
+var _voiceNumbers={'bir':1,'iki':2,'üç':3,'dört':4,'beş':5,'altı':6,'yedi':7,'sekiz':8,'dokuz':9,'on':10,
+  'yarım':0.5,'buçuk':1.5,'çeyrek':0.25,'1':1,'2':2,'3':3,'4':4,'5':5,'6':6,'7':7,'8':8,'9':9,'10':10};
+
+function parseVoiceInput(text){
+  if(!text||!FOOD_DB||!FOOD_DB.length)return null;
+  var t=text.toLowerCase().replace(/[.,!?]/g,'').trim();
+  // "ekle" "koy" gibi fiilleri temizle
+  t=t.replace(/\b(ekle|ekleyin|koy|koyun|yedim|yedik|içtim|aldım)\b/g,'').trim();
+  // "ve", "ile", "bir de" ile böl
+  var parts=t.split(/\s+(?:ve|ile|bir\s+de|ayrıca)\s+/);
+  var results=[];
+  parts.forEach(function(part){
+    part=part.trim();if(!part)return;
+    var words=part.split(/\s+/);
+    var qty=1;
+    // İlk kelime sayı mı?
+    if(words.length>1&&_voiceNumbers[words[0]]!==undefined){
+      qty=_voiceNumbers[words[0]];words.shift();
+    }
+    // Gram belirtimi: "yüz gram tavuk" veya "150 gram"
+    var gramMatch=part.match(/(\d+)\s*(?:gram|gr|g)\b/i);
+    var portionG=gramMatch?parseInt(gramMatch[1]):null;
+    if(gramMatch){words=part.replace(gramMatch[0],'').trim().split(/\s+/).filter(Boolean);}
+    var searchTerm=words.join(' ').trim();
+    if(!searchTerm)return;
+    // FOOD_DB'de ara
+    var match=FOOD_DB.find(function(f){return f.name.toLowerCase().includes(searchTerm)});
+    if(!match){
+      // Kısmi arama
+      var searchWords=searchTerm.split(/\s+/);
+      match=FOOD_DB.find(function(f){var fn=f.name.toLowerCase();return searchWords.every(function(w){return fn.includes(w)})});
+    }
+    if(match)results.push({name:match.name,food:match,qty:qty,portionG:portionG});
+  });
+  return results.length?results:null;
+}
+
+function _addParsedVoiceFood(parsed){
+  if(!parsed||!parsed.food||!currentMealId)return;
+  var f=parsed.food;
+  var portion=parsed.portionG||100;
+  var mult=(portion/100)*parsed.qty;
+  var entry={name:f.name,emoji:f.emoji||'🍽️',cal:Math.round(f.cal*mult),prot:Math.round(f.prot*mult*10)/10,carb:Math.round(f.carb*mult*10)/10,fat:Math.round(f.fat*mult*10)/10,portionUsed:portion*parsed.qty};
+  var data=getDayData();
+  if(!data[currentMealId])data[currentMealId]=[];
+  data[currentMealId].push(entry);
+  setDayData(data);
+  trackFoodFreq(f,portion*parsed.qty);
+  trackFoodRecent(f,portion*parsed.qty);
+  renderMeals();updateHeader();
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  YEMEK ZAMANLAMA ANALİZİ
+//  Öğünler arası süre, en verimli yeme saatleri
+// ══════════════════════════════════════════════════════════════════
+function getMealTimingAnalysis(){
+  var data=getDayData();var timings=[];
+  var mealOrder=['kahvalti','ogle','aksam','atistirmalik'];
+  var mealNames={kahvalti:'Kahvaltı',ogle:'Öğle',aksam:'Akşam',atistirmalik:'Atıştırmalık'};
+  var idealTimes={kahvalti:{min:7,max:9},ogle:{min:12,max:14},aksam:{min:18,max:20}};
+  var insights=[];
+  var mealCals={};
+  mealOrder.forEach(function(m){
+    var foods=data[m]||[];
+    if(foods.length){
+      var totalCal=foods.reduce(function(s,f){return s+f.cal},0);
+      mealCals[m]=totalCal;
+    }
+  });
+  var totalCal=Object.values(mealCals).reduce(function(s,c){return s+c},0);
+  // Kalori dağılımı analizi
+  if(totalCal>0){
+    if(mealCals.kahvalti){
+      var bPct=Math.round((mealCals.kahvalti/totalCal)*100);
+      if(bPct<20)insights.push({icon:'🌅',text:'Kahvaltın günlük kalorinizin %'+bPct+'\'i. İdeal: %25-30. Sabahları daha dolu bir kahvaltı metabolizmayı hızlandırır.',type:'warn'});
+      else if(bPct>=25&&bPct<=35)insights.push({icon:'✅',text:'Kahvaltı oranınız mükemmel (%'+bPct+'). Güne enerjik başlıyorsunuz!',type:'good'});
+    }
+    if(mealCals.aksam){
+      var dPct=Math.round((mealCals.aksam/totalCal)*100);
+      if(dPct>40)insights.push({icon:'🌙',text:'Akşam yemeği günlük kalorinizin %'+dPct+'\'i. Akşam ağır yemekler uyku kalitesini düşürebilir.',type:'warn'});
+    }
+    if(!mealCals.ogle&&(mealCals.kahvalti||mealCals.aksam)){
+      insights.push({icon:'☀️',text:'Öğle yemeği atlama algılandı. Öğün atlamak metabolizmayı yavaşlatır ve akşam aşırı yemeye yol açabilir.',type:'warn'});
+    }
+    if(mealCals.atistirmalik){
+      var sPct=Math.round((mealCals.atistirmalik/totalCal)*100);
+      if(sPct>25)insights.push({icon:'🍿',text:'Atıştırmalıklar %'+sPct+' ile yüksek. Ana öğünleri artırarak atıştırma ihtiyacını azaltabilirsin.',type:'warn'});
+    }
+    // Protein dağılımı
+    var mealProts={};mealOrder.forEach(function(m){var foods=data[m]||[];mealProts[m]=foods.reduce(function(s,f){return s+(f.prot||0)},0)});
+    var maxProtMeal=Object.keys(mealProts).reduce(function(a,b){return mealProts[a]>mealProts[b]?a:b});
+    var totalProt=Object.values(mealProts).reduce(function(s,p){return s+p},0);
+    if(totalProt>0&&mealProts[maxProtMeal]/totalProt>0.6){
+      insights.push({icon:'💪',text:'Proteinin %'+Math.round(mealProts[maxProtMeal]/totalProt*100)+'\'i '+mealNames[maxProtMeal]+'\'da. Proteini öğünlere eşit dağıtmak kas sentezini artırır.',type:'info'});
+    }
+  }
+  if(!insights.length)insights.push({icon:'📊',text:'Yemek eklendikçe zamanlama önerileri burada görünecek.',type:'info'});
+  return insights;
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  TOPLULUK CHALLENGE SİSTEMİ
+// ══════════════════════════════════════════════════════════════════
+var CHALLENGES=[
+  {id:'water7',name:'💧 7 Gün Su Challenge',desc:'7 gün üst üste su hedefini tamamla',duration:7,type:'water',target:1,unit:'gün',badge:'💧',reward:'Su Ustası'},
+  {id:'protein5',name:'💪 Protein Haftası',desc:'5 gün protein hedefinin %90\'ını yakala',duration:5,type:'protein',target:0.9,unit:'gün',badge:'💪',reward:'Protein Kralı'},
+  {id:'nosnack3',name:'🚫 3 Gün Atıştırmasız',desc:'3 gün atıştırmalık 200 kcal altında tut',duration:3,type:'nosnack',target:200,unit:'gün',badge:'🎯',reward:'İrade Gücü'},
+  {id:'veggie7',name:'🥬 Sebze Haftası',desc:'7 gün en az 2 sebze yemeği ye',duration:7,type:'veggie',target:2,unit:'gün',badge:'🥬',reward:'Yeşil Savaşçı'},
+  {id:'cal14',name:'🔥 2 Hafta Hedefte',desc:'14 gün kalori hedefinin ±%10 içinde kal',duration:14,type:'calorie',target:0.1,unit:'gün',badge:'🔥',reward:'Tutarlılık Şampiyonu'},
+  {id:'meal21',name:'📝 21 Gün Takip',desc:'21 gün boyunca en az 3 öğün kayıt et',duration:21,type:'logging',target:3,unit:'gün',badge:'📝',reward:'Takip Ustası'},
+  {id:'breakfast7',name:'🌅 Kahvaltı Alışkanlığı',desc:'7 gün üst üste kahvaltı yap',duration:7,type:'breakfast',target:1,unit:'gün',badge:'🌅',reward:'Erken Kalkan'},
+  {id:'walk5',name:'🚶 5 Gün Egzersiz',desc:'5 gün egzersiz kaydet',duration:5,type:'exercise',target:1,unit:'gün',badge:'🏆',reward:'Aktif Yaşam'}
+];
+
+function getActiveChallenges(){return JSON.parse(localStorage.getItem('fs_active_challenges')||'[]')}
+function getChallengeProgress(cId){return JSON.parse(localStorage.getItem('fs_challenge_'+cId)||'{"days":0,"startDate":""}');}
+
+function joinChallenge(cId){
+  var active=getActiveChallenges();
+  if(active.indexOf(cId)>=0){showToast('Zaten bu challenge\'a katıldın!');return}
+  active.push(cId);
+  localStorage.setItem('fs_active_challenges',JSON.stringify(active));
+  localStorage.setItem('fs_challenge_'+cId,JSON.stringify({days:0,startDate:dateKey(),lastCheck:''}));
+  showToast('🎯 Challenge\'a katıldın!');
+  if(typeof renderChallenges==='function')renderChallenges();
+}
+
+function renderChallenges(){
+  var cc=document.getElementById('challengesContainer');
+  if(cc&&typeof renderChallengesHTML==='function')cc.innerHTML=renderChallengesHTML();
+}
+
+function checkChallengeProgress(){
+  var active=getActiveChallenges();var today=dateKey();
+  active.forEach(function(cId){
+    var ch=CHALLENGES.find(function(c){return c.id===cId});if(!ch)return;
+    var prog=getChallengeProgress(cId);
+    if(prog.lastCheck===today)return; // bugün zaten kontrol edildi
+    var success=false;
+    var data=getDayData();
+    switch(ch.type){
+      case 'water':success=getWaterMl()>=(getTodayTargets().water||2000);break;
+      case 'protein':var t=getTotals();success=t.prot>=(getTodayTargets().prot*ch.target);break;
+      case 'nosnack':var sn=data.atistirmalik||[];success=sn.reduce(function(s,f){return s+f.cal},0)<ch.target;break;
+      case 'veggie':var veg=(data.ogle||[]).concat(data.aksam||[]).filter(function(f){return f.name&&FOOD_DB.find(function(d){return d.name===f.name&&d.cat==='sebze'})});success=veg.length>=ch.target;break;
+      case 'calorie':var tot=getTotals();var tgt=getTodayTargets();success=Math.abs(tot.cal-tgt.cal)/tgt.cal<=ch.target;break;
+      case 'logging':var meals=['kahvalti','ogle','aksam','atistirmalik'];var logged=meals.filter(function(m){return(data[m]||[]).length>0}).length;success=logged>=ch.target;break;
+      case 'breakfast':success=(data.kahvalti||[]).length>0;break;
+      case 'exercise':var ex=JSON.parse(localStorage.getItem('fs_exercise_'+today)||'[]');success=ex.length>0;break;
+    }
+    if(success){prog.days++;prog.lastCheck=today;localStorage.setItem('fs_challenge_'+cId,JSON.stringify(prog));
+      if(prog.days>=ch.duration){
+        // Challenge tamamlandı!
+        showToast(ch.badge+' Challenge tamamlandı: '+ch.reward+'!');
+        var badges=JSON.parse(localStorage.getItem('fs_badges')||'[]');
+        if(badges.indexOf(ch.reward)<0){badges.push(ch.reward);localStorage.setItem('fs_badges',JSON.stringify(badges))}
+        active=active.filter(function(x){return x!==cId});
+        localStorage.setItem('fs_active_challenges',JSON.stringify(active));
+        var completed=JSON.parse(localStorage.getItem('fs_completed_challenges')||'[]');
+        completed.push({id:cId,date:today});localStorage.setItem('fs_completed_challenges',JSON.stringify(completed));
+      }
+    }
+  });
+}
+
+function renderChallengesHTML(){
+  var active=getActiveChallenges();var completed=JSON.parse(localStorage.getItem('fs_completed_challenges')||'[]');
+  var completedIds=completed.map(function(c){return c.id});
+  var h='<div style="display:flex;flex-direction:column;gap:8px">';
+  CHALLENGES.forEach(function(ch){
+    var isActive=active.indexOf(ch.id)>=0;
+    var isDone=completedIds.indexOf(ch.id)>=0;
+    var prog=getChallengeProgress(ch.id);
+    var pct=isDone?100:isActive?Math.round((prog.days/ch.duration)*100):0;
+    h+='<div style="background:var(--glass);border:1px solid '+(isDone?'var(--green)':isActive?'var(--accent)':'var(--border)')+';border-radius:12px;padding:12px">';
+    h+='<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px"><span style="font-size:1.2rem">'+ch.badge+'</span><div style="flex:1"><div style="font-size:.82rem;font-weight:700">'+ch.name+(isDone?' ✅':'')+'</div><div style="font-size:.68rem;color:var(--text2)">'+ch.desc+'</div></div>';
+    if(!isActive&&!isDone)h+='<button onclick="joinChallenge(\''+ch.id+'\')" style="padding:6px 12px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:.7rem;font-weight:700;cursor:pointer;font-family:var(--font,system-ui)">Katıl</button>';
+    h+='</div>';
+    if(isActive||isDone){
+      h+='<div style="background:rgba(255,255,255,.05);border-radius:6px;height:8px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:'+(isDone?'var(--green)':'var(--accent)')+';border-radius:6px;transition:width .5s"></div></div>';
+      h+='<div style="font-size:.65rem;color:var(--text2);margin-top:4px;text-align:right">'+(isDone?'Tamamlandı!':prog.days+'/'+ch.duration+' gün ('+pct+'%)')+'</div>';
+    }
+    h+='</div>';
+  });
+  return h+'</div>';
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  DİYET PRESETLERİ — HAZIR DİYET PLANLARI
+// ══════════════════════════════════════════════════════════════════
+var DIET_PRESETS=[
+  {id:'balanced',name:'⚖️ Dengeli Beslenme',desc:'Standart makro oranları',macros:{prot:25,carb:50,fat:25},calAdj:0},
+  {id:'lowcarb',name:'🥩 Düşük Karbonhidrat',desc:'Karbı azalt, protein ve yağı artır',macros:{prot:35,carb:25,fat:40},calAdj:0},
+  {id:'keto',name:'🥑 Ketojenik',desc:'Çok düşük karb, yüksek yağ',macros:{prot:25,carb:5,fat:70},calAdj:0},
+  {id:'highprot',name:'💪 Yüksek Protein',desc:'Kas yapımı için protein odaklı',macros:{prot:40,carb:35,fat:25},calAdj:200},
+  {id:'mediterranean',name:'🫒 Akdeniz Diyeti',desc:'Zeytinyağı, sebze, balık ağırlıklı',macros:{prot:20,carb:45,fat:35},calAdj:0},
+  {id:'volumetric',name:'🥗 Hacim Diyeti',desc:'Düşük yoğunluklu, doyurucu yiyecekler',macros:{prot:25,carb:55,fat:20},calAdj:-300},
+  {id:'intermittent',name:'⏰ Aralıklı Oruç (16:8)',desc:'8 saatlik yeme penceresi',macros:{prot:30,carb:40,fat:30},calAdj:-200,ifProtocol:'16:8'},
+  {id:'bulking',name:'🏋️ Bulk (Kilo Alma)',desc:'Kalori fazlası ile kas kütlesi artışı',macros:{prot:30,carb:45,fat:25},calAdj:500},
+  {id:'cutting',name:'✂️ Cut (Yağ Yakma)',desc:'Kontrollü kalori açığı, yüksek protein',macros:{prot:40,carb:30,fat:30},calAdj:-500},
+  {id:'vegan',name:'🌱 Vegan',desc:'Bitkisel kaynaklı beslenme',macros:{prot:20,carb:55,fat:25},calAdj:0}
+];
+
+function applyDietPreset(presetId){
+  var preset=DIET_PRESETS.find(function(p){return p.id===presetId});
+  if(!preset){showToast('Preset bulunamadı');return}
+  var profile=JSON.parse(localStorage.getItem('fs_profile')||'{}');
+  var baseCal=parseInt(profile.calTarget)||2000;
+  var newCal=baseCal+preset.calAdj;
+  // Makroları gram olarak hesapla
+  var protG=Math.round((newCal*preset.macros.prot/100)/4);
+  var carbG=Math.round((newCal*preset.macros.carb/100)/4);
+  var fatG=Math.round((newCal*preset.macros.fat/100)/9);
+  // Hedefleri güncelle
+  profile.calTarget=newCal;
+  profile.protTarget=protG;
+  profile.carbTarget=carbG;
+  profile.fatTarget=fatG;
+  profile.dietPreset=presetId;
+  localStorage.setItem('fs_profile',JSON.stringify(profile));
+  // Global değişkenleri güncelle
+  if(typeof dailyTarget!=='undefined')dailyTarget=newCal;
+  if(typeof protTarget!=='undefined')protTarget=protG;
+  if(typeof carbTarget!=='undefined')carbTarget=carbG;
+  if(typeof fatTarget!=='undefined')fatTarget=fatG;
+  // IF protokolü varsa uygula
+  if(preset.ifProtocol){
+    var ifData={protocol:preset.ifProtocol,eatStart:'12:00',eatEnd:'20:00',days:[1,2,3,4,5,6,0]};
+    localStorage.setItem('fs_if',JSON.stringify(ifData));
+  }
+  if(typeof renderMeals==='function')renderMeals();
+  if(typeof updateHeader==='function')updateHeader();
+  // Goals modal inputlarını güncelle
+  var gci=document.getElementById('goalCalInput');if(gci)gci.value=newCal;
+  var gpi=document.getElementById('gram-prot');if(gpi)gpi.value=protG;
+  var gki=document.getElementById('gram-carb');if(gki)gki.value=carbG;
+  var gfi=document.getElementById('gram-fat');if(gfi)gfi.value=fatG;
+  if(typeof onGramChange==='function')onGramChange();
+  // Preset panelini yenile
+  var dpg=document.getElementById('dietPresetGoalPanel');
+  if(dpg)dpg.innerHTML=renderDietPresetsHTML();
+  var dpc=document.getElementById('dietPresetsContainer');
+  if(dpc)dpc.innerHTML=renderDietPresetsHTML();
+  showToast('✅ '+preset.name+' uygulandı! ('+newCal+' kcal)');
+}
+
+function renderDietPresetsHTML(){
+  var profile=JSON.parse(localStorage.getItem('fs_profile')||'{}');
+  var activePreset=profile.dietPreset||'';
+  var h='<div style="display:flex;flex-direction:column;gap:8px">';
+  DIET_PRESETS.forEach(function(p){
+    var isActive=p.id===activePreset;
+    var cal=(parseInt(profile.calTarget)||2000)+p.calAdj;
+    h+='<div style="background:var(--glass);border:1.5px solid '+(isActive?'var(--accent)':'var(--border)')+';border-radius:12px;padding:12px;cursor:pointer;transition:all .2s" onclick="applyDietPreset(\''+p.id+'\')">';
+    h+='<div style="display:flex;align-items:center;gap:8px"><div style="flex:1"><div style="font-size:.84rem;font-weight:700">'+p.name+(isActive?' ✅':'')+'</div><div style="font-size:.68rem;color:var(--text2);margin-top:2px">'+p.desc+'</div></div></div>';
+    h+='<div style="display:flex;gap:6px;margin-top:8px;font-size:.65rem;font-weight:700">';
+    h+='<span style="padding:3px 8px;border-radius:6px;background:rgba(255,122,122,.1);color:#ff7a7a">P '+p.macros.prot+'%</span>';
+    h+='<span style="padding:3px 8px;border-radius:6px;background:rgba(34,211,238,.1);color:#22d3ee">K '+p.macros.carb+'%</span>';
+    h+='<span style="padding:3px 8px;border-radius:6px;background:rgba(255,204,85,.1);color:#ffcc55">Y '+p.macros.fat+'%</span>';
+    h+='<span style="padding:3px 8px;border-radius:6px;background:var(--bg);color:var(--text2)">~'+cal+' kcal</span>';
+    h+='</div></div>';
+  });
+  return h+'</div>';
 }
 
 function getLocalAIReply(msg){

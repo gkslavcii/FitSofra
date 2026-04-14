@@ -703,7 +703,7 @@ function confirmPortion(){
   const r=g/100;
   const qty=sanitizeNumber(document.getElementById('qtyInput').value, 0.1, 100, 1);
   const unitLabel=currentUnit!=='gram'?` (${qty>1?qty+'x ':''}${currentUnit})`:'';
-  const food={name:pendingFood.name,emoji:pendingFood.emoji,cal:pendingFood.cal*r,prot:pendingFood.prot*r,carb:pendingFood.carb*r,fat:pendingFood.fat*r,portionUsed:g};
+  const food={name:pendingFood.name,emoji:pendingFood.emoji,cal:pendingFood.cal*r,prot:pendingFood.prot*r,carb:pendingFood.carb*r,fat:pendingFood.fat*r,fiber:Math.round((pendingFood.fiber||0)*r*10)/10,sodium:Math.round((pendingFood.sodium||0)*r),portionUsed:g};
   const savedMealId=currentMealId;
   const savedFoodName=food.name;
   const savedEmoji=food.emoji||'🍽️';
@@ -881,6 +881,29 @@ function renderRecentFoods(){
     const ago=getTimeAgo(f.time);
     return`<div class="food-db-item" onclick="selectFreqFood('${f.name.replace(/'/g,"\\'")}')"><span class="fdb-emoji">${f.emoji}</span><div class="fdb-info"><div class="fdb-name">${escHTML(f.name)}</div><div class="fdb-detail">P:${Math.round(f.prot)}g K:${Math.round(f.carb)}g Y:${Math.round(f.fat)}g • ${ago}</div></div><div class="fdb-cal">${Math.round(f.cal)}</div></div>`;
   }).join('')+'<div style="text-align:center;padding:8px"><button onclick="if(confirm(\'Geçmiş temizlensin mi?\')){localStorage.removeItem(\'fs_food_recent\');renderRecentFoods()}" style="font-family:DM Sans;font-size:.72rem;color:var(--red);background:none;border:1px solid var(--red);border-radius:6px;padding:4px 12px;cursor:pointer">🗑️ Geçmişi Temizle</button></div>';
+}
+
+function renderFavFoods(){
+  var favNames=typeof getFavFoods==='function'?getFavFoods():JSON.parse(localStorage.getItem('fs_fav_foods')||'[]');
+  var q=(document.getElementById('foodSearch').value||'').toLowerCase().trim();
+  var list=document.getElementById('favList');
+  if(!list)return;
+  if(!favNames.length){list.innerHTML='<div style="padding:20px;text-align:center;color:var(--text2);font-size:.82rem">Henüz favori yemeğin yok ❤️<br><span style="font-size:.72rem">Yemek veya tarif detayında kalp ikonuna bas!</span></div>';return}
+  var items=[];
+  favNames.forEach(function(name){
+    var f=FOOD_DB.find(function(d){return d.name===name});
+    if(f)items.push(f);
+    else items.push({name:name,emoji:'🍽️',cal:0,prot:0,carb:0,fat:0});
+  });
+  if(q)items=items.filter(function(f){return f.name.toLowerCase().includes(q)});
+  list.innerHTML=items.map(function(f){
+    return'<div class="food-db-item" style="position:relative" onclick="selectFreqFood(\''+f.name.replace(/'/g,"\\'")+'\')">'
+      +'<span class="fdb-emoji">'+(f.emoji||'🍽️')+'</span>'
+      +'<div class="fdb-info"><div class="fdb-name">'+escHTML(f.name)+'</div><div class="fdb-detail">P:'+Math.round(f.prot)+'g K:'+Math.round(f.carb)+'g Y:'+Math.round(f.fat)+'g</div></div>'
+      +'<div class="fdb-cal">'+Math.round(f.cal)+'</div>'
+      +'<button onclick="event.stopPropagation();toggleFavFood(\''+f.name.replace(/'/g,"\\'")+'\');renderFavFoods()" style="background:none;border:none;font-size:1rem;cursor:pointer;padding:2px 4px;flex-shrink:0">❤️</button>'
+      +'</div>';
+  }).join('')+'<div style="text-align:center;padding:8px"><button onclick="if(confirm(\'Tüm favoriler temizlensin mi?\')){localStorage.removeItem(\'fs_fav_foods\');renderFavFoods()}" style="font-family:DM Sans;font-size:.72rem;color:var(--red);background:none;border:1px solid var(--red);border-radius:6px;padding:4px 12px;cursor:pointer">🗑️ Favorileri Temizle</button></div>';
 }
 
 function selectFreqFood(name){

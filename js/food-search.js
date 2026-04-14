@@ -249,22 +249,58 @@ function scrollCarouselTo(idx){
 }
 
 var _openRecipeIdx = -1;
+var _recipeScale = 1; // Tarif ölçekleme çarpanı
+
+function _scaleAmount(amountStr, scale) {
+  if (!amountStr || scale === 1) return amountStr;
+  return amountStr.replace(/(\d+\.?\d*)/g, function(m) {
+    var n = parseFloat(m) * scale;
+    return n % 1 === 0 ? String(n) : n.toFixed(1).replace(/\.0$/, '');
+  });
+}
+
+function setRecipeScale(s) {
+  _recipeScale = s;
+  var r = RECIPES[_openRecipeIdx]; if (!r) return;
+  var ingList = r.ingredients || r.ing || [];
+  document.getElementById('rdPanelMalz').innerHTML = buildIngredientList(ingList, _recipeScale);
+  // Makro güncelle
+  var calEl = document.getElementById('rdScaleCal');
+  var protEl = document.getElementById('rdScaleProt');
+  var carbEl = document.getElementById('rdScaleCarb');
+  var fatEl = document.getElementById('rdScaleFat');
+  if (calEl) calEl.textContent = Math.round((r.cal || 0) * s);
+  if (protEl) protEl.textContent = Math.round((r.prot || 0) * s) + 'g';
+  if (carbEl) carbEl.textContent = Math.round((r.carb || 0) * s) + 'g';
+  if (fatEl) fatEl.textContent = Math.round((r.fat || 0) * s) + 'g';
+  // Buton aktifliği
+  document.querySelectorAll('.scale-btn').forEach(function(b) {
+    b.style.background = parseFloat(b.dataset.s) === s ? 'var(--accent)' : 'var(--glass)';
+    b.style.color = parseFloat(b.dataset.s) === s ? '#fff' : 'var(--text2)';
+  });
+}
 
 function openRecipeDetail(idx){
   const r=RECIPES[idx];if(!r)return;
   _openRecipeIdx=idx;
+  _recipeScale=1;
   trackRecipeView(r.name);
   const score=getRecipeScore(r);
   const sColor=getScoreColor(score);
   const sLabel=getScoreLabel(score);
   const catLabels={fit:'💪 Fit',klasik:'🍲 Klasik',hizli:'⚡ Pratik',vegan:'🌱 Vegan',sebze:'🥬 Sebze',corba:'🍲 Çorba',tatli:'🍮 Tatlı',meze:'🫒 Meze'};
   const tags=(r.tags||[]).map(t=>({kolay:'⭐ Kolay',hizli:'⚡ Pratik',vejetaryen:'🌿 Vejetaryen',vegan:'🌱 Vegan',proteinli:'💪 Proteinli',ekonomik:'💰 Ekonomik',saglikli:'✅ Sağlıklı'}[t]||t)).join(' · ');
+  const ingList = r.ingredients || r.ing || [];
 
   // Makro bar yüzdeleri
   const totalMacroCal=((r.prot||0)*4)+((r.carb||0)*4)+((r.fat||0)*9);
   const pPct=totalMacroCal>0?Math.round(((r.prot||0)*4/totalMacroCal)*100):0;
   const cPct=totalMacroCal>0?Math.round(((r.carb||0)*4/totalMacroCal)*100):0;
   const fPct=totalMacroCal>0?Math.round(((r.fat||0)*9/totalMacroCal)*100):0;
+
+  // Favori kontrolü
+  var favs=JSON.parse(localStorage.getItem('fs_fav_foods')||'[]');
+  var isFav=favs.indexOf(r.name)>=0;
 
   const html=`<div class="modal-handle"></div>
     ${r.img?`<div style="margin:-16px -20px 14px;border-radius:26px 26px 0 0;overflow:hidden;max-height:200px;cursor:pointer;position:relative" onclick="openRecipePhoto('${r.img.replace(/'/g,"\\'")}')">
@@ -279,6 +315,7 @@ function openRecipeDetail(idx){
         <div style="font-size:.72rem;color:var(--text2)">${escHTML(r.desc||'')}</div>
         ${tags?`<div style="font-size:.64rem;color:var(--text2);margin-top:3px">${tags}</div>`:''}
       </div>
+      <button onclick="toggleFavFood('${escHTML(r.name)}',this)" style="background:none;border:none;font-size:1.4rem;cursor:pointer;padding:4px;flex-shrink:0" title="Favorilere ekle">${isFav?'❤️':'🤍'}</button>
     </div>
 
     <!-- Skor ve özet bilgiler -->
@@ -289,7 +326,7 @@ function openRecipeDetail(idx){
       </div>
       <div style="flex:1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">
         <div style="text-align:center;padding:8px 4px;background:var(--glass);border-radius:10px;border:1px solid var(--border)">
-          <div style="font-weight:800;color:var(--accent);font-size:.95rem">${r.cal||'—'}</div>
+          <div id="rdScaleCal" style="font-weight:800;color:var(--accent);font-size:.95rem">${r.cal||'—'}</div>
           <div style="font-size:.56rem;color:var(--text2);font-weight:600">kcal</div>
         </div>
         <div style="text-align:center;padding:8px 4px;background:var(--glass);border-radius:10px;border:1px solid var(--border)">
@@ -297,9 +334,17 @@ function openRecipeDetail(idx){
           <div style="font-size:.56rem;color:var(--text2);font-weight:600">dakika</div>
         </div>
         <div style="text-align:center;padding:8px 4px;background:var(--glass);border-radius:10px;border:1px solid var(--border)">
-          <div style="font-weight:800;color:var(--text);font-size:.95rem">👥 ${r.serv||1}</div>
+          <div style="font-weight:800;color:var(--text);font-size:.95rem">👥 ${r.serv||'1 porsiyon'}</div>
           <div style="font-size:.56rem;color:var(--text2);font-weight:600">kişilik</div>
         </div>
+      </div>
+    </div>
+
+    <!-- Ölçekleme -->
+    <div style="display:flex;align-items:center;gap:6px;margin-bottom:12px;background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:8px 10px">
+      <span style="font-size:.72rem;font-weight:700;color:var(--text2);flex-shrink:0">📐 Porsiyon:</span>
+      <div style="display:flex;gap:4px;flex:1;justify-content:center">
+        ${[0.5,1,2,3,4].map(function(s){return '<button class="scale-btn" data-s="'+s+'" onclick="setRecipeScale('+s+')" style="padding:5px 10px;border-radius:8px;border:1px solid var(--border);font-size:.72rem;font-weight:700;cursor:pointer;font-family:var(--font,system-ui);transition:all .2s;'+(s===1?'background:var(--accent);color:#fff':'background:var(--glass);color:var(--text2)')+'">'+s+'x</button>';}).join('')}
       </div>
     </div>
 
@@ -311,9 +356,9 @@ function openRecipeDetail(idx){
         <div style="width:${fPct}%;background:#ffcc55;transition:width .5s"></div>
       </div>
       <div style="display:flex;justify-content:space-between;font-size:.7rem;font-weight:700">
-        <span style="color:#ff7a7a">P ${r.prot||0}g <span style="opacity:.6;font-size:.6rem">${pPct}%</span></span>
-        <span style="color:#22d3ee">K ${r.carb||0}g <span style="opacity:.6;font-size:.6rem">${cPct}%</span></span>
-        <span style="color:#ffcc55">Y ${r.fat||0}g <span style="opacity:.6;font-size:.6rem">${fPct}%</span></span>
+        <span style="color:#ff7a7a">P <span id="rdScaleProt">${r.prot||0}g</span> <span style="opacity:.6;font-size:.6rem">${pPct}%</span></span>
+        <span style="color:#22d3ee">K <span id="rdScaleCarb">${r.carb||0}g</span> <span style="opacity:.6;font-size:.6rem">${cPct}%</span></span>
+        <span style="color:#ffcc55">Y <span id="rdScaleFat">${r.fat||0}g</span> <span style="opacity:.6;font-size:.6rem">${fPct}%</span></span>
       </div>
     </div>
 
@@ -325,7 +370,7 @@ function openRecipeDetail(idx){
 
     <!-- Malzemeler paneli -->
     <div id="rdPanelMalz" style="margin-bottom:14px">
-      ${buildIngredientList(r.ing||[])}
+      ${buildIngredientList(ingList, 1)}
     </div>
 
     <!-- Yapılış paneli -->
@@ -402,16 +447,38 @@ function buildStepsList(steps){
   +'</div>';
 }
 
-function buildIngredientList(ing){
+function buildIngredientList(ing, scale){
   if(!ing||!ing.length) return '<div style="color:var(--text2);font-size:.8rem">Malzeme bilgisi yok</div>';
+  var s=scale||1;
   return '<div style="display:flex;flex-direction:column;gap:4px">'+ing.map(function(item){
-    var ingText=typeof item==='string'?item:(item.name||'');
+    var ingName,ingAmount;
+    if(typeof item==='string'){ingName=item;ingAmount='';}
+    else if(item.item){ingName=item.item;ingAmount=item.amount||'';}
+    else{ingName=item.name||'';ingAmount=item.amount||'';}
+    var scaledAmt=ingAmount&&s!==1?_scaleAmount(ingAmount,s):ingAmount;
     return '<div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--glass);border-radius:8px;border:1px solid var(--border)">'
       +'<span style="color:var(--accent);font-size:.9rem;flex-shrink:0">•</span>'
-      +'<span style="font-size:.8rem;flex:1">'+ingText+'</span>'
+      +'<span style="font-size:.8rem;flex:1">'+escHTML(ingName)+'</span>'
+      +(scaledAmt?'<span style="font-size:.7rem;color:var(--text2);font-weight:600;flex-shrink:0">'+escHTML(scaledAmt)+'</span>':'')
       +'</div>';
   }).join('')+'</div>';
 }
+
+// ══════════════════════════════════════════════════════════════════
+//  FAVORİ YEMEKLERİ SİSTEMİ
+// ══════════════════════════════════════════════════════════════════
+function toggleFavFood(name, btn){
+  var favs=JSON.parse(localStorage.getItem('fs_fav_foods')||'[]');
+  var idx=favs.indexOf(name);
+  if(idx>=0){favs.splice(idx,1);if(btn)btn.textContent='🤍';if(typeof showToast==='function')showToast('💔 Favorilerden çıkarıldı');}
+  else{favs.push(name);if(btn)btn.textContent='❤️';if(typeof showToast==='function')showToast('❤️ Favorilere eklendi');}
+  localStorage.setItem('fs_fav_foods',JSON.stringify(favs));
+}
+function isFavFood(name){
+  var favs=JSON.parse(localStorage.getItem('fs_fav_foods')||'[]');
+  return favs.indexOf(name)>=0;
+}
+function getFavFoods(){return JSON.parse(localStorage.getItem('fs_fav_foods')||'[]');}
 function generateFriendCode(uid){
 
   return uid.slice(0,4).toUpperCase()+'-'+uid.slice(4,8).toUpperCase();
@@ -1246,7 +1313,16 @@ function startVoiceSearch(){
     let transcript='';
     for(let i=0;i<e.results.length;i++)transcript+=e.results[i][0].transcript;
     document.getElementById('foodSearch').value=transcript;
-    if(e.results[0].isFinal){handleSearch();showToast('✅ "'+transcript+'" aranıyor...')}
+    if(e.results[0].isFinal){
+      var parsed=parseVoiceInput(transcript);
+      if(parsed&&parsed.length){
+        parsed.forEach(function(p){_addParsedVoiceFood(p)});
+        showToast('✅ '+parsed.map(function(p){return p.name}).join(', ')+' eklendi!');
+        setTimeout(function(){if(document.getElementById('addFoodModal').classList.contains('show'))closeModal()},600);
+      } else {
+        handleSearch();showToast('🔍 "'+transcript+'" aranıyor...');
+      }
+    }
   };
   voiceRecognition.onerror=function(e){
     document.getElementById('voiceBtn').style.background='var(--purple)';
