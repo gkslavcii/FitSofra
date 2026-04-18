@@ -1246,6 +1246,82 @@ async function reuploadSeedRecipes(){
   }
 }
 
+// ═══════ GENİŞLETİLMİŞ TÜRK MUTFAĞI DB YÜKLEME ═══════
+function _getExtendedRecipes(){return window.TURKISH_RECIPES_DB||[];}
+
+async function uploadExtendedRecipes(cat){
+  var st=document.getElementById('extDbStatus');
+  if(!db){st.textContent='❌ Firebase bağlantısı yok';return;}
+  var allR=_getExtendedRecipes();
+  if(!allR.length){st.textContent='❌ turkish-recipes-db.js yüklenemedi';return;}
+  var recipes=cat==='all'?allR:allR.filter(function(r){return r.cat===cat;});
+  if(!recipes.length){st.textContent='❌ Bu kategoride tarif yok';return;}
+  st.textContent='🔍 Mevcut tarifler kontrol ediliyor...';
+  try{
+    var snap=await db.collection('recipes').get();
+    var existing=snap.docs.map(function(d){return d.data().name;});
+    var toAdd=recipes.filter(function(r){return !existing.includes(r.name);});
+    if(!toAdd.length){st.textContent='✅ Bu tarifler zaten yüklü ('+existing.length+' tarif mevcut)';return;}
+    st.textContent='📦 '+toAdd.length+' tarif yükleniyor...';
+    var saved=0;
+    for(var i=0;i<toAdd.length;i++){
+      var r=Object.assign({},toAdd[i]);
+      // serv stringini sayıya çevir (admin uyumluluğu)
+      if(typeof r.serv==='string')r.serv=parseFloat(r.serv)||1;
+      // ingredients → ing formatına çevir (admin uyumluluğu)
+      if(r.ingredients&&!r.ing){
+        r.ing=r.ingredients.map(function(x){return typeof x==='string'?x:(x.amount?x.amount+' ':'')+x.item;});
+        delete r.ingredients;
+      }
+      r.createdAt=Date.now();
+      r.source='turkish-db';
+      await db.collection('recipes').add(r);
+      saved++;
+      st.textContent='📦 '+saved+'/'+toAdd.length+' yüklendi...';
+    }
+    st.textContent='✅ '+saved+' tarif başarıyla yüklendi! (toplam: '+(existing.length+saved)+')';
+    loadRecipeList();
+  }catch(e){
+    st.textContent='❌ Hata: '+e.message;
+  }
+}
+
+async function reuploadExtendedRecipes(){
+  if(!confirm('Genişletilmiş DB tarifleri silinip yeniden yüklenecek. Emin misin?'))return;
+  var st=document.getElementById('extDbStatus');
+  var allR=_getExtendedRecipes();
+  if(!allR.length){st.textContent='❌ turkish-recipes-db.js yüklenemedi';return;}
+  st.textContent='🗑️ Eski tarifler siliniyor...';
+  try{
+    var snap=await db.collection('recipes').get();
+    var dbNames=allR.map(function(r){return r.name;});
+    var toDelete=snap.docs.filter(function(d){return dbNames.includes(d.data().name)||d.data().source==='turkish-db';});
+    for(var i=0;i<toDelete.length;i++){
+      await toDelete[i].ref.delete();
+      st.textContent='🗑️ '+(i+1)+'/'+toDelete.length+' silindi...';
+    }
+    st.textContent='📦 Tarifler yeniden yükleniyor...';
+    var saved=0;
+    for(var j=0;j<allR.length;j++){
+      var r=Object.assign({},allR[j]);
+      if(typeof r.serv==='string')r.serv=parseFloat(r.serv)||1;
+      if(r.ingredients&&!r.ing){
+        r.ing=r.ingredients.map(function(x){return typeof x==='string'?x:(x.amount?x.amount+' ':'')+x.item;});
+        delete r.ingredients;
+      }
+      r.createdAt=Date.now();
+      r.source='turkish-db';
+      await db.collection('recipes').add(r);
+      saved++;
+      st.textContent='📦 '+saved+'/'+allR.length+' yüklendi...';
+    }
+    st.textContent='✅ '+saved+' tarif yeniden yüklendi!';
+    loadRecipeList();
+  }catch(e){
+    st.textContent='❌ Hata: '+e.message;
+  }
+}
+
 // ═══════ SPOONACULAR + ÜCRETSİZ ÇEVİRİ ═══════
 // Spoonacular API key artık Cloud Functions'da (Firestore config/spoonacular)
 // Client-side'da key tutulmaz — tüm istekler spoonacularSearch proxy'si üzerinden yapılır
