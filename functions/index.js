@@ -1065,3 +1065,279 @@ exports.setApiKey = functions.https.onCall(async (data, context) => {
 
   return { success: true, service };
 });
+
+
+// ═══════════════════════════════════════════
+//  SOFRA — Davet kodu oluşturma ve kabul etme
+// ═══════════════════════════════════════════
+// Aile/ev paylaşımlı menü & market listesi için üyelik akışı.
+// Kod: 6 karakter, karıştırılmayan alfabe (I/O/0/1 yok), 30 gün geçerli.
+// Tek kullanımlık — ikinci kişi için yeni kod üretilir.
+
+const SOFRA_CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // 32 karakter
+const SOFRA_CODE_LENGTH = 6;
+const SOFRA_INVITE_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 gün
+const SOFRA_MAX_MEMBERS = 10;
+
+function _generateSofraCode() {
+  let code = '';
+  for (let i = 0; i < SOFRA_CODE_LENGTH; i++) {
+    code += SOFRA_CODE_CHARS.charAt(Math.floor(Math.random() * SOFRA_CODE_CHARS.length));
+  }
+  return code;
+}
+
+exports.createSofraInvite = functions.https.onCall(async (data, context) => {
+  if (!context.auth) {
+    throw new functions.https.HttpsError('unauthenticated', 'Giriş yapmalısınız');
+  }
+  const uid = context.auth.uid;
+  rateLimit(uid, 'sofraInvite', 5);
+
+  const sofraId = data && data.sofraId;
+  if (!sofraId || typeof sofraId !== 'string') {
+    throw new functions.https.HttpsError('invalid-argument', 'sofraId gerekli');
+  }
+
+  const db = admin.firestore();
+  const sofraRef = db.collection('sofras').doc(sofraId);
+  const sofraSnap = await sofraRef.get();
+  if (!sofraSnap.exists) {
+    throw new functions.https.HttpsError('not-found', 'Sofra bulunamadı');
+  }
+  const sofra = sofraSnap.data();
+  if (!sofra.memberIds || !sofra.memberIds.includes(uid)) {
+    throw new functions.https.HttpsError('permission-denied', 'Bu Sofra\'nın üyesi değilsin');
+  }
+  if ((sofra.memberIds || []).length >= SOFRA_MAX_MEMBERS) {
+    throw new functions.https.HttpsError('failed-precondition',
+      'Sofra üye limiti dolu (' + SOFRA_MAX_MEMBERS + ' üye)');
+  }
+
+  // Benzersiz kod üret (çakışma durumunda 10 deneme)
+  let code = null;
+  for (let i = 0; i < 10; i++) {
+    const candidate = _generateSofraCode();
+    const existing = await db.collection('invites').doc(candidate).get();
+    if (!existing.exists) { code = candidate; break; }
+  }
+  if (!code) {
+    throw new functions.https.HttpsError('internal', 'Kod üretilemedi, tekrar dene');
+  }
+
+  const now = Date.now();
+  await db.collection('invites').doc(code).set({
+    sofraId: sofraId,
+    sofraName: sofra.name || '',
+    invitedBy: uid,
+    createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    expiresAt: now + SOFRA_INVITE_TTL_MS,
+    usedBy: null,
+    usedAt: null
+  });
+
+  return {
+    code: code,
+    sofraName: sofra.name || '',
+    expiresAt: now + SOFRA_INVITE_TTL_MS
+  };
+});
+
+exports.acceptSofraInvite = functions.https.onCall(async (data, context) => {
+  if (!context.auth) {
+    throw new functions.https.HttpsError('unauthenticated', 'Giriş yapmalısınız');
+  }
+  const uid = context.auth.uid;
+  rateLimit(uid, 'sofraAccept', 5);
+
+  const rawCode = data && data.code;
+  if (!rawCode || typeof rawCode !== 'string') {
+    throw new functions.https.HttpsError('invalid-argument', 'Davet kodu gerekli');
+  }
+  const code = rawCode.toUpperCase().replace(/[^A-Z0-9]/g, '').substring(0, 12);
+  if (code.length !== SOFRA_CODE_LENGTH) {
+    throw new functions.https.HttpsError('invalid-argument',
+      'Kod ' + SOFRA_CODE_LENGTH + ' karakter olmalı');
+  }
+
+  const token = context.auth.token || {};
+  const userName = String(token.name || token.email || 'Üye').substring(0, 30);
+
+  const db = admin.firestore();
+  const inviteRef = db.collection('invites').doc(code);
+
+  const result = await db.runTransaction(async (tx) => {
+    const inviteSnap = await tx.get(inviteRef);
+    if (!inviteSnap.exists) {
+      throw new functions.https.HttpsError('not-found', 'Davet kodu geçersiz');
+    }
+    const inv = inviteSnap.data();
+    if (inv.usedBy) {
+      throw new functions.https.HttpsError('already-exists', 'Bu kod kullanılmış');
+    }
+    if (inv.expiresAt && Date.now() > inv.expiresAt) {
+      throw new functions.https.HttpsError('deadline-exceeded', 'Davet süresi dolmuş');
+    }
+
+    const sofraRef = db.collection('sofras').doc(inv.sofraId);
+    const sofraSnap = await tx.get(sofraRef);
+    if (!sofraSnap.exists) {
+      throw new functions.https.HttpsError('not-found', 'Sofra artık mevcut değil');
+    }
+    const sofra = sofraSnap.data();
+    if (sofra.memberIds && sofra.memberIds.includes(uid)) {
+      throw new functions.https.HttpsError('already-exists', 'Zaten bu Sofra\'nın üyesisin');
+    }
+    if ((sofra.memberIds || []).length >= SOFRA_MAX_MEMBERS) {
+      throw new functions.https.HttpsError('failed-precondition', 'Sofra üye limiti dolu');
+    }
+
+    const memberUpdate = {};
+    memberUpdate['members.' + uid] = {
+      role: 'member',
+      name: userName,
+      joinedAt: Date.now()
+    };
+    memberUpdate.memberIds = admin.firestore.FieldValue.arrayUnion(uid);
+
+    tx.update(sofraRef, memberUpdate);
+    tx.update(inviteRef, {
+      usedBy: uid,
+      usedAt: admin.firestore.FieldValue.serverTimestamp()
+    });
+
+    return {
+      sofraId: inv.sofraId,
+      sofraName: sofra.name || ''
+    };
+  });
+
+  return result;
+});
+
+
+// ═══════════════════════════════════════════
+//  SOFRA — Push bildirimleri (Faz 2)
+// ═══════════════════════════════════════════
+// Plan veya yeni üye değişikliklerinde diğer üyelere FCM push.
+// Kullanıcılar ayarlardan kapatabilir: users/{uid}.sofraPushDisabled === true
+
+// Yardımcı: verilen uid listesine push gönder (editör hariç)
+async function _sofraPushToMembers(memberIds, editorUid, payload) {
+  const db = admin.firestore();
+  const others = (memberIds || []).filter(u => u && u !== editorUid);
+  if (!others.length) return { sent: 0 };
+
+  // Token'ları topla (users/{uid})
+  const snaps = await Promise.all(others.map(uid => db.collection('users').doc(uid).get()));
+  const tokens = [];
+  snaps.forEach(s => {
+    if (!s.exists) return;
+    const d = s.data() || {};
+    if (d.sofraPushDisabled === true) return;
+    if (d.fcmToken) tokens.push(d.fcmToken);
+  });
+  if (!tokens.length) return { sent: 0 };
+
+  const message = {
+    notification: { title: payload.title, body: payload.body },
+    data: {
+      type: payload.type || 'sofra',
+      sofraId: payload.sofraId || '',
+      title: payload.title,
+      body: payload.body
+    },
+    tokens,
+    webpush: {
+      notification: {
+        icon: 'https://fitsofra-51176.web.app/icon-192.png',
+        badge: 'https://fitsofra-51176.web.app/badge-72.png',
+        tag: 'sofra-' + (payload.sofraId || 'x'), // Aynı sofra bildirimleri birbirinin üstüne yazsın
+        requireInteraction: false
+      },
+      fcmOptions: { link: 'https://fitsofra-51176.web.app/planner.html' }
+    }
+  };
+
+  try {
+    const res = await admin.messaging().sendEachForMulticast(message);
+    // Geçersiz token'ları temizle
+    res.responses.forEach((resp, idx) => {
+      if (!resp.success && resp.error &&
+        (resp.error.code === 'messaging/invalid-registration-token' ||
+         resp.error.code === 'messaging/registration-token-not-registered')) {
+        db.collection('users').where('fcmToken', '==', tokens[idx]).get()
+          .then(snap => snap.forEach(doc => doc.ref.update({ fcmToken: null })))
+          .catch(() => {});
+      }
+    });
+    return { sent: res.successCount || 0, failed: res.failureCount || 0 };
+  } catch (e) {
+    console.error('[sofraPush] send error', e);
+    return { sent: 0, error: e.message };
+  }
+}
+
+// TRIGGER: Plan yazıldığında
+exports.onSofraPlanWrite = functions.firestore
+  .document('sofras/{sofraId}/plans/{planId}')
+  .onWrite(async (change, context) => {
+    if (!change.after.exists) return null; // Silme → sessiz
+    const after = change.after.data() || {};
+    const editorUid = after.updatedByUid || '';
+    const editorName = (after.updatedByName || 'Bir üye').substring(0, 30);
+
+    const sofraId = context.params.sofraId;
+    const planId = context.params.planId; // fs_plan_YYYY-MM-DD
+    const dateStr = (planId || '').replace(/^fs_plan_/, '');
+
+    // Sofra bilgisi
+    const sofraSnap = await admin.firestore().collection('sofras').doc(sofraId).get();
+    if (!sofraSnap.exists) return null;
+    const sofra = sofraSnap.data() || {};
+    const memberIds = sofra.memberIds || [];
+    if (memberIds.length < 2) return null; // Tek kişilik sofrada bildirim anlamsız
+
+    // Bildirim metni (kilo/kalori paylaşılmaz — sadece "bir değişiklik var")
+    const title = '🍽️ ' + (sofra.name || 'Sofra') + ' menüsü güncellendi';
+    const body = editorName + ' menüye ekleme yaptı' + (dateStr ? ' (' + dateStr + ')' : '');
+
+    return _sofraPushToMembers(memberIds, editorUid, {
+      title, body, type: 'sofra-plan', sofraId
+    });
+  });
+
+// TRIGGER: Sofra dokümanı güncellendi (yeni üye katılımı)
+exports.onSofraMemberChange = functions.firestore
+  .document('sofras/{sofraId}')
+  .onUpdate(async (change, context) => {
+    const before = change.before.data() || {};
+    const after = change.after.data() || {};
+    const beforeIds = before.memberIds || [];
+    const afterIds = after.memberIds || [];
+
+    // Yeni eklenenleri bul
+    const added = afterIds.filter(u => beforeIds.indexOf(u) < 0);
+    if (!added.length) return null;
+
+    const sofraId = context.params.sofraId;
+    const newUid = added[0];
+
+    // Yeni üyenin adı
+    let newName = 'Yeni üye';
+    try {
+      const uSnap = await admin.firestore().collection('users').doc(newUid).get();
+      if (uSnap.exists) {
+        const ud = uSnap.data() || {};
+        newName = (ud.displayName || ud.name || ud.email || 'Yeni üye').substring(0, 30);
+      }
+    } catch (_) {}
+
+    const title = '👋 ' + (after.name || 'Sofra') + ' yeni üye';
+    const body = newName + ' Sofra\'ya katıldı';
+
+    // Yeni katılana bildirim gönderme — onu editör say
+    return _sofraPushToMembers(afterIds, newUid, {
+      title, body, type: 'sofra-member', sofraId
+    });
+  });
