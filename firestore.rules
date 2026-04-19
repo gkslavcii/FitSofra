@@ -205,6 +205,55 @@ service cloud.firestore {
     }
 
     // ═══════════════════════════════════════════
+    //  SOFRAS — Aile/ev paylaşımlı plan + market listesi
+    // ═══════════════════════════════════════════
+    // Sofra: birden çok kullanıcının paylaştığı haftalık menü ve market listesi.
+    // Mahremiyet: kilo/kalori/makro HİÇBİR zaman burada tutulmaz.
+
+    match /sofras/{sofraId} {
+      // Okuma: sadece üyeler
+      allow read: if isAuth()
+        && request.auth.uid in resource.data.memberIds;
+
+      // Oluşturma: kurucu kendini owner ve memberIds'e eklemiş olmalı
+      allow create: if isAuth()
+        && request.resource.data.ownerId == request.auth.uid
+        && request.resource.data.memberIds is list
+        && request.auth.uid in request.resource.data.memberIds
+        && isReasonableSize();
+
+      // Güncelleme: mevcut üyelerden biri olmalı
+      // (Davet/katılma akışı S2'de Cloud Function ile eklenecek)
+      allow update: if isAuth()
+        && request.auth.uid in resource.data.memberIds
+        && isReasonableSize();
+
+      // Silme: sadece sahibi
+      allow delete: if isAuth()
+        && resource.data.ownerId == request.auth.uid;
+
+      // Alt koleksiyonlar: plans/, shoppingLists/
+      match /{subpath=**} {
+        allow read: if isAuth()
+          && exists(/databases/$(database)/documents/sofras/$(sofraId))
+          && request.auth.uid in get(/databases/$(database)/documents/sofras/$(sofraId)).data.memberIds;
+        allow write: if isAuth()
+          && exists(/databases/$(database)/documents/sofras/$(sofraId))
+          && request.auth.uid in get(/databases/$(database)/documents/sofras/$(sofraId)).data.memberIds
+          && isReasonableSize();
+      }
+    }
+
+    // ═══════════════════════════════════════════
+    //  INVITES — Sofra davet kodları (S2: Cloud Function ile)
+    // ═══════════════════════════════════════════
+
+    match /invites/{inviteCode} {
+      // Şimdilik sadece Cloud Functions (S2'de acceptInvite fonksiyonu eklenince)
+      allow read, write: if false;
+    }
+
+    // ═══════════════════════════════════════════
     //  AI_USAGE — AI kullanım limitleri
     // ═══════════════════════════════════════════
 
