@@ -1036,43 +1036,12 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
       </div>
     </div>
 
-    <!-- SOFRA (Aile/Ev paylaşımı) -->
-    <div class="profile-card" style="animation-delay:.018s">
-      <h3 style="cursor:pointer;display:flex;justify-content:space-between;align-items:center" onclick="var p=document.getElementById('sofraPanel');p.style.display=p.style.display==='none'?'block':'none';this.querySelector('.acc-arrow').style.transform=p.style.display==='none'?'':'rotate(90deg)';if(p.style.display==='block'&&window.Sofra)window.Sofra.reload()">
-        <span>🍽️ Sofra — Aile Paylaşımı</span><span class="acc-arrow" style="transition:transform .2s;font-size:.8rem;color:var(--text2)">›</span>
+    <!-- SOFRA — Aile paylaşımı artık Topluluk sekmesinin altında (Topluluk → 🍽️ Sofra) -->
+    <div class="profile-card" style="animation-delay:.018s;cursor:pointer" onclick="if(typeof switchTab==='function'){switchTab('topluluk');setTimeout(function(){if(typeof switchCommunitySubTab==='function')switchCommunitySubTab('sofra');},200)}">
+      <h3 style="display:flex;justify-content:space-between;align-items:center">
+        <span>🍽️ Sofra — Aile Paylaşımı</span><span style="font-size:.7rem;color:var(--accent);font-weight:700">Topluluk'ta →</span>
       </h3>
-      <div id="sofraPanel" style="display:none;margin-top:12px">
-        <div id="sofraLoginPrompt" style="display:none">
-          <p style="font-size:.78rem;color:var(--text2);margin-bottom:10px">Sofra'nı ailenle / ev arkadaşlarınla paylaşmak için Google ile giriş yap.</p>
-          <button class="calc-btn" onclick="firebaseLogin()" style="background:linear-gradient(135deg,#4285f4,#356ac3)">🔑 Google ile Giriş Yap</button>
-        </div>
-        <div id="sofraContent" style="display:none">
-          <p style="font-size:.72rem;color:var(--text2);margin-bottom:10px;line-height:1.4">Paylaşımlı <strong>haftalık menü</strong> ve <strong>market listesi</strong>. Kilo, kalori ve makro hedeflerin <strong>asla paylaşılmaz</strong>.</p>
-          <div id="sofraListWrap"></div>
-          <button onclick="window.Sofra.create()" style="width:100%;padding:10px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-size:.82rem;font-weight:700;cursor:pointer;margin-top:8px;font-family:var(--font,system-ui)">+ Yeni Sofra Oluştur</button>
-
-          <div style="border-top:1px solid var(--border);margin-top:14px;padding-top:10px;display:flex;align-items:center;justify-content:space-between;gap:8px">
-            <div>
-              <div style="font-size:.75rem;font-weight:700">🔔 Sofra Bildirimleri</div>
-              <div style="font-size:.65rem;color:var(--text2)">Diğer üyeler menüye ekleme yaptığında bildirim al</div>
-            </div>
-            <label style="position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0">
-              <input type="checkbox" id="sofraPushToggle" onchange="window.Sofra&&window.Sofra.setPushPref&&window.Sofra.setPushPref(this.checked)" style="opacity:0;width:0;height:0">
-              <span id="sofraPushSlider" style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:var(--border);border-radius:24px;transition:.2s"></span>
-            </label>
-          </div>
-          <style>#sofraPushToggle:checked + #sofraPushSlider{background:var(--accent)}#sofraPushToggle:checked + #sofraPushSlider::before{transform:translateX(20px)}#sofraPushSlider::before{content:"";position:absolute;height:18px;width:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}</style>
-
-          <div style="border-top:1px solid var(--border);margin-top:14px;padding-top:12px">
-            <div style="font-size:.78rem;font-weight:700;margin-bottom:6px">📨 Davete Katıl</div>
-            <p style="font-size:.7rem;color:var(--text2);margin-bottom:8px">Sana gönderilen 6 karakterlik kodu gir.</p>
-            <div style="display:flex;gap:8px">
-              <input type="text" id="sofraJoinCodeInput" placeholder="ABC123" maxlength="8" style="flex:1;padding:10px;background:var(--glass);border:1.5px solid var(--border);border-radius:10px;font-family:monospace;font-size:.95rem;font-weight:700;text-align:center;letter-spacing:3px;color:var(--text);outline:none;text-transform:uppercase" oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'')">
-              <button onclick="window.Sofra.acceptInvite()" style="background:var(--green);color:#fff;border:none;border-radius:10px;padding:10px 16px;font-size:.82rem;font-weight:700;cursor:pointer;font-family:var(--font,system-ui)">Katıl</button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <p style="font-size:.72rem;color:var(--text2);margin-top:6px;line-height:1.4">Paylaşımlı haftalık menü, akşam yemeği önerileri ve market listesi artık <strong>Topluluk</strong> sekmesinde.</p>
     </div>
 
     <!-- ACCORDION MENÜLER -->

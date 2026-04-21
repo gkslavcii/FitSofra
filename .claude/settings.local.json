@@ -21,7 +21,10 @@
       "Bash(grep -n \"voice\\\\|microphone\\\\|speech\\\\|recognition\\\\|webkitSpeechRecognition\\\\|SpeechRecognition\" /c/Users/Windows/Desktop/FitSofra-main/js/*.js /c/Users/Windows/Desktop/FitSofra-main/index.html)",
       "Bash(wc -l /c/Users/Windows/Desktop/FitSofra-main/index.html /c/Users/Windows/Desktop/FitSofra-main/planner.html /c/Users/Windows/Desktop/FitSofra-main/js/*.js)",
       "Bash(grep -E \"cal\\\\s*:\\\\s*0[^0-9]|cal\\\\s*:\\\\s*$\" /c/Users/Windows/Desktop/FitSofra-main/js/turkish-recipes-db.js)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "WebSearch",
+      "WebFetch(domain:unsplash.com)",
+      "Bash(firebase deploy *)"
     ]
   }
 }
