@@ -298,8 +298,36 @@ function pSyncSavedPlans(){
 
 (function(){
   var today=new Date;pSD=(today.getDay()+6)%7;
+
+  // Topluluk→Sofra'dan "belirli tarihe git" flag'i
+  try{
+    var jumpIso=localStorage.getItem('fs_planner_jump_date');
+    if(jumpIso){
+      localStorage.removeItem('fs_planner_jump_date');
+      var jd=new Date(jumpIso+'T00:00:00');
+      if(!isNaN(jd)){
+        var now=new Date(); now.setHours(0,0,0,0);
+        var mon=new Date(now); mon.setDate(now.getDate()+((now.getDay()===0?-6:1-now.getDay())));
+        var weeks=Math.floor((jd-mon)/(7*24*3600*1000));
+        pWO=weeks;
+        pSD=(jd.getDay()+6)%7;
+      }
+    }
+  }catch(_){}
+
   planWeek(0);rTpls();rSaved();
   pRenderSofraSelector();
+
+  // Topluluk→Sofra'dan "alışveriş listesini aç" flag'i
+  try{
+    if(localStorage.getItem('fs_planner_open_shop')==='1'){
+      localStorage.removeItem('fs_planner_open_shop');
+      setTimeout(function(){
+        var sec=document.getElementById('pShopSec');
+        if(sec&&typeof pShop==='function'){ pShop(); sec.scrollIntoView({behavior:'smooth',block:'start'}); }
+      }, 400);
+    }
+  }catch(_){}
   // Auth hazır olduğunda Firestore'dan sync et + Sofra seçiciyi güncelle
   if(typeof auth!=='undefined'){auth.onAuthStateChanged(function(u){
     if(u){
@@ -363,10 +391,18 @@ function rDay(){
 }
 
 // Yemek ekleme — ana uygulamanın addFood modalını kullanır (DB + FatSecret API)
+// Günlük planda kullandığımız aynı modal; confirmPortion hook'u planner'a yönlendirir.
 function pAdd(mk){
   _pTgt=mk;
-  if(typeof openAddFoodModal==='function'){openAddFoodModal(mk)}
-  else{var n=prompt('Yemek adı:');if(!n)return;var c=parseInt(prompt('Kalori:'))||0;pDirect({name:n,cal:c,prot:0,carb:0,fat:0,emoji:'🍽️'},mk)}
+  if(typeof openAddFood==='function'){
+    openAddFood(mk); // Yemek ara modal'ı + currentMealId set eder
+  } else if(typeof openAddFoodModal==='function'){
+    openAddFoodModal(mk);
+  } else {
+    var n=prompt('Yemek adı:');if(!n)return;
+    var c=parseInt(prompt('Kalori:'))||0;
+    pDirect({name:n,cal:c,prot:0,carb:0,fat:0,emoji:'🍽️'},mk);
+  }
 }
 function pDirect(food,mk){
   var dt=pGet(pWO,pSD);if(!dt[mk])dt[mk]=[];
@@ -379,12 +415,40 @@ function pDirect(food,mk){
   dt[mk].push(item);
   pSet(pWO,pSD,dt);rDays();rDay();if(typeof showToast==='function')showToast('✅ '+food.name+' plana eklendi')
 }
-// Hook ana uygulamanın addFoodToMeal fonksiyonunu
+// Hook ana uygulamanın addFoodToMeal fonksiyonunu (varsa)
 ;(function(){if(typeof window.addFoodToMeal==='function'){var _o=window.addFoodToMeal;window.addFoodToMeal=function(food,mk,amt,unit){
   if(_pTgt){var m=_pTgt;_pTgt=null;var f=Object.assign({},food);
     if(amt&&amt!==100&&food.cal){var r=amt/100;f.cal=Math.round(food.cal*r);f.prot=Math.round((food.prot||0)*r);f.carb=Math.round((food.carb||0)*r);f.fat=Math.round((food.fat||0)*r)}
     f.amount=amt||100;pDirect(f,m);setTimeout(function(){switchTab('plan')},300);return}
   return _o(food,mk,amt,unit)}}})();
+
+// confirmPortion hook — modal'dan seçilen yemeği planner'a yönlendir
+;(function(){
+  if(typeof window.confirmPortion!=='function')return;
+  if(window.__pPortionHooked)return; window.__pPortionHooked=true;
+  var _orig=window.confirmPortion;
+  window.confirmPortion=function(){
+    if(!_pTgt) return _orig.apply(this,arguments);
+    // Planner aktif — pendingFood'u planner'a yaz, günlük log'a yazma
+    try{
+      if(!window.pendingFood){ _pTgt=null; return _orig.apply(this,arguments); }
+      var g=parseFloat(document.getElementById('portionInput').value)||100;
+      var r=g/100;
+      var pf=window.pendingFood;
+      var food={
+        name:pf.name, emoji:pf.emoji||'🍽️',
+        cal:Math.round(pf.cal*r), prot:Math.round((pf.prot||0)*r),
+        carb:Math.round((pf.carb||0)*r), fat:Math.round((pf.fat||0)*r),
+        amount:g
+      };
+      var mk=_pTgt; _pTgt=null;
+      pDirect(food,mk);
+      // Modal'ı kapat
+      try{ document.getElementById('portionModal').classList.remove('show'); }catch(_){}
+      window.pendingFood=null;
+    }catch(e){ _pTgt=null; return _orig.apply(this,arguments); }
+  };
+})();
 
 function pRem(mk,fi){var dt=pGet(pWO,pSD);if(dt[mk]){dt[mk].splice(fi,1);pSet(pWO,pSD,dt);rDays();rDay()}}
 function pClear(){if(!confirm(DF[pSD]+' temizlensin mi?'))return;pSet(pWO,pSD,{kahvalti:[],ogle:[],aksam:[],atistirmalik:[]});rDays();rDay();if(typeof showToast==='function')showToast('🗑️ Temizlendi')}
