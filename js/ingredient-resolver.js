@@ -48,7 +48,10 @@
   }
 
   function _findInRecipesDB(name){
-    var arr=(window.TURKISH_RECIPES_DB||[]).concat(window.RECIPES||[]);
+    // Statik DB + topluluk onaylı tarifler (window.COMMUNITY_RECIPES)
+    var arr=(window.TURKISH_RECIPES_DB||[])
+      .concat(window.RECIPES||[])
+      .concat(window.COMMUNITY_RECIPES||[]);
     if(!arr.length) return null;
     var target=_norm(name);
     for(var i=0;i<arr.length;i++){

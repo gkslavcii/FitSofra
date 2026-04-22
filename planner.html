@@ -563,9 +563,14 @@ function _renderShopList(sec){
     if(unresolvedItems&&unresolvedItems.length){
       h+='<div style="margin-top:14px;padding:10px;background:rgba(255,165,0,.08);border:1px dashed rgba(255,165,0,.4);border-radius:10px">';
       h+='<div style="font-size:.72rem;font-weight:800;color:#ffa500;margin-bottom:4px">⚠️ Tarifi Tanımsız Yemekler ('+unresolvedItems.length+')</div>';
-      h+='<div style="font-size:.62rem;color:var(--text2);margin-bottom:8px;line-height:1.5">Bu yemeklerin malzemeleri DB\'de yok. Alışveriş listesine eklenemediler. Admin panelinden tarif ekleyerek otomatik listeye geçebilirsin.</div>';
+      h+='<div style="font-size:.62rem;color:var(--text2);margin-bottom:8px;line-height:1.5">Bu yemeklerin malzemeleri tanımlı değil. 🪄 ile AI otomatik tarif oluşturur, onayından sonra topluluk tarif listesine eklenir ve herkes faydalanır.</div>';
       unresolvedItems.forEach(function(u){
-        h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;font-size:.7rem"><span>❓ '+escHTML(u.name)+'</span><span style="color:var(--text2);font-size:.64rem">×'+u.count+'</span></div>';
+        var safeName=escHTML(u.name).replace(/'/g,'\\\'');
+        h+='<div style="display:flex;align-items:center;gap:6px;padding:5px 0;font-size:.7rem;border-top:1px dashed rgba(255,165,0,.15)">'
+          +'<span style="flex:1">❓ '+escHTML(u.name)+'</span>'
+          +'<span style="color:var(--text2);font-size:.64rem">×'+u.count+'</span>'
+          +'<button onclick="_pAiRecipe(\''+safeName+'\')" style="background:var(--accent);color:#fff;border:none;border-radius:6px;padding:4px 10px;font-size:.64rem;font-weight:800;cursor:pointer;font-family:var(--font,system-ui)" title="AI ile tarif oluştur">🪄 Tarif</button>'
+          +'</div>';
       });
       h+='</div>';
     }
@@ -578,6 +583,26 @@ function _renderShopList(sec){
   }
   h+='<button onclick="pShopCopy()" style="width:100%;margin-top:10px;padding:10px;background:var(--glass);border:1px solid var(--border);border-radius:10px;font-size:.78rem;font-weight:700;color:var(--text);cursor:pointer;font-family:var(--font,system-ui)">📋 Kopyala</button></div>';
   sec.innerHTML=h;sec.style.display='block'}
+
+// AI tarif üretimi (unresolved yemek için)
+function _pAiRecipe(foodName){
+  if(!window.AIRecipe || !window.AIRecipe.startFlow){
+    if(typeof showToast==='function') showToast('⚠️ AI modülü yüklenemedi');
+    return;
+  }
+  window.AIRecipe.startFlow(foodName, '', '🍽️', function(){
+    // Başarılı olunca listeyi yenile
+    setTimeout(function(){
+      var sec=document.getElementById('pShopSec');
+      if(sec && sec.style.display==='block') _renderShopList(sec);
+    }, 300);
+  });
+}
+// Topluluk tarifi güncellendiğinde liste açıksa yenile
+window.addEventListener('community-recipes-updated', function(){
+  var sec=document.getElementById('pShopSec');
+  if(sec && sec.style.display==='block') _renderShopList(sec);
+});
 
 function pShopTog(n,c){
   var sId=pActiveSofraId();
