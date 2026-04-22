@@ -475,12 +475,12 @@ function pCopyMenu(){var sec=document.getElementById('pCopySec');if(sec.style.di
 function pCTo(d){pSet(pWO,d,JSON.parse(JSON.stringify(pGet(pWO,pSD))));rDays();if(typeof showToast==='function')showToast('📋 '+DF[d]+'\'e kopyalandı');document.getElementById('pCopySec').style.display='none'}
 function pCAll(){if(!confirm('Tüm haftaya?'))return;var s=pGet(pWO,pSD);for(var i=0;i<7;i++)if(i!==pSD)pSet(pWO,i,JSON.parse(JSON.stringify(s)));rDays();if(typeof showToast==='function')showToast('📋 Tüm haftaya kopyalandı');document.getElementById('pCopySec').style.display='none'}
 
-var _shopMode='food'; // 'food' veya 'ingredient'
+var _shopMode='ingredient'; // 'food' veya 'ingredient' — varsayılan: hammadde listesi
 function pShop(){
   var sec=document.getElementById('pShopSec');
   if(sec.style.display==='block'){sec.style.display='none';return;}
-  // Sofra aktifse malzeme görünümü varsayılan (paylaşımlı market senaryosu)
-  _shopMode=pActiveSofraId()?'ingredient':'food';
+  // Her durumda malzeme (hammadde) görünümü varsayılan
+  _shopMode='ingredient';
   _renderShopList(sec);
 }
 
@@ -490,25 +490,17 @@ function _renderShopList(sec){
   var foodItems=Object.values(allFoods).sort(function(a,b){return b.count-a.count});
   if(!foodItems.length){sec.innerHTML='<div class="plan-shop"><h3>🛒 Alışveriş</h3><p style="font-size:.78rem;color:var(--text2)">Yemek yok.</p></div>';sec.style.display='block';return}
 
-  // Malzeme listesi — tariflerden çıkar
-  var allIng={};
-  var RECIPES=(window.TURKISH_RECIPES_DB||[]).concat(typeof RECIPES!=='undefined'&&RECIPES||[]);
-  for(var d2=0;d2<7;d2++){var dt2=pGet(pWO,d2);ML.forEach(function(m){(dt2[m]||[]).forEach(function(f){
-    var fn=f.name.toLowerCase();
-    for(var ri=0;ri<RECIPES.length;ri++){
-      if(RECIPES[ri].name.toLowerCase()===fn&&RECIPES[ri].ingredients){
-        RECIPES[ri].ingredients.forEach(function(ing){
-          var ingName=(ing.item||ing.name||String(ing)).trim();
-          var ingAmount=ing.amount||'';
-          var ik=ingName.toLowerCase();
-          if(!allIng[ik])allIng[ik]={name:ingName,amounts:[],count:0};
-          allIng[ik].count++;
-          if(ingAmount&&allIng[ik].amounts.indexOf(ingAmount)<0)allIng[ik].amounts.push(ingAmount);
-        });break;
-      }
-    }
-  })})}
-  var ingItems=Object.values(allIng).sort(function(a,b){return b.count-a.count});
+  // Malzeme (hammadde) listesi — IngredientResolver ile:
+  //  · tarif varsa malzemeleri çıkar
+  //  · cat:"hammadde" ise kendisi hammadde
+  //  · yemek ama tarif yok ise "unresolved" (ayrı bölümde göstereceğiz)
+  var _allFoodsFlat=[];
+  for(var d2=0;d2<7;d2++){var dt2=pGet(pWO,d2);ML.forEach(function(m){(dt2[m]||[]).forEach(function(f){_allFoodsFlat.push(f);});});}
+  var _result = (window.IngredientResolver && window.IngredientResolver.buildShoppingList)
+    ? window.IngredientResolver.buildShoppingList(_allFoodsFlat)
+    : {resolved:[],unresolved:[],rawCount:0,recipeCount:0,total:0};
+  var ingItems=_result.resolved;
+  var unresolvedItems=_result.unresolved;
 
   var sId=pActiveSofraId();
   var ck=sId?null:JSON.parse(localStorage.getItem('fs_pshop_'+pWO)||'[]');
@@ -549,7 +541,9 @@ function _renderShopList(sec){
     // Pantry sayımı
     var pantryCount=0;
     ingItems.forEach(function(it){if(_isPantry('ing:'+it.name.toLowerCase()))pantryCount++;});
-    h+='<div style="display:flex;align-items:center;justify-content:space-between;font-size:.65rem;color:var(--text2);margin-bottom:8px;gap:8px"><span>Tariflerdeki malzemeler ('+ingItems.length+' kalem)</span>';
+    var rawCount=ingItems.filter(function(x){return x.raw;}).length;
+    var recipeCount=ingItems.length-rawCount;
+    h+='<div style="display:flex;align-items:center;justify-content:space-between;font-size:.65rem;color:var(--text2);margin-bottom:8px;gap:8px"><span>🧾 '+ingItems.length+' hammadde'+(recipeCount?' ('+recipeCount+' tariften, ':' (')+rawCount+' direkt)</span>';
     if(pantryCount>0){
       h+='<button onclick="_pShowPantry=!_pShowPantry;_renderShopList(document.getElementById(\'pShopSec\'))" style="padding:4px 8px;border-radius:6px;background:'+(_pShowPantry?'var(--accent-glow)':'var(--glass)')+';border:1px solid '+(_pShowPantry?'var(--accent)':'var(--border)')+';font-size:.62rem;font-weight:700;color:'+(_pShowPantry?'var(--accent)':'var(--text2)')+';cursor:pointer;font-family:var(--font,system-ui);white-space:nowrap">🏠 '+pantryCount+' evde '+(_pShowPantry?'— gizle':'— göster')+'</button>';
     }
@@ -561,8 +555,20 @@ function _renderShopList(sec){
       var ic=_isChecked(key);
       var amtStr=it.amounts.length?(' — '+it.amounts.join(', ')):'';
       var rowStyle=isP?'opacity:.5':'';
-      h+='<div class="plan-si'+(ic?' done':'')+'" style="'+rowStyle+'"><input type="checkbox" '+(ic?'checked':'')+' onchange="pShopTog(\'ing:\'+this.getAttribute(\'data-n\'),this.checked)" data-n="'+escHTML(it.name.toLowerCase())+'"><span>🥄</span><span class="sit" style="flex:1">'+escHTML(it.name)+'<span style="font-size:.65rem;color:var(--text2)">'+escHTML(amtStr)+'</span>'+_byBadge(key)+_pantryBadge(key)+'</span><button title="'+(isP?'Evde yok':'Evde var')+'" onclick="pPantryTog(\'ing:\'+this.getAttribute(\'data-n\'),'+(!isP)+')" data-n="'+escHTML(it.name.toLowerCase())+'" style="background:'+(isP?'var(--accent-glow)':'transparent')+';border:1px solid '+(isP?'var(--accent)':'var(--border)')+';border-radius:6px;padding:2px 6px;font-size:.7rem;cursor:pointer;margin-right:4px" aria-label="Evde var">🏠</button><span style="font-size:.68rem;color:var(--text2)">×'+it.count+'</span></div>';
+      var rawBadge=it.raw?' <span style="font-size:.56rem;background:var(--accent-glow);color:var(--accent);padding:1px 5px;border-radius:4px;font-weight:800;margin-left:4px">hammadde</span>':'';
+      var rowIcon=it.raw?'🥦':'🥄';
+      h+='<div class="plan-si'+(ic?' done':'')+'" style="'+rowStyle+'"><input type="checkbox" '+(ic?'checked':'')+' onchange="pShopTog(\'ing:\'+this.getAttribute(\'data-n\'),this.checked)" data-n="'+escHTML(it.name.toLowerCase())+'"><span>'+rowIcon+'</span><span class="sit" style="flex:1">'+escHTML(it.name)+rawBadge+'<span style="font-size:.65rem;color:var(--text2)">'+escHTML(amtStr)+'</span>'+_byBadge(key)+_pantryBadge(key)+'</span><button title="'+(isP?'Evde yok':'Evde var')+'" onclick="pPantryTog(\'ing:\'+this.getAttribute(\'data-n\'),'+(!isP)+')" data-n="'+escHTML(it.name.toLowerCase())+'" style="background:'+(isP?'var(--accent-glow)':'transparent')+';border:1px solid '+(isP?'var(--accent)':'var(--border)')+';border-radius:6px;padding:2px 6px;font-size:.7rem;cursor:pointer;margin-right:4px" aria-label="Evde var">🏠</button><span style="font-size:.68rem;color:var(--text2)">×'+it.count+'</span></div>';
     });
+    // Tarifi tanımlı olmayan yemekler — ayrı bölüm
+    if(unresolvedItems&&unresolvedItems.length){
+      h+='<div style="margin-top:14px;padding:10px;background:rgba(255,165,0,.08);border:1px dashed rgba(255,165,0,.4);border-radius:10px">';
+      h+='<div style="font-size:.72rem;font-weight:800;color:#ffa500;margin-bottom:4px">⚠️ Tarifi Tanımsız Yemekler ('+unresolvedItems.length+')</div>';
+      h+='<div style="font-size:.62rem;color:var(--text2);margin-bottom:8px;line-height:1.5">Bu yemeklerin malzemeleri DB\'de yok. Alışveriş listesine eklenemediler. Admin panelinden tarif ekleyerek otomatik listeye geçebilirsin.</div>';
+      unresolvedItems.forEach(function(u){
+        h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:4px 0;font-size:.7rem"><span>❓ '+escHTML(u.name)+'</span><span style="color:var(--text2);font-size:.64rem">×'+u.count+'</span></div>';
+      });
+      h+='</div>';
+    }
   } else {
     foodItems.forEach(function(it){
       var key=it.name.toLowerCase();
@@ -632,11 +638,15 @@ function pShopCopy(){
   var pantryLocal=sId?null:JSON.parse(localStorage.getItem('fs_pantry_'+pWO)||'[]');
   function _skipP(key){return sId?!!pantryKeys[key]:(pantryLocal.indexOf(key)>=0);}
   if(_shopMode==='ingredient'){
-    var allIng={};var RECIPES=(window.TURKISH_RECIPES_DB||[]).concat(typeof RECIPES!=='undefined'&&RECIPES||[]);
-    for(var d=0;d<7;d++){var dt=pGet(pWO,d);ML.forEach(function(m){(dt[m]||[]).forEach(function(f){
-      var fn=f.name.toLowerCase();for(var ri=0;ri<RECIPES.length;ri++){if(RECIPES[ri].name.toLowerCase()===fn&&RECIPES[ri].ingredients){RECIPES[ri].ingredients.forEach(function(ing){var n=(ing.item||ing.name||String(ing)).trim();var a=ing.amount||'';var ik=n.toLowerCase();if(!allIng[ik])allIng[ik]={name:n,amounts:[]};if(a&&allIng[ik].amounts.indexOf(a)<0)allIng[ik].amounts.push(a)});break;}}
-    })})}
-    Object.values(allIng).forEach(function(i){if(_skipP('ing:'+i.name.toLowerCase()))return;t+='☐ '+i.name+(i.amounts.length?' ('+i.amounts.join(', ')+')':'')+'\n'});
+    var _all=[];
+    for(var d=0;d<7;d++){var dt=pGet(pWO,d);ML.forEach(function(m){(dt[m]||[]).forEach(function(f){_all.push(f);});});}
+    var _r = (window.IngredientResolver && window.IngredientResolver.buildShoppingList)
+      ? window.IngredientResolver.buildShoppingList(_all) : {resolved:[],unresolved:[]};
+    _r.resolved.forEach(function(i){if(_skipP('ing:'+i.name.toLowerCase()))return;t+='☐ '+i.name+(i.amounts.length?' ('+i.amounts.join(', ')+')':'')+'\n';});
+    if(_r.unresolved.length){
+      t+='\n⚠️ Tarifi tanımsız yemekler:\n';
+      _r.unresolved.forEach(function(u){t+='❓ '+u.name+(u.count>1?' (×'+u.count+')':'')+'\n';});
+    }
   } else {
     var all={};for(var d=0;d<7;d++){var dt=pGet(pWO,d);ML.forEach(function(m){(dt[m]||[]).forEach(function(f){var k=f.name.toLowerCase();if(!all[k])all[k]={name:f.name,count:0};all[k].count++})})}
     Object.values(all).forEach(function(i){t+='☐ '+i.name+(i.count>1?' (×'+i.count+')':'')+'\n'});

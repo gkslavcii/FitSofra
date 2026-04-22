@@ -740,36 +740,9 @@ function _sofraRenderShopCard(){
   });
 }
 
-// Haftanın menüsünden malzeme sayımı (planner'daki mantıkla)
+// Haftanın menüsünden malzeme sayımı (resolver ile)
 function _sofraEstimateShopItems(){
-  if(!window.Sofra||typeof db==='undefined') return Promise.resolve(0);
-  var sId=window.Sofra.getActive(); if(!sId) return Promise.resolve(0);
-  function _mondayOf(o){ var d=new Date();d.setHours(0,0,0,0);var dow=d.getDay();var diff=dow===0?-6:1-dow;d.setDate(d.getDate()+diff+(o*7));return d;}
-  function _iso(d){return d.toISOString().slice(0,10);}
-  var mon=_mondayOf(_sofraLastWeekOffset);
-  var dates=[]; for(var i=0;i<7;i++){var dd=new Date(mon);dd.setDate(mon.getDate()+i);dates.push(_iso(dd));}
-  return Promise.all(dates.map(function(iso){
-    return db.collection('sofras').doc(sId).collection('plans').doc('fs_plan_'+iso).get()
-      .then(function(s){return s.exists?(s.data().data||{}):{};}).catch(function(){return {};});
-  })).then(function(days){
-    var RECIPES=(window.TURKISH_RECIPES_DB||[]).concat(typeof window.RECIPES!=='undefined'?window.RECIPES:[]);
-    var ings={}, ML=['kahvalti','ogle','aksam','atistirmalik'];
-    days.forEach(function(dt){
-      ML.forEach(function(m){(dt[m]||[]).forEach(function(f){
-        var fn=(f.name||'').toLowerCase();
-        for(var ri=0;ri<RECIPES.length;ri++){
-          if(RECIPES[ri].name && RECIPES[ri].name.toLowerCase()===fn && RECIPES[ri].ingredients){
-            RECIPES[ri].ingredients.forEach(function(ing){
-              var nm=(ing.item||ing.name||String(ing)).toLowerCase();
-              ings[nm]=true;
-            });
-            break;
-          }
-        }
-      });});
-    });
-    return Object.keys(ings).length;
-  });
+  return _sofraBuildShopList().then(function(res){ return (res&&res.total)||0; });
 }
 
 // "Alışveriş listesini çıkar" butonu — Sofra menüsünden inline alışveriş listesi oluştur
@@ -787,37 +760,63 @@ function sofraGenerateShopList(){
   box.innerHTML='<div style="font-size:.72rem;color:var(--text2)"><span class="spinner" style="width:14px;height:14px;border-width:2px"></span> Hesaplanıyor...</div>';
   el.appendChild(box);
 
-  _sofraBuildShopList().then(function(items){
-    if(!items.length){
+  _sofraBuildShopList().then(function(res){
+    var items=res.resolved||[];
+    var unresolved=res.unresolved||[];
+    if(!items.length && !unresolved.length){
       box.innerHTML='<div style="font-size:.72rem;color:var(--text2);text-align:center;padding:8px">Henüz menü boş — önce yemek ekle.</div>';
       return;
     }
-    var h='<div style="font-size:.78rem;font-weight:800;margin-bottom:8px">🧾 Haftalık Alışveriş Listesi ('+items.length+' malzeme)</div>';
-    h+='<div style="max-height:300px;overflow-y:auto">';
+    var h='<div style="font-size:.78rem;font-weight:800;margin-bottom:4px">🧾 Haftalık Alışveriş Listesi</div>';
+    h+='<div style="font-size:.64rem;color:var(--text2);margin-bottom:8px">'+items.length+' hammadde • '+res.recipeCount+' tariften, '+res.rawCount+' direkt</div>';
+    h+='<div style="max-height:320px;overflow-y:auto">';
     items.forEach(function(it){
-      h+='<div style="display:flex;align-items:center;gap:8px;padding:6px 4px;border-bottom:1px solid var(--border)">';
-      h+='<span style="flex:1;font-size:.74rem">'+esc(it.name)+'</span>';
-      h+='<span style="font-size:.66rem;color:var(--text2)">'+it.count+' yemek</span>';
+      var amtStr=it.amounts&&it.amounts.length?it.amounts.join(', '):'';
+      var rawBadge=it.raw?'<span style="font-size:.56rem;background:var(--accent-glow);color:var(--accent);padding:1px 5px;border-radius:4px;font-weight:800;margin-left:4px">hammadde</span>':'';
+      var icon=it.raw?'🥦':'🥄';
+      h+='<div style="display:flex;align-items:center;gap:8px;padding:7px 4px;border-bottom:1px solid var(--border)">';
+      h+='<span style="font-size:1rem">'+icon+'</span>';
+      h+='<div style="flex:1;min-width:0"><div style="font-size:.74rem;font-weight:600">'+esc(it.name)+rawBadge+'</div>';
+      if(amtStr) h+='<div style="font-size:.62rem;color:var(--text2)">'+esc(amtStr)+'</div>';
+      h+='</div>';
+      h+='<span style="font-size:.64rem;color:var(--text2);white-space:nowrap">×'+it.count+'</span>';
       h+='</div>';
     });
     h+='</div>';
+    // Tarifi tanımsız yemekler — uyarı bölümü
+    if(unresolved.length){
+      h+='<div style="margin-top:10px;padding:10px;background:rgba(255,165,0,.08);border:1px dashed rgba(255,165,0,.4);border-radius:10px">';
+      h+='<div style="font-size:.72rem;font-weight:800;color:#ffa500;margin-bottom:4px">⚠️ Tarifi Tanımsız Yemekler ('+unresolved.length+')</div>';
+      h+='<div style="font-size:.62rem;color:var(--text2);margin-bottom:6px;line-height:1.5">Bu yemekler DB\'de yemek olarak kayıtlı ama tarifi yok. Alışverişe eklenemediler.</div>';
+      unresolved.forEach(function(u){
+        h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:3px 0;font-size:.68rem"><span>❓ '+esc(u.name)+'</span><span style="color:var(--text2);font-size:.62rem">×'+u.count+'</span></div>';
+      });
+      h+='</div>';
+    }
     h+='<button onclick="_sofraCopyShopList()" style="width:100%;margin-top:8px;padding:8px;background:var(--glass);border:1px solid var(--border);border-radius:8px;font-size:.72rem;font-weight:700;cursor:pointer;color:var(--text);font-family:var(--font,system-ui)">📋 Listeyi Kopyala</button>';
     box.innerHTML=h;
-    window._sofraShopItems=items;
+    window._sofraShopResult=res;
   });
 }
 
 function _sofraCopyShopList(){
-  var items=window._sofraShopItems||[]; if(!items.length)return;
-  var txt='🛒 Sofra Alışveriş Listesi\n\n'+items.map(function(it){return '• '+it.name;}).join('\n');
+  var res=window._sofraShopResult; if(!res||!res.resolved)return;
+  var txt='🛒 Sofra Alışveriş Listesi\n\n'+res.resolved.map(function(it){
+    var amt=it.amounts&&it.amounts.length?' ('+it.amounts.join(', ')+')':'';
+    return '☐ '+it.name+amt;
+  }).join('\n');
+  if(res.unresolved&&res.unresolved.length){
+    txt+='\n\n⚠️ Tarifi tanımsız:\n';
+    res.unresolved.forEach(function(u){txt+='❓ '+u.name+(u.count>1?' (×'+u.count+')':'')+'\n';});
+  }
   if(navigator.clipboard&&navigator.clipboard.writeText){
     navigator.clipboard.writeText(txt).then(function(){ if(typeof showToast==='function')showToast('📋 Kopyalandı'); });
   }
 }
 
 function _sofraBuildShopList(){
-  if(!window.Sofra||typeof db==='undefined') return Promise.resolve([]);
-  var sId=window.Sofra.getActive(); if(!sId) return Promise.resolve([]);
+  if(!window.Sofra||typeof db==='undefined') return Promise.resolve({resolved:[],unresolved:[],rawCount:0,recipeCount:0,total:0});
+  var sId=window.Sofra.getActive(); if(!sId) return Promise.resolve({resolved:[],unresolved:[],rawCount:0,recipeCount:0,total:0});
   function _mondayOf(o){var d=new Date();d.setHours(0,0,0,0);var dow=d.getDay();var diff=dow===0?-6:1-dow;d.setDate(d.getDate()+diff+(o*7));return d;}
   function _iso(d){return d.toISOString().slice(0,10);}
   var mon=_mondayOf(_sofraLastWeekOffset);
@@ -826,31 +825,12 @@ function _sofraBuildShopList(){
     return db.collection('sofras').doc(sId).collection('plans').doc('fs_plan_'+iso).get()
       .then(function(s){return s.exists?(s.data().data||{}):{};}).catch(function(){return {};});
   })).then(function(days){
-    var RECIPES=(window.TURKISH_RECIPES_DB||[]).concat(typeof window.RECIPES!=='undefined'?window.RECIPES:[]);
-    var counts={}, ML=['kahvalti','ogle','aksam','atistirmalik'];
-    days.forEach(function(dt){
-      ML.forEach(function(m){(dt[m]||[]).forEach(function(f){
-        var fn=(f.name||'').toLowerCase();
-        var matched=false;
-        for(var ri=0;ri<RECIPES.length;ri++){
-          if(RECIPES[ri].name && RECIPES[ri].name.toLowerCase()===fn && RECIPES[ri].ingredients){
-            RECIPES[ri].ingredients.forEach(function(ing){
-              var nm=(ing.item||ing.name||String(ing));
-              var k=nm.toLowerCase();
-              if(!counts[k]) counts[k]={name:nm,count:0};
-              counts[k].count++;
-            });
-            matched=true; break;
-          }
-        }
-        if(!matched && f.name){
-          var k=f.name.toLowerCase();
-          if(!counts[k]) counts[k]={name:f.name,count:0};
-          counts[k].count++;
-        }
-      });});
-    });
-    return Object.keys(counts).map(function(k){return counts[k];}).sort(function(a,b){return b.count-a.count;});
+    var foods=[], ML=['kahvalti','ogle','aksam','atistirmalik'];
+    days.forEach(function(dt){ ML.forEach(function(m){(dt[m]||[]).forEach(function(f){foods.push(f);});});});
+    if(window.IngredientResolver && window.IngredientResolver.buildShoppingList){
+      return window.IngredientResolver.buildShoppingList(foods);
+    }
+    return {resolved:[],unresolved:[],rawCount:0,recipeCount:0,total:0};
   });
 }
 
