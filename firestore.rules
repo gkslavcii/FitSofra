@@ -150,6 +150,16 @@ service cloud.firestore {
     }
 
     // ═══════════════════════════════════════════
+    //  COMMUNITY_RECIPES — AI ile üretilmiş paylaşımlı tarifler
+    // ═══════════════════════════════════════════
+    // Cloud Function submitCommunityRecipe yazar. Client okuyabilir.
+
+    match /community_recipes/{recipeKey} {
+      allow read: if isAuth();
+      allow write: if false; // Sadece Cloud Functions
+    }
+
+    // ═══════════════════════════════════════════
     //  COMMUNITY — Topluluk paylaşımları
     // ═══════════════════════════════════════════
 

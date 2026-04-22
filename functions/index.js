@@ -1042,6 +1042,177 @@ exports.geminiChat = functions.https.onCall(async (data, context) => {
 
 
 // ═══════════════════════════════════════════
+//  AI TARİF ÜRETİMİ (Unresolved yemekler için)
+// ═══════════════════════════════════════════
+// Gemini'den yapılandırılmış JSON malzeme listesi ister.
+
+exports.generateRecipeIngredients = functions.https.onCall(async (data, context) => {
+  const uid = requireAuth(context);
+  rateLimit(uid, 'recipegen', 20); // Dakikada 20
+
+  const { foodName, category, emoji } = data || {};
+  if (!foodName || typeof foodName !== 'string' || foodName.length < 2 || foodName.length > 80) {
+    throw new functions.https.HttpsError('invalid-argument', 'Geçerli bir yemek adı gerekli');
+  }
+
+  // Gemini key
+  const configDoc = await admin.firestore().collection('config').doc('gemini').get();
+  if (!configDoc.exists || !configDoc.data().apiKey) {
+    throw new functions.https.HttpsError('failed-precondition', 'Gemini API yapılandırılmamış.');
+  }
+  const config = configDoc.data();
+  const apiKey = config.apiKey;
+  const model = config.model || 'gemini-2.5-flash';
+
+  // Günlük AI kullanım limiti (gemini'ninkiyle aynı kovayı paylaş)
+  const userLimit = config.userLimit || 5;
+  const globalLimit = config.globalLimit || 500;
+  const today = new Date().toISOString().split('T')[0];
+  const usageRef = admin.firestore().collection('ai_usage').doc(today);
+  const usageDoc = await usageRef.get();
+  const usage = usageDoc.exists ? usageDoc.data() : {};
+  if ((usage['user_' + uid] || 0) >= userLimit) {
+    throw new functions.https.HttpsError('resource-exhausted', 'Günlük AI limitin doldu (' + userLimit + ').');
+  }
+  if ((usage.globalCount || 0) >= globalLimit) {
+    throw new functions.https.HttpsError('resource-exhausted', 'Toplam günlük AI limit doldu.');
+  }
+
+  const fetch = require('node-fetch');
+  const prompt = 'Sen Türk mutfağı uzmanı bir şefsin. "' + foodName.trim() + '"'
+    + (category ? ' (' + category + ')' : '')
+    + ' yemeğinin 1 porsiyon için klasik malzemelerini SADECE JSON olarak ver. '
+    + 'Her malzeme için "item" (malzeme adı, Türkçe) ve "amount" (miktar, örn. "150g", "1 adet", "2 yk") alanları bulunsun. '
+    + 'Baharat ve tuz dahil edilebilir (amount "tadında" olabilir). '
+    + 'Yalnızca ham malzeme listele (pişirilmiş ara ürün yok). '
+    + 'Sadece JSON, başka açıklama yok. Format: {"ingredients":[{"item":"Kıyma","amount":"150g"},...]}';
+
+  const geminiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/' + model
+    + ':generateContent?key=' + apiKey;
+
+  try {
+    const resp = await fetch(geminiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ role: 'user', parts: [{ text: prompt }] }],
+        generationConfig: {
+          maxOutputTokens: 600,
+          temperature: 0.3,
+          responseMimeType: 'application/json'
+        }
+      })
+    });
+
+    if (!resp.ok) {
+      const errText = await resp.text();
+      console.error('Gemini recipe error:', errText.substring(0, 300));
+      throw new functions.https.HttpsError('internal', 'AI yanıt veremedi (' + resp.status + ')');
+    }
+
+    const result = await resp.json();
+    const raw = result.candidates && result.candidates[0]
+      && result.candidates[0].content && result.candidates[0].content.parts
+      && result.candidates[0].content.parts[0] && result.candidates[0].content.parts[0].text;
+    if (!raw) throw new functions.https.HttpsError('internal', 'AI boş yanıt verdi');
+
+    let parsed;
+    try { parsed = JSON.parse(raw); }
+    catch (e) {
+      // JSON block içinden ayıkla
+      const m = raw.match(/\{[\s\S]*\}/);
+      if (m) { try { parsed = JSON.parse(m[0]); } catch(_) {} }
+    }
+    if (!parsed || !Array.isArray(parsed.ingredients)) {
+      throw new functions.https.HttpsError('internal', 'AI geçersiz format döndü');
+    }
+
+    // Sanitize
+    const ingredients = parsed.ingredients
+      .filter(x => x && typeof x.item === 'string' && x.item.trim())
+      .slice(0, 25)
+      .map(x => ({
+        item: String(x.item).trim().substring(0, 60),
+        amount: String(x.amount || '').trim().substring(0, 40)
+      }));
+
+    if (!ingredients.length) {
+      throw new functions.https.HttpsError('internal', 'AI malzeme üretemedi');
+    }
+
+    // Usage++
+    await usageRef.set({
+      ['user_' + uid]: admin.firestore.FieldValue.increment(1),
+      globalCount: admin.firestore.FieldValue.increment(1),
+      lastUpdated: admin.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+
+    return { ingredients, foodName: foodName.trim() };
+  } catch (e) {
+    if (e.code && e.code.startsWith && e.code.startsWith('functions/')) throw e;
+    console.error('Recipe gen error:', e);
+    throw new functions.https.HttpsError('internal', e.message || 'Bilinmeyen hata');
+  }
+});
+
+// Onaylanmış AI tarifini topluluk veritabanına ekle
+exports.submitCommunityRecipe = functions.https.onCall(async (data, context) => {
+  const uid = requireAuth(context);
+  rateLimit(uid, 'reciperw', 10);
+
+  const { foodName, ingredients, category, emoji } = data || {};
+  if (!foodName || typeof foodName !== 'string') {
+    throw new functions.https.HttpsError('invalid-argument', 'Yemek adı gerekli');
+  }
+  if (!Array.isArray(ingredients) || !ingredients.length) {
+    throw new functions.https.HttpsError('invalid-argument', 'Malzemeler gerekli');
+  }
+  const cleanIngredients = ingredients
+    .filter(x => x && typeof x.item === 'string' && x.item.trim())
+    .slice(0, 30)
+    .map(x => ({
+      item: String(x.item).trim().substring(0, 60),
+      amount: String(x.amount || '').trim().substring(0, 40)
+    }));
+  if (!cleanIngredients.length) {
+    throw new functions.https.HttpsError('invalid-argument', 'Geçerli malzeme yok');
+  }
+
+  // Key: normalize edilmiş ad
+  const key = foodName.toLowerCase()
+    .replace(/[^a-zçğıöşü0-9]/gi, '_')
+    .replace(/_+/g, '_')
+    .replace(/^_|_$/g, '')
+    .substring(0, 80);
+
+  const ref = admin.firestore().collection('community_recipes').doc(key);
+  const existing = await ref.get();
+
+  if (existing.exists) {
+    // Mevcut — oy sayacını artır
+    await ref.update({
+      voteCount: admin.firestore.FieldValue.increment(1),
+      lastUsedAt: admin.firestore.FieldValue.serverTimestamp()
+    });
+    return { success: true, key, merged: true };
+  }
+
+  await ref.set({
+    name: foodName.trim(),
+    nameLower: foodName.trim().toLowerCase(),
+    ingredients: cleanIngredients,
+    category: category || '',
+    emoji: emoji || '🍽️',
+    createdBy: uid,
+    createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    voteCount: 1,
+    source: 'ai-generated'
+  });
+  return { success: true, key, merged: false };
+});
+
+
+// ═══════════════════════════════════════════
 //  API KEY YÖNETİMİ (Admin-only)
 // ═══════════════════════════════════════════
 // Admin panelinden API key'leri Firestore'a kaydetmek için
