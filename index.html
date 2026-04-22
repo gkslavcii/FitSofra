@@ -2132,7 +2132,9 @@ function getTodayTargets(){
   return{cal:dailyTarget,prot:protTarget,carb:carbTarget,fat:fatTarget,water:waterTarget};
 } 
 let currentMealId=null,selectedCat='all',currentSource='local';
-let currentDate=new Date(),pendingFood=null,deferredPrompt=null;
+let currentDate=new Date(),deferredPrompt=null;
+// pendingFood: var yerine window'a koy — planner.html'deki confirmPortion hook'u buna erişmeli
+var pendingFood=null; window.pendingFood=null;
 
 
 // USDA API Key (free, demo key — user should get their own for production)

@@ -477,80 +477,243 @@ function _sofraRenderActiveCard(){
   el.innerHTML=h;
 }
 
-// ═══ Bu haftanın menüsü — 7 günlük mini özet ═══
+// ═══ Bu haftanın menüsü — 7 günlük DÜZENLENEBİLİR planlayıcı ═══
+// Sofra için tamamen bağımsız planlayıcı: kişisel planlayıcı ile etkileşmez.
+// Veriler direkt Firestore'da (sofras/{id}/plans/fs_plan_{iso}).
+var _sfTgt=null;           // {sId, iso, meal} — yemek ekleme hedefi
+var _sfDays={};            // {iso: dataObj} — bu haftanın cache'i
+var _sfExpanded=null;      // açık olan günün iso'su (null = hepsi küçük)
+var _sfUnsubs=[];          // Firestore onSnapshot unsubscribe'ları
+var _SF_DAY=['Pzt','Sal','Çrş','Prş','Cum','Cmt','Paz'];
+var _SF_ML=['kahvalti','ogle','aksam','atistirmalik'];
+var _SF_MLABEL={kahvalti:'🌅 Kahvaltı',ogle:'☀️ Öğle',aksam:'🌙 Akşam',atistirmalik:'🍪 Atıştırmalık'};
+
+function _sfMondayOf(off){ var d=new Date();d.setHours(0,0,0,0);var dow=d.getDay();var diff=dow===0?-6:1-dow;d.setDate(d.getDate()+diff+(off*7));return d; }
+function _sfIso(d){ return d.toISOString().slice(0,10); }
+function _sfWeekDates(){ var m=_sfMondayOf(_sofraLastWeekOffset);var a=[];for(var i=0;i<7;i++){var dd=new Date(m);dd.setDate(m.getDate()+i);a.push(_sfIso(dd));}return a; }
+
+function _sofraTeardownPlanSync(){
+  _sfUnsubs.forEach(function(u){try{u();}catch(_){}});
+  _sfUnsubs=[];
+}
+
 function _sofraRenderMenuPreview(){
   var el=document.getElementById('sofraMenuPreview');
-  if(!window.Sofra){ el.innerHTML=''; return; }
+  if(!window.Sofra){ el.innerHTML=''; _sofraTeardownPlanSync(); return; }
   var sId=window.Sofra.getActive();
-  if(!sId){ el.innerHTML=''; return; }
+  if(!sId){ el.innerHTML=''; _sofraTeardownPlanSync(); return; }
   if(typeof db==='undefined'){ el.innerHTML=''; return; }
 
-  var DAY_NAMES=['Pzt','Sal','Çrş','Prş','Cum','Cmt','Paz'];
-  var ML=['kahvalti','ogle','aksam','atistirmalik'];
-  var MICO={kahvalti:'🌅',ogle:'☀️',aksam:'🌙',atistirmalik:'🍪'};
-
-  function _mondayOf(offsetWeeks){
-    var d=new Date(); d.setHours(0,0,0,0);
-    var dow=d.getDay(); var diff=dow===0?-6:1-dow;
-    d.setDate(d.getDate()+diff+(offsetWeeks*7)); return d;
-  }
-  function _iso(d){ return d.toISOString().slice(0,10); }
-
-  var mon=_mondayOf(_sofraLastWeekOffset);
-  var dates=[];
-  for(var i=0;i<7;i++){ var dd=new Date(mon); dd.setDate(mon.getDate()+i); dates.push(_iso(dd)); }
+  var dates=_sfWeekDates();
 
   var h='<div style="background:var(--glass);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:14px">';
   h+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">';
-  h+='<div style="font-size:.92rem;font-weight:800">📅 Bu Haftanın Menüsü</div>';
-  h+='<div style="display:flex;gap:4px">';
+  h+='<div style="font-size:.92rem;font-weight:800">📅 Sofra Haftalık Planı</div>';
+  h+='<div style="display:flex;gap:4px;align-items:center">';
   h+='<button onclick="_sofraNavWeek(-1)" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:4px 10px;font-size:.68rem;font-weight:700;cursor:pointer;color:var(--text)">‹</button>';
-  h+='<span style="font-size:.7rem;color:var(--text2);padding:4px 8px">'+(_sofraLastWeekOffset===0?'Bu hafta':_sofraLastWeekOffset+' hafta')+'</span>';
+  h+='<span style="font-size:.7rem;color:var(--text2);padding:4px 8px">'+(_sofraLastWeekOffset===0?'Bu hafta':(_sofraLastWeekOffset>0?'+':'')+_sofraLastWeekOffset+' hf')+'</span>';
   h+='<button onclick="_sofraNavWeek(1)" style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:4px 10px;font-size:.68rem;font-weight:700;cursor:pointer;color:var(--text)">›</button>';
   h+='</div></div>';
-  h+='<div id="sofraMenuGrid" style="display:grid;gap:6px"><div style="text-align:center;color:var(--text2);font-size:.72rem;padding:12px"><span class="spinner" style="width:16px;height:16px;border-width:2px"></span> Yükleniyor...</div></div>';
+  h+='<div style="font-size:.68rem;color:var(--text2);margin-bottom:10px;line-height:1.4">👆 Bir güne tıkla, aç/kapat. Eklediğin yemekler anında diğer üyelerde görünür.</div>';
+  h+='<div id="sofraMenuGrid" style="display:grid;gap:8px"></div>';
   h+='</div>';
   el.innerHTML=h;
 
-  // Her günü paralel yükle
-  var promises=dates.map(function(iso){
-    return db.collection('sofras').doc(sId).collection('plans').doc('fs_plan_'+iso).get()
-      .then(function(s){ return {iso:iso, data:(s.exists?(s.data().data||{}):{})}; })
-      .catch(function(){ return {iso:iso, data:{}}; });
+  _sofraTeardownPlanSync();
+  _sfDays={};
+  // Her gün için onSnapshot kur — canlı sync
+  dates.forEach(function(iso){
+    var unsub=db.collection('sofras').doc(sId).collection('plans').doc('fs_plan_'+iso)
+      .onSnapshot(function(s){
+        _sfDays[iso] = s.exists ? (s.data().data||{}) : {};
+        _sofraRenderMenuGrid();
+      }, function(){ _sfDays[iso]=_sfDays[iso]||{}; _sofraRenderMenuGrid(); });
+    _sfUnsubs.push(unsub);
   });
-  Promise.all(promises).then(function(results){
-    var gh='';
-    results.forEach(function(r,idx){
-      var dayName=DAY_NAMES[idx];
-      var totalCount=0;
-      var items=[];
-      ML.forEach(function(m){
-        var arr=r.data[m]||[];
-        totalCount+=arr.length;
-        arr.forEach(function(f){ items.push({m:m,n:f.name,e:f.emoji||'🍽️',by:f.addedByName||''}); });
-      });
-      gh+='<div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:8px 10px;cursor:pointer" onclick="sofraOpenPlanner(\''+r.iso+'\')">';
-      gh+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:'+(items.length?'6px':'0')+'">';
-      gh+='<div style="font-size:.78rem;font-weight:800">'+dayName+' <span style="font-size:.62rem;color:var(--text2);font-weight:600;margin-left:4px">'+r.iso.slice(5)+'</span></div>';
-      gh+='<span style="font-size:.62rem;color:var(--text2)">'+(totalCount?totalCount+' öğe':'boş')+'</span>';
-      gh+='</div>';
-      if(items.length){
-        gh+='<div style="display:flex;flex-wrap:wrap;gap:4px">';
-        items.slice(0,6).forEach(function(it){
-          gh+='<span style="font-size:.66rem;background:var(--glass);border:1px solid var(--border);border-radius:6px;padding:2px 6px" title="'+esc(it.n)+(it.by?' · '+esc(it.by):'')+'">'+MICO[it.m]+' '+esc(it.n)+'</span>';
-        });
-        if(items.length>6) gh+='<span style="font-size:.66rem;color:var(--text2);padding:2px 4px">+'+(items.length-6)+'</span>';
+  _sofraRenderMenuGrid();
+}
+
+function _sofraRenderMenuGrid(){
+  var grid=document.getElementById('sofraMenuGrid');
+  if(!grid) return;
+  var dates=_sfWeekDates();
+  var gh='';
+  var todayIso=_sfIso(new Date());
+  dates.forEach(function(iso,idx){
+    var isToday=(iso===todayIso);
+    var isOpen=(_sfExpanded===iso);
+    var d=_sfDays[iso]||{};
+    var total=0; _SF_ML.forEach(function(m){ total+=(d[m]||[]).length; });
+
+    gh+='<div style="background:var(--bg);border:1.5px solid '+(isToday?'var(--accent)':'var(--border)')+';border-radius:10px;overflow:hidden">';
+    // Başlık (tıklanabilir)
+    gh+='<div onclick="_sofraToggleDay(\''+iso+'\')" style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;cursor:pointer;background:'+(isToday?'var(--accent-glow)':'transparent')+'">';
+    gh+='<div style="font-size:.82rem;font-weight:800">'+_SF_DAY[idx]+' <span style="font-size:.68rem;color:var(--text2);font-weight:600;margin-left:4px">'+iso.slice(5)+'</span>'+(isToday?' <span style="font-size:.6rem;background:var(--accent);color:#fff;padding:1px 6px;border-radius:4px;margin-left:6px">Bugün</span>':'')+'</div>';
+    gh+='<div style="display:flex;align-items:center;gap:8px"><span style="font-size:.66rem;color:var(--text2)">'+(total?total+' öğe':'boş')+'</span><span style="font-size:.8rem;color:var(--text2);transition:transform .2s;transform:rotate('+(isOpen?'90':'0')+'deg)">›</span></div>';
+    gh+='</div>';
+
+    // Açıksa: 4 öğün
+    if(isOpen){
+      gh+='<div style="padding:8px 12px 12px;border-top:1px solid var(--border)">';
+      _SF_ML.forEach(function(m){
+        var arr=d[m]||[];
+        gh+='<div style="margin-bottom:10px">';
+        gh+='<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">';
+        gh+='<div style="font-size:.72rem;font-weight:800;color:var(--text2)">'+_SF_MLABEL[m]+'</div>';
+        gh+='<button onclick="sfAdd(\''+iso+'\',\''+m+'\')" style="background:var(--accent);color:#fff;border:none;border-radius:6px;padding:4px 10px;font-size:.66rem;font-weight:700;cursor:pointer;font-family:var(--font,system-ui)">+ Ekle</button>';
         gh+='</div>';
-      }
+        if(arr.length){
+          arr.forEach(function(f,fi){
+            var badge=f.addedByName?' <span style="font-size:.58rem;background:var(--glass);color:var(--text2);padding:1px 5px;border-radius:4px;margin-left:4px">👤 '+esc(f.addedByName)+'</span>':'';
+            gh+='<div style="display:flex;align-items:center;gap:8px;background:var(--glass);border:1px solid var(--border);border-radius:8px;padding:6px 8px;margin-bottom:4px">';
+            gh+='<span style="font-size:1rem">'+(f.emoji||'🍽️')+'</span>';
+            gh+='<div style="flex:1;min-width:0"><div style="font-size:.74rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(f.name||'')+badge+'</div>';
+            gh+='<div style="font-size:.62rem;color:var(--text2)">'+(f.amount||100)+'g</div></div>';
+            gh+='<button onclick="sfRem(\''+iso+'\',\''+m+'\','+fi+')" style="background:transparent;border:none;color:#ff4757;font-size:1rem;cursor:pointer;padding:2px 6px">×</button>';
+            gh+='</div>';
+          });
+        } else {
+          gh+='<div style="font-size:.66rem;color:var(--text2);font-style:italic;padding:4px 2px">— boş —</div>';
+        }
+        gh+='</div>';
+      });
       gh+='</div>';
-    });
-    var grid=document.getElementById('sofraMenuGrid');
-    if(grid) grid.innerHTML=gh;
+    }
+    gh+='</div>';
+  });
+  grid.innerHTML=gh;
+}
+
+function _sofraToggleDay(iso){
+  _sfExpanded = (_sfExpanded===iso) ? null : iso;
+  _sofraRenderMenuGrid();
+}
+
+function _sofraNavWeek(dir){ _sofraLastWeekOffset+=dir; _sfExpanded=null; _sofraRenderMenuPreview(); _sofraRenderShopCard(); }
+
+// ═══ Sofra'ya yemek ekle (DB'den modal ile seç) ═══
+function sfAdd(iso,meal){
+  if(!window.Sofra){ return; }
+  var sId=window.Sofra.getActive(); if(!sId){ if(typeof showToast==='function')showToast('⚠️ Aktif Sofra yok'); return; }
+  _sfTgt={sId:sId, iso:iso, meal:meal};
+  // Sofra menüsünü açık tut
+  _sfExpanded=iso;
+  if(typeof window.openAddFood==='function'){
+    window.openAddFood(meal);
+  } else {
+    var n=prompt('Yemek adı:'); if(!n){ _sfTgt=null; return; }
+    var c=parseInt(prompt('Kalori:'))||0;
+    sfDirect({name:n,cal:c,prot:0,carb:0,fat:0,emoji:'🍽️',amount:100});
+  }
+}
+
+// Firestore'a direkt yazar — Sofra'ya özel, kişisel planlayıcıya dokunmaz
+function sfDirect(food){
+  if(!_sfTgt){ return; }
+  var tgt=_sfTgt; _sfTgt=null;
+  if(typeof db==='undefined'||!auth.currentUser){ return; }
+  var name=(auth.currentUser.displayName||auth.currentUser.email||'Üye').substring(0,20);
+  var item={
+    name:food.name, cal:food.cal||0, prot:food.prot||0, carb:food.carb||0, fat:food.fat||0,
+    emoji:food.emoji||'🍽️', amount:food.amount||100,
+    addedBy:auth.currentUser.uid, addedByName:name, addedAt:Date.now()
+  };
+  var ref=db.collection('sofras').doc(tgt.sId).collection('plans').doc('fs_plan_'+tgt.iso);
+  ref.get().then(function(s){
+    var data = s.exists ? (s.data().data||{kahvalti:[],ogle:[],aksam:[],atistirmalik:[]}) : {kahvalti:[],ogle:[],aksam:[],atistirmalik:[]};
+    if(!data[tgt.meal]) data[tgt.meal]=[];
+    data[tgt.meal].push(item);
+    return ref.set({
+      data:data,
+      updatedAt:firebase.firestore.FieldValue.serverTimestamp(),
+      updatedByUid:auth.currentUser.uid, updatedByName:name
+    },{merge:true});
+  }).then(function(){
+    if(typeof showToast==='function') showToast('✅ '+item.name+' Sofra menüsüne eklendi');
+  }).catch(function(e){
+    if(typeof showToast==='function') showToast('❌ '+(e.message||'hata'));
   });
 }
-function _sofraNavWeek(dir){ _sofraLastWeekOffset+=dir; _sofraRenderMenuPreview(); _sofraRenderShopCard(); }
 
-// Planlayıcıyı açarken belirli bir tarihe zıpla
+function sfRem(iso,meal,idx){
+  if(!window.Sofra)return;
+  var sId=window.Sofra.getActive(); if(!sId) return;
+  if(!confirm('Bu yemeği Sofra menüsünden sil?')) return;
+  var ref=db.collection('sofras').doc(sId).collection('plans').doc('fs_plan_'+iso);
+  ref.get().then(function(s){
+    if(!s.exists) return;
+    var data=s.data().data||{};
+    if(!data[meal]||!data[meal][idx]) return;
+    data[meal].splice(idx,1);
+    var name=(auth.currentUser.displayName||auth.currentUser.email||'Üye').substring(0,20);
+    return ref.set({
+      data:data,
+      updatedAt:firebase.firestore.FieldValue.serverTimestamp(),
+      updatedByUid:auth.currentUser.uid, updatedByName:name
+    },{merge:true});
+  }).then(function(){
+    if(typeof showToast==='function') showToast('🗑️ Silindi');
+  });
+}
+
+// confirmPortion hook — pendingFood'u Sofra'ya yönlendir (daily log'a YAZMA)
+;(function(){
+  function _tryHook(){
+    if(typeof window.confirmPortion!=='function'){ return false; }
+    if(window.__sfPortionHooked) return true;
+    window.__sfPortionHooked=true;
+    var _orig=window.confirmPortion;
+    window.confirmPortion=function(){
+      if(!_sfTgt) return _orig.apply(this,arguments);
+      try{
+        if(!window.pendingFood){ _sfTgt=null; return _orig.apply(this,arguments); }
+        var g=parseFloat(document.getElementById('portionInput').value)||100;
+        var r=g/100;
+        var pf=window.pendingFood;
+        var food={
+          name:pf.name, emoji:pf.emoji||'🍽️',
+          cal:Math.round(pf.cal*r), prot:Math.round((pf.prot||0)*r),
+          carb:Math.round((pf.carb||0)*r), fat:Math.round((pf.fat||0)*r),
+          amount:g
+        };
+        sfDirect(food);
+        try{ document.getElementById('portionModal').classList.remove('show'); }catch(_){}
+        window.pendingFood=null;
+      }catch(e){ _sfTgt=null; return _orig.apply(this,arguments); }
+    };
+    return true;
+  }
+  if(!_tryHook()){
+    // confirmPortion henüz yüklenmemiş olabilir — retry
+    var n=0; var iv=setInterval(function(){ if(_tryHook()||++n>20) clearInterval(iv); },250);
+  }
+})();
+
+// addFoodToMeal hook — arama sonucu direkt tıklamada da Sofra'ya yönlendir
+;(function(){
+  function _tryHook(){
+    if(typeof window.addFoodToMeal!=='function') return false;
+    if(window.__sfAddHooked) return true;
+    window.__sfAddHooked=true;
+    var _o=window.addFoodToMeal;
+    window.addFoodToMeal=function(food,mk,amt,unit){
+      if(_sfTgt){
+        var f=Object.assign({},food);
+        if(amt&&amt!==100&&food.cal){var r=amt/100;f.cal=Math.round(food.cal*r);f.prot=Math.round((food.prot||0)*r);f.carb=Math.round((food.carb||0)*r);f.fat=Math.round((food.fat||0)*r);}
+        f.amount=amt||100;
+        sfDirect(f);
+        return;
+      }
+      return _o(food,mk,amt,unit);
+    };
+    return true;
+  }
+  if(!_tryHook()){
+    var n=0; var iv=setInterval(function(){ if(_tryHook()||++n>20) clearInterval(iv); },250);
+  }
+})();
+
+// Planlayıcıyı açarken belirli bir tarihe zıpla (kişisel planlayıcıya) — eski işlev kalsın
 function sofraOpenPlanner(iso){
   if(iso){ try{ localStorage.setItem('fs_planner_jump_date',iso); }catch(_){} }
   if(typeof switchTab==='function') switchTab('plan');
@@ -609,11 +772,86 @@ function _sofraEstimateShopItems(){
   });
 }
 
-// "Alışveriş listesini çıkar" butonu — planner'ı aç, alışveriş sekmesini aç
+// "Alışveriş listesini çıkar" butonu — Sofra menüsünden inline alışveriş listesi oluştur
 function sofraGenerateShopList(){
-  try{ localStorage.setItem('fs_planner_open_shop','1'); }catch(_){}
-  if(typeof showToast==='function') showToast('🧾 Liste hazırlanıyor...');
-  if(typeof switchTab==='function') switchTab('plan');
+  if(!window.Sofra)return;
+  var sId=window.Sofra.getActive(); if(!sId) return;
+  var el=document.getElementById('sofraShopCard');
+  if(!el) return;
+  // Yükleniyor göster
+  var existing=document.getElementById('sofraShopInline');
+  if(existing) existing.remove();
+  var box=document.createElement('div');
+  box.id='sofraShopInline';
+  box.style.cssText='margin-top:10px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px';
+  box.innerHTML='<div style="font-size:.72rem;color:var(--text2)"><span class="spinner" style="width:14px;height:14px;border-width:2px"></span> Hesaplanıyor...</div>';
+  el.appendChild(box);
+
+  _sofraBuildShopList().then(function(items){
+    if(!items.length){
+      box.innerHTML='<div style="font-size:.72rem;color:var(--text2);text-align:center;padding:8px">Henüz menü boş — önce yemek ekle.</div>';
+      return;
+    }
+    var h='<div style="font-size:.78rem;font-weight:800;margin-bottom:8px">🧾 Haftalık Alışveriş Listesi ('+items.length+' malzeme)</div>';
+    h+='<div style="max-height:300px;overflow-y:auto">';
+    items.forEach(function(it){
+      h+='<div style="display:flex;align-items:center;gap:8px;padding:6px 4px;border-bottom:1px solid var(--border)">';
+      h+='<span style="flex:1;font-size:.74rem">'+esc(it.name)+'</span>';
+      h+='<span style="font-size:.66rem;color:var(--text2)">'+it.count+' yemek</span>';
+      h+='</div>';
+    });
+    h+='</div>';
+    h+='<button onclick="_sofraCopyShopList()" style="width:100%;margin-top:8px;padding:8px;background:var(--glass);border:1px solid var(--border);border-radius:8px;font-size:.72rem;font-weight:700;cursor:pointer;color:var(--text);font-family:var(--font,system-ui)">📋 Listeyi Kopyala</button>';
+    box.innerHTML=h;
+    window._sofraShopItems=items;
+  });
+}
+
+function _sofraCopyShopList(){
+  var items=window._sofraShopItems||[]; if(!items.length)return;
+  var txt='🛒 Sofra Alışveriş Listesi\n\n'+items.map(function(it){return '• '+it.name;}).join('\n');
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(function(){ if(typeof showToast==='function')showToast('📋 Kopyalandı'); });
+  }
+}
+
+function _sofraBuildShopList(){
+  if(!window.Sofra||typeof db==='undefined') return Promise.resolve([]);
+  var sId=window.Sofra.getActive(); if(!sId) return Promise.resolve([]);
+  function _mondayOf(o){var d=new Date();d.setHours(0,0,0,0);var dow=d.getDay();var diff=dow===0?-6:1-dow;d.setDate(d.getDate()+diff+(o*7));return d;}
+  function _iso(d){return d.toISOString().slice(0,10);}
+  var mon=_mondayOf(_sofraLastWeekOffset);
+  var dates=[]; for(var i=0;i<7;i++){var dd=new Date(mon);dd.setDate(mon.getDate()+i);dates.push(_iso(dd));}
+  return Promise.all(dates.map(function(iso){
+    return db.collection('sofras').doc(sId).collection('plans').doc('fs_plan_'+iso).get()
+      .then(function(s){return s.exists?(s.data().data||{}):{};}).catch(function(){return {};});
+  })).then(function(days){
+    var RECIPES=(window.TURKISH_RECIPES_DB||[]).concat(typeof window.RECIPES!=='undefined'?window.RECIPES:[]);
+    var counts={}, ML=['kahvalti','ogle','aksam','atistirmalik'];
+    days.forEach(function(dt){
+      ML.forEach(function(m){(dt[m]||[]).forEach(function(f){
+        var fn=(f.name||'').toLowerCase();
+        var matched=false;
+        for(var ri=0;ri<RECIPES.length;ri++){
+          if(RECIPES[ri].name && RECIPES[ri].name.toLowerCase()===fn && RECIPES[ri].ingredients){
+            RECIPES[ri].ingredients.forEach(function(ing){
+              var nm=(ing.item||ing.name||String(ing));
+              var k=nm.toLowerCase();
+              if(!counts[k]) counts[k]={name:nm,count:0};
+              counts[k].count++;
+            });
+            matched=true; break;
+          }
+        }
+        if(!matched && f.name){
+          var k=f.name.toLowerCase();
+          if(!counts[k]) counts[k]={name:f.name,count:0};
+          counts[k].count++;
+        }
+      });});
+    });
+    return Object.keys(counts).map(function(k){return counts[k];}).sort(function(a,b){return b.count-a.count;});
+  });
 }
 
 // ═══ Akşam yemeği önerileri ═══

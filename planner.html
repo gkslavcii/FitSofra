@@ -72,8 +72,12 @@ var ML=['kahvalti','ogle','aksam','atistirmalik'],MLB={kahvalti:'🌅 Kahvaltı'
 var DTR=['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'],DF=['Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi','Pazar'];
 var pWO=0,pSD=0,_pTgt=null;
 
-// ═══════ SOFRA (Aile/Ev paylaşımı) entegrasyonu ═══════
-function pActiveSofraId(){
+// ═══════ SOFRA (Aile/Ev paylaşımı) ═══════
+// NOT: Bu planner artık SADECE kişisel plandır.
+// Sofra'nın haftalık menüsü Topluluk → Sofra sekmesinde bağımsız çalışır.
+// pActiveSofraId() burada her zaman null döner → tüm veri kişisel kalır.
+function pActiveSofraId(){ return null; }
+function _pGetSofraId(){
   return (window.Sofra && window.Sofra.getActive) ? window.Sofra.getActive() : null;
 }
 function _pDateISO(w,d){return pDate(w,d).toISOString().split('T')[0];}
@@ -229,8 +233,11 @@ function pSetupSofraSync(){
 
 // ═══════ SOFRA SEÇİCİ (üst bar) ═══════
 function pRenderSofraSelector(){
+  // Planner artık sadece kişisel — Sofra seçici kalıcı gizli
   var el=document.getElementById('pSofraSelector');
-  if(!el)return;
+  if(el){el.style.display='none';el.innerHTML='';}
+  return;
+  // eslint-disable-next-line no-unreachable
   if(!window.Sofra||typeof auth==='undefined'||!auth.currentUser){el.style.display='none';return;}
   var sofras=window.Sofra.getAll();
   if(!sofras.length){el.style.display='none';return;}
