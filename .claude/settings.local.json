@@ -24,7 +24,8 @@
       "Bash(python3:*)",
       "WebSearch",
       "WebFetch(domain:unsplash.com)",
-      "Bash(firebase deploy *)"
+      "Bash(firebase deploy *)",
+      "Bash(grep -v \"^\\\\s*//\")"
     ]
   }
 }
