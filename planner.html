@@ -553,7 +553,7 @@ function _renderShopList(sec){
       var isP=_isPantry(key);
       if(isP&&!_pShowPantry)return; // Evde olanı gizle (varsayılan)
       var ic=_isChecked(key);
-      var amtStr=it.amounts.length?(' — '+it.amounts.join(', ')):'';
+      var amtStr=it.amountText?(' — '+it.amountText):'';
       var rowStyle=isP?'opacity:.5':'';
       var rawBadge=it.raw?' <span style="font-size:.56rem;background:var(--accent-glow);color:var(--accent);padding:1px 5px;border-radius:4px;font-weight:800;margin-left:4px">hammadde</span>':'';
       var rowIcon=it.raw?'🥦':'🥄';
@@ -642,7 +642,7 @@ function pShopCopy(){
     for(var d=0;d<7;d++){var dt=pGet(pWO,d);ML.forEach(function(m){(dt[m]||[]).forEach(function(f){_all.push(f);});});}
     var _r = (window.IngredientResolver && window.IngredientResolver.buildShoppingList)
       ? window.IngredientResolver.buildShoppingList(_all) : {resolved:[],unresolved:[]};
-    _r.resolved.forEach(function(i){if(_skipP('ing:'+i.name.toLowerCase()))return;t+='☐ '+i.name+(i.amounts.length?' ('+i.amounts.join(', ')+')':'')+'\n';});
+    _r.resolved.forEach(function(i){if(_skipP('ing:'+i.name.toLowerCase()))return;t+='☐ '+i.name+(i.amountText?' ('+i.amountText+')':'')+'\n';});
     if(_r.unresolved.length){
       t+='\n⚠️ Tarifi tanımsız yemekler:\n';
       _r.unresolved.forEach(function(u){t+='❓ '+u.name+(u.count>1?' (×'+u.count+')':'')+'\n';});

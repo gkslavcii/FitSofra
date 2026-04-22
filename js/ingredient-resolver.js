@@ -118,16 +118,29 @@
       }
       r.items.forEach(function(it){
         var k=it.name.toLowerCase();
-        if(!map[k]) map[k]={name:it.name, amounts:[], count:0, raw:!!it.raw};
+        if(!map[k]) map[k]={name:it.name, amountRaw:[], count:0, raw:!!it.raw};
         map[k].count++;
         if(it.raw) map[k].raw=true;
         if(it.amount){
-          var a=String(it.amount).trim();
-          if(a && map[k].amounts.indexOf(a)<0) map[k].amounts.push(a);
+          // TÜM occurence'ları kaydet (topla için)
+          map[k].amountRaw.push(String(it.amount).trim());
         }
       });
     });
-    var resolved=Object.keys(map).map(function(k){return map[k];}).sort(function(a,b){
+    // Miktar toplama — AmountParser mevcutsa kullan
+    var resolved=Object.keys(map).map(function(k){
+      var obj=map[k];
+      var agg=(window.AmountParser&&window.AmountParser.sum)
+        ? window.AmountParser.sum(obj.amountRaw)
+        : {totals:[],unparsed:obj.amountRaw};
+      obj.amountAgg=agg; // {totals:[{value,unit}], unparsed:[]}
+      obj.amountText=(window.AmountParser&&window.AmountParser.format)
+        ? window.AmountParser.format(agg)
+        : obj.amountRaw.join(', ');
+      // Geriye uyumluluk için: amounts[] (raw string dizisi)
+      obj.amounts=obj.amountRaw;
+      return obj;
+    }).sort(function(a,b){
       // Tariften gelenler üstte, hammaddeler altta
       if(a.raw!==b.raw) return a.raw?1:-1;
       return b.count-a.count;

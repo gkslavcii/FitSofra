@@ -25,7 +25,8 @@
       "WebSearch",
       "WebFetch(domain:unsplash.com)",
       "Bash(firebase deploy *)",
-      "Bash(grep -v \"^\\\\s*//\")"
+      "Bash(grep -v \"^\\\\s*//\")",
+      "Bash(node -e ' *)"
     ]
   }
 }

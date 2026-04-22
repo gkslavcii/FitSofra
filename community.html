@@ -771,7 +771,7 @@ function sofraGenerateShopList(){
     h+='<div style="font-size:.64rem;color:var(--text2);margin-bottom:8px">'+items.length+' hammadde • '+res.recipeCount+' tariften, '+res.rawCount+' direkt</div>';
     h+='<div style="max-height:320px;overflow-y:auto">';
     items.forEach(function(it){
-      var amtStr=it.amounts&&it.amounts.length?it.amounts.join(', '):'';
+      var amtStr=it.amountText||'';
       var rawBadge=it.raw?'<span style="font-size:.56rem;background:var(--accent-glow);color:var(--accent);padding:1px 5px;border-radius:4px;font-weight:800;margin-left:4px">hammadde</span>':'';
       var icon=it.raw?'🥦':'🥄';
       h+='<div style="display:flex;align-items:center;gap:8px;padding:7px 4px;border-bottom:1px solid var(--border)">';
@@ -802,7 +802,7 @@ function sofraGenerateShopList(){
 function _sofraCopyShopList(){
   var res=window._sofraShopResult; if(!res||!res.resolved)return;
   var txt='🛒 Sofra Alışveriş Listesi\n\n'+res.resolved.map(function(it){
-    var amt=it.amounts&&it.amounts.length?' ('+it.amounts.join(', ')+')':'';
+    var amt=it.amountText?' ('+it.amountText+')':'';
     return '☐ '+it.name+amt;
   }).join('\n');
   if(res.unresolved&&res.unresolved.length){
