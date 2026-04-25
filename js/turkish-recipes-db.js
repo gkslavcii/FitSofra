@@ -10,7 +10,7 @@ window.TURKISH_RECIPES_DB = [
 // ═══════════════════════════════════════════
 {
   id:"r_iskender",name:"İskender Kebap",cat:"klasik",
-  emoji:"🥩",cal:520,prot:35,carb:35,fat:26,serv:"1 porsiyon",time:40,
+  emoji:"🥩",cal:520,prot:35,carb:35,fat:26,serv:"1 porsiyon",yieldServings:1,time:40,
   tags:["et","proteinli","kebap"],
   ingredients:[
     {item:"Dana döner eti",amount:"150g"},
@@ -31,7 +31,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_hunkar",name:"Hünkar Beğendi",cat:"klasik",
-  emoji:"🥩",cal:400,prot:25,carb:20,fat:25,serv:"1 porsiyon",time:60,
+  emoji:"🥩",cal:323,prot:17.7,carb:21.1,fat:19.9,serv:"4 porsiyon",yieldServings:4,time:60,
   tags:["et","geleneksel","proteinli"],
   ingredients:[
     {item:"Kuzu kuşbaşı",amount:"200g"},
@@ -54,7 +54,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_karniyarik",name:"Karnıyarık",cat:"klasik",
-  emoji:"🍆",cal:180,prot:8,carb:12,fat:12,serv:"1 porsiyon",time:50,
+  emoji:"🍆",cal:196,prot:7.3,carb:15.8,fat:12.6,serv:"4 porsiyon",yieldServings:4,time:50,
   tags:["sebze","et","geleneksel"],
   ingredients:[
     {item:"Patlıcan",amount:"2 adet"},
@@ -77,7 +77,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_imam_bayildi",name:"İmam Bayıldı",cat:"klasik",
-  emoji:"🍆",cal:120,prot:3,carb:10,fat:8,serv:"1 porsiyon",time:50,
+  emoji:"🍆",cal:141,prot:2.7,carb:15,fat:8.9,serv:"5 porsiyon",yieldServings:5,time:50,
   tags:["sebze","zeytinyagli","vejetaryen","saglikli"],
   ingredients:[
     {item:"Patlıcan",amount:"2 adet"},
@@ -98,7 +98,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_etli_nohut",name:"Etli Nohut",cat:"klasik",
-  emoji:"🍲",cal:250,prot:18,carb:25,fat:9,serv:"1 porsiyon",time:45,
+  emoji:"🍲",cal:265,prot:15.8,carb:34.8,fat:7.8,serv:"4 porsiyon",yieldServings:4,time:45,
   tags:["baklagil","et","proteinli","geleneksel"],
   ingredients:[
     {item:"Nohut (haşlanmış)",amount:"200g"},
@@ -120,7 +120,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_etli_kuru_fasulye",name:"Etli Kuru Fasulye",cat:"klasik",
-  emoji:"🍲",cal:230,prot:16,carb:24,fat:8,serv:"1 porsiyon",time:50,
+  emoji:"🍲",cal:230,prot:14.4,carb:28.4,fat:7.1,serv:"5 porsiyon",yieldServings:5,time:50,
   tags:["baklagil","et","proteinli","geleneksel"],
   ingredients:[
     {item:"Kuru fasulye (haşlanmış)",amount:"200g"},
@@ -166,7 +166,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_manti",name:"Kayseri Mantısı",cat:"klasik",
-  emoji:"🥟",cal:380,prot:18,carb:42,fat:15,serv:"1 porsiyon",time:90,
+  emoji:"🥟",cal:431,prot:16.6,carb:52.6,fat:16.9,serv:"4 porsiyon",yieldServings:4,time:90,
   tags:["hamur","et","geleneksel"],
   ingredients:[
     {item:"Un",amount:"2 su bardağı"},
@@ -260,7 +260,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_yayla",name:"Yayla Çorbası",cat:"corba",
-  emoji:"🍲",cal:65,prot:3,carb:7,fat:3,serv:"1 kase",time:25,
+  emoji:"🍲",cal:77,prot:2.9,carb:7.9,fat:3.9,serv:"6 kase",yieldServings:6,time:25,
   tags:["vejetaryen","saglikli","geleneksel"],
   ingredients:[
     {item:"Yoğurt",amount:"1 su bardağı"},
@@ -281,7 +281,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_tarhana",name:"Tarhana Çorbası",cat:"corba",
-  emoji:"🍲",cal:72,prot:3,carb:12,fat:2,serv:"1 kase",time:20,
+  emoji:"🍲",cal:67,prot:1.5,carb:6,fat:4.2,serv:"3 kase",yieldServings:3,time:20,
   tags:["vejetaryen","geleneksel","pratik"],
   ingredients:[
     {item:"Tarhana",amount:"3 yk"},
@@ -424,7 +424,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_fit_omlet",name:"Sebzeli Protein Omlet",cat:"fit",
-  emoji:"🍳",cal:200,prot:22,carb:5,fat:10,serv:"1 porsiyon",time:10,
+  emoji:"🍳",cal:200,prot:22,carb:5,fat:10,serv:"1 porsiyon",yieldServings:1,time:10,
   tags:["proteinli","saglikli","fit","kahvalti","pratik"],
   ingredients:[
     {item:"Yumurta",amount:"2 adet"},
@@ -444,7 +444,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_fit_bulgur_pilavı",name:"Sebzeli Bulgur Pilavı",cat:"fit",
-  emoji:"🍚",cal:140,prot:5,carb:25,fat:3,serv:"1 porsiyon",time:25,
+  emoji:"🍚",cal:161,prot:4.9,carb:30.1,fat:3.3,serv:"5 porsiyon",yieldServings:5,time:25,
   tags:["saglikli","vejetaryen","fit"],
   ingredients:[
     {item:"Bulgur",amount:"1 su bardağı"},
@@ -465,7 +465,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_fit_tavuk_salata",name:"Tavuklu Sezar Salata",cat:"fit",
-  emoji:"🥗",cal:280,prot:28,carb:10,fat:14,serv:"1 porsiyon",time:20,
+  emoji:"🥗",cal:280,prot:28,carb:10,fat:14,serv:"1 porsiyon",yieldServings:1,time:20,
   tags:["proteinli","saglikli","fit"],
   ingredients:[
     {item:"Tavuk göğsü (ızgara)",amount:"120g"},
@@ -507,7 +507,7 @@ window.TURKISH_RECIPES_DB = [
 // ═══════════════════════════════════════════
 {
   id:"r_menemen",name:"Menemen",cat:"pratik",
-  emoji:"🍳",cal:140,prot:8,carb:6,fat:10,serv:"1 porsiyon",time:15,
+  emoji:"🍳",cal:163,prot:7.8,carb:6.7,fat:12.1,serv:"2 porsiyon",yieldServings:2,time:15,
   tags:["vejetaryen","kahvalti","pratik"],
   ingredients:[
     {item:"Yumurta",amount:"2 adet"},
@@ -567,7 +567,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_patates_kizartma",name:"Fırında Patates",cat:"pratik",
-  emoji:"🥔",cal:160,prot:3,carb:22,fat:7,serv:"1 porsiyon",time:35,
+  emoji:"🥔",cal:178,prot:3.1,carb:26.3,fat:7.2,serv:"2 porsiyon",yieldServings:2,time:35,
   tags:["vejetaryen","pratik"],
   ingredients:[
     {item:"Patates",amount:"2 orta"},
@@ -604,7 +604,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_yumurta_haslama",name:"Sahanda Yumurta",cat:"pratik",
-  emoji:"🍳",cal:196,prot:14,carb:1,fat:15,serv:"2 yumurta",time:5,
+  emoji:"🍳",cal:196,prot:14,carb:1,fat:15,serv:"2 yumurta",yieldServings:1,time:5,
   tags:["kahvalti","proteinli","pratik"],
   ingredients:[
     {item:"Yumurta",amount:"2 adet"},
@@ -648,7 +648,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_patlican_musakka",name:"Patlıcan Musakka",cat:"sebze",
-  emoji:"🍆",cal:200,prot:10,carb:14,fat:12,serv:"1 porsiyon",time:50,
+  emoji:"🍆",cal:190,prot:7.6,carb:14.7,fat:12,serv:"5 porsiyon",yieldServings:5,time:50,
   tags:["sebze","et","geleneksel"],
   ingredients:[
     {item:"Patlıcan",amount:"3 adet"},
@@ -688,7 +688,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_ispanak_yemegi",name:"Ispanaklı Yumurta",cat:"sebze",
-  emoji:"🥬",cal:140,prot:10,carb:4,fat:9,serv:"1 porsiyon",time:20,
+  emoji:"🥬",cal:124,prot:7.7,carb:8.5,fat:7.4,serv:"3 porsiyon",yieldServings:3,time:20,
   tags:["sebze","saglikli","proteinli"],
   ingredients:[
     {item:"Ispanak",amount:"300g"},
@@ -706,7 +706,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_mantar_sote",name:"Mantar Sote",cat:"sebze",
-  emoji:"🍄",cal:80,prot:4,carb:5,fat:5,serv:"1 porsiyon",time:15,
+  emoji:"🍄",cal:82,prot:4,carb:9.2,fat:4.2,serv:"3 porsiyon",yieldServings:3,time:15,
   tags:["sebze","vejetaryen","saglikli","pratik"],
   ingredients:[
     {item:"Mantar",amount:"300g"},
@@ -844,7 +844,7 @@ window.TURKISH_RECIPES_DB = [
 // ═══════════════════════════════════════════
 {
   id:"r_kisir",name:"Kısır",cat:"vegan",
-  emoji:"🌾",cal:160,prot:4,carb:22,fat:6,serv:"1 porsiyon",time:20,
+  emoji:"🌾",cal:188,prot:4.2,carb:28.5,fat:7.5,serv:"6 porsiyon",yieldServings:6,time:20,
   tags:["vegan","vejetaryen","saglikli","meze"],
   ingredients:[
     {item:"İnce bulgur",amount:"1 su bardağı"},
@@ -906,7 +906,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_saksuka",name:"Şakşuka",cat:"vegan",
-  emoji:"🍅",cal:100,prot:3,carb:8,fat:6,serv:"1 porsiyon",time:25,
+  emoji:"🍅",cal:100,prot:2.3,carb:11,fat:6.1,serv:"5 porsiyon",yieldServings:5,time:25,
   tags:["vegan","vejetaryen","saglikli","meze"],
   ingredients:[
     {item:"Patlıcan",amount:"2 adet"},
@@ -931,7 +931,7 @@ window.TURKISH_RECIPES_DB = [
 // ═══════════════════════════════════════════
 {
   id:"r_kasarli_tost",name:"Kaşarlı Tost",cat:"sandvic",
-  emoji:"🥪",cal:280,prot:12,carb:28,fat:14,serv:"1 adet",time:10,
+  emoji:"🥪",cal:280,prot:12,carb:28,fat:14,serv:"1 adet",yieldServings:1,time:10,
   tags:["pratik","kahvalti"],
   ingredients:[
     {item:"Tost ekmeği",amount:"2 dilim"},
@@ -945,7 +945,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_karışık_tost",name:"Karışık Tost",cat:"sandvic",
-  emoji:"🥪",cal:340,prot:16,carb:28,fat:18,serv:"1 adet",time:10,
+  emoji:"🥪",cal:260,prot:15.2,carb:2.2,fat:21.3,serv:"2 adet",yieldServings:2,time:10,
   tags:["pratik","et"],
   ingredients:[
     {item:"Tost ekmeği",amount:"2 dilim"},
@@ -1004,7 +1004,7 @@ window.TURKISH_RECIPES_DB = [
 // ═══════════════════════════════════════════
 {
   id:"r_gavurdagi",name:"Gavurdağı Salatası",cat:"salata",
-  emoji:"🥗",cal:90,prot:2,carb:8,fat:6,serv:"1 porsiyon",time:10,
+  emoji:"🥗",cal:97,prot:1.7,carb:8.4,fat:6.9,serv:"5 porsiyon",yieldServings:5,time:10,
   tags:["vegan","saglikli","meze","antep"],
   ingredients:[
     {item:"Domates",amount:"2 adet"},
@@ -1047,7 +1047,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_roka_salata",name:"Roka Salatası",cat:"salata",
-  emoji:"🥗",cal:70,prot:3,carb:5,fat:4,serv:"1 porsiyon",time:5,
+  emoji:"🥗",cal:85,prot:2.4,carb:3.1,fat:7.5,serv:"4 porsiyon",yieldServings:4,time:5,
   tags:["vejetaryen","saglikli","pratik"],
   ingredients:[
     {item:"Roka",amount:"1 demet"},
@@ -1111,7 +1111,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_kiymali_pide",name:"Kıymalı Pide",cat:"hamur",
-  emoji:"🫓",cal:280,prot:13,carb:30,fat:12,serv:"1 dilim",time:40,
+  emoji:"🫓",cal:279,prot:11.9,carb:38.5,fat:8.2,serv:"8 dilim",yieldServings:8,time:40,
   tags:["hamur","et","geleneksel"],
   ingredients:[
     {item:"Un",amount:"3 su bardağı"},
@@ -1182,7 +1182,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_babaganus",name:"Babaganuş",cat:"meze",
-  emoji:"🍆",cal:88,prot:2,carb:6,fat:6,serv:"100g",time:25,
+  emoji:"🍆",cal:87,prot:2.3,carb:9.3,fat:5.4,serv:"100g",yieldServings:6,time:25,
   tags:["vegan","meze","saglikli"],
   ingredients:[
     {item:"Patlıcan",amount:"3 adet"},
@@ -1201,7 +1201,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_acili_ezme",name:"Acılı Ezme",cat:"meze",
-  emoji:"🌶️",cal:60,prot:2,carb:8,fat:2,serv:"100g",time:10,
+  emoji:"🌶️",cal:62,prot:1.6,carb:9.1,fat:2.8,serv:"100g",yieldServings:6,time:10,
   tags:["vegan","meze","pratik","antep"],
   ingredients:[
     {item:"Domates",amount:"3 adet"},
@@ -1268,7 +1268,7 @@ window.TURKISH_RECIPES_DB = [
 // ═══════════════════════════════════════════
 {
   id:"r_ali_nazik",name:"Ali Nazik",cat:"klasik",
-  emoji:"🥩",cal:380,prot:28,carb:12,fat:24,serv:"1 porsiyon",time:40,
+  emoji:"🥩",cal:298,prot:18.4,carb:18.9,fat:17.8,serv:"3 porsiyon",yieldServings:3,time:40,
   tags:["et","proteinli","kebap","antep"],
   ingredients:[
     {item:"Kuzu kuşbaşı",amount:"200g"},
@@ -1287,7 +1287,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_cerkez_tavugu",name:"Çerkez Tavuğu",cat:"klasik",
-  emoji:"🍗",cal:280,prot:20,carb:8,fat:19,serv:"1 porsiyon",time:40,
+  emoji:"🍗",cal:348,prot:8.2,carb:7.9,fat:34.3,serv:"3 porsiyon",yieldServings:3,time:40,
   tags:["et","geleneksel","soğuk"],
   ingredients:[
     {item:"Tavuk göğsü",amount:"300g"},
@@ -1308,7 +1308,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_tas_kebabi",name:"Tas Kebabı",cat:"klasik",
-  emoji:"🥩",cal:320,prot:25,carb:10,fat:20,serv:"1 porsiyon",time:60,
+  emoji:"🥩",cal:310,prot:30.2,carb:14.8,fat:15.5,serv:"2 porsiyon",yieldServings:2,time:60,
   tags:["et","geleneksel","proteinli"],
   ingredients:[
     {item:"Dana kuşbaşı",amount:"250g"},
@@ -1329,7 +1329,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_kuzu_tandir",name:"Kuzu Tandır",cat:"klasik",
-  emoji:"🥩",cal:380,prot:30,carb:5,fat:27,serv:"1 porsiyon",time:180,
+  emoji:"🥩",cal:437,prot:34.8,carb:10.9,fat:28.5,serv:"3 porsiyon",yieldServings:3,time:180,
   tags:["et","proteinli","geleneksel"],
   ingredients:[
     {item:"Kuzu eti (kemikli)",amount:"500g"},
@@ -1351,7 +1351,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_pilav_ustu_kuru",name:"Pilav Üstü Kuru Fasulye",cat:"klasik",
-  emoji:"🍲",cal:360,prot:19,carb:48,fat:10,serv:"1 porsiyon",time:50,
+  emoji:"🍲",cal:411,prot:20.1,carb:72,fat:5.1,serv:"4 porsiyon",yieldServings:4,time:50,
   tags:["baklagil","et","geleneksel"],
   ingredients:[
     {item:"Kuru fasulye (haşlanmış)",amount:"200g"},
@@ -1392,7 +1392,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_et_sote",name:"Et Sote",cat:"klasik",
-  emoji:"🥘",cal:280,prot:24,carb:10,fat:16,serv:"1 porsiyon",time:45,
+  emoji:"🥘",cal:267,prot:24.5,carb:13.8,fat:13.6,serv:"2 porsiyon",yieldServings:2,time:45,
   tags:["et","proteinli","geleneksel"],
   ingredients:[
     {item:"Dana kuşbaşı",amount:"200g"},
@@ -1413,7 +1413,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_bezelye",name:"Etli Bezelye",cat:"klasik",
-  emoji:"🟢",cal:180,prot:12,carb:14,fat:8,serv:"1 porsiyon",time:35,
+  emoji:"🟢",cal:199,prot:13.9,carb:23.5,fat:6.1,serv:"4 porsiyon",yieldServings:4,time:35,
   tags:["sebze","et","geleneksel"],
   ingredients:[
     {item:"Bezelye",amount:"300g"},
@@ -1433,7 +1433,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_sac_kavurma",name:"Sac Kavurma",cat:"klasik",
-  emoji:"🥘",cal:340,prot:25,carb:8,fat:23,serv:"1 porsiyon",time:30,
+  emoji:"🥘",cal:407,prot:27.6,carb:14.2,fat:27.4,serv:"2 porsiyon",yieldServings:2,time:30,
   tags:["et","proteinli","geleneksel"],
   ingredients:[
     {item:"Kuzu kuşbaşı",amount:"250g"},
@@ -1453,7 +1453,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_arnavut_cigeri",name:"Arnavut Ciğeri",cat:"klasik",
-  emoji:"🥩",cal:250,prot:22,carb:10,fat:14,serv:"1 porsiyon",time:20,
+  emoji:"🥩",cal:265,prot:27.9,carb:25.9,fat:4.9,serv:"2 porsiyon",yieldServings:2,time:20,
   tags:["et","proteinli","geleneksel"],
   ingredients:[
     {item:"Dana ciğer",amount:"250g"},
@@ -1596,7 +1596,7 @@ window.TURKISH_RECIPES_DB = [
 // ═══════════════════════════════════════════
 {
   id:"r_adana_kebap",name:"Adana Kebap",cat:"klasik",
-  emoji:"🥩",cal:540,prot:30,carb:30,fat:32,serv:"1 porsiyon",time:45,
+  emoji:"🥩",cal:651,prot:32.3,carb:42.6,fat:39.8,serv:"2 porsiyon",yieldServings:2,time:45,
   tags:["et","kebap","acı","klasik"],
   ingredients:[
     {item:"Kuzu kıyma (yağlı)",amount:"200g"},
@@ -1619,7 +1619,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_urfa_kebap",name:"Urfa Kebap",cat:"klasik",
-  emoji:"🥩",cal:510,prot:30,carb:28,fat:30,serv:"1 porsiyon",time:45,
+  emoji:"🥩",cal:469,prot:19.6,carb:11.4,fat:38.8,serv:"2 porsiyon",yieldServings:2,time:45,
   tags:["et","kebap","acısız","klasik"],
   ingredients:[
     {item:"Kuzu kıyma (yağlı)",amount:"200g"},
@@ -1661,7 +1661,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_tavuk_sis",name:"Tavuk Şiş",cat:"klasik",
-  emoji:"🍗",cal:320,prot:35,carb:8,fat:16,serv:"1 porsiyon",time:60,
+  emoji:"🍗",cal:320,prot:35,carb:8,fat:16,serv:"1 porsiyon",yieldServings:1,time:60,
   tags:["tavuk","mangal","proteinli"],
   ingredients:[
     {item:"Tavuk göğüs",amount:"200g"},
@@ -1701,7 +1701,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_kuzu_incik",name:"Fırında Kuzu İncik",cat:"klasik",
-  emoji:"🍖",cal:580,prot:45,carb:18,fat:35,serv:"1 porsiyon",time:180,
+  emoji:"🍖",cal:619,prot:35.8,carb:43.9,fat:34.1,serv:"2 porsiyon",yieldServings:2,time:180,
   tags:["et","fırın","klasik"],
   ingredients:[
     {item:"Kuzu incik",amount:"300g"},
@@ -1743,7 +1743,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_inegol_kofte",name:"İnegöl Köfte",cat:"klasik",
-  emoji:"🍖",cal:380,prot:24,carb:8,fat:28,serv:"4 adet",time:40,
+  emoji:"🍖",cal:397,prot:25.1,carb:9.2,fat:28.4,serv:"4 adet",yieldServings:2,time:40,
   tags:["et","kofte","mangal"],
   ingredients:[
     {item:"Dana kıyma",amount:"250g"},
@@ -1786,7 +1786,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_bamya",name:"Etli Bamya",cat:"sebze",
-  emoji:"🫛",cal:240,prot:18,carb:18,fat:12,serv:"1 porsiyon",time:60,
+  emoji:"🫛",cal:211,prot:13.2,carb:11.7,fat:13.4,serv:"3 porsiyon",yieldServings:3,time:60,
   tags:["sebze","et","geleneksel"],
   ingredients:[
     {item:"Kuru bamya",amount:"100g"},
@@ -1807,7 +1807,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_etli_turlu",name:"Etli Türlü",cat:"sebze",
-  emoji:"🍲",cal:320,prot:20,carb:28,fat:15,serv:"1 porsiyon",time:80,
+  emoji:"🍲",cal:275,prot:15.4,carb:25.5,fat:13.8,serv:"3 porsiyon",yieldServings:3,time:80,
   tags:["sebze","et","güveç"],
   ingredients:[
     {item:"Dana kuşbaşı",amount:"150g"},
@@ -1829,7 +1829,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_zeytinyagli_pirasa",name:"Zeytinyağlı Pırasa",cat:"sebze",
-  emoji:"🥬",cal:180,prot:4,carb:22,fat:9,serv:"1 porsiyon",time:50,
+  emoji:"🥬",cal:176,prot:2.4,carb:23.7,fat:8.8,serv:"5 porsiyon",yieldServings:5,time:50,
   tags:["zeytinyağlı","vegan","sebze"],
   ingredients:[
     {item:"Pırasa",amount:"500g"},
@@ -1850,7 +1850,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_zeytinyagli_enginar",name:"Zeytinyağlı Enginar",cat:"sebze",
-  emoji:"🌿",cal:160,prot:4,carb:18,fat:8,serv:"1 porsiyon",time:60,
+  emoji:"🌿",cal:155,prot:6.4,carb:24.3,fat:5.7,serv:"8 porsiyon",yieldServings:8,time:60,
   tags:["zeytinyağlı","vegan","klasik"],
   ingredients:[
     {item:"Enginar",amount:"4 adet"},
@@ -1872,7 +1872,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_barbunya_pilaki",name:"Barbunya Pilaki",cat:"vegan",
-  emoji:"🫘",cal:260,prot:14,carb:40,fat:6,serv:"1 porsiyon",time:90,
+  emoji:"🫘",cal:281,prot:13,carb:41.9,fat:7.8,serv:"6 porsiyon",yieldServings:6,time:90,
   tags:["vegan","zeytinyağlı","baklagil"],
   ingredients:[
     {item:"Taze barbunya",amount:"300g"},
@@ -1896,7 +1896,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_tavuklu_pilav",name:"Tavuklu Pirinç Pilavı",cat:"pratik",
-  emoji:"🍚",cal:410,prot:28,carb:48,fat:12,serv:"1 porsiyon",time:45,
+  emoji:"🍚",cal:356,prot:16,carb:50.2,fat:9.6,serv:"3 porsiyon",yieldServings:3,time:45,
   tags:["pilav","tavuk","pratik"],
   ingredients:[
     {item:"Pirinç",amount:"1 bardak"},
@@ -1917,7 +1917,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_ic_pilav",name:"İç Pilav",cat:"pratik",
-  emoji:"🍚",cal:380,prot:9,carb:55,fat:14,serv:"1 porsiyon",time:50,
+  emoji:"🍚",cal:391,prot:7,carb:63.6,fat:12.9,serv:"3 porsiyon",yieldServings:3,time:50,
   tags:["pilav","klasik","davet"],
   ingredients:[
     {item:"Pirinç",amount:"1 bardak"},
@@ -1960,7 +1960,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_hamsi_tava",name:"Hamsi Tava",cat:"klasik",
-  emoji:"🐟",cal:320,prot:24,carb:18,fat:18,serv:"1 porsiyon",time:25,
+  emoji:"🐟",cal:302,prot:17.6,carb:8.6,fat:22.3,serv:"3 porsiyon",yieldServings:3,time:25,
   tags:["balık","karadeniz","proteinli"],
   ingredients:[
     {item:"Hamsi",amount:"250g"},
@@ -1978,7 +1978,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_balik_ekmek",name:"Balık Ekmek",cat:"sandvic",
-  emoji:"🥪",cal:450,prot:28,carb:40,fat:18,serv:"1 adet",time:20,
+  emoji:"🥪",cal:387,prot:29.3,carb:4.9,fat:27.6,serv:"2 adet",yieldServings:2,time:20,
   tags:["balık","sokak","sandviç"],
   ingredients:[
     {item:"Uskumru fileto",amount:"1 adet (150g)"},
@@ -1998,7 +1998,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_kumpir",name:"Kumpir",cat:"sandvic",
-  emoji:"🥔",cal:580,prot:16,carb:75,fat:24,serv:"1 adet",time:70,
+  emoji:"🥔",cal:456,prot:11.3,carb:19.3,fat:38.3,serv:"2 adet",yieldServings:2,time:70,
   tags:["sokak","patates","pratik"],
   ingredients:[
     {item:"İri patates",amount:"1 adet (400g)"},
@@ -2128,7 +2128,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_kunefe",name:"Künefe",cat:"tatli",
-  emoji:"🧀",cal:480,prot:12,carb:55,fat:24,serv:"1 porsiyon",time:40,
+  emoji:"🧀",cal:457,prot:8.3,carb:64.7,fat:19.1,serv:"7 porsiyon",yieldServings:7,time:40,
   tags:["tatli","şerbetli","peynirli"],
   ingredients:[
     {item:"Tel kadayıf",amount:"200g"},
@@ -2150,7 +2150,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_kazandibi",name:"Kazandibi",cat:"tatli",
-  emoji:"🍮",cal:280,prot:8,carb:42,fat:10,serv:"1 porsiyon",time:60,
+  emoji:"🍮",cal:247,prot:4.4,carb:41,fat:7.5,serv:"8 porsiyon",yieldServings:8,time:60,
   tags:["tatli","sütlü","geleneksel"],
   ingredients:[
     {item:"Süt",amount:"1 litre"},
@@ -2169,7 +2169,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_tavuk_gogsu",name:"Tavuk Göğsü Tatlısı",cat:"tatli",
-  emoji:"🍮",cal:240,prot:10,carb:36,fat:7,serv:"1 porsiyon",time:90,
+  emoji:"🍮",cal:215,prot:7.2,carb:35.9,fat:4.9,serv:"8 porsiyon",yieldServings:8,time:90,
   tags:["tatli","sütlü","geleneksel"],
   ingredients:[
     {item:"Tavuk göğüs",amount:"100g"},
@@ -2189,7 +2189,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_muhallebi",name:"Muhallebi",cat:"tatli",
-  emoji:"🍮",cal:220,prot:6,carb:36,fat:6,serv:"1 porsiyon",time:30,
+  emoji:"🍮",cal:208,prot:4.4,carb:37.4,fat:4.7,serv:"8 porsiyon",yieldServings:8,time:30,
   tags:["tatli","sütlü","pratik"],
   ingredients:[
     {item:"Süt",amount:"1 litre"},
@@ -2255,7 +2255,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_irmik_helvasi",name:"İrmik Helvası",cat:"tatli",
-  emoji:"🍮",cal:320,prot:5,carb:48,fat:13,serv:"1 porsiyon",time:30,
+  emoji:"🍮",cal:326,prot:5.2,carb:56,fat:9.5,serv:"6 porsiyon",yieldServings:6,time:30,
   tags:["tatli","pratik","geleneksel"],
   ingredients:[
     {item:"İrmik",amount:"1 bardak"},
@@ -2275,7 +2275,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_sucuklu_yumurta",name:"Sucuklu Yumurta",cat:"pratik",
-  emoji:"🍳",cal:380,prot:22,carb:4,fat:30,serv:"1 porsiyon",time:15,
+  emoji:"🍳",cal:380,prot:22,carb:4,fat:30,serv:"1 porsiyon",yieldServings:1,time:15,
   tags:["kahvalti","pratik","sucuk"],
   ingredients:[
     {item:"Sucuk",amount:"80g"},
@@ -2293,7 +2293,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_muhlama",name:"Muhlama (Kuymak)",cat:"klasik",
-  emoji:"🧀",cal:460,prot:18,carb:18,fat:36,serv:"1 porsiyon",time:25,
+  emoji:"🧀",cal:534,prot:25,carb:10.8,fat:44,serv:"2 porsiyon",yieldServings:2,time:25,
   tags:["karadeniz","kahvalti","peynirli"],
   ingredients:[
     {item:"Tereyağı",amount:"3 yk"},
@@ -2312,7 +2312,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_yesil_mercimek_salata",name:"Yeşil Mercimek Salatası",cat:"salata",
-  emoji:"🥗",cal:210,prot:12,carb:28,fat:6,serv:"1 porsiyon",time:40,
+  emoji:"🥗",cal:222,prot:10.8,carb:31.7,fat:6.3,serv:"5 porsiyon",yieldServings:5,time:40,
   tags:["salata","vegan","proteinli","fit"],
   ingredients:[
     {item:"Yeşil mercimek",amount:"1 bardak"},
@@ -2360,7 +2360,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_beyti_kebap",name:"Beyti Kebap",cat:"klasik",
-  emoji:"🥩",cal:560,prot:30,carb:32,fat:34,serv:"1 porsiyon",time:60,
+  emoji:"🥩",cal:560,prot:30,carb:32,fat:34,serv:"1 porsiyon",yieldServings:1,time:60,
   tags:["et","kebap","lavaşlı"],
   ingredients:[
     {item:"Kuzu kıyma",amount:"200g"},
@@ -2382,7 +2382,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_patlican_kebabi",name:"Patlıcan Kebabı",cat:"klasik",
-  emoji:"🍆",cal:420,prot:22,carb:24,fat:28,serv:"1 porsiyon",time:60,
+  emoji:"🍆",cal:419,prot:21.8,carb:37.9,fat:22.3,serv:"2 porsiyon",yieldServings:2,time:60,
   tags:["et","kebap","sebze","klasik"],
   ingredients:[
     {item:"Kuzu kıyma",amount:"180g"},
@@ -2403,7 +2403,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_testi_kebabi",name:"Testi Kebabı",cat:"klasik",
-  emoji:"🏺",cal:520,prot:32,carb:30,fat:30,serv:"1 porsiyon",time:120,
+  emoji:"🏺",cal:432,prot:24.9,carb:33.4,fat:23.3,serv:"2 porsiyon",yieldServings:2,time:120,
   tags:["et","kapadokya","geleneksel","güveç"],
   ingredients:[
     {item:"Kuzu kuşbaşı",amount:"200g"},
@@ -2447,7 +2447,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_kuru_dolma",name:"Kuru Dolma (Lahana Sarma)",cat:"klasik",
-  emoji:"🌿",cal:320,prot:14,carb:38,fat:14,serv:"1 porsiyon",time:90,
+  emoji:"🌿",cal:253,prot:10,carb:22.9,fat:14.4,serv:"4 porsiyon",yieldServings:4,time:90,
   tags:["dolma","karadeniz","geleneksel"],
   ingredients:[
     {item:"Kara lahana yaprağı",amount:"10 adet"},
@@ -2469,7 +2469,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_izmir_kofte",name:"İzmir Köfte",cat:"klasik",
-  emoji:"🍖",cal:420,prot:24,carb:28,fat:24,serv:"1 porsiyon",time:70,
+  emoji:"🍖",cal:400,prot:16.9,carb:27.5,fat:25.2,serv:"3 porsiyon",yieldServings:3,time:70,
   tags:["et","kofte","fırın"],
   ingredients:[
     {item:"Dana kıyma",amount:"200g"},
@@ -2491,7 +2491,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_kadinbudu_kofte",name:"Kadınbudu Köfte",cat:"klasik",
-  emoji:"🍖",cal:380,prot:22,carb:14,fat:26,serv:"4 adet",time:50,
+  emoji:"🍖",cal:428,prot:7.5,carb:9.1,fat:40,serv:"4 adet",yieldServings:6,time:50,
   tags:["et","kofte","kızartma","klasik"],
   ingredients:[
     {item:"Dana kıyma",amount:"150g"},
@@ -2512,7 +2512,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_dalyan_kofte",name:"Dalyan Köfte",cat:"klasik",
-  emoji:"🍖",cal:420,prot:28,carb:12,fat:28,serv:"1 porsiyon",time:75,
+  emoji:"🍖",cal:414,prot:24.8,carb:23.7,fat:24.2,serv:"4 porsiyon",yieldServings:4,time:75,
   tags:["et","kofte","fırın","davet"],
   ingredients:[
     {item:"Dana kıyma",amount:"300g"},
@@ -2534,7 +2534,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_sulu_kofte",name:"Sulu Köfte",cat:"klasik",
-  emoji:"🍲",cal:340,prot:22,carb:26,fat:16,serv:"1 porsiyon",time:60,
+  emoji:"🍲",cal:387,prot:16.1,carb:39.6,fat:18.7,serv:"4 porsiyon",yieldServings:4,time:60,
   tags:["kofte","sulu","klasik"],
   ingredients:[
     {item:"Dana kıyma",amount:"200g"},
@@ -2555,7 +2555,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_etli_fasulye",name:"Etli Taze Fasulye",cat:"sebze",
-  emoji:"🫛",cal:280,prot:18,carb:20,fat:14,serv:"1 porsiyon",time:60,
+  emoji:"🫛",cal:321,prot:21.6,carb:41.9,fat:8.5,serv:"5 porsiyon",yieldServings:5,time:60,
   tags:["sebze","et","sulu","klasik"],
   ingredients:[
     {item:"Taze fasulye",amount:"300g"},
@@ -2575,7 +2575,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_tavuk_sote",name:"Tavuk Sote",cat:"pratik",
-  emoji:"🍗",cal:340,prot:30,carb:14,fat:18,serv:"1 porsiyon",time:30,
+  emoji:"🍗",cal:256,prot:27.7,carb:17.8,fat:9.2,serv:"2 porsiyon",yieldServings:2,time:30,
   tags:["tavuk","pratik","proteinli"],
   ingredients:[
     {item:"Tavuk göğüs",amount:"200g"},
@@ -2597,7 +2597,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_mercimekli_bulgur",name:"Mercimekli Bulgur Pilavı",cat:"vegan",
-  emoji:"🌾",cal:280,prot:10,carb:48,fat:6,serv:"1 porsiyon",time:40,
+  emoji:"🌾",cal:311,prot:11.7,carb:50.8,fat:7.9,serv:"4 porsiyon",yieldServings:4,time:40,
   tags:["pilav","vegan","baklagil"],
   ingredients:[
     {item:"Bulgur",amount:"1 bardak"},
@@ -2617,7 +2617,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_perde_pilavi",name:"Perde Pilavı",cat:"klasik",
-  emoji:"🍚",cal:520,prot:18,carb:58,fat:24,serv:"1 porsiyon",time:90,
+  emoji:"🍚",cal:561,prot:18.7,carb:89.2,fat:14.1,serv:"4 porsiyon",yieldServings:4,time:90,
   tags:["pilav","siirt","davet","klasik"],
   ingredients:[
     {item:"Pirinç",amount:"1 bardak"},
@@ -2640,7 +2640,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_midye_pilavi",name:"Midye Pilavı",cat:"klasik",
-  emoji:"🦪",cal:360,prot:14,carb:54,fat:10,serv:"1 porsiyon",time:50,
+  emoji:"🦪",cal:406,prot:11.6,carb:60.3,fat:13.3,serv:"3 porsiyon",yieldServings:3,time:50,
   tags:["deniz","pilav","geleneksel"],
   ingredients:[
     {item:"Pirinç",amount:"1 bardak"},
@@ -2662,7 +2662,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_cilbir",name:"Çılbır",cat:"pratik",
-  emoji:"🍳",cal:340,prot:20,carb:6,fat:26,serv:"1 porsiyon",time:15,
+  emoji:"🍳",cal:340,prot:20,carb:6,fat:26,serv:"1 porsiyon",yieldServings:1,time:15,
   tags:["kahvalti","yumurta","yoğurtlu","pratik"],
   ingredients:[
     {item:"Yumurta",amount:"2 adet"},
@@ -2681,7 +2681,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_kaygana",name:"Kaygana",cat:"pratik",
-  emoji:"🥞",cal:280,prot:12,carb:18,fat:18,serv:"1 porsiyon",time:15,
+  emoji:"🥞",cal:280,prot:12,carb:18,fat:18,serv:"1 porsiyon",yieldServings:1,time:15,
   tags:["kahvalti","yumurta","pratik","karadeniz"],
   ingredients:[
     {item:"Yumurta",amount:"3 adet"},
@@ -2701,7 +2701,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_pastirmali_yumurta",name:"Pastırmalı Yumurta",cat:"pratik",
-  emoji:"🍳",cal:340,prot:22,carb:3,fat:26,serv:"1 porsiyon",time:15,
+  emoji:"🍳",cal:340,prot:22,carb:3,fat:26,serv:"1 porsiyon",yieldServings:1,time:15,
   tags:["kahvalti","pastırma","pratik","proteinli"],
   ingredients:[
     {item:"Pastırma",amount:"60g"},
@@ -2802,7 +2802,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_kusbasili_pide",name:"Kuşbaşılı Pide",cat:"hamur",
-  emoji:"🫓",cal:460,prot:25,carb:48,fat:18,serv:"1 adet",time:60,
+  emoji:"🫓",cal:464,prot:14.2,carb:32.1,fat:31.1,serv:"4 adet",yieldServings:4,time:60,
   tags:["pide","hamur","etli"],
   ingredients:[
     {item:"Pide hamuru",amount:"250g"},
@@ -2823,7 +2823,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_kasarli_pide",name:"Kaşarlı Pide",cat:"hamur",
-  emoji:"🫓",cal:420,prot:18,carb:50,fat:16,serv:"1 adet",time:45,
+  emoji:"🫓",cal:416,prot:12.2,carb:23.2,fat:30.4,serv:"5 adet",yieldServings:5,time:45,
   tags:["pide","hamur","peynirli"],
   ingredients:[
     {item:"Pide hamuru",amount:"250g"},
@@ -2842,7 +2842,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_ramazan_pidesi",name:"Ramazan Pidesi",cat:"hamur",
-  emoji:"🫓",cal:280,prot:8,carb:52,fat:4,serv:"1/4 pide",time:120,
+  emoji:"🫓",cal:291,prot:8.8,carb:56.9,fat:2.9,serv:"1/4 pide",yieldServings:7,time:120,
   tags:["hamur","ramazan","geleneksel"],
   ingredients:[
     {item:"Un",amount:"500g"},
@@ -2864,7 +2864,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_etli_ekmek",name:"Etli Ekmek (Konya)",cat:"hamur",
-  emoji:"🫓",cal:440,prot:22,carb:46,fat:20,serv:"1 porsiyon",time:60,
+  emoji:"🫓",cal:463,prot:11.7,carb:32.4,fat:31.8,serv:"4 porsiyon",yieldServings:4,time:60,
   tags:["pide","konya","etli","klasik"],
   ingredients:[
     {item:"Pide hamuru",amount:"250g"},
@@ -2884,7 +2884,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_tepsi_mantisi",name:"Tepsi Mantısı",cat:"klasik",
-  emoji:"🥟",cal:460,prot:22,carb:48,fat:20,serv:"1 porsiyon",time:90,
+  emoji:"🥟",cal:455,prot:18.2,carb:52,fat:19,serv:"4 porsiyon",yieldServings:4,time:90,
   tags:["manti","fırın","davet"],
   ingredients:[
     {item:"Un",amount:"2 bardak"},
@@ -2908,7 +2908,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_cacik",name:"Cacık",cat:"meze",
-  emoji:"🥒",cal:120,prot:6,carb:8,fat:7,serv:"1 porsiyon",time:10,
+  emoji:"🥒",cal:96,prot:4.1,carb:7.6,fat:5.9,serv:"2 porsiyon",yieldServings:2,time:10,
   tags:["meze","yoğurtlu","serinletici"],
   ingredients:[
     {item:"Yoğurt",amount:"200g"},
@@ -2928,7 +2928,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_fava",name:"Fava",cat:"meze",
-  emoji:"🫘",cal:220,prot:10,carb:32,fat:7,serv:"1 porsiyon",time:60,
+  emoji:"🫘",cal:247,prot:10.8,carb:27.8,fat:11.3,serv:"4 porsiyon",yieldServings:4,time:60,
   tags:["meze","vegan","zeytinyağlı"],
   ingredients:[
     {item:"İç bakla",amount:"1 bardak"},
@@ -2949,7 +2949,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_tabule",name:"Tabule",cat:"salata",
-  emoji:"🥗",cal:180,prot:5,carb:28,fat:6,serv:"1 porsiyon",time:30,
+  emoji:"🥗",cal:201,prot:5.9,carb:33.3,fat:6.4,serv:"5 porsiyon",yieldServings:5,time:30,
   tags:["salata","vegan","bulgur","fit"],
   ingredients:[
     {item:"İnce bulgur",amount:"1 bardak"},
@@ -2971,7 +2971,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_zerde",name:"Zerde",cat:"tatli",
-  emoji:"🍮",cal:260,prot:4,carb:58,fat:2,serv:"1 porsiyon",time:60,
+  emoji:"🍮",cal:195,prot:1.9,carb:43,fat:2.2,serv:"7 porsiyon",yieldServings:7,time:60,
   tags:["tatli","pirinç","geleneksel"],
   ingredients:[
     {item:"Pirinç",amount:"1/2 bardak"},
@@ -3033,7 +3033,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_katmer_tatli",name:"Katmer (Antep)",cat:"tatli",
-  emoji:"🥮",cal:520,prot:12,carb:48,fat:32,serv:"1 porsiyon",time:45,
+  emoji:"🥮",cal:464,prot:15,carb:37.1,fat:29.7,serv:"4 porsiyon",yieldServings:4,time:45,
   tags:["tatli","antep","fıstıklı"],
   ingredients:[
     {item:"Baklavalık yufka",amount:"2 adet"},
@@ -3052,7 +3052,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_cig_kofte",name:"Çiğ Köfte (Sade)",cat:"meze",
-  emoji:"🌶️",cal:220,prot:6,carb:36,fat:6,serv:"4 adet",time:60,
+  emoji:"🌶️",cal:219,prot:5.9,carb:37.2,fat:6.5,serv:"4 adet",yieldServings:5,time:60,
   tags:["meze","vegan","bulgur","acılı"],
   ingredients:[
     {item:"İnce bulgur",amount:"1 bardak"},
@@ -3080,7 +3080,7 @@ window.TURKISH_RECIPES_DB = [
 // ═══════════════════════════════════════════
 {
   id:"r_fit_hindi_kofte",name:"Hindi Köfte Izgara",cat:"fit",
-  emoji:"🦃",cal:240,prot:34,carb:6,fat:9,serv:"1 porsiyon",time:30,
+  emoji:"🦃",cal:194,prot:21.1,carb:10.5,fat:7.5,serv:"2 porsiyon",yieldServings:2,time:30,
   tags:["fit","proteinli","düşük yağ","saglikli"],
   ingredients:[
     {item:"Hindi kıyma",amount:"180g"},
@@ -3100,7 +3100,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_fit_tavuk_brokoli",name:"Tavuk Brokoli Sote",cat:"fit",
-  emoji:"🥦",cal:280,prot:34,carb:14,fat:10,serv:"1 porsiyon",time:25,
+  emoji:"🥦",cal:216,prot:24.9,carb:9.1,fat:9.7,serv:"2 porsiyon",yieldServings:2,time:25,
   tags:["fit","proteinli","düşük karb","saglikli"],
   ingredients:[
     {item:"Tavuk göğüs",amount:"180g"},
@@ -3120,7 +3120,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_fit_protein_pancake",name:"Protein Pancake",cat:"fit",
-  emoji:"🥞",cal:280,prot:24,carb:32,fat:6,serv:"3 adet",time:15,
+  emoji:"🥞",cal:213,prot:10.5,carb:34.9,fat:4.3,serv:"3 adet",yieldServings:2,time:15,
   tags:["fit","kahvalti","proteinli","tatli"],
   ingredients:[
     {item:"Yulaf ezmesi",amount:"50g"},
@@ -3141,7 +3141,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_fit_avokado_tost",name:"Avokadolu Yumurta Tost",cat:"fit",
-  emoji:"🥑",cal:340,prot:18,carb:30,fat:18,serv:"1 porsiyon",time:10,
+  emoji:"🥑",cal:340,prot:18,carb:30,fat:18,serv:"1 porsiyon",yieldServings:1,time:10,
   tags:["fit","kahvalti","saglikli","pratik"],
   ingredients:[
     {item:"Tam buğday ekmeği",amount:"2 dilim"},
@@ -3162,7 +3162,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_fit_quinoa_bowl",name:"Tavuklu Quinoa Bowl",cat:"fit",
-  emoji:"🥗",cal:420,prot:32,carb:42,fat:14,serv:"1 porsiyon",time:35,
+  emoji:"🥗",cal:314,prot:18.9,carb:34.4,fat:12.8,serv:"3 porsiyon",yieldServings:3,time:35,
   tags:["fit","proteinli","meal prep","saglikli"],
   ingredients:[
     {item:"Quinoa",amount:"1/2 bardak"},
@@ -3184,7 +3184,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_fit_yumurta_aki_omlet",name:"Yumurta Akı Omlet",cat:"fit",
-  emoji:"🍳",cal:160,prot:24,carb:6,fat:4,serv:"1 porsiyon",time:10,
+  emoji:"🍳",cal:128,prot:14.8,carb:11.5,fat:3.2,serv:"2 porsiyon",yieldServings:2,time:10,
   tags:["fit","düşük kalori","proteinli","kahvalti"],
   ingredients:[
     {item:"Yumurta akı",amount:"5 adet"},
@@ -3203,7 +3203,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_fit_skyr_bowl",name:"Skyr Yulaf Kasesi",cat:"fit",
-  emoji:"🍓",cal:340,prot:28,carb:42,fat:6,serv:"1 porsiyon",time:5,
+  emoji:"🍓",cal:340,prot:28,carb:42,fat:6,serv:"1 porsiyon",yieldServings:1,time:5,
   tags:["fit","proteinli","kahvalti","tatli"],
   ingredients:[
     {item:"Skyr veya süzme yoğurt",amount:"200g"},
@@ -3243,7 +3243,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_fit_karides_sote",name:"Karides Sarımsaklı Sote",cat:"fit",
-  emoji:"🦐",cal:220,prot:28,carb:6,fat:10,serv:"1 porsiyon",time:15,
+  emoji:"🦐",cal:174,prot:20.9,carb:3.9,fat:8.9,serv:"2 porsiyon",yieldServings:2,time:15,
   tags:["fit","deniz","proteinli","düşük karb"],
   ingredients:[
     {item:"Karides (temiz)",amount:"200g"},
@@ -3263,7 +3263,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_fit_tavuk_curry",name:"Yoğurtlu Tavuk Curry",cat:"fit",
-  emoji:"🍛",cal:340,prot:32,carb:14,fat:16,serv:"1 porsiyon",time:35,
+  emoji:"🍛",cal:340,prot:32,carb:14,fat:16,serv:"1 porsiyon",yieldServings:1,time:35,
   tags:["fit","proteinli","baharat","saglikli"],
   ingredients:[
     {item:"Tavuk göğüs",amount:"180g"},
@@ -3285,7 +3285,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_fit_buda_bowl",name:"Tavuklu Buda Bowl",cat:"fit",
-  emoji:"🥗",cal:460,prot:34,carb:48,fat:14,serv:"1 porsiyon",time:30,
+  emoji:"🥗",cal:460,prot:34,carb:48,fat:14,serv:"1 porsiyon",yieldServings:1,time:30,
   tags:["fit","meal prep","proteinli","saglikli"],
   ingredients:[
     {item:"Tavuk göğüs",amount:"150g"},
@@ -3328,7 +3328,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_fit_cottage_salata",name:"Cottage Peynirli Salata",cat:"fit",
-  emoji:"🥗",cal:220,prot:24,carb:10,fat:9,serv:"1 porsiyon",time:10,
+  emoji:"🥗",cal:224,prot:11.3,carb:12.5,fat:15.4,serv:"3 porsiyon",yieldServings:3,time:10,
   tags:["fit","düşük kalori","proteinli","pratik"],
   ingredients:[
     {item:"Cottage peynir",amount:"150g"},
@@ -3365,7 +3365,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_fit_yulaf_pancake",name:"Yulaflı Krep",cat:"fit",
-  emoji:"🥞",cal:240,prot:14,carb:36,fat:6,serv:"2 adet",time:15,
+  emoji:"🥞",cal:203,prot:8.8,carb:28.3,fat:6.2,serv:"2 adet",yieldServings:2,time:15,
   tags:["fit","kahvalti","saglikli","tam tahıl"],
   ingredients:[
     {item:"Yulaf ezmesi",amount:"60g"},
@@ -3383,7 +3383,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_fit_tavuk_lahmacun",name:"Sağlıklı Tavuk Lahmacun",cat:"fit",
-  emoji:"🍕",cal:340,prot:28,carb:36,fat:10,serv:"1 adet",time:30,
+  emoji:"🍕",cal:273,prot:16.6,carb:42.8,fat:5.6,serv:"2 adet",yieldServings:2,time:30,
   tags:["fit","proteinli","sağlıklı versiyon"],
   ingredients:[
     {item:"Tam buğday lavaş",amount:"1 adet"},
@@ -3425,7 +3425,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_fit_meal_prep",name:"Meal Prep Kase",cat:"fit",
-  emoji:"📦",cal:480,prot:38,carb:46,fat:14,serv:"1 porsiyon",time:45,
+  emoji:"📦",cal:372,prot:26.9,carb:43.9,fat:10,serv:"2 porsiyon",yieldServings:2,time:45,
   tags:["fit","meal prep","proteinli","haftalık"],
   ingredients:[
     {item:"Tavuk göğüs",amount:"180g"},
@@ -3467,7 +3467,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_fit_kıymalı_sebze",name:"Kıymalı Sebze Tavası",cat:"fit",
-  emoji:"🥘",cal:320,prot:26,carb:16,fat:18,serv:"1 porsiyon",time:25,
+  emoji:"🥘",cal:240,prot:11.6,carb:15.9,fat:15.3,serv:"3 porsiyon",yieldServings:3,time:25,
   tags:["fit","proteinli","sebze","pratik"],
   ingredients:[
     {item:"Dana kıyma (yağsız)",amount:"150g"},
@@ -3487,7 +3487,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_vegan_nohut_curry",name:"Nohut Curry",cat:"vegan",
-  emoji:"🍛",cal:380,prot:14,carb:52,fat:12,serv:"1 porsiyon",time:30,
+  emoji:"🍛",cal:376,prot:17.7,carb:56.2,fat:10.3,serv:"4 porsiyon",yieldServings:4,time:30,
   tags:["vegan","baklagil","proteinli","baharat"],
   ingredients:[
     {item:"Haşlanmış nohut",amount:"1.5 bardak"},
@@ -3510,7 +3510,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_vegan_mercimek_kori",name:"Mercimek Köri",cat:"vegan",
-  emoji:"🍲",cal:340,prot:18,carb:52,fat:8,serv:"1 porsiyon",time:35,
+  emoji:"🍲",cal:299,prot:19,carb:48.5,fat:3.5,serv:"3 porsiyon",yieldServings:3,time:35,
   tags:["vegan","proteinli","baklagil","baharat"],
   ingredients:[
     {item:"Kırmızı mercimek",amount:"1 bardak"},
@@ -3554,7 +3554,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_vegan_sebzeli_quinoa",name:"Sebzeli Quinoa",cat:"vegan",
-  emoji:"🌾",cal:320,prot:12,carb:48,fat:9,serv:"1 porsiyon",time:30,
+  emoji:"🌾",cal:293,prot:8.9,carb:43.9,fat:10.2,serv:"2 porsiyon",yieldServings:2,time:30,
   tags:["vegan","glütensiz","proteinli","saglikli"],
   ingredients:[
     {item:"Quinoa",amount:"1/2 bardak"},
@@ -3576,7 +3576,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_vegan_karnabahar_pirinc",name:"Karnabahar Pirinci",cat:"vegan",
-  emoji:"🌾",cal:120,prot:6,carb:14,fat:5,serv:"1 porsiyon",time:15,
+  emoji:"🌾",cal:131,prot:4.5,carb:14.3,fat:7.7,serv:"2 porsiyon",yieldServings:2,time:15,
   tags:["vegan","düşük karb","keto","saglikli"],
   ingredients:[
     {item:"Karnabahar",amount:"1/2 baş"},
@@ -3617,7 +3617,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_vegan_buda_bowl",name:"Vegan Buda Bowl",cat:"vegan",
-  emoji:"🥗",cal:420,prot:16,carb:54,fat:16,serv:"1 porsiyon",time:35,
+  emoji:"🥗",cal:372,prot:13.2,carb:56.8,fat:11.5,serv:"3 porsiyon",yieldServings:3,time:35,
   tags:["vegan","meal prep","saglikli","buda bowl"],
   ingredients:[
     {item:"Quinoa",amount:"1/2 bardak"},
@@ -3639,7 +3639,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_vegan_burger",name:"Vegan Mercimek Burger",cat:"vegan",
-  emoji:"🍔",cal:360,prot:16,carb:48,fat:12,serv:"1 adet",time:40,
+  emoji:"🍔",cal:413,prot:22.1,carb:73.2,fat:4.7,serv:"3 adet",yieldServings:3,time:40,
   tags:["vegan","proteinli","sokak","fit"],
   ingredients:[
     {item:"Yeşil mercimek (haşlı)",amount:"1 bardak"},
@@ -3660,7 +3660,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_vegan_avokado_tost",name:"Vegan Avokado Toast",cat:"vegan",
-  emoji:"🥑",cal:280,prot:8,carb:32,fat:14,serv:"1 porsiyon",time:8,
+  emoji:"🥑",cal:284,prot:7.2,carb:33.4,fat:16.6,serv:"2 porsiyon",yieldServings:2,time:8,
   tags:["vegan","kahvalti","saglikli","pratik"],
   ingredients:[
     {item:"Tam buğday ekmeği",amount:"2 dilim"},
@@ -3701,7 +3701,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_vegan_karnabahar_corba",name:"Karnabahar Çorbası",cat:"corba",
-  emoji:"🍲",cal:140,prot:5,carb:14,fat:7,serv:"1 porsiyon",time:30,
+  emoji:"🍲",cal:137,prot:4.3,carb:20.8,fat:5.1,serv:"3 porsiyon",yieldServings:3,time:30,
   tags:["vegan","corba","düşük kalori","saglikli"],
   ingredients:[
     {item:"Karnabahar",amount:"1/2 baş"},
@@ -3722,7 +3722,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_vegan_brokoli_corba",name:"Brokoli Çorbası",cat:"corba",
-  emoji:"🥦",cal:160,prot:6,carb:14,fat:9,serv:"1 porsiyon",time:25,
+  emoji:"🥦",cal:161,prot:6.5,carb:25.7,fat:5.4,serv:"3 porsiyon",yieldServings:3,time:25,
   tags:["vegan","corba","saglikli","detoks"],
   ingredients:[
     {item:"Brokoli",amount:"1 baş"},
@@ -3743,7 +3743,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_vegan_kabak_corba",name:"Bal Kabağı Çorbası",cat:"corba",
-  emoji:"🎃",cal:180,prot:4,carb:28,fat:6,serv:"1 porsiyon",time:30,
+  emoji:"🎃",cal:172,prot:3.6,carb:28.8,fat:6.2,serv:"3 porsiyon",yieldServings:3,time:30,
   tags:["vegan","corba","saglikli","sonbahar"],
   ingredients:[
     {item:"Bal kabağı",amount:"500g"},
@@ -3764,7 +3764,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_vegan_chickpea_salata",name:"Nohutlu Akdeniz Salatası",cat:"salata",
-  emoji:"🥗",cal:280,prot:12,carb:36,fat:11,serv:"1 porsiyon",time:15,
+  emoji:"🥗",cal:221,prot:10.2,carb:35.4,fat:5.8,serv:"5 porsiyon",yieldServings:5,time:15,
   tags:["vegan","salata","baklagil","akdeniz"],
   ingredients:[
     {item:"Haşlanmış nohut",amount:"1 bardak"},
@@ -3806,7 +3806,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_salata_yunan",name:"Yunan Salatası",cat:"salata",
-  emoji:"🥗",cal:240,prot:8,carb:14,fat:18,serv:"1 porsiyon",time:10,
+  emoji:"🥗",cal:227,prot:8,carb:15.4,fat:16.2,serv:"2 porsiyon",yieldServings:2,time:10,
   tags:["salata","akdeniz","düşük karb","saglikli"],
   ingredients:[
     {item:"Domates",amount:"3 adet"},
@@ -3889,7 +3889,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_salata_detoks",name:"Detoks Salata",cat:"salata",
-  emoji:"🌿",cal:160,prot:5,carb:18,fat:9,serv:"1 porsiyon",time:15,
+  emoji:"🌿",cal:160,prot:5,carb:18,fat:9,serv:"1 porsiyon",yieldServings:1,time:15,
   tags:["salata","detoks","düşük kalori","vegan"],
   ingredients:[
     {item:"Roka",amount:"1 avuç"},
@@ -3910,7 +3910,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_salata_pancar",name:"Pancarlı Cevizli Salata",cat:"salata",
-  emoji:"🥗",cal:220,prot:6,carb:22,fat:14,serv:"1 porsiyon",time:15,
+  emoji:"🥗",cal:248,prot:8,carb:10.9,fat:20.4,serv:"2 porsiyon",yieldServings:2,time:15,
   tags:["salata","saglikli","fit","sonbahar"],
   ingredients:[
     {item:"Pancar (haşlı)",amount:"1 adet"},
@@ -3930,7 +3930,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_salata_bahar",name:"Taze Otlu Bahar Salatası",cat:"salata",
-  emoji:"🌱",cal:140,prot:4,carb:14,fat:8,serv:"1 porsiyon",time:10,
+  emoji:"🌱",cal:140,prot:4,carb:14,fat:8,serv:"1 porsiyon",yieldServings:1,time:10,
   tags:["salata","bahar","düşük kalori","vegan"],
   ingredients:[
     {item:"Marul",amount:"2 avuç"},
@@ -3951,7 +3951,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_fit_granola",name:"Ev Yapımı Granola",cat:"fit",
-  emoji:"🥣",cal:280,prot:8,carb:34,fat:13,serv:"1 porsiyon",time:35,
+  emoji:"🥣",cal:316,prot:8.5,carb:29.5,fat:20.2,serv:"7 porsiyon",yieldServings:7,time:35,
   tags:["fit","kahvalti","saglikli","ev yapımı"],
   ingredients:[
     {item:"Yulaf ezmesi",amount:"2 bardak"},
@@ -3973,7 +3973,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_fit_bademli_yulaf",name:"Bademli Yulaf Kasesi",cat:"fit",
-  emoji:"🥣",cal:380,prot:14,carb:48,fat:16,serv:"1 porsiyon",time:10,
+  emoji:"🥣",cal:380,prot:14,carb:48,fat:16,serv:"1 porsiyon",yieldServings:1,time:10,
   tags:["fit","kahvalti","saglikli","tam tahıl"],
   ingredients:[
     {item:"Yulaf ezmesi",amount:"50g"},
@@ -3994,7 +3994,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_fit_tahinli_yulaf",name:"Tahinli Yulaf",cat:"fit",
-  emoji:"🥣",cal:340,prot:12,carb:42,fat:14,serv:"1 porsiyon",time:10,
+  emoji:"🥣",cal:352,prot:11,carb:41.5,fat:17.2,serv:"2 porsiyon",yieldServings:2,time:10,
   tags:["fit","kahvalti","türk usulü","saglikli"],
   ingredients:[
     {item:"Yulaf ezmesi",amount:"50g"},
@@ -4035,7 +4035,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_fit_avokado_kase",name:"Avokadolu Yumurta Kasesi",cat:"fit",
-  emoji:"🥑",cal:340,prot:18,carb:14,fat:24,serv:"1 porsiyon",time:15,
+  emoji:"🥑",cal:303,prot:10.9,carb:19.4,fat:22.6,serv:"2 porsiyon",yieldServings:2,time:15,
   tags:["fit","kahvalti","düşük karb","keto"],
   ingredients:[
     {item:"Avokado",amount:"1 adet"},
@@ -4056,7 +4056,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_fit_chia_meyveli",name:"Meyveli Chia Pudding",cat:"fit",
-  emoji:"🍮",cal:240,prot:8,carb:32,fat:10,serv:"1 porsiyon",time:10,
+  emoji:"🍮",cal:199,prot:6.4,carb:25,fat:9.2,serv:"2 porsiyon",yieldServings:2,time:10,
   tags:["fit","kahvalti","saglikli","omega3"],
   ingredients:[
     {item:"Chia tohumu",amount:"3 yk"},
@@ -4084,7 +4084,7 @@ window.TURKISH_RECIPES_DB = [
 // ═══ KLASİK (25) ═══
 {
   id:"r_kuzu_guvec",name:"Kuzu Güveç",cat:"klasik",
-  emoji:"🍲",cal:520,prot:34,carb:24,fat:30,serv:"1 porsiyon",time:120,
+  emoji:"🍲",cal:416,prot:24.6,carb:29.5,fat:23.2,serv:"2 porsiyon",yieldServings:2,time:120,
   tags:["et","güveç","fırın","klasik"],
   ingredients:[
     {item:"Kuzu kuşbaşı",amount:"200g"},
@@ -4105,7 +4105,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_pilav_ustu_tavuk",name:"Pilav Üstü Tavuk",cat:"klasik",
-  emoji:"🍚",cal:480,prot:32,carb:52,fat:14,serv:"1 porsiyon",time:50,
+  emoji:"🍚",cal:380,prot:18.9,carb:54.9,fat:9,serv:"3 porsiyon",yieldServings:3,time:50,
   tags:["pilav","tavuk","klasik"],
   ingredients:[
     {item:"Pirinç",amount:"1 bardak"},
@@ -4124,7 +4124,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_kiymali_yumurta",name:"Kıymalı Yumurta",cat:"pratik",
-  emoji:"🍳",cal:340,prot:24,carb:6,fat:24,serv:"1 porsiyon",time:15,
+  emoji:"🍳",cal:340,prot:24,carb:6,fat:24,serv:"1 porsiyon",yieldServings:1,time:15,
   tags:["yumurta","kahvalti","pratik","proteinli"],
   ingredients:[
     {item:"Dana kıyma",amount:"100g"},
@@ -4143,7 +4143,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_tavuklu_guvec",name:"Tavuklu Güveç",cat:"klasik",
-  emoji:"🍲",cal:380,prot:30,carb:24,fat:18,serv:"1 porsiyon",time:75,
+  emoji:"🍲",cal:308,prot:18.2,carb:19.9,fat:18.1,serv:"3 porsiyon",yieldServings:3,time:75,
   tags:["tavuk","güveç","fırın"],
   ingredients:[
     {item:"Tavuk but",amount:"250g"},
@@ -4164,7 +4164,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_kuzu_kavurma",name:"Kuzu Kavurma",cat:"klasik",
-  emoji:"🍖",cal:480,prot:36,carb:6,fat:34,serv:"1 porsiyon",time:90,
+  emoji:"🍖",cal:423,prot:26,carb:7,fat:32.7,serv:"2 porsiyon",yieldServings:2,time:90,
   tags:["et","kavurma","klasik","kahvalti"],
   ingredients:[
     {item:"Kuzu kuşbaşı",amount:"250g"},
@@ -4182,7 +4182,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_tavuk_kavurma",name:"Tavuk Kavurma",cat:"klasik",
-  emoji:"🍗",cal:340,prot:32,carb:8,fat:18,serv:"1 porsiyon",time:30,
+  emoji:"🍗",cal:340,prot:32,carb:8,fat:18,serv:"1 porsiyon",yieldServings:1,time:30,
   tags:["tavuk","pratik","proteinli"],
   ingredients:[
     {item:"Tavuk göğüs",amount:"200g"},
@@ -4200,7 +4200,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_karisik_izgara",name:"Karışık Izgara",cat:"klasik",
-  emoji:"🍢",cal:620,prot:42,carb:14,fat:42,serv:"1 porsiyon",time:60,
+  emoji:"🍢",cal:488,prot:36.5,carb:33.8,fat:26.1,serv:"2 porsiyon",yieldServings:2,time:60,
   tags:["et","mangal","kebap","karışık"],
   ingredients:[
     {item:"Kuzu pirzola",amount:"100g"},
@@ -4220,7 +4220,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_etli_karnabahar",name:"Etli Karnabahar",cat:"sebze",
-  emoji:"🥦",cal:280,prot:20,carb:18,fat:14,serv:"1 porsiyon",time:50,
+  emoji:"🥦",cal:225,prot:14.7,carb:13.8,fat:13.6,serv:"3 porsiyon",yieldServings:3,time:50,
   tags:["sebze","et","sulu"],
   ingredients:[
     {item:"Karnabahar",amount:"1/2 baş"},
@@ -4239,7 +4239,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_kiymali_bezelye",name:"Kıymalı Bezelye",cat:"sebze",
-  emoji:"🟢",cal:260,prot:18,carb:24,fat:10,serv:"1 porsiyon",time:35,
+  emoji:"🟢",cal:242,prot:12.1,carb:22.6,fat:11.9,serv:"3 porsiyon",yieldServings:3,time:35,
   tags:["sebze","et","sulu","klasik"],
   ingredients:[
     {item:"Dana kıyma",amount:"100g"},
@@ -4258,7 +4258,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_patatesli_kiyma",name:"Patatesli Kıyma",cat:"sebze",
-  emoji:"🥔",cal:340,prot:22,carb:32,fat:14,serv:"1 porsiyon",time:40,
+  emoji:"🥔",cal:352,prot:12.5,carb:32.4,fat:19.6,serv:"3 porsiyon",yieldServings:3,time:40,
   tags:["et","sebze","sulu","klasik"],
   ingredients:[
     {item:"Dana kıyma",amount:"150g"},
@@ -4277,7 +4277,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_etli_lahana",name:"Etli Lahana Kapuska",cat:"sebze",
-  emoji:"🥬",cal:280,prot:18,carb:18,fat:14,serv:"1 porsiyon",time:60,
+  emoji:"🥬",cal:235,prot:14.3,carb:17.2,fat:13.5,serv:"3 porsiyon",yieldServings:3,time:60,
   tags:["sebze","et","sulu","kış"],
   ingredients:[
     {item:"Beyaz lahana",amount:"500g"},
@@ -4297,7 +4297,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_hamsi_pilavi",name:"Hamsi Pilavı",cat:"klasik",
-  emoji:"🐟",cal:480,prot:24,carb:48,fat:20,serv:"1 porsiyon",time:50,
+  emoji:"🐟",cal:435,prot:19.1,carb:58.5,fat:14.1,serv:"3 porsiyon",yieldServings:3,time:50,
   tags:["balık","pilav","karadeniz"],
   ingredients:[
     {item:"Hamsi (temiz)",amount:"200g"},
@@ -4317,7 +4317,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_patatesli_kofte",name:"Patatesli Köfte",cat:"klasik",
-  emoji:"🍖",cal:380,prot:22,carb:24,fat:22,serv:"1 porsiyon",time:50,
+  emoji:"🍖",cal:427,prot:23.2,carb:37.2,fat:20.8,serv:"2 porsiyon",yieldServings:2,time:50,
   tags:["et","kofte","fırın"],
   ingredients:[
     {item:"Dana kıyma",amount:"180g"},
@@ -4336,7 +4336,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_sebzeli_tavuk",name:"Sebzeli Tavuk Sote",cat:"klasik",
-  emoji:"🍗",cal:320,prot:30,carb:18,fat:14,serv:"1 porsiyon",time:35,
+  emoji:"🍗",cal:269,prot:25.4,carb:23.8,fat:9.3,serv:"2 porsiyon",yieldServings:2,time:35,
   tags:["tavuk","sebze","sote"],
   ingredients:[
     {item:"Tavuk göğüs",amount:"180g"},
@@ -4356,7 +4356,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_etli_pirasa",name:"Etli Pırasa",cat:"sebze",
-  emoji:"🥬",cal:240,prot:16,carb:20,fat:11,serv:"1 porsiyon",time:50,
+  emoji:"🥬",cal:223,prot:10.9,carb:23.8,fat:10.3,serv:"4 porsiyon",yieldServings:4,time:50,
   tags:["sebze","et","sulu","kış"],
   ingredients:[
     {item:"Pırasa",amount:"500g"},
@@ -4375,7 +4375,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_etli_kereviz",name:"Etli Kereviz",cat:"sebze",
-  emoji:"🌿",cal:260,prot:18,carb:18,fat:13,serv:"1 porsiyon",time:55,
+  emoji:"🌿",cal:216,prot:10.7,carb:26.7,fat:8.6,serv:"5 porsiyon",yieldServings:5,time:55,
   tags:["sebze","et","sulu"],
   ingredients:[
     {item:"Kereviz",amount:"2 adet"},
@@ -4394,7 +4394,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_coban_kavurma",name:"Çoban Kavurma",cat:"klasik",
-  emoji:"🍖",cal:420,prot:30,carb:14,fat:28,serv:"1 porsiyon",time:60,
+  emoji:"🍖",cal:355,prot:23.9,carb:15,fat:23.3,serv:"2 porsiyon",yieldServings:2,time:60,
   tags:["et","kavurma","klasik"],
   ingredients:[
     {item:"Kuzu kuşbaşı",amount:"200g"},
@@ -4413,7 +4413,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_soslu_kofte",name:"Soslu Köfte",cat:"klasik",
-  emoji:"🍖",cal:420,prot:24,carb:16,fat:30,serv:"1 porsiyon",time:50,
+  emoji:"🍖",cal:411,prot:22.3,carb:15.1,fat:29.4,serv:"2 porsiyon",yieldServings:2,time:50,
   tags:["et","kofte","sulu"],
   ingredients:[
     {item:"Dana kıyma",amount:"200g"},
@@ -4433,7 +4433,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_karniyarik_kofte",name:"Karnıyarık Köfte",cat:"klasik",
-  emoji:"🍆",cal:380,prot:22,carb:20,fat:24,serv:"1 porsiyon",time:60,
+  emoji:"🍆",cal:388,prot:21.6,carb:36.8,fat:19.1,serv:"2 porsiyon",yieldServings:2,time:60,
   tags:["et","sebze","fırın"],
   ingredients:[
     {item:"Dana kıyma",amount:"180g"},
@@ -4453,7 +4453,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_kiymali_mantar",name:"Kıymalı Mantar Sote",cat:"klasik",
-  emoji:"🍄",cal:280,prot:20,carb:8,fat:20,serv:"1 porsiyon",time:25,
+  emoji:"🍄",cal:247,prot:14.4,carb:13.3,fat:16.3,serv:"2 porsiyon",yieldServings:2,time:25,
   tags:["et","mantar","sote","pratik"],
   ingredients:[
     {item:"Mantar",amount:"300g"},
@@ -4472,7 +4472,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_tavuk_snitzel",name:"Tavuk Şinitzel",cat:"klasik",
-  emoji:"🍗",cal:420,prot:32,carb:24,fat:22,serv:"1 porsiyon",time:25,
+  emoji:"🍗",cal:503,prot:21,carb:20.7,fat:37,serv:"3 porsiyon",yieldServings:3,time:25,
   tags:["tavuk","kızartma","pratik"],
   ingredients:[
     {item:"Tavuk göğüs",amount:"200g"},
@@ -4491,7 +4491,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_terbiyeli_kofte",name:"Terbiyeli Köfte",cat:"klasik",
-  emoji:"🍖",cal:380,prot:24,carb:18,fat:24,serv:"1 porsiyon",time:50,
+  emoji:"🍖",cal:377,prot:20.7,carb:21.4,fat:22.7,serv:"2 porsiyon",yieldServings:2,time:50,
   tags:["et","kofte","sulu","terbiyeli"],
   ingredients:[
     {item:"Dana kıyma",amount:"200g"},
@@ -4510,7 +4510,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_etli_yesil_mercimek",name:"Etli Yeşil Mercimek",cat:"klasik",
-  emoji:"🫘",cal:340,prot:24,carb:32,fat:12,serv:"1 porsiyon",time:60,
+  emoji:"🫘",cal:414,prot:27.7,carb:45.2,fat:13.9,serv:"3 porsiyon",yieldServings:3,time:60,
   tags:["et","baklagil","sulu","klasik"],
   ingredients:[
     {item:"Yeşil mercimek",amount:"1 bardak"},
@@ -4528,7 +4528,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_etli_biber_dolma_kuru",name:"Kuru Biber Dolması",cat:"klasik",
-  emoji:"🌶️",cal:320,prot:18,carb:32,fat:14,serv:"1 porsiyon",time:75,
+  emoji:"🌶️",cal:337,prot:17.3,carb:32.2,fat:15.7,serv:"2 porsiyon",yieldServings:2,time:75,
   tags:["dolma","klasik","kuru","kış"],
   ingredients:[
     {item:"Kuru biber",amount:"10 adet"},
@@ -4547,7 +4547,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_kazan_kebabi",name:"Kazan Kebabı",cat:"klasik",
-  emoji:"🥘",cal:480,prot:32,carb:18,fat:30,serv:"1 porsiyon",time:120,
+  emoji:"🥘",cal:464,prot:26.3,carb:41.2,fat:23.6,serv:"2 porsiyon",yieldServings:2,time:120,
   tags:["et","kebap","kazan","klasik"],
   ingredients:[
     {item:"Kuzu kuşbaşı",amount:"200g"},
@@ -4569,7 +4569,7 @@ window.TURKISH_RECIPES_DB = [
 // ═══ ÇORBA (12) ═══
 {
   id:"r_domates_corbasi",name:"Domates Çorbası",cat:"corba",
-  emoji:"🍅",cal:160,prot:5,carb:18,fat:8,serv:"1 porsiyon",time:30,
+  emoji:"🍅",cal:145,prot:4.8,carb:12.2,fat:9.2,serv:"4 porsiyon",yieldServings:4,time:30,
   tags:["corba","klasik","kremalı"],
   ingredients:[
     {item:"Olgun domates",amount:"5 adet"},
@@ -4590,7 +4590,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_sebze_corbasi",name:"Sebze Çorbası",cat:"corba",
-  emoji:"🍲",cal:140,prot:5,carb:18,fat:5,serv:"1 porsiyon",time:35,
+  emoji:"🍲",cal:115,prot:2.8,carb:18.2,fat:4.2,serv:"3 porsiyon",yieldServings:3,time:35,
   tags:["corba","sebze","saglikli"],
   ingredients:[
     {item:"Patates",amount:"1 adet"},
@@ -4610,7 +4610,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_mantar_corbasi",name:"Kremalı Mantar Çorbası",cat:"corba",
-  emoji:"🍄",cal:240,prot:8,carb:16,fat:16,serv:"1 porsiyon",time:30,
+  emoji:"🍄",cal:246,prot:7.9,carb:17.4,fat:17,serv:"3 porsiyon",yieldServings:3,time:30,
   tags:["corba","mantar","kremalı"],
   ingredients:[
     {item:"Mantar",amount:"300g"},
@@ -4631,7 +4631,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_tavuk_corbasi_kremali",name:"Kremalı Tavuk Çorbası",cat:"corba",
-  emoji:"🍗",cal:220,prot:18,carb:14,fat:11,serv:"1 porsiyon",time:35,
+  emoji:"🍗",cal:188,prot:11.5,carb:8.1,fat:12.2,serv:"3 porsiyon",yieldServings:3,time:35,
   tags:["corba","tavuk","kremalı","proteinli"],
   ingredients:[
     {item:"Tavuk göğüs",amount:"100g"},
@@ -4688,7 +4688,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_bezelye_corbasi",name:"Bezelye Çorbası",cat:"corba",
-  emoji:"🟢",cal:180,prot:9,carb:24,fat:6,serv:"1 porsiyon",time:30,
+  emoji:"🟢",cal:166,prot:6.1,carb:19,fat:7.7,serv:"3 porsiyon",yieldServings:3,time:30,
   tags:["corba","sebze","saglikli"],
   ingredients:[
     {item:"Bezelye",amount:"2 bardak"},
@@ -4707,7 +4707,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_patates_corbasi",name:"Patates Çorbası",cat:"corba",
-  emoji:"🥔",cal:200,prot:5,carb:28,fat:8,serv:"1 porsiyon",time:30,
+  emoji:"🥔",cal:193,prot:4.6,carb:27.2,fat:7.7,serv:"4 porsiyon",yieldServings:4,time:30,
   tags:["corba","sebze","klasik"],
   ingredients:[
     {item:"Patates",amount:"3 adet"},
@@ -4726,7 +4726,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_lahana_corbasi",name:"Lahana Çorbası",cat:"corba",
-  emoji:"🥬",cal:140,prot:6,carb:16,fat:6,serv:"1 porsiyon",time:35,
+  emoji:"🥬",cal:137,prot:3.2,carb:22.1,fat:4.9,serv:"3 porsiyon",yieldServings:3,time:35,
   tags:["corba","sebze","kış","düşük kalori"],
   ingredients:[
     {item:"Beyaz lahana",amount:"300g"},
@@ -4746,7 +4746,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_yogurt_corbasi",name:"Yoğurt Çorbası",cat:"corba",
-  emoji:"🥣",cal:180,prot:9,carb:18,fat:8,serv:"1 porsiyon",time:30,
+  emoji:"🥣",cal:150,prot:4.6,carb:15.8,fat:7.7,serv:"3 porsiyon",yieldServings:3,time:30,
   tags:["corba","yoğurtlu","klasik"],
   ingredients:[
     {item:"Yoğurt",amount:"1 bardak"},
@@ -4766,7 +4766,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_anali_kizli",name:"Analı Kızlı",cat:"corba",
-  emoji:"🍲",cal:280,prot:14,carb:32,fat:11,serv:"1 porsiyon",time:90,
+  emoji:"🍲",cal:276,prot:12,carb:41.4,fat:8,serv:"5 porsiyon",yieldServings:5,time:90,
   tags:["corba","mardin","klasik","içli kofte"],
   ingredients:[
     {item:"İnce bulgur",amount:"1 bardak"},
@@ -4786,7 +4786,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_kelle_paca",name:"Kelle Paça Çorbası",cat:"corba",
-  emoji:"🍲",cal:240,prot:18,carb:6,fat:16,serv:"1 porsiyon",time:240,
+  emoji:"🍲",cal:212,prot:20.6,carb:4.2,fat:12.7,serv:"3 porsiyon",yieldServings:3,time:240,
   tags:["corba","klasik","et","sabah"],
   ingredients:[
     {item:"Kuzu paça",amount:"300g"},
@@ -4825,7 +4825,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_sebzeli_bulgur",name:"Sebzeli Bulgur",cat:"pratik",
-  emoji:"🌾",cal:280,prot:8,carb:42,fat:9,serv:"1 porsiyon",time:30,
+  emoji:"🌾",cal:313,prot:8.3,carb:50.7,fat:10.3,serv:"3 porsiyon",yieldServings:3,time:30,
   tags:["pratik","bulgur","sebze","vegan"],
   ingredients:[
     {item:"Bulgur",amount:"1 bardak"},
@@ -4845,7 +4845,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_domatesli_yumurta",name:"Domatesli Yumurta",cat:"pratik",
-  emoji:"🍳",cal:240,prot:14,carb:8,fat:18,serv:"1 porsiyon",time:10,
+  emoji:"🍳",cal:240,prot:14,carb:8,fat:18,serv:"1 porsiyon",yieldServings:1,time:10,
   tags:["pratik","kahvalti","yumurta","klasik"],
   ingredients:[
     {item:"Yumurta",amount:"2 adet"},
@@ -4862,7 +4862,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_patates_pure",name:"Patates Püresi",cat:"pratik",
-  emoji:"🥔",cal:240,prot:6,carb:32,fat:11,serv:"1 porsiyon",time:25,
+  emoji:"🥔",cal:205,prot:4.3,carb:27.9,fat:8.9,serv:"3 porsiyon",yieldServings:3,time:25,
   tags:["pratik","sebze","klasik"],
   ingredients:[
     {item:"Patates",amount:"3 adet"},
@@ -4880,7 +4880,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_ev_makarnasi",name:"Ev Makarnası",cat:"pratik",
-  emoji:"🍝",cal:380,prot:12,carb:58,fat:11,serv:"1 porsiyon",time:20,
+  emoji:"🍝",cal:333,prot:9.6,carb:39.1,fat:15.4,serv:"2 porsiyon",yieldServings:2,time:20,
   tags:["pratik","makarna","klasik"],
   ingredients:[
     {item:"Spagetti",amount:"100g"},
@@ -4898,7 +4898,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_pirincli_bulgur",name:"Pirinçli Bulgur Pilavı",cat:"pratik",
-  emoji:"🌾",cal:340,prot:8,carb:54,fat:11,serv:"1 porsiyon",time:35,
+  emoji:"🌾",cal:383,prot:9.2,carb:73.5,fat:6.6,serv:"2 porsiyon",yieldServings:2,time:35,
   tags:["pilav","pratik","bulgur"],
   ingredients:[
     {item:"Pilavlık bulgur",amount:"1/2 bardak"},
@@ -4916,7 +4916,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_soganli_yumurta",name:"Soğanlı Yumurta",cat:"pratik",
-  emoji:"🍳",cal:260,prot:14,carb:8,fat:20,serv:"1 porsiyon",time:12,
+  emoji:"🍳",cal:260,prot:14,carb:8,fat:20,serv:"1 porsiyon",yieldServings:1,time:12,
   tags:["pratik","kahvalti","yumurta"],
   ingredients:[
     {item:"Yumurta",amount:"2 adet"},
@@ -4933,7 +4933,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_mantarli_omlet",name:"Mantarlı Omlet",cat:"pratik",
-  emoji:"🍳",cal:280,prot:18,carb:6,fat:20,serv:"1 porsiyon",time:12,
+  emoji:"🍳",cal:220,prot:14.7,carb:2.5,fat:17,serv:"2 porsiyon",yieldServings:2,time:12,
   tags:["pratik","kahvalti","yumurta","mantar"],
   ingredients:[
     {item:"Yumurta",amount:"3 adet"},
@@ -4951,7 +4951,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_patatesli_yumurta",name:"Patatesli Yumurta",cat:"pratik",
-  emoji:"🥔",cal:340,prot:14,carb:24,fat:20,serv:"1 porsiyon",time:25,
+  emoji:"🥔",cal:319,prot:9.9,carb:30.1,fat:17.9,serv:"2 porsiyon",yieldServings:2,time:25,
   tags:["pratik","kahvalti","yumurta","patates"],
   ingredients:[
     {item:"Patates",amount:"2 adet"},
@@ -4969,7 +4969,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_makarna_salata",name:"Makarna Salatası",cat:"pratik",
-  emoji:"🥗",cal:340,prot:11,carb:42,fat:14,serv:"1 porsiyon",time:25,
+  emoji:"🥗",cal:340,prot:9.6,carb:50.3,fat:11.9,serv:"2 porsiyon",yieldServings:2,time:25,
   tags:["pratik","salata","makarna","piknik"],
   ingredients:[
     {item:"Makarna (boncuk)",amount:"100g"},
@@ -4991,7 +4991,7 @@ window.TURKISH_RECIPES_DB = [
 // ═══ SEBZE (10) ═══
 {
   id:"r_etli_patlican",name:"Etli Patlıcan",cat:"sebze",
-  emoji:"🍆",cal:340,prot:20,carb:18,fat:22,serv:"1 porsiyon",time:55,
+  emoji:"🍆",cal:276,prot:22.8,carb:36.8,fat:6.8,serv:"2 porsiyon",yieldServings:2,time:55,
   tags:["et","sebze","fırın"],
   ingredients:[
     {item:"Patlıcan",amount:"3 adet"},
@@ -5010,7 +5010,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_sogan_yahnisi",name:"Soğan Yahnisi",cat:"klasik",
-  emoji:"🧅",cal:340,prot:24,carb:16,fat:20,serv:"1 porsiyon",time:75,
+  emoji:"🧅",cal:328,prot:26.5,carb:28.5,fat:13.4,serv:"2 porsiyon",yieldServings:2,time:75,
   tags:["et","yahni","klasik"],
   ingredients:[
     {item:"Dana kuşbaşı",amount:"200g"},
@@ -5029,7 +5029,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_zeytinyagli_bamya",name:"Zeytinyağlı Bamya",cat:"sebze",
-  emoji:"🌿",cal:180,prot:5,carb:22,fat:10,serv:"1 porsiyon",time:40,
+  emoji:"🌿",cal:196,prot:3.4,carb:16.4,fat:14.4,serv:"3 porsiyon",yieldServings:3,time:40,
   tags:["zeytinyağlı","sebze","vegan"],
   ingredients:[
     {item:"Taze bamya",amount:"300g"},
@@ -5048,7 +5048,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_patlican_basti",name:"Patlıcan Bastı",cat:"sebze",
-  emoji:"🍆",cal:280,prot:6,carb:24,fat:18,serv:"1 porsiyon",time:50,
+  emoji:"🍆",cal:243,prot:4.8,carb:27.1,fat:14.8,serv:"3 porsiyon",yieldServings:3,time:50,
   tags:["sebze","zeytinyağlı","yaz"],
   ingredients:[
     {item:"Patlıcan",amount:"3 adet"},
@@ -5105,7 +5105,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_kozlenmis_patlican",name:"Közlenmiş Patlıcan Salatası",cat:"sebze",
-  emoji:"🍆",cal:160,prot:4,carb:12,fat:11,serv:"1 porsiyon",time:30,
+  emoji:"🍆",cal:151,prot:2.7,carb:16.1,fat:9.8,serv:"3 porsiyon",yieldServings:3,time:30,
   tags:["sebze","közleme","meze","vegan"],
   ingredients:[
     {item:"Patlıcan",amount:"3 adet"},
@@ -5124,7 +5124,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_sebze_guvec",name:"Sebze Güveç",cat:"sebze",
-  emoji:"🍲",cal:220,prot:6,carb:28,fat:11,serv:"1 porsiyon",time:75,
+  emoji:"🍲",cal:214,prot:4.3,carb:27,fat:11.1,serv:"4 porsiyon",yieldServings:4,time:75,
   tags:["sebze","fırın","vegan","saglikli"],
   ingredients:[
     {item:"Patates",amount:"2 adet"},
@@ -5145,7 +5145,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_kremali_ispanak",name:"Kremalı Ispanak",cat:"sebze",
-  emoji:"🥬",cal:220,prot:9,carb:14,fat:14,serv:"1 porsiyon",time:25,
+  emoji:"🥬",cal:243,prot:8.6,carb:12.5,fat:18.8,serv:"3 porsiyon",yieldServings:3,time:25,
   tags:["sebze","kremalı","saglikli"],
   ingredients:[
     {item:"Ispanak",amount:"500g"},
@@ -5164,7 +5164,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_lahana_sote",name:"Lahana Sote",cat:"sebze",
-  emoji:"🥬",cal:140,prot:5,carb:14,fat:8,serv:"1 porsiyon",time:25,
+  emoji:"🥬",cal:148,prot:2.6,carb:15.3,fat:9.6,serv:"3 porsiyon",yieldServings:3,time:25,
   tags:["sebze","sote","düşük kalori","vegan"],
   ingredients:[
     {item:"Beyaz lahana",amount:"400g"},
@@ -5287,7 +5287,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_ayva_tatlisi",name:"Ayva Tatlısı",cat:"tatli",
-  emoji:"🍐",cal:240,prot:2,carb:48,fat:5,serv:"1 porsiyon",time:50,
+  emoji:"🍐",cal:232,prot:1.1,carb:46.6,fat:5.8,serv:"6 porsiyon",yieldServings:6,time:50,
   tags:["tatli","mevsim","sonbahar"],
   ingredients:[
     {item:"Ayva",amount:"2 adet"},
@@ -5307,7 +5307,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_incir_tatlisi",name:"Kuru İncir Tatlısı",cat:"tatli",
-  emoji:"🟤",cal:280,prot:3,carb:48,fat:9,serv:"1 porsiyon",time:30,
+  emoji:"🟤",cal:189,prot:3.5,carb:34,fat:5.2,serv:"5 porsiyon",yieldServings:5,time:30,
   tags:["tatli","kuru meyve","ramazan"],
   ingredients:[
     {item:"Kuru incir",amount:"6 adet"},
@@ -5347,7 +5347,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_kemalpasa_tatlisi",name:"Kemalpaşa Tatlısı",cat:"tatli",
-  emoji:"🍮",cal:280,prot:6,carb:42,fat:11,serv:"3 adet",time:60,
+  emoji:"🍮",cal:269,prot:4.8,carb:59.6,fat:1.8,serv:"3 adet",yieldServings:8,time:60,
   tags:["tatli","şerbetli","peynirli"],
   ingredients:[
     {item:"Lor peyniri",amount:"200g"},
@@ -5368,7 +5368,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_tahin_helvasi",name:"Tahin Helvası",cat:"tatli",
-  emoji:"🥮",cal:340,prot:6,carb:38,fat:18,serv:"1 porsiyon",time:25,
+  emoji:"🥮",cal:330,prot:6.5,carb:36.1,fat:19.5,serv:"6 porsiyon",yieldServings:6,time:25,
   tags:["tatli","tahin","klasik"],
   ingredients:[
     {item:"Tahin",amount:"1 bardak"},
@@ -5428,7 +5428,7 @@ window.TURKISH_RECIPES_DB = [
 // ═══ SANDVİÇ (6) ═══
 {
   id:"r_turk_hamburger",name:"Türk Hamburger",cat:"sandvic",
-  emoji:"🍔",cal:520,prot:28,carb:42,fat:26,serv:"1 adet",time:30,
+  emoji:"🍔",cal:520,prot:28,carb:42,fat:26,serv:"1 adet",yieldServings:1,time:30,
   tags:["sandviç","burger","sokak"],
   ingredients:[
     {item:"Hamburger ekmeği",amount:"1 adet"},
@@ -5449,7 +5449,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_sucuklu_tost",name:"Sucuklu Tost",cat:"sandvic",
-  emoji:"🥪",cal:480,prot:22,carb:38,fat:26,serv:"1 adet",time:10,
+  emoji:"🥪",cal:480,prot:22,carb:38,fat:26,serv:"1 adet",yieldServings:1,time:10,
   tags:["sandviç","tost","sucuk","klasik"],
   ingredients:[
     {item:"Tost ekmeği",amount:"2 dilim"},
@@ -5505,7 +5505,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_pastirma_sandvic",name:"Pastırmalı Sandviç",cat:"sandvic",
-  emoji:"🥪",cal:380,prot:22,carb:32,fat:18,serv:"1 adet",time:8,
+  emoji:"🥪",cal:380,prot:22,carb:32,fat:18,serv:"1 adet",yieldServings:1,time:8,
   tags:["sandviç","pastırma","kayseri","klasik"],
   ingredients:[
     {item:"Tam buğday ekmeği",amount:"2 dilim"},
@@ -5565,7 +5565,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_beyaz_lahana_salata",name:"Beyaz Lahana Salatası",cat:"salata",
-  emoji:"🥗",cal:140,prot:3,carb:14,fat:8,serv:"1 porsiyon",time:15,
+  emoji:"🥗",cal:123,prot:2.5,carb:14.7,fat:7.4,serv:"2 porsiyon",yieldServings:2,time:15,
   tags:["salata","klasik","kış"],
   ingredients:[
     {item:"Beyaz lahana",amount:"300g"},
@@ -5584,7 +5584,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_patates_salata",name:"Patates Salatası",cat:"salata",
-  emoji:"🥔",cal:240,prot:5,carb:32,fat:11,serv:"1 porsiyon",time:35,
+  emoji:"🥔",cal:236,prot:5.8,carb:29.5,fat:11.2,serv:"3 porsiyon",yieldServings:3,time:35,
   tags:["salata","klasik","piknik"],
   ingredients:[
     {item:"Patates",amount:"3 adet"},
@@ -5604,7 +5604,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_mevsim_salata",name:"Mevsim Salatası",cat:"salata",
-  emoji:"🥗",cal:160,prot:4,carb:14,fat:11,serv:"1 porsiyon",time:10,
+  emoji:"🥗",cal:160,prot:4,carb:14,fat:11,serv:"1 porsiyon",yieldServings:1,time:10,
   tags:["salata","klasik","mevsim"],
   ingredients:[
     {item:"Marul",amount:"2 yaprak"},
@@ -5625,7 +5625,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_karnabahar_salata",name:"Haşlanmış Karnabahar Salatası",cat:"salata",
-  emoji:"🥗",cal:140,prot:5,carb:12,fat:9,serv:"1 porsiyon",time:25,
+  emoji:"🥗",cal:121,prot:4.3,carb:12.3,fat:7.7,serv:"2 porsiyon",yieldServings:2,time:25,
   tags:["salata","sebze","düşük kalori"],
   ingredients:[
     {item:"Karnabahar",amount:"1/2 baş"},
@@ -5710,7 +5710,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_karisik_pide",name:"Karışık Pide",cat:"hamur",
-  emoji:"🫓",cal:520,prot:24,carb:50,fat:24,serv:"1 adet",time:50,
+  emoji:"🫓",cal:517,prot:14.4,carb:29,fat:38,serv:"4 adet",yieldServings:4,time:50,
   tags:["pide","hamur","karışık"],
   ingredients:[
     {item:"Pide hamuru",amount:"250g"},
@@ -5730,7 +5730,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_yufkali_manti",name:"Yufkalı Mantı (Açma)",cat:"hamur",
-  emoji:"🥟",cal:380,prot:18,carb:40,fat:16,serv:"1 porsiyon",time:60,
+  emoji:"🥟",cal:391,prot:21.5,carb:7.6,fat:30.6,serv:"4 porsiyon",yieldServings:4,time:60,
   tags:["manti","hamur","pratik"],
   ingredients:[
     {item:"Yufka",amount:"3 adet"},
@@ -5751,7 +5751,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_kasarli_makarna",name:"Kaşarlı Makarna",cat:"hamur",
-  emoji:"🍝",cal:480,prot:20,carb:54,fat:20,serv:"1 porsiyon",time:25,
+  emoji:"🍝",cal:470,prot:18.3,carb:43.5,fat:24.6,serv:"2 porsiyon",yieldServings:2,time:25,
   tags:["makarna","peynirli","pratik"],
   ingredients:[
     {item:"Penne",amount:"100g"},
@@ -5770,7 +5770,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_kuzu_pide",name:"Kuzu Etli Pide",cat:"hamur",
-  emoji:"🫓",cal:520,prot:28,carb:48,fat:24,serv:"1 adet",time:60,
+  emoji:"🫓",cal:471,prot:11.6,carb:31.9,fat:33,serv:"4 adet",yieldServings:4,time:60,
   tags:["pide","hamur","et","klasik"],
   ingredients:[
     {item:"Pide hamuru",amount:"250g"},
@@ -5790,7 +5790,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_yumurtali_makarna",name:"Yumurtalı Makarna",cat:"hamur",
-  emoji:"🍝",cal:440,prot:18,carb:52,fat:18,serv:"1 porsiyon",time:20,
+  emoji:"🍝",cal:375,prot:17.7,carb:38,fat:16.5,serv:"2 porsiyon",yieldServings:2,time:20,
   tags:["makarna","pratik","klasik"],
   ingredients:[
     {item:"Spagetti",amount:"100g"},
@@ -5810,7 +5810,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_firin_makarna",name:"Fırında Makarna",cat:"hamur",
-  emoji:"🍝",cal:560,prot:24,carb:56,fat:26,serv:"1 porsiyon",time:50,
+  emoji:"🍝",cal:684,prot:26.5,carb:57.2,fat:38.6,serv:"2 porsiyon",yieldServings:2,time:50,
   tags:["makarna","fırın","beşamel","klasik"],
   ingredients:[
     {item:"Boru makarna",amount:"100g"},
@@ -5830,7 +5830,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_etli_makarna",name:"Etli Makarna (Türk Usulü)",cat:"hamur",
-  emoji:"🍝",cal:480,prot:24,carb:52,fat:18,serv:"1 porsiyon",time:30,
+  emoji:"🍝",cal:486,prot:22.1,carb:48.4,fat:22.7,serv:"2 porsiyon",yieldServings:2,time:30,
   tags:["makarna","kıymalı","klasik"],
   ingredients:[
     {item:"Spagetti",amount:"100g"},
@@ -5853,7 +5853,7 @@ window.TURKISH_RECIPES_DB = [
 // ═══ MEZE (10) ═══
 {
   id:"r_yogurtlu_semizotu",name:"Yoğurtlu Semizotu",cat:"meze",
-  emoji:"🌿",cal:120,prot:6,carb:8,fat:7,serv:"1 porsiyon",time:10,
+  emoji:"🌿",cal:120,prot:6,carb:8,fat:7,serv:"1 porsiyon",yieldServings:1,time:10,
   tags:["meze","yoğurtlu","yaz","saglikli"],
   ingredients:[
     {item:"Semizotu",amount:"1 demet"},
@@ -5871,7 +5871,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_yogurtlu_patlican",name:"Yoğurtlu Patlıcan",cat:"meze",
-  emoji:"🍆",cal:220,prot:6,carb:14,fat:16,serv:"1 porsiyon",time:35,
+  emoji:"🍆",cal:224,prot:4.6,carb:18.4,fat:16.2,serv:"2 porsiyon",yieldServings:2,time:35,
   tags:["meze","yoğurtlu","patlıcan"],
   ingredients:[
     {item:"Patlıcan",amount:"2 adet"},
@@ -5890,7 +5890,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_acuka",name:"Acuka (Antep)",cat:"meze",
-  emoji:"🌶️",cal:240,prot:7,carb:14,fat:18,serv:"1 porsiyon",time:20,
+  emoji:"🌶️",cal:283,prot:5,carb:9,fat:27.3,serv:"4 porsiyon",yieldServings:4,time:20,
   tags:["meze","antep","acılı","cevizli"],
   ingredients:[
     {item:"Domates salçası",amount:"3 yk"},
@@ -5929,7 +5929,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_pirasa_salata",name:"Pırasa Salatası",cat:"meze",
-  emoji:"🥬",cal:160,prot:4,carb:14,fat:10,serv:"1 porsiyon",time:25,
+  emoji:"🥬",cal:132,prot:2.9,carb:24,fat:3.7,serv:"5 porsiyon",yieldServings:5,time:25,
   tags:["meze","pırasa","kış","düşük kalori"],
   ingredients:[
     {item:"Pırasa",amount:"3 adet"},
@@ -5984,7 +5984,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_tarator",name:"Cevizli Tarator",cat:"meze",
-  emoji:"🌰",cal:280,prot:7,carb:14,fat:22,serv:"1 porsiyon",time:15,
+  emoji:"🌰",cal:326,prot:6.2,carb:5.9,fat:33.1,serv:"6 porsiyon",yieldServings:6,time:15,
   tags:["meze","cevizli","sos"],
   ingredients:[
     {item:"Ceviz içi",amount:"1 bardak"},
@@ -6003,7 +6003,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_otlu_peynir",name:"Otlu Peynir Salatası",cat:"meze",
-  emoji:"🧀",cal:220,prot:11,carb:6,fat:18,serv:"1 porsiyon",time:10,
+  emoji:"🧀",cal:223,prot:10.4,carb:5.7,fat:18.2,serv:"2 porsiyon",yieldServings:2,time:10,
   tags:["meze","peynirli","klasik"],
   ingredients:[
     {item:"Beyaz peynir",amount:"100g"},
@@ -6023,7 +6023,7 @@ window.TURKISH_RECIPES_DB = [
 },
 {
   id:"r_kuru_domates_meze",name:"Kuru Domates Mezesi",cat:"meze",
-  emoji:"🍅",cal:160,prot:4,carb:14,fat:11,serv:"1 porsiyon",time:10,
+  emoji:"🍅",cal:145,prot:1.3,carb:4.3,fat:14.3,serv:"2 porsiyon",yieldServings:2,time:10,
   tags:["meze","kuru domates","akdeniz"],
   ingredients:[
     {item:"Kuru domates",amount:"100g"},

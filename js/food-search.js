@@ -273,12 +273,12 @@ function setRecipeScale(s) {
   if (protEl) protEl.textContent = Math.round((r.prot || 0) * s) + 'g';
   if (carbEl) carbEl.textContent = Math.round((r.carb || 0) * s) + 'g';
   if (fatEl) fatEl.textContent = Math.round((r.fat || 0) * s) + 'g';
-  // Kişi sayısını güncelle
+  // Yield (kaç porsiyon çıkıyor) güncelle — yieldServings öncelikli
   var servEl = document.getElementById('rdScaleServ');
   if (servEl) {
-    var baseServ = parseFloat(r.serv) || 1;
-    var newServ = Math.round(baseServ * s * 10) / 10;
-    servEl.textContent = '👥 ' + (newServ % 1 === 0 ? newServ.toFixed(0) : newServ.toFixed(1)) + ' porsiyon';
+    var baseY = r.yieldServings || parseFloat(r.serv) || 1;
+    var newY = Math.round(baseY * s * 10) / 10;
+    servEl.textContent = '👥 ' + (newY % 1 === 0 ? newY.toFixed(0) : newY.toFixed(1)) + ' porsiyon';
   }
   // Buton aktifliği
   document.querySelectorAll('.scale-btn').forEach(function(b) {
@@ -298,6 +298,13 @@ function openRecipeDetail(idx){
   const catLabels={fit:'💪 Fit',klasik:'🍲 Klasik',hizli:'⚡ Pratik',vegan:'🌱 Vegan',sebze:'🥬 Sebze',corba:'🍲 Çorba',tatli:'🍮 Tatlı',meze:'🫒 Meze'};
   const tags=(r.tags||[]).map(t=>({kolay:'⭐ Kolay',hizli:'⚡ Pratik',vejetaryen:'🌿 Vejetaryen',vegan:'🌱 Vegan',proteinli:'💪 Proteinli',ekonomik:'💰 Ekonomik',saglikli:'✅ Sağlıklı'}[t]||t)).join(' · ');
   const ingList = r.ingredients || r.ing || [];
+
+  // Tarif yield bilgisi: kaç porsiyon çıkıyor + per-porsiyon ifadesi
+  // r.yieldServings varsa onu kullan, yoksa serv string'inden çıkar
+  const yieldN = r.yieldServings || parseFloat(r.serv) || 1;
+  const yieldLabel = yieldN > 1
+    ? yieldN + ' porsiyon'
+    : (r.serv || '1 porsiyon');
 
   // Makro bar yüzdeleri
   const totalMacroCal=((r.prot||0)*4)+((r.carb||0)*4)+((r.fat||0)*9);
@@ -341,11 +348,15 @@ function openRecipeDetail(idx){
           <div style="font-size:.56rem;color:var(--text2);font-weight:600">dakika</div>
         </div>
         <div style="text-align:center;padding:8px 4px;background:var(--glass);border-radius:10px;border:1px solid var(--border)">
-          <div id="rdScaleServ" style="font-weight:800;color:var(--text);font-size:.95rem">👥 ${r.serv||'1 porsiyon'}</div>
-          <div style="font-size:.56rem;color:var(--text2);font-weight:600">kişilik</div>
+          <div id="rdScaleServ" style="font-weight:800;color:var(--text);font-size:.95rem">👥 ${yieldLabel}</div>
+          <div style="font-size:.56rem;color:var(--text2);font-weight:600">tarif çıktısı</div>
         </div>
       </div>
     </div>
+    ${yieldN>1?`<div style="margin:-4px 0 12px;padding:8px 12px;background:var(--accent-glow);border:1px solid var(--accent);border-radius:10px;font-size:.7rem;color:var(--text);display:flex;align-items:center;gap:8px">
+      <span style="font-size:1rem">📊</span>
+      <span><b>${r.cal||0} kcal</b> = <b>1 porsiyon</b> · Tarif toplam <b>${yieldN} porsiyon</b> çıkarır (${Math.round((r.cal||0)*yieldN)} kcal toplam)</span>
+    </div>`:''}
 
     <!-- Ölçekleme -->
     <div style="display:flex;align-items:center;gap:6px;margin-bottom:12px;background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:8px 10px">

@@ -2495,13 +2495,16 @@ function runUnifiedSearch(q){
     html+='<div style="padding:8px 4px 4px;font-size:.7rem;font-weight:700;color:var(--accent);border-top:1px solid var(--border);margin-top:4px">📖 Tariflerden</div>';
     html+=recipeMatches.map(r=>{
       const idx=RECIPES.findIndex(x=>(x.id&&x.id===r.id)||x.name===r.name);
-      const _s=parseFloat(r.serv)||1;
-      const safeFood=JSON.stringify({name:r.name,cal:Math.round((r.cal||0)/_s),prot:Math.round((r.prot||0)/_s),carb:Math.round((r.carb||0)/_s),fat:Math.round((r.fat||0)/_s)}).replace(/"/g,'&quot;');
+      // r.cal artık her zaman per-porsiyon (kalibrasyon sonrası canonical).
+      // yieldServings varsa "N porsiyondan 1'i" rozetini göster.
+      const yld=r.yieldServings||(parseFloat(r.serv)||1);
+      const yldBadge=yld>1?` <span style="opacity:.7">· ${yld} porsiyonluk</span>`:'';
+      const safeFood=JSON.stringify({name:r.name,cal:r.cal||0,prot:r.prot||0,carb:r.carb||0,fat:r.fat||0}).replace(/"/g,'&quot;');
       return`<div class="food-db-item" style="border-left:3px solid var(--accent);position:relative">
         <div onclick="selectApiFood(${safeFood})" style="display:flex;align-items:center;gap:8px;flex:1;min-width:0;cursor:pointer">
         ${r.img?`<img src="${r.img}" style="width:36px;height:36px;border-radius:8px;object-fit:cover;flex-shrink:0">`:`<div style="width:36px;height:36px;border-radius:8px;background:var(--accent-glow);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.65rem;color:var(--accent);font-weight:700">${r.cal}</div>`}
-        <div class="fdb-info"><div class="fdb-name">${escHTML(r.name)}</div><div class="fdb-detail">${Math.round((r.cal||0)/_s)} kcal/porsiyon · P:${Math.round((r.prot||0)/_s)}g K:${Math.round((r.carb||0)/_s)}g Y:${Math.round((r.fat||0)/_s)}g</div></div>
-        <div class="fdb-cal">${Math.round((r.cal||0)/_s)}</div>
+        <div class="fdb-info"><div class="fdb-name">${escHTML(r.name)}</div><div class="fdb-detail">${r.cal||0} kcal/porsiyon · P:${r.prot||0}g K:${r.carb||0}g Y:${r.fat||0}g${yldBadge}</div></div>
+        <div class="fdb-cal">${r.cal||0}</div>
         </div>
         <button onclick="event.stopPropagation();closeModal();switchTab('oneri');setTimeout(function(){openRecipeDetail(${idx})},400)" style="background:var(--accent-glow);border:1px solid var(--accent);border-radius:6px;padding:3px 8px;font-size:.58rem;font-weight:700;color:var(--accent);cursor:pointer;flex-shrink:0;margin-left:4px">📖 Tarif</button>
       </div>`;
