@@ -30,8 +30,27 @@
     'şişe':'şişe','sise':'şişe',
     'kutu':'kutu',
     'kase':'kase',
-    'çimdik':'çimdik','cimdik':'çimdik','tutam':'çimdik'
+    'çimdik':'çimdik','cimdik':'çimdik','tutam':'çimdik',
+    'dal':'çimdik','yaprak':'çimdik',           // 1 dal/yaprak ≈ az miktar
+    'ölçek':'çk','olcek':'çk','küp':'adet','kup':'adet',
+    'kupa':'bardak','kupası':'bardak','kupasi':'bardak',
+    'göbek':'adet','gobek':'adet','baş':'adet','bas':'adet',
+    'boy':'adet','iri':'adet','salkim':'demet','salkım':'demet'
   };
+
+  // "yarım", "çeyrek" gibi sayısal niceleyiciler
+  var WORD_NUMERALS={
+    'yarım':0.5,'yarim':0.5,'yari':0.5,'yarı':0.5,
+    'çeyrek':0.25,'ceyrek':0.25,
+    'birkaç':2,'birkac':2,'biraz':1,'bir':1,'iki':2,'üç':3,'uc':3,'dört':4,'dort':4,'beş':5,'bes':5
+  };
+
+  // Miktar yerine "isteğe bağlı / servis için" gibi açıklamalar — 0 say
+  var ZERO_AMOUNT_PHRASES=[
+    'istege','isteğe','tadına','tadina','tadımlık','tadimlik',
+    'servis','süsleme','susleme','eritme','tatmak','tat',
+    'gerektiği','gerektigi','az miktar','az','küçük miktar'
+  ];
 
   // Birim görüntüleme ismi (tek → çok fark yok Türkçe'de, ama süslesek)
   var UNIT_DISPLAY={
@@ -81,6 +100,22 @@
     if(str==null) return null;
     var s=String(str).trim();
     if(!s) return null;
+
+    // Açıklama tipi miktarlar ("isteğe bağlı", "servis için", "tadına göre")
+    // → null döndür; calculator bunu "no-amount-assumed-pinch" olarak işler
+    var sLower=s.toLocaleLowerCase('tr-TR');
+    for(var z=0;z<ZERO_AMOUNT_PHRASES.length;z++){
+      if(sLower.indexOf(ZERO_AMOUNT_PHRASES[z])===0) return null;
+    }
+
+    // "yarım bardak", "çeyrek limon" gibi kelime-numeral varyantları
+    // Eğer baştaki kelime WORD_NUMERALS'taysa, onu sayıya çevirip tekrar parse et
+    var firstWord=sLower.split(/\s+/)[0];
+    if(WORD_NUMERALS[firstWord]!=null){
+      var rest=s.replace(/^\S+\s*/,'');
+      // "yarım Limon" → "0.5 Limon" → unit yoksa "adet"
+      return parseOne(WORD_NUMERALS[firstWord]+(rest?' '+rest:''));
+    }
 
     // "1 adet", "150g", "1/2 demet", "1,5 kg", "2-3 adet", "½ su bardağı", "1 ½ bardak"
     // Regex: sayı (kesir/aralık dahil) + (opsiyonel birim)

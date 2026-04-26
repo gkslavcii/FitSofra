@@ -965,6 +965,114 @@ function closeRecipeEdit(){
   _editRecipeId=null;
 }
 
+// ═══ MALZEMELERDEN MAKRO HESAPLAMA ═══
+// AmountParser ile greedy-match: "1 su bardağı Pirinç" → ("1 su bardağı", "Pirinç")
+// "150g Dana döner eti" → ("150g", "Dana döner eti")
+// "Tuz"                  → ("", "Tuz")
+function _parseIngLine(line){
+  if(!line) return null;
+  var s=String(line).trim();
+  if(!s) return null;
+  // Sayı/kesir ile başlamıyorsa: miktar yok
+  if(!/^[\d¼½¾⅓⅔⅕⅖⅗⅘⅙⅛]/.test(s)){
+    return {amount:'', item:s};
+  }
+  // Tokenize. İlk token sayı/kesir; sonrasında "birim tamamlama" kelimelerini greedily yut.
+  var tokens=s.split(/\s+/);
+  // Sayı yapışık birim olabilir: "150g", "2kg" → token tek başına amount
+  var firstHasUnit=/^[\d¼½¾⅓⅔⅕⅖⅗⅘⅙⅛.,\/]+(g|gr|kg|ml|lt|l)$/i.test(tokens[0]);
+  if(firstHasUnit){
+    return {amount:tokens[0], item:tokens.slice(1).join(' ').trim()};
+  }
+  // Tanınan birim/birim-tamamlama kelimeleri (lowercase, NFD-normalize edilmiş)
+  var UNIT_WORDS={
+    adet:1, tane:1, gram:1, gr:1, g:1, kg:1, ml:1, lt:1, litre:1, l:1,
+    su:1, cay:1, kahve:1, yemek:1, tatli:1, corba:1,
+    bardak:1, bardagi:1, kasik:1, kasigi:1, fincan:1, fincani:1,
+    tutam:1, cimdik:1, dilim:1, parca:1, demet:1, bas:1, basi:1,
+    paket:1, kutu:1, salkim:1, dis:1, avuc:1,
+    kase:1, kasesi:1, kupa:1, kupasi:1, sise:1, sisesi:1,
+    kucuk:1, buyuk:1, orta:1, iri:1, ince:1, kalin:1
+  };
+  function _normTr(t){
+    return String(t||'').toLocaleLowerCase('tr-TR')
+      .replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ş/g,'s')
+      .replace(/ı/g,'i').replace(/ö/g,'o').replace(/ç/g,'c')
+      .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+      .replace(/[^a-z0-9]/g,'');
+  }
+  // İlk token sayı ise, sonrasında birim kelimelerini topla
+  var k=1;
+  while(k<tokens.length && k<6 && UNIT_WORDS[_normTr(tokens[k])]){
+    k++;
+  }
+  if(k>0){
+    return {
+      amount:tokens.slice(0,k).join(' '),
+      item:tokens.slice(k).join(' ').trim()
+    };
+  }
+  // Fallback: sadece ilk token sayıysa, birim "adet" varsay
+  var firstNum=tokens[0].match(/^[\d¼½¾⅓⅔⅕⅖⅗⅘⅙⅛.,\/]+$/);
+  if(firstNum){
+    return {
+      amount:tokens[0]+' adet',
+      item:tokens.slice(1).join(' ').trim()
+    };
+  }
+  return {amount:'', item:s};
+}
+
+function calcMacrosFromIngredients(){
+  var st=document.getElementById('reCalcStatus');
+  st.style.display='block';
+
+  if(!window.RecipeCalculator){
+    st.innerHTML='❌ RecipeCalculator yüklenemedi';
+    st.style.background='#ff5c5c15';st.style.color='#ff5c5c';st.style.border='1px solid #ff5c5c33';
+    return;
+  }
+
+  var lines=document.getElementById('reIng').value.split('\n')
+    .map(function(s){return s.trim();}).filter(Boolean);
+  if(!lines.length){
+    st.innerHTML='⚠️ Önce malzemeleri yazın';
+    st.style.background='#f0a03015';st.style.color='#f0a030';st.style.border='1px solid #f0a03033';
+    return;
+  }
+
+  var ingredients=lines.map(_parseIngLine).filter(Boolean);
+  var yieldN=parseInt(document.getElementById('reServ').value)||1;
+
+  var result=window.RecipeCalculator.calcRecipe({
+    ingredients:ingredients,
+    serv:String(yieldN)
+  });
+
+  // Per-porsiyon değerleri input'lara yaz
+  var per=result.perServing;
+  document.getElementById('reCal').value=per.cal;
+  document.getElementById('reProt').value=per.prot;
+  document.getElementById('reCarb').value=per.carb;
+  document.getElementById('reFat').value=per.fat;
+
+  // Durum göstergesi
+  var cov=result.coverage;
+  var pct=Math.round(cov.ratio*100);
+  var color=pct>=85?'#3dd68c':pct>=60?'#f0a030':'#ff5c5c';
+  var icon=pct>=85?'✅':pct>=60?'⚠️':'❌';
+  var txt=icon+' <strong>'+cov.matched+'/'+cov.total+' malzeme tanındı (%'+pct+')</strong>'
+    +' · '+yieldN+' porsiyon · per-porsiyon: '+per.cal+' kcal'
+    +' (toplam '+result.total.cal+' kcal · '+result.total.grams+'g)';
+  if(cov.missing.length){
+    var missList=cov.missing.slice(0,5).map(function(m){return m.name;}).join(', ');
+    txt+='<br><span style="opacity:.85">Eksik: '+missList
+      +(cov.missing.length>5?(' (+'+(cov.missing.length-5)+' tane)'):'')+'</span>';
+  }
+  st.innerHTML=txt;
+  st.style.background=color+'15';st.style.color=color;st.style.border='1px solid '+color+'33';
+}
+
 function previewRecipeImg(){
   var url=(document.getElementById('reImg').value||'').trim();
   var wrap=document.getElementById('reImgPreview');
@@ -994,6 +1102,7 @@ async function saveRecipeEdit(){
     desc:document.getElementById('reDesc').value.trim(),
     time:parseInt(document.getElementById('reTime').value)||30,
     serv:parseInt(document.getElementById('reServ').value)||2,
+    yieldServings:parseInt(document.getElementById('reServ').value)||2,
     cal:parseInt(document.getElementById('reCal').value)||0,
     prot:parseInt(document.getElementById('reProt').value)||0,
     carb:parseInt(document.getElementById('reCarb').value)||0,
@@ -2329,8 +2438,12 @@ setTimeout(renderAdminCatOrder,500);
     </div>
     <div class="row">
       <input type="number" id="reTime" placeholder="Süre (dk)">
-      <input type="number" id="reServ" placeholder="Kişi">
+      <input type="number" id="reServ" placeholder="Porsiyon (yield)">
     </div>
+    <button type="button" class="btn-e" onclick="calcMacrosFromIngredients()" style="margin-bottom:6px;font-size:.74rem">
+      📊 Malzemelerden Makro Hesapla
+    </button>
+    <div id="reCalcStatus" style="font-size:.66rem;margin-bottom:6px;padding:6px 8px;border-radius:6px;display:none;line-height:1.4"></div>
     <input type="text" id="reTags" placeholder="Etiketler: kolay,saglikli,proteinli">
     <textarea id="reIng" placeholder="Malzemeler (her satıra bir)" style="width:100%;padding:8px;border:1.5px solid #2a2d38;border-radius:10px;background:#0d0f14;color:#e8e8ec;font-family:inherit;font-size:.82rem;resize:vertical;min-height:80px;margin-bottom:6px;outline:none"></textarea>
     <textarea id="reSteps" placeholder="Yapılış adımları (her satıra bir)" style="width:100%;padding:8px;border:1.5px solid #2a2d38;border-radius:10px;background:#0d0f14;color:#e8e8ec;font-family:inherit;font-size:.82rem;resize:vertical;min-height:100px;margin-bottom:6px;outline:none"></textarea>

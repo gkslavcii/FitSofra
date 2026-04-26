@@ -53,19 +53,20 @@
 
   // Yaygın eşdeğerler — DB'de olmayan ama makro açısından yakın olanlar
   var ALIAS_MAP={
-    'lavas':'pide ekmegi',     // pide DB'de yok ama ALIAS zincirine bakalım
-    'lavaş':'pide ekmegi',
-    'pide':'pide ekmegi',
-    'pide ekmegi':'ekmek beyaz',
-    'pide ekmeği':'ekmek beyaz',
+    // Ekmek/lavaş artık DB'de var; sadece varyant aliasları
     'tost ekmegi':'ekmek beyaz',
     'tost ekmeği':'ekmek beyaz',
     'ekmek ici':'ekmek beyaz',
     'ekmek içi':'ekmek beyaz',
+    'bayat ekmek':'ekmek beyaz',
+    'yarim ekmek':'ekmek beyaz',
+    'yarım ekmek':'ekmek beyaz',
+    'kumru ekmegi':'ekmek beyaz',
+    'kumru ekmeği':'ekmek beyaz',
     'sandvic ekmegi':'ekmek beyaz',
     'sandviç ekmeği':'ekmek beyaz',
-    'bazlama':'ekmek beyaz',
-    'yufka':'ekmek beyaz',
+    'bazlama':'lavaş',
+    'yufka':'lavaş',
     'spagetti':'makarna spagetti',
     'spaghetti':'makarna spagetti',
     'penne':'makarna boru',
@@ -84,7 +85,18 @@
     'kaynamis su':'su',
     'maden suyu':'su',
     'limon suyu':'limon',
-    'protein tozu':'',           // makrosu çok değişken — atla
+    // Default tariflerde "Un" = Buğday Unu (Beyaz); "Salça" = Domates Salçası
+    'un':'buğday unu beyaz',
+    'beyaz un':'buğday unu beyaz',
+    'tam un':'tam buğday unu',
+    'salca':'domates salçası',
+    'salça':'domates salçası',
+    'biber salcasi':'biber salçası tatlı',
+    'biber salçası':'biber salçası tatlı',
+    'nisasta':'mısır nişastası',
+    'nişasta':'mısır nişastası',
+    'protein tozu':'whey protein',
+    'whey protein':'whey protein',
     'kizartma yagi':'aycicek yagi',
     'kızartma yağı':'ayçiçek yağı',
     'sivi yag':'aycicek yagi',
@@ -96,13 +108,72 @@
     'sebze':'kabak',             // jenerik sebze → kabak proxy
     'baharat':'',                // makrosu yok say
     'baharatlar':'',
-    'kekik':'',                  // çoğu DB'de yok, makro ihmal
-    'nane':'maydanoz',           // benzer makro proxy
+    'buz':'',                    // 0 kalori
+    // 'kekik' silindi — DB'de "Kekik (Kuru)" var
+    // 'nane' silindi — DB'de "Nane (Taze)" + "Nane (Kuru)" var
     'roka':'maydanoz',
-    'tere':'maydanoz'
+    'tere':'maydanoz',
+    // Default eşlemeler (DB'de birden fazla varyant olduğunda)
+    'yumurta':'tavuk yumurtası',
+    'yumurtalar':'tavuk yumurtası',
+    'beyaz peynir':'beyaz peynir tam yağlı',
+    'peynir':'beyaz peynir tam yağlı',
+    'kasar':'kaşar peyniri',
+    'kaşar':'kaşar peyniri',
+    'yogurt':'yoğurt klasik',
+    'yoğurt':'yoğurt klasik',
+    'sut':'süt tam yağlı',
+    'süt':'süt tam yağlı',
+    'krema':'sıvı krema',
+    'pirinc':'pirinç osmancık',
+    'pirinç':'pirinç osmancık',
+    'bulgur':'bulgur (pilavlık)',
+    'mercimek':'kırmızı mercimek',
+    'kiyma':'dana kıyma orta',
+    'kıyma':'dana kıyma orta',
+    'dana eti':'dana kuşbaşı',
+    'kuzu eti':'kuzu kuşbaşı',
+    'tavuk':'tavuk göğüs',
+    'tavuk eti':'tavuk göğüs',
+    'tavuk gögsü':'tavuk göğüs',
+    'tavuk göğsü':'tavuk göğüs',
+    'arpa sehriye':'makarna şehriye',
+    'arpa şehriye':'makarna şehriye',
+    'sehriye':'makarna şehriye',
+    'şehriye':'makarna şehriye',
+    'bulgur (haslanmis)':'bulgur',
+    'bulgur (haşlanmış)':'bulgur',
+    'nohut (haslanmis)':'nohut',
+    'nohut (haşlanmış)':'nohut',
+    'kuru fasulye (haslanmis)':'kuru fasulye',
+    'kuru fasulye (haşlanmış)':'kuru fasulye',
+    'pirinc (haslanmis)':'pirinç',
+    'pirinç (haşlanmış)':'pirinç',
+    'humus':'nohut',
+    'falafel':'nohut',
+    'tofu':'tofu sert',
+    'sert tofu':'tofu sert',
+    'soft tofu':'tofu sert',
+    // 'karışık yeşillik' artık DB'de
+    'yesil salata':'karışık yeşillik',
+    'yeşil salata':'karışık yeşillik',
+    'yesil sogan':'taze sogan',
+    'yeşil soğan':'taze soğan',
+    'muesli':'granola',
+    'müsli':'granola',
+    'donmus yaban mersini':'yaban mersini',
+    'donmuş yaban mersini':'yaban mersini',
+    // 'yaban mersini' artık DB'de
+    'ton baligi (suda)':'ton baligi konserve suda',
+    'ton balığı (suda)':'ton balığı konserve suda'
   };
+  // Alias değerlerini de _norm ile aynı seviyeye getir
+  // (DB indeksi ASCII-normalize'ın aynısını üretiyor)
   function _resolveAlias(key){
-    if(ALIAS_MAP[key]!=null) return ALIAS_MAP[key];
+    if(ALIAS_MAP[key]!=null){
+      var v=ALIAS_MAP[key];
+      return v ? _norm(v) : '';
+    }
     return key;
   }
 
@@ -129,12 +200,30 @@
   // hammadde-db'nin TURKISH_HAMMADDE_INDEX'i Türkçe `İ`yi combining-dot ile
   // indeksliyor — biz NFD-temizlenmiş kendi indeksimizi kuruyoruz.
   var _localIdx=null;
+  // Parantezleri iç içeriğiyle birlikte normalize eden ek anahtar üretici
+  function _normWithParens(s){
+    if(!s) return '';
+    var t=String(s);
+    try{t=t.toLocaleLowerCase('tr-TR');}catch(e){t=t.toLowerCase();}
+    if(t.normalize)t=t.normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    return t
+      .replace(/[(),]/g,' ')              // parantezleri at, içeriği koru
+      .replace(/[^a-zçğıöşü\s]/gi,' ')
+      .replace(/\s+/g,' ').trim();
+  }
   function _buildLocalIndex(){
     var arr=window.TURKISH_HAMMADDE_DB||[];
     var idx={};
+    // 1) Primary key (paren-stripped)
     for(var i=0;i<arr.length;i++){
       var key=_norm(arr[i].name);
       if(key && !idx[key]) idx[key]=arr[i];
+    }
+    // 2) Alt key (paren-içeriği dahil) — collision yoksa kaydet
+    //    "Makarna (Şehriye)" → "makarna sehriye"; "Tavuk Göğsü (Bonfile)" → "tavuk gogus bonfile"
+    for(var j=0;j<arr.length;j++){
+      var altKey=_normWithParens(arr[j].name);
+      if(altKey && !idx[altKey]) idx[altKey]=arr[j];
     }
     return idx;
   }
@@ -144,6 +233,14 @@
   }
 
   // ═══ Hammadde Lookup ════════════════════════════════════════════════
+  // Sentetik sıfır-makro entry: alias değeri '' olan öğeler için
+  // (buz, baharat, kekik vs. olduğunda matched=true ama 0g hesaplanır)
+  var ZERO_MACRO_HAMMADDE = {
+    name: '(zero-macro alias)',
+    per100g: { cal: 0, prot: 0, carb: 0, fat: 0 },
+    units: { g: 1, kg: 1000, ml: 1, l: 1000, adet: 1, küp: 10, tutam: 1, çimdik: 1 },
+    _synthetic: true
+  };
   function _lookupSingle(rawKey){
     var idx=_idx();
     var key=rawKey;
@@ -151,8 +248,10 @@
 
     // Niteleyicileri temizle ve alias çözümle
     key=_stripQualifiers(key);
-    key=_resolveAlias(key);
-    if(!key) return null;             // alias '' ise: makro yok say
+    var resolved=_resolveAlias(key);
+    if(resolved==='') return ZERO_MACRO_HAMMADDE;  // explicit zero
+    key=resolved;
+    if(!key) return null;
     if(idx[key]) return idx[key];
 
     var keys=Object.keys(idx);
@@ -160,25 +259,55 @@
     for(var i=0;i<keys.length;i++){
       if(keys[i]===key) return idx[keys[i]];
     }
+    // Word-boundary substring (yarım eşleşmeleri önle: "su" ↛ "gogsu")
+    function _wordContains(haystack, needle){
+      if(!needle || needle.length<3) return false;
+      // \b ASCII-only; biz manuel: başta/sonda veya boşluk komşuluğu
+      var idx=haystack.indexOf(needle);
+      while(idx>=0){
+        var before=idx===0 || haystack[idx-1]===' ';
+        var after=(idx+needle.length===haystack.length) || haystack[idx+needle.length]===' ';
+        if(before && after) return true;
+        idx=haystack.indexOf(needle, idx+1);
+      }
+      return false;
+    }
+    // 1) DB key tamamen input içinde geçiyor (multi-word DB key, kısa input)
+    //    Örn: input "tavuk gogsu bonfile" → DB key "tavuk gogus" ✗ değil ama bunu stem yakalar
+    // 2) Input tamamen DB key içinde (input kısa, DB key uzun): "kıyma" → "dana kiyma"
     for(var j=0;j<keys.length;j++){
-      if(keys[j].indexOf(key)>=0 || key.indexOf(keys[j])>=0) return idx[keys[j]];
+      if(_wordContains(keys[j], key)) return idx[keys[j]];
+    }
+    // 3) DB key tamamen input içinde — sadece DB key ≥4 karakter ise (kısa kelime kirlenmesi önle)
+    for(var jj=0;jj<keys.length;jj++){
+      if(keys[jj].length>=4 && _wordContains(key, keys[jj])) return idx[keys[jj]];
     }
 
     // Stem
     var stem=_stem(key);
-    if(stem && stem!==key){
+    if(stem && stem!==key && stem.length>=3){
       if(idx[stem]) return idx[stem];
       for(var s=0;s<keys.length;s++){
-        if(keys[s].indexOf(stem)>=0) return idx[keys[s]];
+        if(_wordContains(keys[s], stem)) return idx[keys[s]];
       }
     }
 
-    // Token bazlı
+    // Token bazlı (whole-word)
     var tokens=key.split(/\s+/).filter(function(t){return t.length>=3;});
     for(var t=0;t<tokens.length;t++){
       var tok=tokens[t];
       for(var k=0;k<keys.length;k++){
         if(keys[k].split(/\s+/).indexOf(tok)>=0) return idx[keys[k]];
+      }
+      // Stemli token — "gogsu" → "gogus" gibi yakın varyantları yakalamak için son çare
+      var tokStem=tok.replace(/(su|sü|si|sı|i|ü|u|ı)$/,'');
+      if(tokStem && tokStem.length>=3 && tokStem!==tok){
+        for(var kk=0;kk<keys.length;kk++){
+          var keyParts=keys[kk].split(/\s+/);
+          for(var kp=0;kp<keyParts.length;kp++){
+            if(keyParts[kp].indexOf(tokStem)===0) return idx[keys[kk]];
+          }
+        }
       }
     }
     return null;
@@ -256,6 +385,21 @@
         macro:{cal:0,prot:0,carb:0,fat:0},
         hammadde:hm, reason:'no-amount-assumed-pinch'
       };
+    }
+    // "isteğe bağlı / servis için / eritme için / süsleme için" gibi
+    // miktarsız açıklamalar → 0g, matched (coverage'ı düşürmesin)
+    var amtLow=String(amount).toLocaleLowerCase('tr-TR');
+    var OPTIONAL_PHRASES=['istege','isteğe','servis','süsleme','susleme',
+      'eritme','tatmak','tat ','tadına','tadina','gerektiği','gerektigi',
+      'tadımlık','tadimlik','az miktar'];
+    for(var op=0;op<OPTIONAL_PHRASES.length;op++){
+      if(amtLow.indexOf(OPTIONAL_PHRASES[op])>=0){
+        return {
+          matched:true, grams:0,
+          macro:{cal:0,prot:0,carb:0,fat:0},
+          hammadde:hm, reason:'optional-skipped'
+        };
+      }
     }
     var g=toGrams(amount, hm);
     if(!g){

@@ -52,92 +52,40 @@ function rangeDistance(g, range) {
   return 0;
 }
 
-// ═══ Refine: outlier yield'ini ±1..±3 değiştirip en iyiye götür
-function refineYield(recipe, calcTotal, baseYield, coverage) {
-  if (coverage < 0.85) return null;
-  var range = EXPECTED_GRAMS[recipe.cat];
-  if (!range) return { yield: baseYield, refined: false };
-
-  var bestYield = baseYield;
-  var bestDist = rangeDistance(calcTotal.grams / baseYield, range);
-  // Stored kalori ile orantı korumak için bestRatio da takip et
-  var bestStoredFit = Math.abs(calcTotal.cal / baseYield - recipe.cal) / recipe.cal;
-
-  // Aday yield'ler: 1..8
-  for (var y = 1; y <= 8; y++) {
-    if (y === baseYield) continue;
-    var per = calcTotal.grams / y;
-    var dist = rangeDistance(per, range);
-    var perCal = calcTotal.cal / y;
-    var storedFit = recipe.cal ? Math.abs(perCal - recipe.cal) / recipe.cal : 999;
-
-    // Sadece daha iyiyse + stored kaloriden çok kaçmıyorsa güncelle
-    // (yield'i 2'den 8'e çıkarıp porsiyon miktarını kategori aralığına oturtur ama
-    //  kayıtlı kaloriden 3x kaçarsa sahte iyileştirme olur)
-    if (dist < bestDist && storedFit <= bestStoredFit + 0.20) {
-      bestYield = y;
-      bestDist = dist;
-      bestStoredFit = storedFit;
-    }
-  }
-  return {
-    yield: bestYield,
-    refined: bestYield !== baseYield,
-    inRange: bestDist === 0,
-    grams: Math.round(calcTotal.grams / bestYield)
-  };
-}
-
-// ═══ Tarif başına aksiyon planı
+// ═══ Tarif başına aksiyon planı — calibration-report.json'dan oku
+// (calibrate-recipes.js önce çalışmış olmalı; biz onun yieldServings çıkarımını uygularız)
 function buildPlan() {
+  var reportPath = path.join(__dirname, 'calibration-report.json');
+  if (!fs.existsSync(reportPath)) {
+    console.error('❌ calibration-report.json yok. Önce: node scripts/calibrate-recipes.js');
+    process.exit(1);
+  }
+  var report = JSON.parse(fs.readFileSync(reportPath, 'utf8'));
   var plans = [];
-  DB.forEach(function (r) {
-    var calc = RC.calcRecipe(r);
-    var coverage = calc.coverage.ratio;
-    var ratio = r.cal && calc.total.cal ? calc.total.cal / r.cal : 0;
 
+  report.forEach(function (row) {
+    var r = DB.find(function (x) { return x.id === row.id; });
+    if (!r) return;
+
+    var coverage = row.coverage;
+    var inf = row.inference;
     var action = 'skip';
-    var reason = '';
-    var newYield = null;
-    var newPer = null;
+    var reason = inf.reason;
+    var newYield = row.yieldServings;
+    var newPer = row.newPer;
 
-    if (coverage < 0.85) {
+    if (inf.reason === 'low-coverage') {
       action = 'manual-review';
-      reason = 'low-coverage (' + Math.round(coverage * 100) + '%)';
-    } else if (ratio === 0 || !r.cal) {
-      action = 'manual-review';
-      reason = 'no-stored-cal';
-    } else if (ratio >= 0.70 && ratio <= 1.50) {
-      // Stored ok — sadece yieldServings:1 ekle (zaten porsiyon başı)
+    } else if (inf.reason === 'stored-ok') {
       action = 'add-yield-only';
       newYield = 1;
-      reason = 'stored-ok (' + ratio.toFixed(2) + 'x)';
-    } else if (ratio > 1.50 && ratio <= 8.0) {
-      // Multi-portion — yield çıkar
-      var baseY = Math.round(ratio);
-      var refined = refineYield(r, calc.total, baseY, coverage);
-      newYield = refined ? refined.yield : baseY;
-      newPer = {
-        cal: Math.round(calc.total.cal / newYield),
-        prot: Math.round((calc.total.prot / newYield) * 10) / 10,
-        carb: Math.round((calc.total.carb / newYield) * 10) / 10,
-        fat: Math.round((calc.total.fat / newYield) * 10) / 10,
-        grams: Math.round(calc.total.grams / newYield)
-      };
-      // Refine yield'i değiştirdi mi?
-      if (refined && refined.refined) {
-        action = 'refine-yield';
-        reason = 'multi-portion ' + ratio.toFixed(1) + 'x → yield ' + baseY + '→' + newYield;
-      } else {
-        action = 'multi-portion';
-        reason = 'yield ' + newYield + ' (' + ratio.toFixed(1) + 'x)';
-      }
-    } else if (ratio < 0.70) {
+    } else if (inf.reason === 'multi-portion' || inf.reason === 'large-batch') {
+      action = newYield > 1 ? 'multi-portion' : 'add-yield-only';
+      if (newYield === 1) { newPer = null; }  // tek porsiyon: stored'u koru
+    } else if (inf.reason === 'stored-too-high' || inf.flag) {
       action = 'manual-review';
-      reason = 'stored-too-high (' + ratio.toFixed(2) + 'x)';
-    } else {
+    } else if (inf.reason === 'extreme-ratio') {
       action = 'manual-review';
-      reason = 'extreme-ratio (' + ratio.toFixed(2) + 'x)';
     }
 
     plans.push({
@@ -145,13 +93,13 @@ function buildPlan() {
       name: r.name,
       cat: r.cat,
       action: action,
-      reason: reason,
+      reason: reason + (inf.ratio ? ' (' + inf.ratio.toFixed(1) + 'x)' : ''),
       coverage: coverage,
       stored: { cal: r.cal, prot: r.prot, carb: r.carb, fat: r.fat, serv: r.serv },
-      calcTotal: calc.total,
+      calcTotal: row.calcTotal,
       newYield: newYield,
       newPer: newPer,
-      missing: calc.coverage.missing.map(function (m) { return m.name; })
+      missing: row.missing
     });
   });
   return plans;
@@ -228,7 +176,7 @@ function updateBlock(block, updates) {
 var mode = process.argv[2] || '--dry';
 var plans = buildPlan();
 var stats = {
-  skip: 0, addYieldOnly: 0, multiPortion: 0, refineYield: 0, manualReview: 0
+  skip: 0, addYieldOnly: 0, multiPortion: 0, manualReview: 0
 };
 var manualList = [];
 var changesLog = [];
@@ -237,7 +185,6 @@ plans.forEach(function (p) {
   if (p.action === 'skip') stats.skip++;
   else if (p.action === 'add-yield-only') stats.addYieldOnly++;
   else if (p.action === 'multi-portion') stats.multiPortion++;
-  else if (p.action === 'refine-yield') stats.refineYield++;
   else if (p.action === 'manual-review') {
     stats.manualReview++;
     manualList.push(p);
@@ -249,11 +196,10 @@ console.log('Toplam tarif:           ', DB.length);
 console.log('Skip (dokunma):         ', stats.skip);
 console.log('Add yield:1 only:       ', stats.addYieldOnly);
 console.log('Multi-portion (yield+macro):', stats.multiPortion);
-console.log('Refine yield (auto-tuned):  ', stats.refineYield);
 console.log('Manual review listesi:  ', stats.manualReview);
 console.log('───────────────────────────────────');
 console.log('Otomatik güncellenecek toplam:',
-  stats.addYieldOnly + stats.multiPortion + stats.refineYield);
+  stats.addYieldOnly + stats.multiPortion);
 
 if (mode === '--write') {
   // ═══ Dosyaya yaz
@@ -298,7 +244,7 @@ if (mode === '--write') {
 } else {
   console.log('\n--- ÖRNEK 10 DEĞİŞİKLİK ÖNİZLEMESİ ---');
   plans.filter(function (p) {
-    return p.action === 'multi-portion' || p.action === 'refine-yield';
+    return p.action === 'multi-portion';
   }).slice(0, 10).forEach(function (p) {
     var s = p.stored, n = p.newPer;
     console.log('  ' + p.id.padEnd(28).slice(0,28) +

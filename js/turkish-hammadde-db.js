@@ -409,6 +409,20 @@ window.TURKISH_HAMMADDE_DB = [
 {name:"Şalgam Suyu",emoji:"🥤",cat:"hammadde",per100g:{cal:17,prot:0.5,carb:3.5,fat:0.1},units:{g:1,kg:1000,ml:1.02,l:1020,bardak:204,fincan:82,şişe:300},src:"TürKomp"},
 {name:"Salep (Hazır)",emoji:"☕",cat:"hammadde",per100g:{cal:112,prot:3.0,carb:18.5,fat:2.8},units:{g:1,kg:1000,ml:1.05,l:1050,fincan:84,bardak:210,paket:17},src:"TürKomp"},
 
+// ═══ TAKVİYELER / EK MALZEMELER ═══
+{name:"Whey Protein",emoji:"💪",cat:"hammadde",per100g:{cal:380,prot:80.0,carb:8.0,fat:4.0},units:{g:1,kg:1000,yk:15,çk:5,ölçek:30,adet:30},src:"Avg"},
+{name:"Granola",emoji:"🥣",cat:"hammadde",per100g:{cal:471,prot:10.1,carb:64.0,fat:20.3},units:{g:1,kg:1000,bardak:120,yk:11,çk:4},src:"USDA"},
+
+// ═══ EKMEKLER (eksikti) ═══
+{name:"Ekmek (Beyaz)",emoji:"🍞",cat:"hammadde",per100g:{cal:265,prot:9.0,carb:49.0,fat:3.2},units:{g:1,kg:1000,dilim:30,adet:250},src:"USDA"},
+{name:"Ekmek (Tam Buğday)",emoji:"🍞",cat:"hammadde",per100g:{cal:247,prot:13.0,carb:41.0,fat:3.4},units:{g:1,kg:1000,dilim:30,adet:250},src:"USDA"},
+{name:"Lavaş",emoji:"🫓",cat:"hammadde",per100g:{cal:277,prot:8.6,carb:55.0,fat:3.4},units:{g:1,kg:1000,adet:60},src:"USDA"},
+{name:"Pide Ekmeği",emoji:"🫓",cat:"hammadde",per100g:{cal:275,prot:9.1,carb:55.7,fat:1.2},units:{g:1,kg:1000,adet:200},src:"USDA"},
+{name:"Pita Ekmeği",emoji:"🫓",cat:"hammadde",per100g:{cal:275,prot:9.1,carb:55.7,fat:1.2},units:{g:1,kg:1000,adet:60},src:"USDA"},
+{name:"Tofu (Sert)",emoji:"🌱",cat:"hammadde",per100g:{cal:144,prot:17.0,carb:2.8,fat:8.7},units:{g:1,kg:1000,dilim:30,bardak:248},src:"USDA"},
+{name:"Karışık Yeşillik",emoji:"🥬",cat:"hammadde",per100g:{cal:23,prot:2.2,carb:3.6,fat:0.4},units:{g:1,kg:1000,bardak:30,avuç:25},src:"USDA"},
+{name:"Yaban Mersini",emoji:"🫐",cat:"hammadde",per100g:{cal:57,prot:0.7,carb:14.5,fat:0.3},units:{g:1,kg:1000,bardak:148,yk:9},src:"USDA"},
+
 ];
 
 // Hızlı erişim lookup: isimden hammadde bulma (normalized key)
