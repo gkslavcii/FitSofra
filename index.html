@@ -2408,7 +2408,9 @@ function renderMeals(){const container=document.getElementById('mealsContainer')
     html+=`<div class="meal-section${collapsed}" id="ms-${meal.id}"><div class="meal-header"><div class="meal-title" onclick="toggleMealSection('${meal.id}')" style="flex:1;cursor:pointer"><div class="meal-icon" style="background:${meal.colorLight}">${meal.icon}</div>${meal.name}</div><div class="meal-right">${mealCal?`<div class="meal-kcal">${mealCal}</div><div class="meal-pct">${mealPct}%</div>`:''}<button onclick="event.stopPropagation();openMealTemplates('${meal.id}')" style="padding:3px 7px;border-radius:6px;border:1.5px solid var(--border);background:var(--glass);color:var(--text2);font-size:.65rem;font-weight:700;cursor:pointer;font-family:var(--font,system-ui)" title="Öğün Şablonları">📋</button><span class="meal-chevron" onclick="toggleMealSection('${meal.id}')" style="cursor:pointer">‹</span></div></div><div class="meal-body"><div class="meal-card">${fHTML}<div style="display:flex;border-top:1px dashed rgba(255,107,61,.12)">
 <div class="add-food-btn" onclick="openAddFood('${meal.id}')" style="flex:1;border-top:none">＋ Yemek Ekle</div>
 <div onclick="openCopyMealModal('${meal.id}')" style="padding:12px 14px;color:var(--text2);font-size:.78rem;font-weight:700;cursor:pointer;border-left:1px dashed rgba(255,255,255,.06);display:flex;align-items:center;gap:4px;transition:all .2s" onmouseover="this.style.color='var(--blue)'" onmouseout="this.style.color='var(--text2)'">📋 Kopyala</div>
-</div></div>${foods.length?`<div class="daily-summary"><span style="color:#ff7a7a">P ${mealProt}g</span><span style="color:#22d3ee">K ${mealCarb}g</span><span style="color:#ffcc55">Y ${mealFat}g</span></div>`:''}</div></div>`});html+='<div class="water-card" id="waterCard" data-collapsed="1"></div><div class="exercise-card" id="exerciseCard" data-collapsed="1"></div><div id="ifTimerSlot"></div><div id="dailyMicroSlot"></div>';container.innerHTML=html;renderWater();renderExerciseCard();renderIFTimerInMeals();updateDailyBanner();
+</div></div>${foods.length?`<div class="daily-summary"><span style="color:#ff7a7a">P ${mealProt}g</span><span style="color:#22d3ee">K ${mealCarb}g</span><span style="color:#ffcc55">Y ${mealFat}g</span></div>`:''}</div></div>`});html+='<div class="water-card" id="waterCard" data-collapsed="1"></div><div class="exercise-card" id="exerciseCard" data-collapsed="1"></div><div id="ifTimerSlot"></div><div id="microTipSlot"></div><div id="dailyMicroSlot"></div>';container.innerHTML=html;renderWater();renderExerciseCard();renderIFTimerInMeals();updateDailyBanner();
+  // Mikro besin tip kartı (öneri)
+  try{var _mt=document.getElementById('microTipSlot');if(_mt&&window.MicroSuggester){_mt.innerHTML=window.MicroSuggester.renderForToday();}}catch(e){}
   // Günlük mikro besin paneli
   try{var _dm=document.getElementById('dailyMicroSlot');if(_dm&&window.DailyMicro){_dm.innerHTML=window.DailyMicro.renderForToday();}}catch(e){}
 }
@@ -4043,6 +4045,7 @@ function saveWeeklyPlan(){
 <script src="js/amount-parser.js"></script>
 <script src="js/recipe-calculator.js"></script>
 <script src="js/daily-micro.js"></script>
+<script src="js/micro-suggester.js"></script>
 <script src="js/ingredient-resolver.js"></script>
 <script src="js/ai-recipe.js"></script>
 <script src="js/fatsecret-api.js"></script>
