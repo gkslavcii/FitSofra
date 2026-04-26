@@ -2326,7 +2326,7 @@ function closeDatePicker(){
 function goToday(){currentDate=new Date();updateDateNav();renderMeals();updateHeader();updateWaterHeader();renderExerciseCard&&renderExerciseCard()}
 function getDayData(dk){const key=dk||dateKey();const raw=localStorage.getItem('fs_day_'+key);if(raw)return JSON.parse(raw);return{kahvalti:[],ogle:[],aksam:[],atistirmalik:[]}}
 function saveDayData(dk,data){localStorage.setItem('fs_day_'+(dk||dateKey()),JSON.stringify(data));triggerAutoSync()}
-function saveProfile(){const p={gender:document.getElementById('pGender').value,age:document.getElementById('pAge').value,height:document.getElementById('pHeight').value,weight:document.getElementById('pWeight').value,goalWeight:document.getElementById('pGoalWeight').value,activity:document.getElementById('pActivity').value,goal:document.getElementById('pGoal').value,water:document.getElementById('pWater').value,dailyTarget,protTarget,carbTarget,fatTarget,waterTarget,weeklyPlanActive,weeklyPlan,macroMode,exBurnActive};localStorage.setItem('fs_profile',JSON.stringify(p))}
+function saveProfile(){const p={gender:document.getElementById('pGender').value,age:document.getElementById('pAge').value,height:document.getElementById('pHeight').value,weight:document.getElementById('pWeight').value,goalWeight:document.getElementById('pGoalWeight').value,activity:document.getElementById('pActivity').value,goal:document.getElementById('pGoal').value,water:document.getElementById('pWater').value,dailyTarget,protTarget,carbTarget,fatTarget,waterTarget,weeklyPlanActive,weeklyPlan,macroMode,exBurnActive};localStorage.setItem('fs_profile',JSON.stringify(p));try{if(window.TuberDV)window.TuberDV.invalidate();}catch(e){}}
 function loadProfile(){const raw=localStorage.getItem('fs_profile');if(!raw)return;const p=JSON.parse(raw);document.getElementById('pGender').value=p.gender||'male';document.getElementById('pAge').value=p.age||25;document.getElementById('pHeight').value=p.height||175;document.getElementById('pWeight').value=p.weight||75;document.getElementById('pGoalWeight').value=p.goalWeight||70;document.getElementById('pActivity').value=p.activity||'1.375';document.getElementById('pGoal').value=p.goal||'0';if(p.dailyTarget)dailyTarget=p.dailyTarget;if(p.protTarget)protTarget=p.protTarget;if(p.carbTarget)carbTarget=p.carbTarget;if(p.fatTarget)fatTarget=p.fatTarget;if(p.waterTarget&&p.waterTarget>100)waterTarget=p.waterTarget;else if(p.waterTarget)waterTarget=p.waterTarget*250;else if(p.water&&parseInt(p.water)<=20)waterTarget=parseInt(p.water)*250;else if(p.water)waterTarget=parseInt(p.water);document.getElementById('pWater').value=waterTarget;const _w=parseInt(p.weight)||0;const _h=parseInt(p.height)||0;if(_w&&_h)calculateBMI(_w,_h);
   if(p.weeklyPlanActive!==undefined)weeklyPlanActive=p.weeklyPlanActive;
   if(p.exBurnActive!==undefined)exBurnActive=p.exBurnActive;
@@ -4044,6 +4044,7 @@ function saveWeeklyPlan(){
 <script src="js/turkish-recipes-db.js"></script>
 <script src="js/amount-parser.js"></script>
 <script src="js/recipe-calculator.js"></script>
+<script src="js/tuber-dv.js"></script>
 <script src="js/daily-micro.js"></script>
 <script src="js/micro-suggester.js"></script>
 <script src="js/ingredient-resolver.js"></script>

@@ -373,10 +373,12 @@ function buildMicroPanel(r, ingList, scale){
 
   // Scale uygulanır
   var s=scale||1;
+  var _userDV=(window.TuberDV&&window.TuberDV.getDV())||null;
   var rows=Object.keys(MICRO_DV).map(function(k){
     var def=MICRO_DV[k];
     var val=(m[k]||0)*s;
-    var dvPct=Math.round((val/def.dv)*100);
+    var dvRef=(_userDV&&_userDV[k])||def.dv;
+    var dvPct=Math.round((val/dvRef)*100);
     // Sodium için "üst sınır" bağlamı: %50+ kötü; diğerleri için %20+ iyi
     var barColor=def.color;
     var pctLabel=dvPct+'%';

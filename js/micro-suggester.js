@@ -32,7 +32,9 @@
     var recipes=window.RECIPES||window.TURKISH_RECIPES_DB||[];
     if(!RC || !recipes.length) return _recipeIndex;
 
-    var DV={fiber:28,ca:1000,fe:13,k:3500,mg:400,vitC:90,vitA:900,b12:2.4,folat:400};
+    // Sanity için her zaman üst sınır referansı kullan (DEFAULT) — kişisel DV
+    // burada filtre amaçlı değil parse-hatası eleme amaçlı.
+    var DV=(window.TuberDV&&window.TuberDV.DEFAULT_DV)||{fiber:28,ca:1000,fe:13,k:3500,mg:400,vitC:90,vitA:900,b12:2.4,folat:400};
     for(var i=0;i<recipes.length;i++){
       var r=recipes[i];
       if(!r || !(r.ingredients||r.ing)) continue;
@@ -91,7 +93,9 @@
   function findGaps(agg){
     if(!agg || !agg.micro) return [];
     var DM=window.DailyMicro;
-    var DV=(DM&&DM.DV)||{fiber:28,ca:1000,fe:13,k:3500,mg:400,vitC:90,vitA:900,b12:2.4,folat:400};
+    var DV=(window.TuberDV&&window.TuberDV.getDV())
+        || (DM&&DM.DV)
+        || {fiber:28,ca:1000,fe:13,k:3500,mg:400,vitC:90,vitA:900,b12:2.4,folat:400};
     var DEF=(DM&&DM.MICRO_DEF)||{};
     var gaps=[];
     SUGGEST_KEYS.forEach(function(k){

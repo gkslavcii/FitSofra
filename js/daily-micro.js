@@ -13,8 +13,12 @@
 
   var MICRO_KEYS=['fiber','sodium','ca','fe','k','mg','vitC','vitA','b12','folat'];
 
-  // Yetişkin DV referansı (TÜBER 2022 + USDA DV) — food-search.js MICRO_DV ile aynı
-  var DV={fiber:28, sodium:2300, ca:1000, fe:13, k:3500, mg:400, vitC:90, vitA:900, b12:2.4, folat:400};
+  // Yetişkin DV referansı — fallback. Asıl DV TuberDV ile profil bazlı hesaplanır.
+  var DEFAULT_DV={fiber:28, sodium:2300, ca:1000, fe:13, k:3500, mg:400, vitC:90, vitA:900, b12:2.4, folat:400};
+  function _DV(){
+    try{ if(window.TuberDV) return window.TuberDV.getDV(); }catch(e){}
+    return DEFAULT_DV;
+  }
 
   // Mikro besin display tanımları (food-search.js MICRO_DV ile uyumlu)
   var MICRO_DEF={
@@ -279,6 +283,7 @@
     }
     var covPct=Math.round(cov.ratio*100);
 
+    var DV=_DV();
     var rows=Object.keys(MICRO_DEF).map(function(k){
       var def=MICRO_DEF[k];
       var dv=DV[k]||1;
