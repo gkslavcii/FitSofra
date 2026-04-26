@@ -409,6 +409,10 @@ window.TURKISH_HAMMADDE_DB = [
 {name:"Şalgam Suyu",emoji:"🥤",cat:"hammadde",per100g:{cal:17,prot:0.5,carb:3.5,fat:0.1},units:{g:1,kg:1000,ml:1.02,l:1020,bardak:204,fincan:82,şişe:300},src:"TürKomp"},
 {name:"Salep (Hazır)",emoji:"☕",cat:"hammadde",per100g:{cal:112,prot:3.0,carb:18.5,fat:2.8},units:{g:1,kg:1000,ml:1.05,l:1050,fincan:84,bardak:210,paket:17},src:"TürKomp"},
 
+// ═══ TAKVİYELER / EK MALZEMELER ═══
+{name:"Whey Protein",emoji:"💪",cat:"hammadde",per100g:{cal:380,prot:80.0,carb:8.0,fat:4.0},units:{g:1,kg:1000,yk:15,çk:5,ölçek:30,adet:30},src:"Avg"},
+{name:"Granola",emoji:"🥣",cat:"hammadde",per100g:{cal:471,prot:10.1,carb:64.0,fat:20.3},units:{g:1,kg:1000,bardak:120,yk:11,çk:4},src:"USDA"},
+
 ];
 
 // Hızlı erişim lookup: isimden hammadde bulma (normalized key)

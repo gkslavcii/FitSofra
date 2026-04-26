@@ -30,7 +30,13 @@ var EXPECTED_GRAMS = {
   meze:    [80,  200]
 };
 
-function inferYield(stored, calc, coverage) {
+// Kategori mid-grams (yield gram-tabanlı refinement için)
+var MID_GRAMS = {
+  klasik:325, corba:350, fit:325, pratik:275, sebze:290,
+  tatli:120, vegan:325, sandvic:250, salata:250, hamur:235, meze:140
+};
+
+function inferYield(stored, calc, coverage, calcGrams, cat) {
   // Düşük coverage → güvenilmez
   if (coverage < 0.85) return { yields: null, reason: 'low-coverage' };
   if (!stored || stored < 10) return { yields: null, reason: 'no-stored' };
@@ -42,13 +48,45 @@ function inferYield(stored, calc, coverage) {
   if (ratio >= 0.70 && ratio <= 1.50) {
     return { yields: 1, reason: 'stored-ok', ratio: ratio };
   }
-  // Stored çok düşük → yield > 1
-  if (ratio > 1.50 && ratio <= 8.0) {
-    return { yields: Math.round(ratio), reason: 'multi-portion', ratio: ratio };
-  }
   // Stored çok yüksek (toplam değil porsiyon olarak) — nadir
   if (ratio < 0.70 && ratio >= 0.20) {
     return { yields: 1, reason: 'stored-too-high', ratio: ratio, flag: true };
+  }
+  // Stored çok düşük (1.5x - 50x) → yield > 1, gram-tabanlı refine
+  if (ratio > 1.50 && ratio <= 50.0) {
+    var yCal = Math.round(ratio);
+    var range = EXPECTED_GRAMS[cat] || [150, 400];
+    var mid = MID_GRAMS[cat] || ((range[0]+range[1])/2);
+    // Küçük ratio (<8x) → cal seed güvenilir, ±2 aralıkta gram ile refine
+    // Büyük ratio (≥8x) → stored cal güvenilmez, gram-mid'e en yakın yield seç
+    var minY, maxY;
+    if (ratio < 8.0) {
+      minY = Math.max(1, yCal - 2);
+      maxY = yCal + 2;
+    } else {
+      // Geniş arama: gram/range[1] .. gram/range[0]
+      minY = Math.max(1, Math.floor(calcGrams / range[1]));
+      maxY = Math.min(60, Math.ceil(calcGrams / range[0]));
+      if (minY > maxY) { minY = 1; maxY = 60; }
+    }
+    var best = null;
+    for (var y = minY; y <= maxY; y++) {
+      var perGram = calcGrams / y;
+      var inRange = perGram >= range[0] && perGram <= range[1];
+      var distMid = Math.abs(perGram - mid);
+      var score = (inRange ? 0 : 1000) + distMid;
+      if (!best || score < best.score) {
+        best = { y: y, score: score, perGram: perGram, inRange: inRange };
+      }
+    }
+    var reason = ratio <= 8.0 ? 'multi-portion' : 'large-batch';
+    return {
+      yields: best.y,
+      reason: reason,
+      ratio: ratio,
+      perGram: best.perGram,
+      gramOk: best.inRange
+    };
   }
   return { yields: null, reason: 'extreme-ratio', ratio: ratio };
 }
@@ -73,7 +111,7 @@ var stats = {
 
 DB.forEach(function (r) {
   var calc = RC.calcRecipe(r);
-  var inf = inferYield(r.cal, calc.total.cal, calc.coverage.ratio);
+  var inf = inferYield(r.cal, calc.total.cal, calc.coverage.ratio, calc.total.grams, r.cat);
   var newYield = inf.yields;
   var newPer = null;
   var servCheck = { ok: true };
@@ -91,7 +129,7 @@ DB.forEach(function (r) {
   }
 
   if (inf.reason === 'stored-ok') stats.storedOk++;
-  else if (inf.reason === 'multi-portion') stats.multiPortion++;
+  else if (inf.reason === 'multi-portion' || inf.reason === 'large-batch') stats.multiPortion++;
   else if (inf.reason === 'low-coverage') stats.lowCoverage++;
   else if (inf.flag) stats.flagged++;
 

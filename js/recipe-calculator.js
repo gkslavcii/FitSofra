@@ -53,15 +53,23 @@
 
   // Yaygın eşdeğerler — DB'de olmayan ama makro açısından yakın olanlar
   var ALIAS_MAP={
-    'lavas':'pide ekmegi',     // pide DB'de yok ama ALIAS zincirine bakalım
-    'lavaş':'pide ekmegi',
-    'pide':'pide ekmegi',
+    'lavas':'ekmek beyaz',
+    'lavaş':'ekmek beyaz',
+    'pide':'ekmek beyaz',
     'pide ekmegi':'ekmek beyaz',
     'pide ekmeği':'ekmek beyaz',
+    'pita':'ekmek beyaz',
+    'pita ekmegi':'ekmek beyaz',
+    'pita ekmeği':'ekmek beyaz',
     'tost ekmegi':'ekmek beyaz',
     'tost ekmeği':'ekmek beyaz',
     'ekmek ici':'ekmek beyaz',
     'ekmek içi':'ekmek beyaz',
+    'bayat ekmek':'ekmek beyaz',
+    'yarim ekmek':'ekmek beyaz',
+    'yarım ekmek':'ekmek beyaz',
+    'kumru ekmegi':'ekmek beyaz',
+    'kumru ekmeği':'ekmek beyaz',
     'sandvic ekmegi':'ekmek beyaz',
     'sandviç ekmeği':'ekmek beyaz',
     'bazlama':'ekmek beyaz',
@@ -84,7 +92,8 @@
     'kaynamis su':'su',
     'maden suyu':'su',
     'limon suyu':'limon',
-    'protein tozu':'',           // makrosu çok değişken — atla
+    'protein tozu':'whey protein',
+    'whey protein':'whey protein',
     'kizartma yagi':'aycicek yagi',
     'kızartma yağı':'ayçiçek yağı',
     'sivi yag':'aycicek yagi',
@@ -96,10 +105,38 @@
     'sebze':'kabak',             // jenerik sebze → kabak proxy
     'baharat':'',                // makrosu yok say
     'baharatlar':'',
-    'kekik':'',                  // çoğu DB'de yok, makro ihmal
-    'nane':'maydanoz',           // benzer makro proxy
+    'buz':'',                    // 0 kalori
+    // 'kekik' silindi — DB'de "Kekik (Kuru)" var
+    // 'nane' silindi — DB'de "Nane (Taze)" + "Nane (Kuru)" var
     'roka':'maydanoz',
-    'tere':'maydanoz'
+    'tere':'maydanoz',
+    'arpa sehriye':'sehriye',
+    'arpa şehriye':'sehriye',
+    'sehriye':'makarna sehriye',
+    'şehriye':'makarna sehriye',
+    'bulgur (haslanmis)':'bulgur',
+    'bulgur (haşlanmış)':'bulgur',
+    'nohut (haslanmis)':'nohut',
+    'nohut (haşlanmış)':'nohut',
+    'kuru fasulye (haslanmis)':'kuru fasulye',
+    'kuru fasulye (haşlanmış)':'kuru fasulye',
+    'pirinc (haslanmis)':'pirinç',
+    'pirinç (haşlanmış)':'pirinç',
+    'humus':'nohut',
+    'falafel':'nohut',
+    'karisik yesillik':'marul',
+    'karışık yeşillik':'marul',
+    'yesil salata':'marul',
+    'yeşil salata':'marul',
+    'yesil sogan':'taze sogan',
+    'yeşil soğan':'taze soğan',
+    'muesli':'granola',
+    'müsli':'granola',
+    'donmus yaban mersini':'yaban mersini',
+    'donmuş yaban mersini':'yaban mersini',
+    'yaban mersini':'',
+    'ton baligi (suda)':'ton baligi konserve suda',
+    'ton balığı (suda)':'ton balığı konserve suda'
   };
   function _resolveAlias(key){
     if(ALIAS_MAP[key]!=null) return ALIAS_MAP[key];
