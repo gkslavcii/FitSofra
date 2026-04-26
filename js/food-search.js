@@ -264,31 +264,49 @@ function _scaleAmount(amountStr, scale) {
 }
 
 function setRecipeScale(s) {
+  // Sınır: 0.1x – 20x (manuel girişler için)
+  if (!isFinite(s) || s <= 0) s = 1;
+  if (s < 0.1) s = 0.1;
+  if (s > 20) s = 20;
   _recipeScale = s;
   var r = RECIPES[_openRecipeIdx]; if (!r) return;
   var ingList = r.ingredients || r.ing || [];
   document.getElementById('rdPanelMalz').innerHTML = buildIngredientList(ingList, _recipeScale);
-  // Makro güncelle
-  var calEl = document.getElementById('rdScaleCal');
-  var protEl = document.getElementById('rdScaleProt');
-  var carbEl = document.getElementById('rdScaleCarb');
-  var fatEl = document.getElementById('rdScaleFat');
-  if (calEl) calEl.textContent = Math.round((r.cal || 0) * s);
-  if (protEl) protEl.textContent = Math.round((r.prot || 0) * s) + 'g';
-  if (carbEl) carbEl.textContent = Math.round((r.carb || 0) * s) + 'g';
-  if (fatEl) fatEl.textContent = Math.round((r.fat || 0) * s) + 'g';
-  // Yield (kaç porsiyon çıkıyor) güncelle — yieldServings öncelikli
+
+  // Per-porsiyon makrolar SABİT — scale değişse bile bir porsiyon ne kadarsa
+  // onu gösterir (kullanıcı bir porsiyon yiyince ne alır net olsun).
+  // Üstteki kcal stat'ı sadece açılışta r.cal ile dolduruluyor; setRecipeScale
+  // bunlara dokunmaz.
+
+  // Yield (kaç porsiyon çıkıyor) — baseY × scale
+  var baseY = r.yieldServings || parseFloat(r.serv) || 1;
+  var newY = Math.round(baseY * s * 10) / 10;
+  var newYStr = (newY % 1 === 0 ? newY.toFixed(0) : newY.toFixed(1));
   var servEl = document.getElementById('rdScaleServ');
-  if (servEl) {
-    var baseY = r.yieldServings || parseFloat(r.serv) || 1;
-    var newY = Math.round(baseY * s * 10) / 10;
-    servEl.textContent = '👥 ' + (newY % 1 === 0 ? newY.toFixed(0) : newY.toFixed(1)) + ' porsiyon';
+  if (servEl) servEl.textContent = '👥 ' + newYStr + ' porsiyon';
+
+  // Dinamik batch info: "Bu ölçekte: N porsiyon · M kcal toplam"
+  var batchEl = document.getElementById('rdBatchInfo');
+  if (batchEl) {
+    var totalCal = Math.round((r.cal || 0) * baseY * s);
+    batchEl.innerHTML = '<span style="font-size:1rem">📊</span>'
+      + '<span><b>1 porsiyon</b> = <b>' + (r.cal||0) + ' kcal</b> · '
+      + 'Bu ölçekte <b>' + newYStr + ' porsiyon</b> çıkar (<b>' + totalCal + ' kcal</b> toplam)</span>';
   }
-  // Buton aktifliği
+
+  // Buton aktifliği — eşleşen preset varsa öne çıkar, yoksa hepsi pasif
   document.querySelectorAll('.scale-btn').forEach(function(b) {
-    b.style.background = parseFloat(b.dataset.s) === s ? 'var(--accent)' : 'var(--glass)';
-    b.style.color = parseFloat(b.dataset.s) === s ? '#fff' : 'var(--text2)';
+    var match = parseFloat(b.dataset.s) === s;
+    b.style.background = match ? 'var(--accent)' : 'var(--glass)';
+    b.style.color = match ? '#fff' : 'var(--text2)';
   });
+  // Manuel textbox değerini scale ile senkronla (kullanıcının yazdığı değer
+  // dışında bir buton tıklandıysa textbox'ı güncelle)
+  var manualEl = document.getElementById('rdScaleManual');
+  if (manualEl && document.activeElement !== manualEl) {
+    manualEl.value = (s % 1 === 0 ? String(s) : s.toFixed(2).replace(/\.?0+$/,''));
+  }
+
   // Mikro besin panelini de güncelle
   var microWrap=document.getElementById('rdMicroWrap');
   if(microWrap){
@@ -298,6 +316,13 @@ function setRecipeScale(s) {
       var d=microWrap.querySelector('details'); if(d) d.open=true;
     }
   }
+}
+
+// Manuel textbox handler — kullanıcı yazınca scale uygula
+function _onRecipeScaleManualInput(input){
+  var v = parseFloat(String(input.value).replace(',','.'));
+  if (!isFinite(v) || v <= 0) return; // boş/geçersiz iken bekleme — değiştirme
+  setRecipeScale(v);
 }
 
 // ═══ MİKRO BESİN PANELİ ═══
@@ -450,17 +475,28 @@ function openRecipeDetail(idx){
         </div>
       </div>
     </div>
-    ${yieldN>1?`<div style="margin:-4px 0 12px;padding:8px 12px;background:var(--accent-glow);border:1px solid var(--accent);border-radius:10px;font-size:.7rem;color:var(--text);display:flex;align-items:center;gap:8px">
+    <div id="rdBatchInfo" style="margin:-4px 0 12px;padding:8px 12px;background:var(--accent-glow);border:1px solid var(--accent);border-radius:10px;font-size:.7rem;color:var(--text);display:flex;align-items:center;gap:8px">
       <span style="font-size:1rem">📊</span>
-      <span><b>${r.cal||0} kcal</b> = <b>1 porsiyon</b> · Tarif toplam <b>${yieldN} porsiyon</b> çıkarır (${Math.round((r.cal||0)*yieldN)} kcal toplam)</span>
-    </div>`:''}
+      <span><b>1 porsiyon</b> = <b>${r.cal||0} kcal</b> · Bu ölçekte <b>${yieldN} porsiyon</b> çıkar (<b>${Math.round((r.cal||0)*yieldN)} kcal</b> toplam)</span>
+    </div>
 
-    <!-- Ölçekleme -->
-    <div style="display:flex;align-items:center;gap:6px;margin-bottom:12px;background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:8px 10px">
-      <span style="font-size:.72rem;font-weight:700;color:var(--text2);flex-shrink:0">📐 Porsiyon:</span>
-      <div style="display:flex;gap:4px;flex:1;justify-content:center">
-        ${[0.5,1,2,3,4].map(function(s){return '<button class="scale-btn" data-s="'+s+'" onclick="setRecipeScale('+s+')" style="padding:5px 10px;border-radius:8px;border:1px solid var(--border);font-size:.72rem;font-weight:700;cursor:pointer;font-family:var(--font,system-ui);transition:all .2s;'+(s===1?'background:var(--accent);color:#fff':'background:var(--glass);color:var(--text2)')+'">'+s+'x</button>';}).join('')}
+    <!-- Ölçekleme: tarif çarpanı (kaç katı yapacaksın) + manuel girdi -->
+    <div style="margin-bottom:12px;background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:8px 10px">
+      <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+        <span style="font-size:.72rem;font-weight:700;color:var(--text2);flex-shrink:0">📐 Tarif Çarpanı:</span>
+        <div style="display:flex;gap:4px;flex:1;justify-content:center;flex-wrap:wrap">
+          ${[0.5,1,2,3,4].map(function(s){return '<button class="scale-btn" data-s="'+s+'" onclick="setRecipeScale('+s+')" style="padding:5px 10px;border-radius:8px;border:1px solid var(--border);font-size:.72rem;font-weight:700;cursor:pointer;font-family:var(--font,system-ui);transition:all .2s;'+(s===1?'background:var(--accent);color:#fff':'background:var(--glass);color:var(--text2)')+'">'+s+'x</button>';}).join('')}
+          <div style="display:flex;align-items:center;gap:3px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:0 4px 0 6px">
+            <input id="rdScaleManual" type="number" step="0.25" min="0.1" max="20" value="1"
+              oninput="_onRecipeScaleManualInput(this)"
+              onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}"
+              style="width:46px;padding:5px 2px;border:none;background:transparent;color:var(--text);font-size:.72rem;font-weight:700;font-family:var(--font,system-ui);text-align:center;outline:none"
+              title="Özel çarpan gir">
+            <span style="font-size:.66rem;color:var(--text2);font-weight:700">x</span>
+          </div>
+        </div>
       </div>
+      <div style="font-size:.6rem;color:var(--text2);margin-top:5px;text-align:center">Üstteki <b>porsiyon</b> sayısı ve aşağıdaki <b>malzemeler</b> bu çarpana göre ölçeklenir.</div>
     </div>
 
     <!-- Makro barlar -->
