@@ -1023,8 +1023,11 @@ function _parseIngLine(line){
   return {amount:'', item:s};
 }
 
-function calcMacrosFromIngredients(){
-  var st=document.getElementById('reCalcStatus');
+// Hesaplama + sapma karşılaştırması — hem yeni hem edit panelinde kullanılır
+// applyToInputs=true ise hesaplananı input'lara yazar; false ise sadece önizler
+function _runMacroCalc(prefix,applyToInputs){
+  var st=document.getElementById(prefix+'CalcStatus');
+  if(!st)return;
   st.style.display='block';
 
   if(!window.RecipeCalculator){
@@ -1033,7 +1036,7 @@ function calcMacrosFromIngredients(){
     return;
   }
 
-  var lines=document.getElementById('reIng').value.split('\n')
+  var lines=document.getElementById(prefix+'Ing').value.split('\n')
     .map(function(s){return s.trim();}).filter(Boolean);
   if(!lines.length){
     st.innerHTML='⚠️ Önce malzemeleri yazın';
@@ -1042,28 +1045,49 @@ function calcMacrosFromIngredients(){
   }
 
   var ingredients=lines.map(_parseIngLine).filter(Boolean);
-  var yieldN=parseInt(document.getElementById('reServ').value)||1;
+  var yieldN=parseInt(document.getElementById(prefix+'Serv').value)||1;
 
   var result=window.RecipeCalculator.calcRecipe({
     ingredients:ingredients,
     serv:String(yieldN)
   });
 
-  // Per-porsiyon değerleri input'lara yaz
   var per=result.perServing;
-  document.getElementById('reCal').value=per.cal;
-  document.getElementById('reProt').value=per.prot;
-  document.getElementById('reCarb').value=per.carb;
-  document.getElementById('reFat').value=per.fat;
 
-  // Durum göstergesi
+  // Mevcut input değerlerini oku (sapma için)
+  var curCal=parseInt(document.getElementById(prefix+'Cal').value)||0;
+  var curProt=parseInt(document.getElementById(prefix+'Prot').value)||0;
+  var curCarb=parseInt(document.getElementById(prefix+'Carb').value)||0;
+  var curFat=parseInt(document.getElementById(prefix+'Fat').value)||0;
+  var hasCurrent=curCal>0;
+
+  if(applyToInputs){
+    document.getElementById(prefix+'Cal').value=per.cal;
+    document.getElementById(prefix+'Prot').value=per.prot;
+    document.getElementById(prefix+'Carb').value=per.carb;
+    document.getElementById(prefix+'Fat').value=per.fat;
+  }
+
   var cov=result.coverage;
   var pct=Math.round(cov.ratio*100);
   var color=pct>=85?'#3dd68c':pct>=60?'#f0a030':'#ff5c5c';
   var icon=pct>=85?'✅':pct>=60?'⚠️':'❌';
   var txt=icon+' <strong>'+cov.matched+'/'+cov.total+' malzeme tanındı (%'+pct+')</strong>'
-    +' · '+yieldN+' porsiyon · per-porsiyon: '+per.cal+' kcal'
+    +' · '+yieldN+' porsiyon · per-porsiyon hesap: <strong>'+per.cal+' kcal</strong> P'+per.prot+' K'+per.carb+' Y'+per.fat
     +' (toplam '+result.total.cal+' kcal · '+result.total.grams+'g)';
+
+  // Sapma analizi — kayıtlı/girilen değer var ve apply edilmediyse göster
+  if(hasCurrent&&!applyToInputs){
+    var calDelta=per.cal-curCal;
+    var calPctDiff=curCal>0?Math.round(Math.abs(calDelta)/curCal*100):0;
+    var deltaColor=calPctDiff<=15?'#3dd68c':calPctDiff<=30?'#f0a030':'#ff5c5c';
+    var arrow=calDelta>0?'↑':calDelta<0?'↓':'≈';
+    txt+='<br><span style="color:'+deltaColor+'">'+arrow+' Girilen: '+curCal+' kcal · Sapma: '+(calDelta>=0?'+':'')+calDelta+' kcal (%'+calPctDiff+')</span>';
+    if(calPctDiff>30){
+      txt+=' <strong style="color:#ff5c5c">⚠️ Yüksek sapma — kontrol edin</strong>';
+    }
+  }
+
   if(cov.missing.length){
     var missList=cov.missing.slice(0,5).map(function(m){return m.name;}).join(', ');
     txt+='<br><span style="opacity:.85">Eksik: '+missList
@@ -1072,6 +1096,20 @@ function calcMacrosFromIngredients(){
   st.innerHTML=txt;
   st.style.background=color+'15';st.style.color=color;st.style.border='1px solid '+color+'33';
 }
+
+function calcMacrosFromIngredients(){
+  // Edit panelinde: hesaplananı input'lara yaz
+  _runMacroCalc('re',true);
+}
+
+// Yeni tarif ekle panelinde: hesaplananı input'lara yaz
+function calcMacrosForNewRecipe(){
+  _runMacroCalc('r',true);
+}
+
+// Sadece önizle (sapma göstergesi ile) — kaydetmeden önce kontrol için
+function previewMacrosNew(){ _runMacroCalc('r',false); }
+function previewMacrosEdit(){ _runMacroCalc('re',false); }
 
 function previewRecipeImg(){
   var url=(document.getElementById('reImg').value||'').trim();
@@ -2240,6 +2278,11 @@ setTimeout(renderAdminCatOrder,500);
       <input type="number" id="rFat" placeholder="Yağ (g)">
     </div>
     <textarea id="rIng" placeholder="Malzemeler (her satıra bir malzeme)" style="width:100%;padding:10px;border:1.5px solid #2a2d38;border-radius:10px;background:#0d0f14;color:#e8e8ec;font-family:inherit;font-size:.85rem;resize:vertical;min-height:100px;margin-bottom:6px;outline:none"></textarea>
+    <div style="display:flex;gap:6px;margin-bottom:6px;flex-wrap:wrap">
+      <button class="btn-u btn-sm" onclick="previewMacrosNew()" style="background:#22d3ee;color:#0d0f14">👁️ Önizle (sapmayı göster)</button>
+      <button class="btn-u btn-sm" onclick="calcMacrosForNewRecipe()">🧮 Otomatik Hesapla &amp; Doldur</button>
+    </div>
+    <div id="rCalcStatus" style="font-size:.66rem;margin-bottom:6px;padding:6px 8px;border-radius:6px;display:none;line-height:1.4"></div>
     <textarea id="rSteps" placeholder="Yapılış adımları (her satıra bir adım)" style="width:100%;padding:10px;border:1.5px solid #2a2d38;border-radius:10px;background:#0d0f14;color:#e8e8ec;font-family:inherit;font-size:.85rem;resize:vertical;min-height:120px;margin-bottom:6px;outline:none"></textarea>
     <input type="text" id="rTags" placeholder="Etiketler: kolay,saglikli,proteinli">
     <input type="text" id="rImg" placeholder="📷 Fotoğraf URL (Unsplash, Pexels vb.)" style="margin-top:2px">
@@ -2440,9 +2483,14 @@ setTimeout(renderAdminCatOrder,500);
       <input type="number" id="reTime" placeholder="Süre (dk)">
       <input type="number" id="reServ" placeholder="Porsiyon (yield)">
     </div>
-    <button type="button" class="btn-e" onclick="calcMacrosFromIngredients()" style="margin-bottom:6px;font-size:.74rem">
-      📊 Malzemelerden Makro Hesapla
-    </button>
+    <div style="display:flex;gap:6px;margin-bottom:6px;flex-wrap:wrap">
+      <button type="button" class="btn-e" onclick="previewMacrosEdit()" style="font-size:.74rem;background:#22d3ee;color:#0d0f14">
+        👁️ Önizle (sapmayı göster)
+      </button>
+      <button type="button" class="btn-e" onclick="calcMacrosFromIngredients()" style="font-size:.74rem">
+        📊 Hesapla &amp; Doldur
+      </button>
+    </div>
     <div id="reCalcStatus" style="font-size:.66rem;margin-bottom:6px;padding:6px 8px;border-radius:6px;display:none;line-height:1.4"></div>
     <input type="text" id="reTags" placeholder="Etiketler: kolay,saglikli,proteinli">
     <textarea id="reIng" placeholder="Malzemeler (her satıra bir)" style="width:100%;padding:8px;border:1.5px solid #2a2d38;border-radius:10px;background:#0d0f14;color:#e8e8ec;font-family:inherit;font-size:.82rem;resize:vertical;min-height:80px;margin-bottom:6px;outline:none"></textarea>

@@ -102,6 +102,7 @@ function openRecipeCatModal(catId){
           ${r.prot?`<span style="color:#ff7a7a">P${r.prot}g</span>`:''}
           ${r.carb?`<span style="color:#22d3ee">K${r.carb}g</span>`:''}
           ${r.fat?`<span style="color:#ffcc55">Y${r.fat}g</span>`:''}
+          ${(function(){var y=r.yieldServings||(parseFloat(r.serv)||1);return y>1?`<span style="color:#a7e8a4">×${y}</span>`:'';})()}
         </div>
       </div>
       <div style="text-align:right;flex-shrink:0">
@@ -201,6 +202,8 @@ function renderRecipeCarousel(recipes){
     const idx=RECIPES.findIndex(x=>(x.id&&x.id===r.id)||x.name===r.name);
     const score=getRecipeScore(r);
     const sColor=getScoreColor(score);
+    const yld=r.yieldServings||(parseFloat(r.serv)||1);
+    const yldChip=yld>1?`<span class="rc-chip" style="background:rgba(167,232,164,.2);color:#a7e8a4">×${yld} porsiyon</span>`:'';
     return `<div class="rc-card" onclick="openRecipeDetail(${idx})">
       <img src="${r.img}" alt="${escHTML(r.name)}" loading="lazy" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 400 200%22><rect fill=%22%23181b23%22 width=%22400%22 height=%22200%22/><text x=%22200%22 y=%22100%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22 font-size=%2260%22>${r.emoji||'🍽️'}</text></svg>'">
       <div class="rc-cat">${catLabels[r.cat]||r.cat}</div>
@@ -214,6 +217,7 @@ function renderRecipeCarousel(recipes){
           ${r.carb?`<span class="rc-chip" style="background:rgba(34,211,238,.2);color:#22d3ee">K${r.carb}g</span>`:''}
           ${r.fat?`<span class="rc-chip" style="background:rgba(255,204,85,.2);color:#ffcc55">Y${r.fat}g</span>`:''}
           <span class="rc-chip" style="background:rgba(255,255,255,.1);color:#fff">⏱${r.time||'—'}dk</span>
+          ${yldChip}
         </div>
       </div>
     </div>`;
