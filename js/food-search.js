@@ -1987,17 +1987,22 @@ function renderStats(){
     onReportPeriodChange();
   });
 
-  // Grafikleri çiz — innerHTML set edildikten sonra
-  requestAnimationFrame(function(){
+  // Grafikleri çiz — innerHTML set edildikten sonra (layout settle için setTimeout)
+  setTimeout(function(){
+    if(typeof Chart==='undefined'){
+      console.warn('[stats] Chart.js yüklenmemiş, grafikler atlandı');
+      return;
+    }
     var isDark=document.documentElement.getAttribute('data-theme')!=='light';
     var gridColor=isDark?'rgba(255,255,255,.06)':'rgba(0,0,0,.06)';
     var textColor=isDark?'#6b7094':'#6b7084';
-    Chart.defaults.color=textColor;
+    try{ Chart.defaults.color=textColor; }catch(e){}
 
     // 1. Kalori Trend Çizgi Grafiği
+    try{
     var ctx1=document.getElementById('calTrendChart');
     if(ctx1){
-      if(ctx1._chart) ctx1._chart.destroy();
+      if(ctx1._chart){ try{ctx1._chart.destroy();}catch(e){} }
       var calData=weekDays.map(function(d){return d.cal;});
       var labels=weekDays.map(function(d){return d.day;});
       var protData=weekDays.map(function(d){return d.prot*4;}); // kcal cinsinden
@@ -2035,11 +2040,13 @@ function renderStats(){
         }
       });
     }
+    }catch(e){ console.error('[stats] calTrend error:',e); }
 
     // 2. Bugünkü Makro Donut
+    try{
     var ctx2=document.getElementById('macroDonutChart');
     if(ctx2){
-      if(ctx2._chart) ctx2._chart.destroy();
+      if(ctx2._chart){ try{ctx2._chart.destroy();}catch(e){} }
       var protCal=t.prot*4, carbCal=t.carb*4, fatCal=t.fat*9;
       var total=protCal+carbCal+fatCal||1;
       ctx2._chart=new Chart(ctx2,{
@@ -2053,11 +2060,13 @@ function renderStats(){
         }
       });
     }
+    }catch(e){ console.error('[stats] macroDonut error:',e); }
 
     // 3. Haftalık Ortalama Makro Donut
+    try{
     var ctx3=document.getElementById('weeklyMacroChart');
     if(ctx3){
-      if(ctx3._chart) ctx3._chart.destroy();
+      if(ctx3._chart){ try{ctx3._chart.destroy();}catch(e){} }
       var wProtCal=avgProt*4, wCarbCal=avgCarb*4, wFatCal=avgFat*9;
       var wTotal=wProtCal+wCarbCal+wFatCal||1;
       ctx3._chart=new Chart(ctx3,{
@@ -2071,7 +2080,8 @@ function renderStats(){
         }
       });
     }
-  });
+    }catch(e){ console.error('[stats] weeklyMacro error:',e); }
+  },50);
 }
 
 function generateReportSection(){
