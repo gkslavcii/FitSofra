@@ -379,7 +379,14 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
 .acc-item.open .acc-body{max-height:800px;padding:0 18px 16px}
 .acc-item.open .acc-header{color:var(--accent)}
 </style>
+<!-- Chart.js: önce CDN dene, başarısız olursa local fallback -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+  // CDN engellendiyse (ad-blocker, firewall, ISP filter) local kopyaya düş
+  if (typeof Chart === 'undefined') {
+    document.write('<script src="js/lib/chart.umd.min.js?v=4.4.1"><\/script>');
+  }
+</script>
 </head>
 <body>
 <div id="splashScreen" style="position:fixed;top:0;left:0;right:0;bottom:0;background:#080a10;z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;transition:opacity .6s ease">
