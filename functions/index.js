@@ -1512,3 +1512,276 @@ exports.onSofraMemberChange = functions.firestore
       title, body, type: 'sofra-member', sofraId
     });
   });
+
+
+// ═══════════════════════════════════════════
+//  KVKK / VERİ HAKLARI — Veri Export + Hesap Silme
+// ═══════════════════════════════════════════
+// KVKK Madde 11 + GDPR Article 15/17/20:
+//  - Taşınabilirlik hakkı  → exportUserData (tüm kişisel veri JSON)
+//  - Unutulma hakkı        → deleteUserAccount (Firestore + Storage + Auth)
+
+// Bir Firestore döküman + tüm alt koleksiyonlarını recursive topla
+async function _collectDocRecursive(docRef) {
+  const snap = await docRef.get();
+  if (!snap.exists) return null;
+  const out = { _id: snap.id };
+  Object.assign(out, snap.data());
+  try {
+    const subs = await docRef.listCollections();
+    for (const sub of subs) {
+      const subSnap = await sub.get();
+      const arr = [];
+      for (const subDoc of subSnap.docs) {
+        const subData = await _collectDocRecursive(subDoc.ref);
+        if (subData) arr.push(subData);
+      }
+      out['_sub_' + sub.id] = arr;
+    }
+  } catch (_) { /* listCollections client SDK'da yok ama Admin'de var */ }
+  return out;
+}
+
+async function _collectQuery(query) {
+  const snap = await query.get();
+  return snap.docs.map(d => {
+    const o = { _id: d.id };
+    Object.assign(o, d.data());
+    return o;
+  });
+}
+
+// ───────────────────────────────────────────
+// VERİ EXPORT — Tüm kişisel veriyi JSON olarak döndür
+// ───────────────────────────────────────────
+exports.exportUserData = functions
+  .runWith({ timeoutSeconds: 120, memory: '512MB' })
+  .https.onCall(async (data, context) => {
+    const uid = requireAuth(context);
+    rateLimit(uid, 'exportUserData', 2); // 2/dk — büyük operasyon
+
+    const db = admin.firestore();
+    const result = {
+      app: 'FitSofra',
+      exportFormat: 'kvkk-v1',
+      exportedAt: new Date().toISOString(),
+      uid: uid,
+    };
+
+    // 1) Auth metadata
+    try {
+      const authUser = await admin.auth().getUser(uid);
+      result.account = {
+        email: authUser.email || null,
+        displayName: authUser.displayName || null,
+        photoURL: authUser.photoURL || null,
+        emailVerified: !!authUser.emailVerified,
+        createdAt: authUser.metadata && authUser.metadata.creationTime || null,
+        lastSignIn: authUser.metadata && authUser.metadata.lastSignInTime || null,
+        providers: (authUser.providerData || []).map(function(p){
+          return { providerId: p.providerId, uid: p.uid, email: p.email || null };
+        })
+      };
+    } catch (e) {
+      result.account = { error: 'auth_lookup_failed', message: e.message };
+    }
+
+    // 2) users/{uid} + alt koleksiyonlar (sync chunks vs.)
+    try {
+      result.users_doc = await _collectDocRecursive(db.collection('users').doc(uid));
+    } catch (e) { result.users_doc = { error: e.message }; }
+
+    // 3) user_data/{uid} + alt koleksiyonlar (beslenme verisi)
+    try {
+      result.user_data = await _collectDocRecursive(db.collection('user_data').doc(uid));
+    } catch (e) { result.user_data = { error: e.message }; }
+
+    // 4) profiles/{uid} + friends alt koleksiyonu (arkadaşlık)
+    try {
+      result.profile = await _collectDocRecursive(db.collection('profiles').doc(uid));
+    } catch (e) { result.profile = { error: e.message }; }
+
+    // 5) Topluluk paylaşımları
+    try {
+      result.community_posts = await _collectQuery(
+        db.collection('community_posts').where('uid', '==', uid)
+      );
+    } catch (e) { result.community_posts = { error: e.message }; }
+
+    // 6) Destek talepleri
+    try {
+      result.tickets = await _collectQuery(
+        db.collection('tickets').where('uid', '==', uid)
+      );
+    } catch (e) { result.tickets = { error: e.message }; }
+
+    // 7) Geri bildirim yanıtları
+    try {
+      result.user_feedbacks = await _collectQuery(
+        db.collection('user_feedbacks').where('userId', '==', uid)
+      );
+    } catch (e) { result.user_feedbacks = { error: e.message }; }
+
+    // 8) Sofra üyelikleri (paylaşımlı menü/liste)
+    try {
+      result.sofras_membership = await _collectQuery(
+        db.collection('sofras').where('memberIds', 'array-contains', uid)
+      );
+    } catch (e) { result.sofras_membership = { error: e.message }; }
+
+    // Boyut bilgisi (informational)
+    try {
+      const json = JSON.stringify(result);
+      result._meta = { sizeBytes: json.length, sizeMB: (json.length / 1048576).toFixed(2) };
+    } catch (_) {}
+
+    return result;
+  });
+
+// ───────────────────────────────────────────
+// HESAP SİLME — Tüm kişisel veriyi sil + Auth user'ı kaldır
+// ───────────────────────────────────────────
+// Onay metni: "HESABIMI SIL" (Türkçe i karakteri normalize edilir)
+exports.deleteUserAccount = functions
+  .runWith({ timeoutSeconds: 240, memory: '512MB' })
+  .https.onCall(async (data, context) => {
+    const uid = requireAuth(context);
+    rateLimit(uid, 'deleteUserAccount', 3);
+
+    // Onay metni kontrolü
+    const raw = (data && data.confirm) || '';
+    const norm = String(raw).toLocaleUpperCase('tr-TR')
+      .replace(/İ/g, 'I').replace(/Ş/g, 'S').replace(/Ğ/g, 'G')
+      .replace(/Ü/g, 'U').replace(/Ö/g, 'O').replace(/Ç/g, 'C')
+      .replace(/\s+/g, ' ').trim();
+    if (norm !== 'HESABIMI SIL') {
+      throw new functions.https.HttpsError(
+        'invalid-argument',
+        'Onay metni hatalı. Silmek için "HESABIMI SİL" yazmalısın.'
+      );
+    }
+
+    const db = admin.firestore();
+    const log = [];
+
+    // ─── 1) Sofra üyeliklerini handle et ───
+    // - Owner ve tek başına → tüm sofrayı sil (recursive)
+    // - Owner ama başka üye var → en eski üyeye devret
+    // - Sadece üye → memberIds'den çıkar
+    try {
+      const sofraSnap = await db.collection('sofras')
+        .where('memberIds', 'array-contains', uid).get();
+
+      for (const sofraDoc of sofraSnap.docs) {
+        const sofra = sofraDoc.data() || {};
+        const isOwner = sofra.ownerId === uid;
+        const otherMembers = (sofra.memberIds || []).filter(function(m){ return m !== uid; });
+
+        if (isOwner) {
+          if (otherMembers.length === 0) {
+            await db.recursiveDelete(sofraDoc.ref);
+            log.push({ sofra: sofraDoc.id, action: 'deleted_solo' });
+          } else {
+            // En eski katılan üyeye devret
+            const members = sofra.members || {};
+            let nextOwner = null;
+            let oldest = Infinity;
+            for (const m of otherMembers) {
+              const mEntry = members[m] || {};
+              const ja = mEntry.joinedAt;
+              const ts = ja && (ja._seconds || ja.seconds) || (ja && ja.toMillis && ja.toMillis()/1000) || Infinity;
+              if (ts < oldest) { oldest = ts; nextOwner = m; }
+            }
+            if (!nextOwner) nextOwner = otherMembers[0];
+
+            const newMembers = Object.assign({}, members);
+            delete newMembers[uid];
+            await sofraDoc.ref.update({
+              ownerId: nextOwner,
+              memberIds: admin.firestore.FieldValue.arrayRemove(uid),
+              members: newMembers
+            });
+            log.push({ sofra: sofraDoc.id, action: 'transferred', newOwner: nextOwner });
+          }
+        } else {
+          const members = Object.assign({}, sofra.members || {});
+          delete members[uid];
+          await sofraDoc.ref.update({
+            memberIds: admin.firestore.FieldValue.arrayRemove(uid),
+            members: members
+          });
+          log.push({ sofra: sofraDoc.id, action: 'left' });
+        }
+      }
+    } catch (e) {
+      log.push({ step: 'sofras', error: e.message });
+    }
+
+    // ─── 2) Kullanıcıya ait paylaşılan koleksiyonlardan sil ───
+    const userScopedCollections = [
+      { col: 'community_posts', field: 'uid' },
+      { col: 'tickets',         field: 'uid' },
+      { col: 'user_feedbacks',  field: 'userId' },
+      { col: 'reports',         field: 'reporterUid' },
+    ];
+    for (const sc of userScopedCollections) {
+      try {
+        const snap = await db.collection(sc.col).where(sc.field, '==', uid).get();
+        if (snap.empty) { log.push({ col: sc.col, deleted: 0 }); continue; }
+        const writer = db.bulkWriter();
+        snap.docs.forEach(function(d){ writer.delete(d.ref); });
+        await writer.close();
+        log.push({ col: sc.col, deleted: snap.size });
+      } catch (e) {
+        log.push({ col: sc.col, error: e.message });
+      }
+    }
+
+    // ─── 3) Ana kullanıcı dokümanları (recursive — alt koleksiyonlarla) ───
+    const recursivePaths = [
+      'users/' + uid,
+      'user_data/' + uid,
+      'profiles/' + uid,
+    ];
+    for (const path of recursivePaths) {
+      try {
+        await db.recursiveDelete(db.doc(path));
+        log.push({ path: path, action: 'recursiveDelete' });
+      } catch (e) {
+        log.push({ path: path, error: e.message });
+      }
+    }
+
+    // ─── 4) Storage — kullanıcıya ait dosyaları temizle ───
+    // storage.rules: client sadece community/{uid}/ altına yazabiliyor.
+    // Geleceğe yönelik diğer olası prefix'leri de tarıyoruz (yoksa sessiz geçer).
+    try {
+      const bucket = admin.storage().bucket();
+      const prefixes = [
+        'community/' + uid + '/',     // topluluk paylaşım fotoğrafları
+        'users/' + uid + '/',          // ileride avatar/ek
+        'user_uploads/' + uid + '/',
+        'avatars/' + uid
+      ];
+      for (const prefix of prefixes) {
+        try {
+          await bucket.deleteFiles({ prefix: prefix });
+          log.push({ storage: prefix, action: 'deleted' });
+        } catch (_) { /* prefix yoksa sessiz geç */ }
+      }
+    } catch (e) {
+      log.push({ step: 'storage', error: e.message });
+    }
+
+    // ─── 5) Auth kaydını sil (en son) ───
+    try {
+      await admin.auth().deleteUser(uid);
+      log.push({ step: 'auth', action: 'deleted' });
+    } catch (e) {
+      log.push({ step: 'auth', error: e.message });
+      throw new functions.https.HttpsError('internal',
+        'Veriler silindi ama Auth kaydı silinemedi. Lütfen destek\'le iletişime geç. Detay: ' + e.message);
+    }
+
+    return { success: true, deletedAt: new Date().toISOString(), log: log };
+  });

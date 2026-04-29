@@ -1199,12 +1199,33 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
           <p style="margin-bottom:6px"><strong>3. Google Hesabı:</strong> Google ile giriş yaptığınızda yalnızca adınız, e-posta adresiniz ve profil fotoğrafınız alınır. Google hesap şifrenize hiçbir zaman erişim sağlanmaz. OAuth 2.0 güvenlik standardı kullanılır.</p>
           <p style="margin-bottom:6px"><strong>4. Üçüncü Taraflar:</strong> Verileriniz asla üçüncü kişi, kurum veya reklam şirketleriyle paylaşılmaz ya da satılmaz. Barkod tarama için Open Food Facts API kullanılır — bu servise yalnızca barkod numarası gönderilir, kişisel bilgi aktarılmaz.</p>
           <p style="margin-bottom:6px"><strong>5. İzleme & Reklam:</strong> FitSofra'da hiçbir reklam gösterilmez. Google Analytics, Facebook Pixel veya benzeri takip araçları kullanılmaz. Kullanıcı davranışlarınız izlenmez.</p>
-          <p style="margin-bottom:6px"><strong>6. Veri Silme:</strong> İstediğiniz zaman "Hesabı Sil" butonu ile tüm yerel ve bulut verilerinizi kalıcı olarak silebilirsiniz. Silme işlemi geri alınamaz ve verileriniz tüm sistemlerden tamamen kaldırılır.</p>
+          <p style="margin-bottom:6px"><strong>6. Veri Hakları (KVKK Madde 11 / GDPR Madde 15-17-20):</strong> "Veri Haklarım" bölümünden istediğiniz zaman: <em>(a)</em> tüm verilerinizi JSON formatında <strong>indirebilir</strong> (taşınabilirlik hakkı), <em>(b)</em> hesabınızı ve tüm verileri <strong>kalıcı olarak silebilirsiniz</strong> (unutulma hakkı). Silme; Firestore, Storage ve Firebase Authentication kayıtlarınızı kaldırır, geri alınamaz.</p>
           <p style="margin-bottom:6px"><strong>7. Güvenlik:</strong> Firebase Authentication ile güvenli oturum yönetimi, Firestore güvenlik kuralları ile veri erişim kontrolü, HTTPS şifreli bağlantı kullanılır.</p>
           <p style="margin-bottom:6px"><strong>8. Çerezler:</strong> FitSofra üçüncü taraf çerez kullanmaz. Yalnızca oturum bilginiz için gerekli olan teknik çerezler saklanır.</p>
           <p style="margin-bottom:6px"><strong>9. Çocukların Gizliliği:</strong> FitSofra 13 yaş altı çocuklara yönelik bir hizmet sunmamaktadır. 13 yaş altı kullanıcılardan bilerek veri toplamayız.</p>
           <p style="margin-bottom:6px"><strong>10. Değişiklikler:</strong> Gizlilik politikamız güncellendiğinde, uygulama içinden bilgilendirilirsiniz. Güncellenmiş politikayı kabul etmeden kullanıma devam edemezsiniz.</p>
           <p style="font-size:.68rem;color:var(--text2)">Son güncelleme: Mart 2026 · Sorularınız için İletişim & Destek bölümünden bize ulaşabilirsiniz.</p>
+        </div>
+      </div>
+      <!-- Veri Haklarım (KVKK / GDPR) -->
+      <div class="acc-item">
+        <div class="acc-header" onclick="toggleAcc(this)"><span>📋 Veri Haklarım</span><span class="acc-arrow">›</span></div>
+        <div class="acc-body" style="font-size:.78rem;line-height:1.5">
+          <p style="margin-bottom:12px;color:var(--text2);font-size:.75rem">KVKK Madde 11 ve GDPR Madde 15/17/20 kapsamında kişisel verileriniz üzerinde tam kontrol sahibisiniz. Aşağıdan istediğiniz zaman kullanabilirsiniz.</p>
+
+          <!-- Verilerimi İndir -->
+          <div style="background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px">
+            <div style="font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:6px;font-size:.85rem">📥 Verilerimi İndir</div>
+            <p style="font-size:.72rem;color:var(--text2);margin-bottom:10px;line-height:1.5">Profil, beslenme kayıtları, planlar, market listesi, Sofra üyelikleri ve cihazınızdaki tüm verileri JSON dosyası olarak indirin. Başka bir uygulamaya taşıyabilir veya yedek olarak saklayabilirsiniz.</p>
+            <button id="btnExportMyData" onclick="exportMyData()" style="width:100%;padding:10px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-family:var(--font,system-ui);font-weight:700;font-size:.82rem;cursor:pointer">📥 Verilerimi JSON Olarak İndir</button>
+          </div>
+
+          <!-- Hesabımı Sil -->
+          <div style="background:rgba(255,92,92,.05);border:1px solid rgba(255,92,92,.25);border-radius:10px;padding:12px">
+            <div style="font-weight:700;margin-bottom:6px;color:var(--red);display:flex;align-items:center;gap:6px;font-size:.85rem">🗑️ Hesabımı Sil</div>
+            <p style="font-size:.72rem;color:var(--text2);margin-bottom:10px;line-height:1.5"><strong style="color:var(--red)">Geri alınamaz.</strong> Tüm verileriniz (profil, beslenme kayıtları, planlar, Sofra üyelikleri, fotoğraflar) sunucularımızdan kalıcı olarak silinir ve Firebase Authentication kaydınız kaldırılır. Silmeden önce yukarıdan yedek almanızı öneririz.</p>
+            <button onclick="openDeleteAccountModal()" style="width:100%;padding:10px;background:none;color:var(--red);border:1.5px solid var(--red);border-radius:8px;font-family:var(--font,system-ui);font-weight:700;font-size:.82rem;cursor:pointer">🗑️ Hesabımı Kalıcı Olarak Sil</button>
+          </div>
         </div>
       </div>
       <!-- Şartlar ve Koşullar -->
@@ -1225,7 +1246,6 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
     <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px">
       <button onclick="startAppTour()" style="width:100%;padding:13px;background:linear-gradient(135deg,var(--accent-glow),rgba(160,124,248,.08));border:1.5px solid var(--accent);border-radius:var(--radius-sm);font-family:var(--font,system-ui);font-weight:700;font-size:.85rem;cursor:pointer;color:var(--accent);display:flex;align-items:center;justify-content:center;gap:8px">📖 Uygulama Rehberi</button>
       <button onclick="firebaseLogout()" style="width:100%;padding:13px;background:var(--glass);border:1.5px solid var(--blue);border-radius:var(--radius-sm);font-family:var(--font,system-ui);font-weight:700;font-size:.85rem;cursor:pointer;color:var(--blue);display:flex;align-items:center;justify-content:center;gap:8px">🚪 Çıkış Yap</button>
-      <button onclick="deleteAccount()" style="width:100%;padding:13px;background:none;border:1.5px solid var(--red);border-radius:var(--radius-sm);font-family:var(--font,system-ui);font-weight:700;font-size:.85rem;cursor:pointer;color:var(--red);display:flex;align-items:center;justify-content:center;gap:8px">⚠️ Hesabı Sil</button>
     </div>
   </div>
 </div>
@@ -3325,54 +3345,135 @@ async function submitTicket(){
   }
 }
 
-async function deleteAccount(){
-  if(!currentUser){showToast('⚠️ Önce giriş yapın');return}
-  if(!confirm('Hesabınız ve tüm verileriniz kalıcı olarak silinecek. Bu işlem geri alınamaz!'))return;
-  if(!confirm('GERÇEKTEN EMİN MİSİNİZ? Tüm beslenme kayıtlarınız, profil bilgileriniz ve bulut verileriniz silinecek.'))return;
-  
+// ═══════════════════════════════════════════
+// KVKK / GDPR — Veri Hakları (Export + Hesap Silme)
+// ═══════════════════════════════════════════
+// Cloud Functions: exportUserData, deleteUserAccount
+
+async function exportMyData(){
+  if(typeof currentUser==='undefined' || !currentUser){
+    showToast('⚠️ Önce giriş yapın'); return;
+  }
+  if(typeof firebase==='undefined' || !firebase.functions){
+    showToast('⚠️ Firebase Functions yüklenmedi'); return;
+  }
+  const btn=document.getElementById('btnExportMyData');
+  const orig=btn?btn.innerHTML:'';
+  if(btn){ btn.disabled=true; btn.style.opacity='.7'; btn.innerHTML='⏳ Veriler hazırlanıyor...'; }
+
   try{
-    // Delete cloud data
-    const userRef=db.collection('users').doc(currentUser.uid);
-    const chunks=await userRef.collection('data').get();
-    const batch=db.batch();
-    chunks.forEach(doc=>batch.delete(doc.ref));
-    batch.delete(userRef);
-    await batch.commit();
-    
-    // Delete local data
-    Object.keys(localStorage).filter(k=>k.startsWith('fs_')).forEach(k=>localStorage.removeItem(k));
-    
-    // Sign out
-    await auth.signOut();
-    showToast('🗑️ Hesabınız silindi');
-    setTimeout(()=>location.reload(),1500);
-  }catch(e){showToast('⚠️ Hata: '+e.message)}
+    // 1) Bulut verisi (Firestore + Auth metadata) — Cloud Function ile topla
+    const fn=firebase.functions().httpsCallable('exportUserData');
+    const res=await fn({});
+    const cloud=(res && res.data) || {};
+
+    // 2) localStorage verileri (cihaza özel — fs_ prefix)
+    const local={};
+    let localCount=0;
+    Object.keys(localStorage).filter(function(k){return k.indexOf('fs_')===0}).forEach(function(k){
+      try{ local[k]=JSON.parse(localStorage.getItem(k)); }
+      catch(e){ local[k]=localStorage.getItem(k); }
+      localCount++;
+    });
+
+    // 3) Birleşik export dosyası
+    const exportObj=Object.assign({}, cloud, {
+      localStorage: local,
+      _client: { version:'v3.1', generatedAt:new Date().toISOString(), localKeys:localCount }
+    });
+
+    const blob=new Blob([JSON.stringify(exportObj,null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    const date=new Date().toISOString().slice(0,10);
+    a.href=url; a.download='fitsofra-verilerim-'+date+'.json';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    const sizeMB=(cloud._meta && cloud._meta.sizeMB) || '?';
+    showToast('📥 Verilerin indirildi ('+sizeMB+' MB bulut + '+localCount+' yerel kayıt)');
+  }catch(e){
+    showToast('⚠️ İndirme hatası: '+(e.message||e));
+  }finally{
+    if(btn){ btn.disabled=false; btn.style.opacity='1'; btn.innerHTML=orig; }
+  }
 }
-function exportData(){
-  const data={};
-  Object.keys(localStorage).filter(k=>k.startsWith('fs_')).forEach(k=>{
-    try{data[k]=JSON.parse(localStorage.getItem(k))}catch(e){data[k]=localStorage.getItem(k)}
-  });
-  
-  const exportObj={
-    app:'FitSofra',
-    version:'3.0',
-    exportDate:new Date().toISOString(),
-    dataCount:Object.keys(data).length,
-    data
-  };
-  
-  const blob=new Blob([JSON.stringify(exportObj,null,2)],{type:'application/json'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  const date=new Date().toISOString().slice(0,10);
-  a.href=url;
-  a.download=`fitsofra-yedek-${date}.json`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-  showToast(`📤 ${Object.keys(data).length} veri dışa aktarıldı!`);
+
+function openDeleteAccountModal(){
+  if(typeof currentUser==='undefined' || !currentUser){
+    showToast('⚠️ Önce giriş yapın'); return;
+  }
+  const m=document.getElementById('deleteAccountModal');
+  if(!m) return;
+  m.style.display='flex';
+  const inp=document.getElementById('deleteConfirmInput');
+  if(inp){ inp.value=''; setTimeout(function(){ try{inp.focus()}catch(_){} }, 100); }
+  onDeleteConfirmInput();
+}
+
+function closeDeleteAccountModal(){
+  const m=document.getElementById('deleteAccountModal');
+  if(m) m.style.display='none';
+}
+
+function onDeleteConfirmInput(){
+  const inp=document.getElementById('deleteConfirmInput');
+  const btn=document.getElementById('btnConfirmDelete');
+  const hint=document.getElementById('deleteConfirmHint');
+  if(!inp || !btn) return;
+  // Türkçe karakter normalize: HESABIMI SİL → HESABIMI SIL (server da aynı şekilde normalize ediyor)
+  const norm=(inp.value||'').toLocaleUpperCase('tr-TR')
+    .replace(/İ/g,'I').replace(/Ş/g,'S').replace(/Ğ/g,'G')
+    .replace(/Ü/g,'U').replace(/Ö/g,'O').replace(/Ç/g,'C')
+    .replace(/\s+/g,' ').trim();
+  const ok=(norm==='HESABIMI SIL');
+  btn.disabled=!ok;
+  btn.style.opacity=ok?'1':'.5';
+  btn.style.cursor=ok?'pointer':'not-allowed';
+  if(hint){
+    if(!inp.value){ hint.textContent=''; }
+    else if(ok){ hint.textContent='✓ Onay metni doğru'; hint.style.color='var(--red)'; }
+    else { hint.textContent='Yazımı tam eşleştir: HESABIMI SİL'; hint.style.color='var(--text2)'; }
+  }
+}
+
+async function confirmDeleteAccount(){
+  if(typeof currentUser==='undefined' || !currentUser){
+    showToast('⚠️ Oturum yok'); return;
+  }
+  if(typeof firebase==='undefined' || !firebase.functions){
+    showToast('⚠️ Firebase yüklenmedi'); return;
+  }
+  const inp=document.getElementById('deleteConfirmInput');
+  const btn=document.getElementById('btnConfirmDelete');
+  const cancelBtn=btn && btn.parentElement && btn.parentElement.querySelector('button[onclick*="closeDeleteAccountModal"]');
+  const userText=inp?inp.value:'';
+  const origBtn=btn?btn.innerHTML:'';
+  if(btn){ btn.disabled=true; btn.style.opacity='.7'; btn.innerHTML='⏳ Hesap siliniyor...'; }
+  if(cancelBtn){ cancelBtn.disabled=true; cancelBtn.style.opacity='.5'; }
+
+  try{
+    const fn=firebase.functions().httpsCallable('deleteUserAccount');
+    await fn({ confirm: userText });
+
+    // Yerel cleanup — fs_* tüm anahtarlar
+    Object.keys(localStorage).filter(function(k){return k.indexOf('fs_')===0}).forEach(function(k){
+      try{ localStorage.removeItem(k); }catch(_){}
+    });
+    // Diğer FitSofra'ya özel anahtarlar (varsa)
+    try{ sessionStorage.clear(); }catch(_){}
+
+    // Auth signOut (Cloud Function zaten Auth'tan sildi ama client cache'i temizleyelim)
+    try{ await auth.signOut(); }catch(_){}
+
+    closeDeleteAccountModal();
+    showToast('🗑️ Hesabın ve tüm verilerin silindi');
+    setTimeout(function(){ location.replace(location.pathname); }, 1800);
+  }catch(e){
+    showToast('⚠️ Silme hatası: '+(e.message||e));
+    if(btn){ btn.disabled=false; btn.style.opacity='1'; btn.innerHTML=origBtn; }
+    if(cancelBtn){ cancelBtn.disabled=false; cancelBtn.style.opacity='1'; }
+  }
 }
 
 function importData(event){
@@ -4063,5 +4164,39 @@ function saveWeeklyPlan(){
 <script src="js/health-age.js"></script>
 <script src="js/monthly-report.js"></script>
 <script src="js/sofra.js"></script>
+
+<!-- Hesap Silme Onay Modal'ı (KVKK / GDPR) -->
+<div id="deleteAccountModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:16px">
+  <div style="background:var(--card);border:2px solid var(--red);border-radius:16px;max-width:460px;width:100%;padding:22px;max-height:92vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.5);animation:fadeUp .25s ease">
+    <h2 style="font-size:1.1rem;font-weight:800;color:var(--red);margin-bottom:14px;display:flex;align-items:center;gap:8px">⚠️ Hesabını Silmek İstediğine Emin Misin?</h2>
+
+    <div style="background:rgba(255,92,92,.08);border:1px solid rgba(255,92,92,.25);border-radius:10px;padding:12px;margin-bottom:14px">
+      <p style="font-weight:700;color:var(--red);font-size:.82rem;margin-bottom:8px">Bu işlem GERİ ALINAMAZ. Şunlar kalıcı olarak silinir:</p>
+      <ul style="list-style:none;padding:0;margin:0;font-size:.76rem;line-height:1.7;color:var(--text)">
+        <li>✗ Tüm beslenme kayıtların (geçmiş günlükler, planlar, market listesi)</li>
+        <li>✗ Profil bilgilerin, hedeflerin, kilo/su/mikro besin verileri</li>
+        <li>✗ Sofra üyeliklerin (sahibi olduğun Sofra başkasına devredilir)</li>
+        <li>✗ Topluluk paylaşımların ve destek talepleri</li>
+        <li>✗ Profil fotoğrafın ve sunucudaki tüm dosyaların</li>
+        <li>✗ Google hesabı bağlantısı (Authentication kaydı silinir)</li>
+      </ul>
+    </div>
+
+    <div style="background:rgba(255,193,7,.08);border:1px solid rgba(255,193,7,.3);border-radius:10px;padding:10px 12px;margin-bottom:14px;font-size:.76rem;line-height:1.5">
+      💡 Devam etmeden önce <strong style="color:var(--accent)">"📥 Verilerimi İndir"</strong> butonuyla yedek almanı öneririz.
+    </div>
+
+    <div style="margin-bottom:14px">
+      <label style="font-size:.8rem;font-weight:700;display:block;margin-bottom:6px">Onaylamak için aşağıya <span style="color:var(--red);font-family:monospace;background:rgba(255,92,92,.1);padding:2px 6px;border-radius:4px">HESABIMI SİL</span> yaz:</label>
+      <input type="text" id="deleteConfirmInput" placeholder="HESABIMI SİL" oninput="onDeleteConfirmInput()" autocomplete="off" autocapitalize="characters" style="width:100%;padding:11px;border:2px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-family:monospace;font-size:.95rem;letter-spacing:1.5px;text-align:center;outline:none;box-sizing:border-box">
+      <div id="deleteConfirmHint" style="font-size:.7rem;color:var(--text2);margin-top:6px;text-align:center;min-height:14px"></div>
+    </div>
+
+    <div style="display:flex;gap:8px">
+      <button onclick="closeDeleteAccountModal()" style="flex:1;padding:11px;background:var(--glass);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font,system-ui);font-weight:700;font-size:.85rem;cursor:pointer">İptal</button>
+      <button id="btnConfirmDelete" onclick="confirmDeleteAccount()" disabled style="flex:1;padding:11px;background:var(--red);border:none;border-radius:8px;color:#fff;font-family:var(--font,system-ui);font-weight:700;font-size:.85rem;cursor:pointer;opacity:.5;transition:opacity .15s">🗑️ Hesabımı Sil</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
