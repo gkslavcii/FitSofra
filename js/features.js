@@ -961,71 +961,202 @@ function checkOnboarding(){
   if(localStorage.getItem('fs_onboarding_done'))return;
   if(localStorage.getItem('fs_profile'))return; // already has profile
   setTimeout(function(){
-    document.getElementById('onboardingModal').classList.add('show');
+    var m=document.getElementById('onboardingModal');
+    if(m){ m.classList.add('show'); _updateOnboardDots(1); }
   },3500); // After splash screen
+}
+
+function _updateOnboardDots(activeStep){
+  var dots=document.querySelectorAll('#onboardSteps .ob-dot');
+  dots.forEach(function(d){
+    var s=parseInt(d.getAttribute('data-step'));
+    if(s<=activeStep){ d.style.background='var(--accent)'; d.style.width='30px'; }
+    else { d.style.background='var(--border)'; d.style.width='30px'; }
+  });
 }
 
 function nextOnboardStep(step){
   document.querySelectorAll('.onboard-step').forEach(function(el){el.style.display='none';});
   var el=document.getElementById('onboardStep'+step);
   if(el){el.style.display='block';el.style.animation='fadeUp .3s ease';}
+  _updateOnboardDots(step);
+  // Modal scroll'u tepeye al
+  try{ var modal=document.querySelector('#onboardingModal .modal'); if(modal) modal.scrollTop=0; }catch(_){}
 }
 
-function skipOnboarding(){
-  localStorage.setItem('fs_onboarding_done','1');
-  document.getElementById('onboardingModal').classList.remove('show');
+// Step 2 → 3 geçişi: validation
+function goOnboardStep(step){
+  if(step===3){
+    var age=parseInt(document.getElementById('obAge').value);
+    var height=parseInt(document.getElementById('obHeight').value);
+    var weight=parseInt(document.getElementById('obWeight').value);
+    var err='';
+    if(!age || age<10 || age>100) err='Yaş 10 ile 100 arasında olmalı.';
+    else if(!height || height<100 || height>250) err='Boy 100-250 cm arasında olmalı.';
+    else if(!weight || weight<30 || weight>300) err='Kilo 30-300 kg arasında olmalı.';
+    var errEl=document.getElementById('obStep2Error');
+    if(err){
+      if(errEl){ errEl.textContent='⚠️ '+err; errEl.style.display='block'; }
+      return;
+    }
+    if(errEl){ errEl.style.display='none'; }
+    // Hedef kilo varsayılanı: kullanıcının mevcut kilosuna ayarla
+    var gw=document.getElementById('obGoalWeight');
+    if(gw && (gw.value==='70' || !gw.value)) gw.value=weight;
+  }
+  nextOnboardStep(step);
 }
 
-function completeOnboarding(){
-  // Read values from onboarding form
+// Hafif input değişiminde — anlık hata silme
+function onObInput(){
+  var errEl=document.getElementById('obStep2Error');
+  if(errEl) errEl.style.display='none';
+}
+
+// Step 3 → 4: TDEE/makro/su hesapla, sonuç ekranını doldur
+function calculateOnboardingResult(){
   var gender=document.getElementById('obGender').value;
   var age=parseInt(document.getElementById('obAge').value)||25;
   var height=parseInt(document.getElementById('obHeight').value)||175;
   var weight=parseInt(document.getElementById('obWeight').value)||75;
-  var goalWeight=parseInt(document.getElementById('obGoalWeight').value)||70;
   var activity=parseFloat(document.getElementById('obActivity').value)||1.375;
   var goal=parseInt(document.getElementById('obGoal').value)||0;
 
-  // Set profile fields
-  document.getElementById('pGender').value=gender;
-  document.getElementById('pAge').value=age;
-  document.getElementById('pHeight').value=height;
-  document.getElementById('pWeight').value=weight;
-  document.getElementById('pGoalWeight').value=goalWeight;
-  document.getElementById('pActivity').value=activity;
-  document.getElementById('pGoal').value=goal;
-
-  // Calculate TDEE
+  // Mifflin-St Jeor BMR
   var bmr;
-  if(gender==='male')bmr=10*weight+6.25*height-5*age+5;
+  if(gender==='male') bmr=10*weight+6.25*height-5*age+5;
+  else bmr=10*weight+6.25*height-5*age-161;
+  bmr=Math.round(bmr);
+  var tdee=Math.round(bmr*activity+goal);
+  var prot=Math.round((tdee*0.30)/4);
+  var carb=Math.round((tdee*0.45)/4);
+  var fat=Math.round((tdee*0.25)/9);
+  var water=Math.round((weight*35)/100)*100; // 100ml'lik adımlara yuvarla
+  if(water<1500) water=1500;
+  if(water>4000) water=4000;
+
+  // BMI yorumu
+  var bmi=weight/Math.pow(height/100,2);
+  var bmiLabel='';
+  if(bmi<18.5) bmiLabel='Zayıf';
+  else if(bmi<25) bmiLabel='Normal';
+  else if(bmi<30) bmiLabel='Fazla kilolu';
+  else bmiLabel='Obez';
+
+  // UI doldur
+  var $=function(id){return document.getElementById(id);};
+  if($('obResultTDEE')) $('obResultTDEE').textContent=tdee.toLocaleString('tr-TR')+' kcal';
+  if($('obResultBMR')) $('obResultBMR').textContent='BMR: '+bmr.toLocaleString('tr-TR')+' kcal · Mifflin-St Jeor';
+  if($('obResultProt')) $('obResultProt').textContent=prot+'g';
+  if($('obResultCarb')) $('obResultCarb').textContent=carb+'g';
+  if($('obResultFat')) $('obResultFat').textContent=fat+'g';
+  if($('obResultWater')) $('obResultWater').textContent=water.toLocaleString('tr-TR')+' ml ('+(water/250).toFixed(1)+' bardak)';
+  if($('obResultBMI')) $('obResultBMI').innerHTML='📊 <strong>VKİ '+bmi.toFixed(1)+'</strong> — '+bmiLabel+'. Bu değerler tahminidir; profilinden istediğin zaman değiştirebilirsin.';
+
+  // Sonraki adıma geç
+  nextOnboardStep(4);
+}
+
+function skipOnboarding(){
+  localStorage.setItem('fs_onboarding_done','1');
+  var m=document.getElementById('onboardingModal');
+  if(m) m.classList.remove('show');
+}
+
+function completeOnboarding(){
+  var gender=document.getElementById('obGender').value;
+  var age=parseInt(document.getElementById('obAge').value)||25;
+  var height=parseInt(document.getElementById('obHeight').value)||175;
+  var weight=parseInt(document.getElementById('obWeight').value)||75;
+  var goalWeight=parseInt(document.getElementById('obGoalWeight').value)||weight;
+  var activity=parseFloat(document.getElementById('obActivity').value)||1.375;
+  var goal=parseInt(document.getElementById('obGoal').value)||0;
+
+  // Profil alanlarına yaz
+  var setIf=function(id,v){var el=document.getElementById(id);if(el) el.value=v;};
+  setIf('pGender',gender);
+  setIf('pAge',age);
+  setIf('pHeight',height);
+  setIf('pWeight',weight);
+  setIf('pGoalWeight',goalWeight);
+  setIf('pActivity',activity);
+  setIf('pGoal',goal);
+
+  // TDEE + makro
+  var bmr;
+  if(gender==='male') bmr=10*weight+6.25*height-5*age+5;
   else bmr=10*weight+6.25*height-5*age-161;
   var tdee=Math.round(bmr*activity+goal);
-  dailyTarget=tdee;
-  protTarget=Math.round((tdee*.30)/4);
-  carbTarget=Math.round((tdee*.45)/4);
-  fatTarget=Math.round((tdee*.25)/9);
+  if(typeof dailyTarget!=='undefined') dailyTarget=tdee;
+  if(typeof protTarget!=='undefined') protTarget=Math.round((tdee*.30)/4);
+  if(typeof carbTarget!=='undefined') carbTarget=Math.round((tdee*.45)/4);
+  if(typeof fatTarget!=='undefined') fatTarget=Math.round((tdee*.25)/9);
 
-  // Save initial weight
-  var log=getWeightLog();
-  var today=dateKey(new Date());
-  if(!log.find(function(e){return e.date===today;})){
-    log.push({date:today,weight:weight,time:Date.now()});
-    setWeightLog(log);
-  }
+  // Su hedefi otomatik (kg×35ml, 100ml'lik adıma yuvarla)
+  var water=Math.round((weight*35)/100)*100;
+  if(water<1500) water=1500;
+  if(water>4000) water=4000;
+  setIf('pWater',water);
 
-  saveProfile();
-  updateHeader();
-  renderMeals();
-  calculateBMI(weight,height);
+  // İlk kilo ölçümünü kaydet
+  try{
+    if(typeof getWeightLog==='function' && typeof setWeightLog==='function'){
+      var log=getWeightLog();
+      var today=dateKey(new Date());
+      if(!log.find(function(e){return e.date===today;})){
+        log.push({date:today,weight:weight,time:Date.now()});
+        setWeightLog(log);
+      }
+    }
+  }catch(_){}
+
+  // Profili kaydet, header/meal/BMI güncelle
+  try{ saveProfile(); }catch(_){}
+  try{ updateHeader(); }catch(_){}
+  try{ renderMeals(); }catch(_){}
+  try{ calculateBMI(weight,height); }catch(_){}
 
   localStorage.setItem('fs_onboarding_done','1');
-  document.getElementById('onboardingModal').classList.remove('show');
+  var m=document.getElementById('onboardingModal');
+  if(m) m.classList.remove('show');
 
-  showToast('🎉 Profil oluşturuldu! Günlük hedef: '+tdee+' kcal');
+  showToast('🎉 Profil hazır! Günlük hedef: '+tdee.toLocaleString('tr-TR')+' kcal · Su: '+water+' ml');
 
-  // After short delay, check PWA prompt
+  // PWA install prompt'u kısa bir süre sonra göster
   setTimeout(checkPWAInstallPrompt,1500);
 }
+
+// Profile sayfasından sihirbazı yeniden başlat
+function restartOnboarding(){
+  // Mevcut profil değerlerini onboarding alanlarına ön-doldur
+  var copyVal=function(src,dst){var s=document.getElementById(src),d=document.getElementById(dst);if(s&&d) d.value=s.value;};
+  copyVal('pGender','obGender');
+  copyVal('pAge','obAge');
+  copyVal('pHeight','obHeight');
+  copyVal('pWeight','obWeight');
+  copyVal('pGoalWeight','obGoalWeight');
+  copyVal('pActivity','obActivity');
+  copyVal('pGoal','obGoal');
+
+  // Cinsiyet radio görselini güncelle
+  try{
+    var gv=document.getElementById('obGender').value;
+    var radios=document.querySelectorAll('input[name="obGenderRadio"]');
+    radios.forEach(function(r){
+      r.checked=(r.value===gv);
+      var d=r.nextElementSibling;
+      if(d){
+        if(r.checked){ d.style.borderColor='var(--accent)'; d.style.background='var(--accent-glow)'; d.style.color='var(--accent)'; }
+        else { d.style.borderColor='var(--border)'; d.style.background='var(--glass)'; d.style.color='var(--text2)'; }
+      }
+    });
+  }catch(_){}
+
+  nextOnboardStep(1);
+  var m=document.getElementById('onboardingModal');
+  if(m) m.classList.add('show');
+}
+window.restartOnboarding=restartOnboarding;
 
 // Onboarding check on page load (for non-logged-in users)
 setTimeout(checkOnboarding,2800);
@@ -2522,3 +2653,75 @@ function getLocalAIReply(msg){
   if(m.includes('merhaba')||m.includes('selam')||m.includes('nasıl'))return 'Merhaba! 😊 "Ne yesem", "analiz", "protein durumum", "su içtim mi" gibi sorular sorabilirsin!';
   return 'Bugün '+t.cal+' kcal (hedef: '+_tgt.cal+'). "Ne yesem", "analiz", "protein" gibi sorular sorabilirsin! 🍽️';
 }
+
+/* ═══════════════════════════════════════════
+   STREAKS & BADGES — Tetikleme + UI bağlantısı
+═══════════════════════════════════════════ */
+
+// saveDayData'yı patch et — bugün için yemek varsa streak'i kaydet
+(function patchSaveDayDataForStreaks(){
+  if(typeof window === 'undefined' || typeof saveDayData !== 'function') return;
+  var _orig = saveDayData;
+  window.saveDayData = function(dk, data){
+    var ret = _orig.apply(this, arguments);
+    try{
+      if(window.Streaks){
+        var key = dk || (typeof dateKey === 'function' ? dateKey() : null);
+        var todayKey = (typeof dateKey === 'function') ? dateKey(new Date()) : new Date().toISOString().slice(0,10);
+        if(key === todayKey && data){
+          var has = (data.kahvalti||[]).length || (data.ogle||[]).length ||
+                    (data.aksam||[]).length || (data.atistirmalik||[]).length;
+          if(has) window.Streaks.recordToday();
+        }
+      }
+    }catch(_){}
+    // Streak chip güncelle
+    try{ if(typeof updateStreakSlot === 'function') updateStreakSlot(); }catch(_){}
+    return ret;
+  };
+})();
+
+// Günlük sayfada streak chip'i göster
+function updateStreakSlot(){
+  var slot = document.getElementById('streakSlot');
+  if(!slot || !window.Streaks) return;
+  var html = window.Streaks.renderStreakBadge();
+  if(html){
+    slot.innerHTML = html;
+    slot.style.display = 'block';
+  } else {
+    slot.style.display = 'none';
+  }
+}
+
+// updateHeader sonrasında streak slot'unu da güncelle
+(function patchUpdateHeaderForStreak(){
+  if(typeof updateHeader !== 'function') return;
+  var _orig = updateHeader;
+  window.updateHeader = function(){
+    var ret = _orig.apply(this, arguments);
+    try{ updateStreakSlot(); }catch(_){}
+    return ret;
+  };
+})();
+
+// Profile accordion içeriğini render et
+function renderBadgesPanelInProfile(){
+  var el = document.getElementById('badgesPanelContent');
+  if(!el || !window.Streaks) return;
+  try{ el.innerHTML = window.Streaks.renderBadgesPanel(); }
+  catch(e){ el.innerHTML = '<div style="color:var(--text2);font-size:.78rem">Yüklenemedi.</div>'; }
+}
+window.renderBadgesPanelInProfile = renderBadgesPanelInProfile;
+
+// İlk yüklemede streak chip'i göster
+setTimeout(function(){ try{ updateStreakSlot(); }catch(_){} }, 600);
+
+// Sofra'ya katılma → rozet
+window.addEventListener('sofra:changed', function(ev){
+  try{
+    if(window.Streaks && ev && ev.detail && ev.detail.sofraId){
+      window.Streaks.grantBadge('sofra_first');
+    }
+  }catch(_){}
+});
