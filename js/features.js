@@ -982,6 +982,8 @@ function nextOnboardStep(step){
   _updateOnboardDots(step);
   // Modal scroll'u tepeye al
   try{ var modal=document.querySelector('#onboardingModal .modal'); if(modal) modal.scrollTop=0; }catch(_){}
+  // Step 4 (Diyet) açılınca diyet listesini doldur
+  if(step===4){ try{ renderObDietList(); }catch(_){} }
 }
 
 // Step 2 → 3 geçişi: validation
@@ -1013,7 +1015,101 @@ function onObInput(){
   if(errEl) errEl.style.display='none';
 }
 
-// Step 3 → 4: TDEE/makro/su hesapla, sonuç ekranını doldur
+// Sihirbazda seçilen diyet preset id'si (memo) — Step 4'te güncellenir
+var _obSelectedDiet = '';
+
+// Step 4 açıldığında diyet listesini doldur
+function renderObDietList(){
+  var list = document.getElementById('obDietList');
+  if(!list) return;
+  if(typeof DIET_PRESETS === 'undefined' || !DIET_PRESETS.length){
+    list.innerHTML = '<div style="font-size:.74rem;color:var(--text2);text-align:center;padding:14px">Diyet listesi yüklenemedi.</div>';
+    return;
+  }
+  var profile = {};
+  try{ profile = JSON.parse(localStorage.getItem('fs_profile')||'{}'); }catch(_){}
+  if(!_obSelectedDiet) _obSelectedDiet = profile.dietPreset || '';
+
+  var html = '<div onclick="setObDiet(\'\')" style="background:var(--glass);border:1.5px solid '+(_obSelectedDiet===''?'var(--accent)':'var(--border)')+';border-radius:10px;padding:9px 12px;cursor:pointer;display:flex;align-items:center;gap:8px">'+
+    '<div style="font-size:1.1rem">⊘</div>'+
+    '<div style="flex:1"><div style="font-size:.8rem;font-weight:700">Diyet seçme</div><div style="font-size:.66rem;color:var(--text2)">Standart 30/45/25 makro dağılımı</div></div>'+
+    (_obSelectedDiet===''?'<div style="color:var(--accent);font-weight:800">✓</div>':'')+
+  '</div>';
+
+  DIET_PRESETS.forEach(function(p){
+    var active = _obSelectedDiet === p.id;
+    html += '<div onclick="setObDiet(\''+p.id+'\')" style="background:var(--glass);border:1.5px solid '+(active?'var(--accent)':'var(--border)')+';border-radius:10px;padding:9px 12px;cursor:pointer">'+
+      '<div style="display:flex;align-items:center;gap:6px"><div style="flex:1"><div style="font-size:.8rem;font-weight:700">'+p.name+(active?' ✓':'')+'</div><div style="font-size:.66rem;color:var(--text2);margin-top:2px">'+p.desc+'</div></div></div>'+
+      '<div style="display:flex;gap:4px;margin-top:6px;font-size:.6rem;font-weight:700">'+
+        '<span style="padding:2px 6px;border-radius:5px;background:rgba(255,122,122,.1);color:#ff7a7a">P '+p.macros.prot+'%</span>'+
+        '<span style="padding:2px 6px;border-radius:5px;background:rgba(34,211,238,.1);color:#22d3ee">K '+p.macros.carb+'%</span>'+
+        '<span style="padding:2px 6px;border-radius:5px;background:rgba(255,204,85,.1);color:#ffcc55">Y '+p.macros.fat+'%</span>'+
+        (p.calAdj?'<span style="padding:2px 6px;border-radius:5px;background:var(--bg);color:var(--text2)">'+(p.calAdj>0?'+':'')+p.calAdj+' kcal</span>':'')+
+      '</div>'+
+    '</div>';
+  });
+  list.innerHTML = html;
+}
+
+function setObDiet(presetId){
+  _obSelectedDiet = presetId || '';
+  renderObDietList();
+}
+window.setObDiet = setObDiet;
+
+// Manuel toggle (Step 4)
+function toggleObManual(){
+  var cb = document.getElementById('obManualToggle');
+  var panel = document.getElementById('obManualPanel');
+  if(!cb || !panel) return;
+  panel.style.display = cb.checked ? 'block' : 'none';
+}
+window.toggleObManual = toggleObManual;
+
+// Helper: belirli temel girdilerden TDEE + makro hesapla, isteğe bağlı diyet preset uygula
+function _computeTargets(opts){
+  var bmr;
+  if(opts.gender==='male') bmr=10*opts.weight+6.25*opts.height-5*opts.age+5;
+  else bmr=10*opts.weight+6.25*opts.height-5*opts.age-161;
+  bmr=Math.round(bmr);
+
+  var baseTdee = Math.round(bmr*opts.activity+opts.goal);
+  var preset = null;
+  if(opts.dietId && typeof DIET_PRESETS !== 'undefined'){
+    preset = DIET_PRESETS.find(function(p){return p.id===opts.dietId;});
+  }
+
+  var cal, prot, carb, fat;
+  // Manuel kalori girilmişse o öncelikli
+  if(opts.manualCal && opts.manualCal>=800){
+    cal = opts.manualCal;
+  } else if(preset){
+    cal = baseTdee + (preset.calAdj||0);
+  } else {
+    cal = baseTdee;
+  }
+  // Makro dağılımı: preset varsa onu kullan, yoksa standart 30/45/25
+  var pPct = preset ? preset.macros.prot/100 : 0.30;
+  var cPct = preset ? preset.macros.carb/100 : 0.45;
+  var fPct = preset ? preset.macros.fat/100  : 0.25;
+  prot = Math.round((cal*pPct)/4);
+  carb = Math.round((cal*cPct)/4);
+  fat  = Math.round((cal*fPct)/9);
+
+  // Su: manuel girilmişse o, yoksa kg×35ml (1500-4000 clamp, 100'er yuvarlama)
+  var water;
+  if(opts.manualWater && opts.manualWater>=500){
+    water = Math.round(opts.manualWater/100)*100;
+  } else {
+    water = Math.round((opts.weight*35)/100)*100;
+    if(water<1500) water=1500;
+    if(water>4000) water=4000;
+  }
+
+  return { bmr:bmr, baseTdee:baseTdee, cal:cal, prot:prot, carb:carb, fat:fat, water:water, preset:preset };
+}
+
+// Step 4 → 5: TDEE/makro/su hesapla, sonuç ekranını doldur
 function calculateOnboardingResult(){
   var gender=document.getElementById('obGender').value;
   var age=parseInt(document.getElementById('obAge').value)||25;
@@ -1022,18 +1118,18 @@ function calculateOnboardingResult(){
   var activity=parseFloat(document.getElementById('obActivity').value)||1.375;
   var goal=parseInt(document.getElementById('obGoal').value)||0;
 
-  // Mifflin-St Jeor BMR
-  var bmr;
-  if(gender==='male') bmr=10*weight+6.25*height-5*age+5;
-  else bmr=10*weight+6.25*height-5*age-161;
-  bmr=Math.round(bmr);
-  var tdee=Math.round(bmr*activity+goal);
-  var prot=Math.round((tdee*0.30)/4);
-  var carb=Math.round((tdee*0.45)/4);
-  var fat=Math.round((tdee*0.25)/9);
-  var water=Math.round((weight*35)/100)*100; // 100ml'lik adımlara yuvarla
-  if(water<1500) water=1500;
-  if(water>4000) water=4000;
+  // Manuel toggle açıksa değerleri al
+  var mCb = document.getElementById('obManualToggle');
+  var manualOn = !!(mCb && mCb.checked);
+  var manualCal = manualOn ? (parseInt((document.getElementById('obManualCal')||{}).value)||0) : 0;
+  var manualWater = manualOn ? (parseInt((document.getElementById('obManualWater')||{}).value)||0) : 0;
+
+  var t = _computeTargets({
+    gender:gender, age:age, height:height, weight:weight,
+    activity:activity, goal:goal,
+    dietId: _obSelectedDiet || '',
+    manualCal: manualCal, manualWater: manualWater
+  });
 
   // BMI yorumu
   var bmi=weight/Math.pow(height/100,2);
@@ -1045,16 +1141,19 @@ function calculateOnboardingResult(){
 
   // UI doldur
   var $=function(id){return document.getElementById(id);};
-  if($('obResultTDEE')) $('obResultTDEE').textContent=tdee.toLocaleString('tr-TR')+' kcal';
-  if($('obResultBMR')) $('obResultBMR').textContent='BMR: '+bmr.toLocaleString('tr-TR')+' kcal · Mifflin-St Jeor';
-  if($('obResultProt')) $('obResultProt').textContent=prot+'g';
-  if($('obResultCarb')) $('obResultCarb').textContent=carb+'g';
-  if($('obResultFat')) $('obResultFat').textContent=fat+'g';
-  if($('obResultWater')) $('obResultWater').textContent=water.toLocaleString('tr-TR')+' ml ('+(water/250).toFixed(1)+' bardak)';
-  if($('obResultBMI')) $('obResultBMI').innerHTML='📊 <strong>VKİ '+bmi.toFixed(1)+'</strong> — '+bmiLabel+'. Bu değerler tahminidir; profilinden istediğin zaman değiştirebilirsin.';
+  if($('obResultTDEE')) $('obResultTDEE').textContent=t.cal.toLocaleString('tr-TR')+' kcal';
+  var bmrLine = 'BMR: '+t.bmr.toLocaleString('tr-TR')+' kcal · Mifflin-St Jeor';
+  if(manualCal && manualCal>=800) bmrLine += ' · Manuel hedef';
+  else if(t.preset) bmrLine += ' · '+t.preset.name;
+  if($('obResultBMR')) $('obResultBMR').textContent=bmrLine;
+  if($('obResultProt')) $('obResultProt').textContent=t.prot+'g';
+  if($('obResultCarb')) $('obResultCarb').textContent=t.carb+'g';
+  if($('obResultFat')) $('obResultFat').textContent=t.fat+'g';
+  if($('obResultWater')) $('obResultWater').textContent=t.water.toLocaleString('tr-TR')+' ml ('+(t.water/250).toFixed(1)+' bardak)';
+  if($('obResultBMI')) $('obResultBMI').innerHTML='📊 <strong>VKİ '+bmi.toFixed(1)+'</strong> — '+bmiLabel+'. Bu değerler tahminidir; "Profil Düzenle" ile her zaman değiştirebilirsin.';
 
-  // Sonraki adıma geç
-  nextOnboardStep(4);
+  // Sonraki adıma geç (sonuç)
+  nextOnboardStep(5);
 }
 
 function skipOnboarding(){
@@ -1072,7 +1171,20 @@ function completeOnboarding(){
   var activity=parseFloat(document.getElementById('obActivity').value)||1.375;
   var goal=parseInt(document.getElementById('obGoal').value)||0;
 
-  // Profil alanlarına yaz
+  // Manuel + diyet seçimi (Step 4)
+  var mCb = document.getElementById('obManualToggle');
+  var manualOn = !!(mCb && mCb.checked);
+  var manualCal = manualOn ? (parseInt((document.getElementById('obManualCal')||{}).value)||0) : 0;
+  var manualWater = manualOn ? (parseInt((document.getElementById('obManualWater')||{}).value)||0) : 0;
+
+  var t = _computeTargets({
+    gender:gender, age:age, height:height, weight:weight,
+    activity:activity, goal:goal,
+    dietId: _obSelectedDiet || '',
+    manualCal: manualCal, manualWater: manualWater
+  });
+
+  // Gizli profil alanlarına yaz (saveProfile fs_profile'a yansıtacak)
   var setIf=function(id,v){var el=document.getElementById(id);if(el) el.value=v;};
   setIf('pGender',gender);
   setIf('pAge',age);
@@ -1081,22 +1193,13 @@ function completeOnboarding(){
   setIf('pGoalWeight',goalWeight);
   setIf('pActivity',activity);
   setIf('pGoal',goal);
+  setIf('pWater',t.water);
 
-  // TDEE + makro
-  var bmr;
-  if(gender==='male') bmr=10*weight+6.25*height-5*age+5;
-  else bmr=10*weight+6.25*height-5*age-161;
-  var tdee=Math.round(bmr*activity+goal);
-  if(typeof dailyTarget!=='undefined') dailyTarget=tdee;
-  if(typeof protTarget!=='undefined') protTarget=Math.round((tdee*.30)/4);
-  if(typeof carbTarget!=='undefined') carbTarget=Math.round((tdee*.45)/4);
-  if(typeof fatTarget!=='undefined') fatTarget=Math.round((tdee*.25)/9);
-
-  // Su hedefi otomatik (kg×35ml, 100ml'lik adıma yuvarla)
-  var water=Math.round((weight*35)/100)*100;
-  if(water<1500) water=1500;
-  if(water>4000) water=4000;
-  setIf('pWater',water);
+  // Global hedefleri güncelle
+  if(typeof dailyTarget!=='undefined') dailyTarget=t.cal;
+  if(typeof protTarget!=='undefined') protTarget=t.prot;
+  if(typeof carbTarget!=='undefined') carbTarget=t.carb;
+  if(typeof fatTarget!=='undefined') fatTarget=t.fat;
 
   // İlk kilo ölçümünü kaydet
   try{
@@ -1110,17 +1213,43 @@ function completeOnboarding(){
     }
   }catch(_){}
 
-  // Profili kaydet, header/meal/BMI güncelle
+  // Profili kaydet — sonra dietPreset / kalori / makro override yap
   try{ saveProfile(); }catch(_){}
+
+  // Diyet preset / manuel sonrası fs_profile içine cal/makro hedeflerini de yaz
+  try{
+    var profile = JSON.parse(localStorage.getItem('fs_profile')||'{}');
+    profile.baseCal = t.baseTdee;
+    profile.calTarget = t.cal;
+    profile.protTarget = t.prot;
+    profile.carbTarget = t.carb;
+    profile.fatTarget = t.fat;
+    profile.dietPreset = _obSelectedDiet || '';
+    profile.manualOverride = !!(manualCal && manualCal>=800);
+    localStorage.setItem('fs_profile', JSON.stringify(profile));
+    // IF protocol (preset varsa)
+    if(t.preset && t.preset.ifProtocol){
+      var ifData={protocol:t.preset.ifProtocol,eatStart:'12:00',eatEnd:'20:00',days:[1,2,3,4,5,6,0]};
+      localStorage.setItem('fs_if', JSON.stringify(ifData));
+    }
+  }catch(_){}
+
   try{ updateHeader(); }catch(_){}
   try{ renderMeals(); }catch(_){}
   try{ calculateBMI(weight,height); }catch(_){}
+  try{ if(typeof renderProfileSummary==='function') renderProfileSummary(); }catch(_){}
 
   localStorage.setItem('fs_onboarding_done','1');
   var m=document.getElementById('onboardingModal');
   if(m) m.classList.remove('show');
 
-  showToast('🎉 Profil hazır! Günlük hedef: '+tdee.toLocaleString('tr-TR')+' kcal · Su: '+water+' ml');
+  var msg = '🎉 Profil hazır! Günlük: '+t.cal.toLocaleString('tr-TR')+' kcal · Su: '+t.water+' ml';
+  if(t.preset) msg += ' · '+t.preset.name;
+  if(manualCal && manualCal>=800) msg += ' (manuel)';
+  showToast(msg);
+
+  // Reset memo
+  _obSelectedDiet = '';
 
   // PWA install prompt'u kısa bir süre sonra göster
   setTimeout(checkPWAInstallPrompt,1500);
@@ -1137,6 +1266,25 @@ function restartOnboarding(){
   copyVal('pGoalWeight','obGoalWeight');
   copyVal('pActivity','obActivity');
   copyVal('pGoal','obGoal');
+
+  // Mevcut diyet preset + manuel override durumu
+  try{
+    var profile = JSON.parse(localStorage.getItem('fs_profile')||'{}');
+    _obSelectedDiet = profile.dietPreset || '';
+    var mCb = document.getElementById('obManualToggle');
+    var mCal = document.getElementById('obManualCal');
+    var mWater = document.getElementById('obManualWater');
+    var manualPanel = document.getElementById('obManualPanel');
+    if(mCb){
+      mCb.checked = !!profile.manualOverride;
+      if(manualPanel) manualPanel.style.display = mCb.checked ? 'block' : 'none';
+    }
+    if(mCal && profile.calTarget) mCal.value = profile.calTarget;
+    if(mWater){
+      var pwEl = document.getElementById('pWater');
+      if(pwEl && pwEl.value) mWater.value = pwEl.value;
+    }
+  }catch(_){}
 
   // Cinsiyet radio görselini güncelle
   try{
@@ -2725,3 +2873,134 @@ window.addEventListener('sofra:changed', function(ev){
     }
   }catch(_){}
 });
+
+/* ═══════════════════════════════════════════
+   PROFİL ÖZET TABLOSU — read-only görünüm
+═══════════════════════════════════════════ */
+
+var _ACTIVITY_LABELS = {
+  '1.2':'🪑 Hareketsiz',
+  '1.375':'🚶 Hafif aktif',
+  '1.55':'🏃 Orta aktif',
+  '1.725':'💪 Çok aktif',
+  '1.9':'🏋️ Ekstra aktif'
+};
+var _GOAL_LABELS = {
+  '-500':'📉 Kilo vermek (-500 kcal)',
+  '-250':'📉 Yavaş kilo vermek (-250 kcal)',
+  '0':'⚖️ Kilo korumak',
+  '250':'📈 Yavaş kilo almak (+250 kcal)',
+  '300':'📈 Kilo almak',
+  '500':'📈 Hızlı kilo almak (+500 kcal)'
+};
+
+function renderProfileSummary(){
+  var tbl = document.getElementById('profileSummaryTable');
+  if(!tbl) return;
+
+  var $ = function(id){ return document.getElementById(id); };
+  var v = function(id){ var el = $(id); return el ? el.value : ''; };
+
+  var gender = v('pGender') === 'female' ? '♀ Kadın' : '♂ Erkek';
+  var age = v('pAge') || '—';
+  var height = v('pHeight') || '—';
+  var weight = v('pWeight') || '—';
+  var goalWeight = v('pGoalWeight') || '—';
+  var actVal = v('pActivity') || '1.375';
+  var goalVal = v('pGoal') || '0';
+  var waterMl = v('pWater') || '—';
+
+  // Diyet
+  var profile = {};
+  try{ profile = JSON.parse(localStorage.getItem('fs_profile')||'{}'); }catch(_){}
+  var dietLabel = 'Belirlenmedi';
+  var manualBadge = '';
+  if(profile.dietPreset && typeof DIET_PRESETS !== 'undefined'){
+    var preset = DIET_PRESETS.find(function(p){ return p.id === profile.dietPreset; });
+    if(preset) dietLabel = preset.name;
+  }
+  if(profile.manualOverride) manualBadge = ' <span style="font-size:.62rem;background:rgba(255,193,7,.15);color:#d4a017;padding:1px 6px;border-radius:5px;font-weight:700;margin-left:4px">MANUEL</span>';
+
+  // Günlük kalori
+  var calTarget = profile.calTarget || (typeof dailyTarget !== 'undefined' ? dailyTarget : '—');
+
+  var rows = [
+    { icon:'👤', label:'Cinsiyet',     value: gender },
+    { icon:'🎂', label:'Yaş',          value: age },
+    { icon:'📏', label:'Boy',          value: height + ' cm' },
+    { icon:'⚖️', label:'Kilo',         value: weight + ' kg' },
+    { icon:'🎯', label:'Hedef Kilo',   value: goalWeight + ' kg' },
+    { icon:'🏃', label:'Aktivite',     value: _ACTIVITY_LABELS[actVal] || actVal },
+    { icon:'📈', label:'Hedef',        value: _GOAL_LABELS[goalVal] || goalVal },
+    { icon:'🍽️', label:'Diyet',         value: dietLabel + manualBadge },
+    { icon:'🔥', label:'Kalori Hedefi', value: (calTarget && calTarget !== '—' ? Number(calTarget).toLocaleString('tr-TR') + ' kcal' : '—') },
+    { icon:'💧', label:'Su Hedefi',     value: waterMl !== '—' ? Number(waterMl).toLocaleString('tr-TR') + ' ml' : '—' }
+  ];
+
+  var html = '';
+  rows.forEach(function(r, idx){
+    var isLast = idx === rows.length - 1;
+    html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:11px 14px;'+(isLast?'':'border-bottom:1px solid var(--border)')+'">'+
+      '<div style="display:flex;align-items:center;gap:8px;color:var(--text2);font-size:.78rem;font-weight:600"><span>'+r.icon+'</span>'+r.label+'</div>'+
+      '<div style="font-size:.85rem;font-weight:700;color:var(--text);text-align:right">'+r.value+'</div>'+
+    '</div>';
+  });
+  tbl.innerHTML = html;
+}
+window.renderProfileSummary = renderProfileSummary;
+
+// loadProfile / saveProfile sonrasında tabloyu otomatik refresh et
+(function patchLoadProfileForSummary(){
+  if(typeof loadProfile === 'function'){
+    var _orig = loadProfile;
+    window.loadProfile = function(){
+      var ret = _orig.apply(this, arguments);
+      try{ renderProfileSummary(); }catch(_){}
+      return ret;
+    };
+  }
+})();
+(function patchSaveProfileForSummary(){
+  if(typeof saveProfile === 'function'){
+    var _orig = saveProfile;
+    window.saveProfile = function(){
+      var ret = _orig.apply(this, arguments);
+      try{ renderProfileSummary(); }catch(_){}
+      return ret;
+    };
+  }
+})();
+(function patchApplyDietPresetForSummary(){
+  if(typeof applyDietPreset === 'function'){
+    var _orig = applyDietPreset;
+    window.applyDietPreset = function(){
+      var ret = _orig.apply(this, arguments);
+      try{ renderProfileSummary(); }catch(_){}
+      return ret;
+    };
+  }
+})();
+
+// İlk yüklemede tabloyu doldur
+setTimeout(function(){ try{ renderProfileSummary(); }catch(_){} }, 1000);
+
+/* ═══════════════════════════════════════════
+   İlerlemeler modal'ında Streaks panelini öne ekle
+═══════════════════════════════════════════ */
+(function patchRenderBadgesWithStreaks(){
+  if(typeof renderBadgesInProfile !== 'function') return;
+  var _orig = renderBadgesInProfile;
+  window.renderBadgesInProfile = function(){
+    var ret = _orig.apply(this, arguments);
+    try{
+      var container = document.getElementById('badgesContainer');
+      if(container && window.Streaks){
+        var streakHTML = window.Streaks.renderBadgesPanel();
+        container.insertAdjacentHTML('afterbegin',
+          '<div style="margin-bottom:14px;padding-bottom:14px;border-bottom:1px dashed var(--border)">'+streakHTML+'</div>'
+        );
+      }
+    }catch(_){}
+    return ret;
+  };
+})();
