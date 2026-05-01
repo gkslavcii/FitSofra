@@ -1785,3 +1785,253 @@ exports.deleteUserAccount = functions
 
     return { success: true, deletedAt: new Date().toISOString(), log: log };
   });
+
+
+// ═══════════════════════════════════════════
+//  AKILLI HATIRLATICILAR — Server-side push scheduler
+// ═══════════════════════════════════════════
+// Cloud Scheduler her 5 dakikada bir tetikler.
+// Kullanıcının timezone + notifSettings'ine göre öğün/özet/haftalık FCM gönderir.
+// Deduplication: users/{uid}/notif_log/{YYYY-MM-DD}_{type}
+//
+// Bağımlılık: kullanıcı belgesi (users/{uid}) şu alanları içermeli:
+//   fcmToken (string), timezone ('Europe/Istanbul'), notifSettings { enabled, kahvalti, ogle, aksam, summary, weekly, weeklyTime }
+
+function _localTimeFor(tz) {
+  // Verilen timezone için { hour, minute, dow (0-6, Pzr=0), dateKey 'YYYY-MM-DD' }
+  try {
+    const now = new Date();
+    const fmt = new Intl.DateTimeFormat('en-CA', {
+      timeZone: tz || 'Europe/Istanbul',
+      year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', weekday: 'short',
+      hour12: false
+    });
+    const parts = fmt.formatToParts(now).reduce((acc, p) => { acc[p.type] = p.value; return acc; }, {});
+    const dowMap = { Sun:0, Mon:1, Tue:2, Wed:3, Thu:4, Fri:5, Sat:6 };
+    return {
+      hour: parseInt(parts.hour, 10),
+      minute: parseInt(parts.minute, 10),
+      dow: dowMap[parts.weekday] != null ? dowMap[parts.weekday] : new Date().getDay(),
+      dateKey: parts.year + '-' + parts.month + '-' + parts.day
+    };
+  } catch (_) {
+    const d = new Date();
+    return {
+      hour: d.getHours(),
+      minute: d.getMinutes(),
+      dow: d.getDay(),
+      dateKey: d.toISOString().slice(0, 10)
+    };
+  }
+}
+
+// İki "HH:MM" arası dakika farkı — pencere içinde mi?
+function _isWithinWindow(localH, localM, settingTime, toleranceMinutes) {
+  if (!settingTime || typeof settingTime !== 'string') return false;
+  const parts = settingTime.split(':');
+  if (parts.length !== 2) return false;
+  const sh = parseInt(parts[0], 10), sm = parseInt(parts[1], 10);
+  if (isNaN(sh) || isNaN(sm)) return false;
+  const localTotal = localH * 60 + localM;
+  const settingTotal = sh * 60 + sm;
+  const diff = Math.abs(localTotal - settingTotal);
+  return diff <= toleranceMinutes;
+}
+
+async function _sendPushToToken(token, payload) {
+  if (!token) return false;
+  const message = {
+    token: token,
+    notification: { title: payload.title, body: payload.body },
+    data: {
+      type: payload.type || 'reminder',
+      title: payload.title,
+      body: payload.body
+    },
+    webpush: {
+      notification: {
+        icon: 'https://fitsofra-51176.web.app/icon-192.png',
+        badge: 'https://fitsofra-51176.web.app/badge-72.png',
+        tag: 'fs-' + (payload.type || 'reminder'),
+        requireInteraction: false
+      },
+      fcmOptions: { link: payload.link || 'https://fitsofra-51176.web.app/' }
+    }
+  };
+  try {
+    await admin.messaging().send(message);
+    return true;
+  } catch (e) {
+    // Token geçersizse temizle
+    if (e && e.code &&
+        (e.code === 'messaging/invalid-registration-token' ||
+         e.code === 'messaging/registration-token-not-registered')) {
+      try {
+        const snap = await admin.firestore().collection('users').where('fcmToken', '==', token).get();
+        snap.forEach(d => d.ref.update({ fcmToken: null }).catch(() => {}));
+      } catch (_) {}
+    }
+    return false;
+  }
+}
+
+// Reminder template'leri
+const _REMINDERS = [
+  { type: 'kahvalti', settingKey: 'kahvalti', title: '🌅 Kahvaltı Zamanı',  body: 'Günün ilk öğününü FitSofra\'ya logla, hedeflerini takip et.' },
+  { type: 'ogle',     settingKey: 'ogle',     title: '☀️ Öğle Yemeği',       body: 'Öğle öğününü kaydetmeyi unutma. 1 tıkla ekle.' },
+  { type: 'aksam',    settingKey: 'aksam',    title: '🌙 Akşam Yemeği',      body: 'Akşam öğününü logla, günü tamamla.' },
+  { type: 'summary',  settingKey: 'summary',  title: '📊 Günün Özeti',       body: 'Günü kapatmadan önce kaloriyi ve makroyu kontrol et.' }
+];
+
+exports.scheduledNotifications = functions
+  .runWith({ timeoutSeconds: 540, memory: '512MB' })
+  .pubsub.schedule('every 5 minutes')
+  .timeZone('Europe/Istanbul')
+  .onRun(async (context) => {
+    const db = admin.firestore();
+    let totalSent = 0;
+    let totalSkipped = 0;
+    let totalUsers = 0;
+
+    // FCM token'ı olan ve bildirim açık tüm kullanıcılar
+    let snap;
+    try {
+      snap = await db.collection('users').where('fcmToken', '!=', null).get();
+    } catch (e) {
+      console.error('[scheduledNotifications] users query failed', e.message);
+      return null;
+    }
+
+    for (const doc of snap.docs) {
+      totalUsers++;
+      const u = doc.data() || {};
+      const uid = doc.id;
+      const ns = u.notifSettings || {};
+      if (ns.enabled === false) { totalSkipped++; continue; }
+      if (!u.fcmToken) { totalSkipped++; continue; }
+
+      const tz = u.timezone || 'Europe/Istanbul';
+      const lt = _localTimeFor(tz);
+
+      // Geceleri bildirim gönderme (00:00 - 06:00) — su hatırlatıcı dışında ki zaten bunu işlemiyoruz
+      if (lt.hour < 6 || lt.hour > 23) continue;
+
+      // Öğün + özet hatırlatıcılar (5dk pencere)
+      for (const rem of _REMINDERS) {
+        const settingTime = ns[rem.settingKey];
+        if (!settingTime) continue;
+        if (!_isWithinWindow(lt.hour, lt.minute, settingTime, 3)) continue;
+
+        // Deduplication
+        const logId = lt.dateKey + '_' + rem.type;
+        const logRef = doc.ref.collection('notif_log').doc(logId);
+        try {
+          const logSnap = await logRef.get();
+          if (logSnap.exists) { totalSkipped++; continue; }
+        } catch (_) { continue; }
+
+        // Özet bildirimi: kullanıcı bugün hiç loglamadıysa atla (spam'i azalt)
+        if (rem.type === 'summary') {
+          try {
+            const dayDoc = await db.collection('user_data').doc(uid)
+              .collection('days').doc(lt.dateKey).get();
+            if (!dayDoc.exists) { totalSkipped++; continue; }
+            const dd = dayDoc.data() || {};
+            const items = (dd.kahvalti||[]).length + (dd.ogle||[]).length +
+                          (dd.aksam||[]).length + (dd.atistirmalik||[]).length;
+            if (!items) { totalSkipped++; continue; }
+          } catch (_) {} // user_data farklı yapıda olabilir, sessiz devam et
+        }
+
+        // Öğün hatırlatıcı: aynı öğün için bugün zaten log varsa atla (spam azalt)
+        if (rem.type === 'kahvalti' || rem.type === 'ogle' || rem.type === 'aksam') {
+          try {
+            const dayDoc = await db.collection('user_data').doc(uid)
+              .collection('days').doc(lt.dateKey).get();
+            if (dayDoc.exists) {
+              const dd = dayDoc.data() || {};
+              if ((dd[rem.type] || []).length > 0) {
+                // Bugün bu öğüne yemek eklenmiş; hatırlatma gerekmez ama log'la
+                await logRef.set({ type: rem.type, sentAt: Date.now(), skippedReason: 'already_logged' });
+                totalSkipped++;
+                continue;
+              }
+            }
+          } catch (_) {}
+        }
+
+        // FCM gönder
+        const sent = await _sendPushToToken(u.fcmToken, {
+          type: rem.type,
+          title: rem.title,
+          body: rem.body,
+          link: 'https://fitsofra-51176.web.app/'
+        });
+
+        // Log (gönderilmiş olsun olmasın aynı slot'a tekrar denemeyi engelle)
+        try {
+          await logRef.set({
+            type: rem.type,
+            sentAt: Date.now(),
+            success: sent,
+            localTime: settingTime
+          });
+        } catch (_) {}
+
+        if (sent) totalSent++;
+      }
+
+      // Haftalık rapor
+      const wDay = parseInt(ns.weekly || 0, 10); // 1=Pzt, 5=Cum, 7=Pzr
+      if (wDay > 0 && ns.weeklyTime) {
+        const wDow = wDay === 7 ? 0 : wDay; // JS: 0=Pzr
+        if (lt.dow === wDow && _isWithinWindow(lt.hour, lt.minute, ns.weeklyTime, 3)) {
+          const logId = lt.dateKey + '_weekly';
+          const logRef = doc.ref.collection('notif_log').doc(logId);
+          try {
+            const logSnap = await logRef.get();
+            if (!logSnap.exists) {
+              const sent = await _sendPushToToken(u.fcmToken, {
+                type: 'weekly',
+                title: '📅 Haftalık Rapor Hazır',
+                body: 'FitSofra → Profil → "Bu Hafta Nasıldım?" ile geçen haftanı incele.',
+                link: 'https://fitsofra-51176.web.app/'
+              });
+              await logRef.set({ type: 'weekly', sentAt: Date.now(), success: sent });
+              if (sent) totalSent++;
+            }
+          } catch (_) {}
+        }
+      }
+    }
+
+    console.log('[scheduledNotifications] users=' + totalUsers + ' sent=' + totalSent + ' skipped=' + totalSkipped);
+    return null;
+  });
+
+// 30+ günden eski notif_log belgelerini temizle (haftada bir)
+exports.cleanupNotifLogs = functions
+  .runWith({ timeoutSeconds: 540, memory: '256MB' })
+  .pubsub.schedule('every monday 03:00')
+  .timeZone('Europe/Istanbul')
+  .onRun(async (context) => {
+    const db = admin.firestore();
+    const cutoff = Date.now() - (30 * 24 * 60 * 60 * 1000);
+    let deleted = 0;
+    try {
+      const usersSnap = await db.collection('users').get();
+      for (const u of usersSnap.docs) {
+        const logsSnap = await u.ref.collection('notif_log')
+          .where('sentAt', '<', cutoff).limit(200).get();
+        if (logsSnap.empty) continue;
+        const writer = db.bulkWriter();
+        logsSnap.docs.forEach(d => { writer.delete(d.ref); deleted++; });
+        await writer.close();
+      }
+    } catch (e) {
+      console.error('[cleanupNotifLogs]', e.message);
+    }
+    console.log('[cleanupNotifLogs] deleted=' + deleted);
+    return null;
+  });

@@ -60,6 +60,12 @@ service cloud.firestore {
       allow update: if isOwner(userId) && isReasonableSize();
       allow delete: if isOwner(userId) || isAdmin();
 
+      // notif_log: scheduledNotifications Cloud Function yazar, kullanıcı sadece okuyabilir
+      match /notif_log/{logId} {
+        allow read: if isOwner(userId);
+        allow write: if false; // Sadece Cloud Functions (service account)
+      }
+
       // Alt koleksiyonlar (data chunks — sync)
       match /{subcollection=**} {
         allow read: if isOwner(userId);
