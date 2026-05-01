@@ -1086,6 +1086,10 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
         <div class="acc-body">
           <div class="profile-field"><label>Bildirimler</label><button id="notifToggle" style="font-family:var(--font,system-ui);font-size:.82rem;font-weight:600;padding:7px 14px;border:1.5px solid var(--green);color:var(--green);background:var(--card);border-radius:8px;cursor:pointer" onclick="toggleNotifications()">Aktifleştir</button></div>
           <div id="notifSettings" style="display:none">
+            <div style="background:linear-gradient(135deg,rgba(61,214,140,.08),rgba(89,152,242,.06));border:1px solid rgba(61,214,140,.25);border-radius:10px;padding:9px 12px;margin-bottom:10px;font-size:.7rem;line-height:1.5;color:var(--text2);display:flex;align-items:center;gap:8px">
+              <span style="font-size:1.1rem">☁️</span>
+              <div><strong style="color:var(--green)">Sunucu push aktif</strong> — uygulama kapalı olsa bile öğün, özet ve haftalık hatırlatıcılar telefona düşer. Spam'i azaltmak için aynı öğüne yemek eklendiyse hatırlatma atlanır.</div>
+            </div>
             <div style="font-size:.72rem;font-weight:700;color:var(--accent);margin-bottom:6px;padding-top:4px">🍽️ Öğün Hatırlatıcılar</div>
             <div class="profile-field"><label>🌅 Kahvaltı</label><input type="time" id="notifKahvalti" value="08:00" onchange="saveNotifSettings()" style="width:110px"></div>
             <div class="profile-field"><label>☀️ Öğle</label><input type="time" id="notifOgle" value="12:30" onchange="saveNotifSettings()" style="width:110px"></div>
