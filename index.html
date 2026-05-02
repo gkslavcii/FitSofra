@@ -448,6 +448,77 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
 <style>@keyframes bounceIn{from{opacity:0;transform:scale(.8) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}</style>
 <script>setTimeout(()=>{const s=document.getElementById('splashScreen');if(s){s.style.opacity='0';setTimeout(()=>s.remove(),500)}},3200)</script>
 
+<!-- LOGIN GATE — Giriş yapmadan uygulamaya erişim yok -->
+<div id="loginGate" style="display:none;position:fixed;inset:0;z-index:9000;background:linear-gradient(135deg,#080a10 0%,#15171f 100%);overflow-y:auto;padding:20px 18px 30px;align-items:flex-start;justify-content:center">
+  <div style="max-width:420px;width:100%;margin:30px auto 0">
+
+    <!-- Logo & Slogan -->
+    <div style="text-align:center;margin-bottom:24px">
+      <div style="filter:drop-shadow(0 8px 24px rgba(255,107,61,.35));margin-bottom:10px">
+        <svg width="78" height="78" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:inline-block">
+          <defs><linearGradient id="lgG" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6b3d"/><stop offset="100%" stop-color="#ffaa55"/></linearGradient></defs>
+          <circle cx="80" cy="80" r="60" fill="rgba(255,107,61,.06)"/>
+          <circle cx="80" cy="80" r="54" stroke="rgba(255,107,61,.12)" stroke-width="9"/>
+          <circle cx="80" cy="80" r="54" fill="none" stroke="url(#lgG)" stroke-width="9" stroke-linecap="round" stroke-dasharray="283 94" transform="rotate(135 80 80)"/>
+          <circle cx="80" cy="64" r="4.5" fill="#ff6b3d"/>
+          <circle cx="80" cy="80" r="3.5" fill="#ff8f5a" opacity=".75"/>
+          <circle cx="80" cy="96" r="2.5" fill="#ffaa55" opacity=".5"/>
+        </svg>
+      </div>
+      <h1 style="margin:0;font-size:1.7rem;font-weight:900;letter-spacing:-.5px"><span style="color:#ff6b3d">Fit</span><span style="color:#fff">Sofra</span></h1>
+      <p style="color:#8a8da8;font-size:.82rem;margin:6px 0 0;line-height:1.5">Sağlıklı beslenmenin dijital yol arkadaşı</p>
+    </div>
+
+    <!-- Mode toggle: Giriş / Kayıt -->
+    <div style="display:flex;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:11px;padding:3px;margin-bottom:14px">
+      <button id="lgTabSignin" onclick="lgSwitchMode('signin')" style="flex:1;padding:9px;border-radius:8px;border:none;font-family:var(--font,system-ui);font-size:.82rem;font-weight:700;cursor:pointer;background:#ff6b3d;color:#fff;transition:all .2s">Giriş Yap</button>
+      <button id="lgTabSignup" onclick="lgSwitchMode('signup')" style="flex:1;padding:9px;border-radius:8px;border:none;font-family:var(--font,system-ui);font-size:.82rem;font-weight:700;cursor:pointer;background:transparent;color:#8a8da8;transition:all .2s">Üye Ol</button>
+    </div>
+
+    <!-- Sosyal sağlayıcılar -->
+    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px">
+      <button onclick="firebaseLoginGoogle()" style="width:100%;padding:12px;background:#fff;color:#1f2128;border:none;border-radius:11px;font-family:var(--font,system-ui);font-weight:700;font-size:.88rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px">
+        <svg width="18" height="18" viewBox="0 0 18 18"><path d="M17.64 9.205c0-.639-.057-1.252-.164-1.841H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg>
+        Google ile devam et
+      </button>
+      <button onclick="firebaseLoginApple()" style="width:100%;padding:12px;background:#000;color:#fff;border:1px solid #2a2d38;border-radius:11px;font-family:var(--font,system-ui);font-weight:700;font-size:.88rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px">
+        <svg width="16" height="18" viewBox="0 0 384 512" fill="currentColor"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+        Apple ile devam et
+      </button>
+      <button onclick="firebaseLoginFacebook()" style="width:100%;padding:12px;background:#1877f2;color:#fff;border:none;border-radius:11px;font-family:var(--font,system-ui);font-weight:700;font-size:.88rem;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        Facebook ile devam et
+      </button>
+    </div>
+
+    <!-- Ayraç -->
+    <div style="display:flex;align-items:center;gap:10px;margin:14px 0">
+      <div style="flex:1;height:1px;background:rgba(255,255,255,.08)"></div>
+      <span style="font-size:.7rem;color:#5a5d70;font-weight:700">veya e-posta ile</span>
+      <div style="flex:1;height:1px;background:rgba(255,255,255,.08)"></div>
+    </div>
+
+    <!-- Email/Password formu -->
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <input type="email" id="lgEmail" placeholder="E-posta" autocomplete="email" style="width:100%;padding:12px 14px;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.1);border-radius:11px;color:#fff;font-family:var(--font,system-ui);font-size:.88rem;outline:none;box-sizing:border-box">
+      <input type="password" id="lgPassword" placeholder="Şifre (en az 6 karakter)" autocomplete="current-password" style="width:100%;padding:12px 14px;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.1);border-radius:11px;color:#fff;font-family:var(--font,system-ui);font-size:.88rem;outline:none;box-sizing:border-box">
+      <div id="lgSignupExtra" style="display:none">
+        <input type="text" id="lgName" placeholder="İsim (opsiyonel)" autocomplete="name" style="width:100%;padding:12px 14px;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.1);border-radius:11px;color:#fff;font-family:var(--font,system-ui);font-size:.88rem;outline:none;box-sizing:border-box;margin-top:8px">
+      </div>
+      <button id="lgSubmitBtn" onclick="lgSubmit()" style="width:100%;padding:13px;background:linear-gradient(135deg,#ff6b3d,#ffaa55);color:#fff;border:none;border-radius:11px;font-family:var(--font,system-ui);font-weight:800;font-size:.9rem;cursor:pointer;margin-top:4px;box-shadow:0 4px 14px rgba(255,107,61,.35)">Giriş Yap</button>
+      <button onclick="firebaseResetPassword()" style="width:100%;padding:9px;background:transparent;color:#8a8da8;border:none;font-family:var(--font,system-ui);font-weight:600;font-size:.74rem;cursor:pointer;text-decoration:underline">Şifremi unuttum</button>
+    </div>
+
+    <!-- Mesaj alanı -->
+    <div id="lgMessage" style="display:none;margin-top:10px;padding:9px 12px;border-radius:10px;font-size:.74rem;line-height:1.5"></div>
+
+    <!-- KVKK / şartlar -->
+    <p style="font-size:.66rem;color:#5a5d70;margin-top:18px;text-align:center;line-height:1.5">
+      Devam ederek <a href="#" onclick="if(typeof switchTab==='function')switchTab('profil');return false" style="color:#8a8da8;text-decoration:underline">Gizlilik Politikası</a> ve <a href="#" onclick="return false" style="color:#8a8da8;text-decoration:underline">Şartlar ve Koşullar</a>'ı kabul etmiş sayılırsın.
+    </p>
+  </div>
+</div>
+
 <header class="header" role="banner">
   <div class="header-top">
     <div style="display:flex;align-items:center;gap:8px"><div style="filter:drop-shadow(0 3px 12px rgba(255,107,61,.4))"><svg width="54" height="54" viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="hg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ff6b3d"/><stop offset="100%" stop-color="#ffaa55"/></linearGradient><linearGradient id="hfg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ff8f5a" stop-opacity=".7"/><stop offset="100%" stop-color="#ff6b3d" stop-opacity=".25"/></linearGradient><linearGradient id="hkg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#aab0c8" stop-opacity=".6"/><stop offset="100%" stop-color="#7a8099" stop-opacity=".2"/></linearGradient></defs><path d="M55 32 C55 28 57 26 57 32 L57 52" stroke="url(#hfg)" stroke-width="2.2" stroke-linecap="round" fill="none"/><path d="M60 31 C60 27 62 25 62 31 L62 52" stroke="url(#hfg)" stroke-width="2.2" stroke-linecap="round" fill="none"/><path d="M65 31 C65 27 67 25 67 31 L67 52" stroke="url(#hfg)" stroke-width="2.2" stroke-linecap="round" fill="none"/><path d="M70 32 C70 28 72 26 72 32 L72 52" stroke="url(#hfg)" stroke-width="2.2" stroke-linecap="round" fill="none"/><path d="M57 52 Q57 59 63 60 Q69 61 72 52" fill="none" stroke="url(#hfg)" stroke-width="2.2" stroke-linecap="round"/><path d="M63 60 Q62.5 65 63 68" stroke="url(#hfg)" stroke-width="2.8" stroke-linecap="round" fill="none"/><path d="M63 68 Q62 80 62.5 96 Q63 110 63.5 128" stroke="url(#hfg)" stroke-width="3" stroke-linecap="round" fill="none"/><path d="M62 126 Q63.5 130 65 126" fill="none" stroke="url(#hfg)" stroke-width="2.2" stroke-linecap="round"/><line x1="93" y1="30" x2="93" y2="60" stroke="url(#hkg)" stroke-width="2" stroke-linecap="round"/><path d="M93 30 Q103 32 104 42 Q105 52 98 60 L93 60" fill="rgba(170,176,200,.07)" stroke="url(#hkg)" stroke-width="2.2" stroke-linecap="round"/><rect x="91.5" y="60" width="5" height="5" rx="1" fill="rgba(170,176,200,.2)"/><path d="M93.5 65 Q92.5 80 93 100 Q93.5 115 93 128" stroke="url(#hkg)" stroke-width="3.2" stroke-linecap="round" fill="none"/><path d="M95.5 65 Q94.5 80 95 100 Q95.5 115 95 128" stroke="url(#hkg)" stroke-width="1.2" stroke-linecap="round" fill="none" opacity=".5"/><path d="M91.5 126 Q93 130 94.5 126" fill="none" stroke="url(#hkg)" stroke-width="2" stroke-linecap="round"/><circle cx="80" cy="80" r="60" fill="rgba(255,107,61,.05)"/><circle cx="80" cy="80" r="54" stroke="rgba(255,107,61,.1)" stroke-width="9"/><circle cx="80" cy="80" r="54" fill="none" stroke="url(#hg)" stroke-width="9" stroke-linecap="round" stroke-dasharray="283 94" transform="rotate(135 80 80)"/><circle cx="80" cy="64" r="4.5" fill="#ff6b3d"/><circle cx="80" cy="80" r="3.5" fill="#ff8f5a" opacity=".75"/><circle cx="80" cy="96" r="2.5" fill="#ffaa55" opacity=".5"/></svg></div><div><h1><span style="color:#ff6b3d">Fit</span><span>Sofra</span></h1><div class="date" id="todayDate"></div><div id="weeklyPlanBadge" style="display:none;font-size:.6rem;font-weight:700;color:var(--accent);opacity:.8;margin-top:1px">📆 Haftalık plan aktif</div></div></div>
@@ -1090,9 +1161,14 @@ body::before{content:'';position:fixed;top:-50%;left:-50%;width:200%;height:200%
             <div class="profile-field"><label>📅 Haftalık rapor</label><select id="notifWeekly" onchange="saveNotifSettings()" style="width:110px"><option value="0">Kapalı</option><option value="1">Pazartesi</option><option value="5">Cuma</option><option value="7">Pazar</option></select></div>
             <div class="profile-field"><label>⏰ Rapor saati</label><input type="time" id="notifWeeklyTime" value="10:00" onchange="saveNotifSettings()" style="width:110px"></div>
             <div style="display:flex;gap:6px;margin-top:8px">
-              <button style="flex:1;padding:8px;background:var(--glass);border:1px solid var(--border);border-radius:8px;color:var(--text2);font-family:var(--font,system-ui);font-size:.75rem;font-weight:600;cursor:pointer" onclick="sendNotification('🔔 Test Bildirimi','FitSofra bildirimleri çalışıyor!')">🔔 Test</button>
-              <button style="flex:1;padding:8px;background:var(--glass);border:1px solid var(--border);border-radius:8px;color:var(--text2);font-family:var(--font,system-ui);font-size:.75rem;font-weight:600;cursor:pointer" onclick="sendDailySummaryNotif()">📊 Özet Test</button>
+              <button style="flex:1;padding:8px;background:var(--glass);border:1px solid var(--border);border-radius:8px;color:var(--text2);font-family:var(--font,system-ui);font-size:.75rem;font-weight:600;cursor:pointer" onclick="sendNotification('🔔 Test Bildirimi','FitSofra bildirimleri çalışıyor!')">🔔 Lokal Test</button>
+              <button style="flex:1;padding:8px;background:var(--glass);border:1px solid var(--border);border-radius:8px;color:var(--text2);font-family:var(--font,system-ui);font-size:.75rem;font-weight:600;cursor:pointer" onclick="testServerPush()">☁️ Sunucu Test</button>
             </div>
+            <div style="display:flex;gap:6px;margin-top:6px">
+              <button style="flex:1;padding:8px;background:var(--glass);border:1px solid var(--border);border-radius:8px;color:var(--text2);font-family:var(--font,system-ui);font-size:.75rem;font-weight:600;cursor:pointer" onclick="sendDailySummaryNotif()">📊 Özet</button>
+              <button style="flex:1;padding:8px;background:var(--glass);border:1px solid var(--border);border-radius:8px;color:var(--text2);font-family:var(--font,system-ui);font-size:.75rem;font-weight:600;cursor:pointer" onclick="renderNotifDebugPanel()">🔍 Durum</button>
+            </div>
+            <div id="notifDebugPanel" style="display:none;margin-top:10px;padding:10px;background:var(--bg);border:1px dashed var(--border);border-radius:10px;font-size:.7rem;line-height:1.7"></div>
           </div>
         </div>
       </div>
@@ -2003,25 +2079,148 @@ const db=firebase.firestore();
 let currentUser=null;
 let syncInProgress=false;
 
-async function firebaseLogin(){
-  try{
-    const provider=new firebase.auth.GoogleAuthProvider();
-    // Hesap seçici ekranını göster — klavye gerektirmez, sadece tıklama
-    provider.setCustomParameters({prompt:'select_account'});
-    const result=await auth.signInWithPopup(provider);
-    currentUser=result.user;
-    updateSyncUI();
-    showToast('✅ Giriş başarılı! Veriler senkronize ediliyor...');
-    await syncFromCloud();
-  }catch(e){
-    if(e.code==='auth/popup-closed-by-user')return;
-    if(e.code==='auth/popup-blocked'){
-      showToast('⚠️ Popup engellendi. Lütfen popup izni verin.');
-      return;
-    }
-    showToast('⚠️ Giriş hatası: '+e.message);
+// ════════════════════════════════════════════
+// Multi-provider auth + Login Gate
+// ════════════════════════════════════════════
+
+let _lgMode='signin'; // 'signin' | 'signup'
+
+function lgShowMessage(text, type){
+  const el=document.getElementById('lgMessage');
+  if(!el) return;
+  if(!text){ el.style.display='none'; return; }
+  const colors={
+    error:{bg:'rgba(255,92,92,.1)',border:'rgba(255,92,92,.35)',color:'#ff8c8c'},
+    success:{bg:'rgba(61,214,140,.1)',border:'rgba(61,214,140,.35)',color:'#3dd68c'},
+    info:{bg:'rgba(89,152,242,.1)',border:'rgba(89,152,242,.35)',color:'#8db4f5'}
+  };
+  const c=colors[type||'info'];
+  el.style.background=c.bg;
+  el.style.border='1px solid '+c.border;
+  el.style.color=c.color;
+  el.textContent=text;
+  el.style.display='block';
+}
+
+function lgSwitchMode(mode){
+  _lgMode=mode;
+  const tSignin=document.getElementById('lgTabSignin');
+  const tSignup=document.getElementById('lgTabSignup');
+  const submit=document.getElementById('lgSubmitBtn');
+  const extra=document.getElementById('lgSignupExtra');
+  if(mode==='signup'){
+    tSignin.style.background='transparent';tSignin.style.color='#8a8da8';
+    tSignup.style.background='#ff6b3d';tSignup.style.color='#fff';
+    if(submit) submit.textContent='Üye Ol';
+    if(extra) extra.style.display='block';
+  } else {
+    tSignin.style.background='#ff6b3d';tSignin.style.color='#fff';
+    tSignup.style.background='transparent';tSignup.style.color='#8a8da8';
+    if(submit) submit.textContent='Giriş Yap';
+    if(extra) extra.style.display='none';
+  }
+  lgShowMessage('');
+}
+window.lgSwitchMode=lgSwitchMode;
+
+function _authErrorMsg(e){
+  const code=e&&e.code||'';
+  switch(code){
+    case 'auth/popup-closed-by-user': return null; // sessizce yut
+    case 'auth/popup-blocked': return 'Popup engellendi. Tarayıcı ayarlarından popup izni ver.';
+    case 'auth/cancelled-popup-request': return null;
+    case 'auth/account-exists-with-different-credential': return 'Bu e-posta başka bir yöntemle (örn. Google) kayıtlı. O yöntemle giriş yap.';
+    case 'auth/invalid-email': return 'Geçersiz e-posta adresi.';
+    case 'auth/user-not-found': return 'Bu e-posta ile kayıtlı kullanıcı yok. Önce üye ol.';
+    case 'auth/wrong-password': return 'Şifre hatalı.';
+    case 'auth/invalid-credential': return 'E-posta veya şifre hatalı.';
+    case 'auth/email-already-in-use': return 'Bu e-posta zaten kayıtlı. Giriş yap.';
+    case 'auth/weak-password': return 'Şifre çok zayıf — en az 6 karakter olmalı.';
+    case 'auth/network-request-failed': return 'İnternet bağlantısı yok.';
+    case 'auth/too-many-requests': return 'Çok fazla deneme yapıldı. Biraz bekle.';
+    case 'auth/operation-not-allowed': return 'Bu giriş yöntemi henüz aktif değil. Yönetici Firebase Console\'dan açmalı.';
+    default: return e&&e.message?e.message:'Giriş hatası.';
   }
 }
+
+async function _doLogin(provider, methodName){
+  try{
+    if(provider.setCustomParameters && methodName==='Google'){
+      provider.setCustomParameters({prompt:'select_account'});
+    }
+    const result=await auth.signInWithPopup(provider);
+    currentUser=result.user;
+    lgShowMessage('✅ Giriş başarılı! Veriler senkronize ediliyor...','success');
+    updateSyncUI();
+    await syncFromCloud();
+  }catch(e){
+    const m=_authErrorMsg(e);
+    if(m) lgShowMessage('⚠️ '+m,'error');
+  }
+}
+
+async function firebaseLoginGoogle(){
+  return _doLogin(new firebase.auth.GoogleAuthProvider(), 'Google');
+}
+async function firebaseLoginApple(){
+  const p=new firebase.auth.OAuthProvider('apple.com');
+  p.addScope('email'); p.addScope('name');
+  return _doLogin(p, 'Apple');
+}
+async function firebaseLoginFacebook(){
+  const p=new firebase.auth.FacebookAuthProvider();
+  p.addScope('email');
+  return _doLogin(p, 'Facebook');
+}
+
+// Mevcut kodla geriye uyumluluk için
+async function firebaseLogin(){ return firebaseLoginGoogle(); }
+
+async function lgSubmit(){
+  const emailEl=document.getElementById('lgEmail');
+  const passEl=document.getElementById('lgPassword');
+  const nameEl=document.getElementById('lgName');
+  const email=(emailEl&&emailEl.value||'').trim();
+  const pass=(passEl&&passEl.value)||'';
+  const name=(nameEl&&nameEl.value||'').trim();
+  if(!email||!pass){ lgShowMessage('⚠️ E-posta ve şifre gerekli','error'); return; }
+  if(_lgMode==='signup' && pass.length<6){ lgShowMessage('⚠️ Şifre en az 6 karakter olmalı','error'); return; }
+
+  try{
+    if(_lgMode==='signup'){
+      const cred=await auth.createUserWithEmailAndPassword(email,pass);
+      if(name && cred.user){
+        try{ await cred.user.updateProfile({displayName:name}); }catch(_){}
+      }
+      currentUser=cred.user;
+      lgShowMessage('✅ Hesap oluşturuldu!','success');
+    } else {
+      const cred=await auth.signInWithEmailAndPassword(email,pass);
+      currentUser=cred.user;
+      lgShowMessage('✅ Giriş başarılı!','success');
+    }
+    updateSyncUI();
+    await syncFromCloud();
+  }catch(e){
+    const m=_authErrorMsg(e);
+    if(m) lgShowMessage('⚠️ '+m,'error');
+  }
+}
+window.lgSubmit=lgSubmit;
+
+async function firebaseResetPassword(){
+  const emailEl=document.getElementById('lgEmail');
+  const email=(emailEl&&emailEl.value||'').trim();
+  if(!email){ lgShowMessage('Önce e-posta alanına adresini gir.','info'); if(emailEl) emailEl.focus(); return; }
+  try{
+    await auth.sendPasswordResetEmail(email);
+    lgShowMessage('📧 Şifre sıfırlama bağlantısı '+email+' adresine gönderildi.','success');
+  }catch(e){
+    const m=_authErrorMsg(e);
+    if(m) lgShowMessage('⚠️ '+m,'error');
+  }
+}
+window.firebaseResetPassword=firebaseResetPassword;
 
 async function firebaseLogout(){
   if(!confirm('Çıkış yapılacak. Yerel verileriniz silinmeyecek.'))return;
@@ -2029,7 +2228,24 @@ async function firebaseLogout(){
   currentUser=null;
   updateSyncUI();
   showToast('👋 Çıkış yapıldı');
+  // Login Gate yeniden açılır (auth listener tarafından)
 }
+
+// Auth state listener — Login Gate'i kontrol eder
+auth.onAuthStateChanged(function(user){
+  const gate=document.getElementById('loginGate');
+  if(user){
+    currentUser=user;
+    if(gate){ gate.style.display='none'; }
+    document.body.classList.remove('not-logged-in');
+    try{ updateSyncUI(); }catch(_){}
+  } else {
+    currentUser=null;
+    if(gate){ gate.style.display='flex'; }
+    document.body.classList.add('not-logged-in');
+    try{ updateSyncUI(); }catch(_){}
+  }
+});
 
 function updateSyncUI(){
   const loggedIn=document.getElementById('syncLoggedIn');

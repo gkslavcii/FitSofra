@@ -338,8 +338,9 @@
     }
 
     return '<div class="stat-card" style="animation-delay:.05s">'
-      +'<h3>🧬 Sağlık Yaşı '
+      +'<h3 style="display:flex;align-items:center;gap:6px">🧬 Sağlık Yaşı '
       +'<span style="font-size:.6rem;color:var(--text2);font-weight:400">(motivasyon tahmini)</span>'
+      +'<button onclick="HealthAge.showInfo()" title="Skor nasıl hesaplanıyor?" aria-label="Skor bilgisi" style="margin-left:auto;background:var(--glass);border:1px solid var(--border);border-radius:50%;width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;color:var(--accent);font-size:.8rem;font-weight:800;font-family:var(--font,system-ui);padding:0">i</button>'
       +'</h3>'
       +'<div style="display:flex;align-items:center;gap:14px;padding:14px 4px 8px">'
       +'<div style="flex:0 0 auto;text-align:center">'
@@ -360,11 +361,57 @@
       +'</div>';
   }
 
+  function showInfo(){
+    var existing = document.getElementById('healthAgeInfoModal');
+    if(existing){ existing.remove(); }
+    var modal = document.createElement('div');
+    modal.id = 'healthAgeInfoModal';
+    modal.style.cssText = 'position:fixed;inset:0;z-index:9990;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);display:flex;align-items:flex-start;justify-content:center;padding:16px;overflow-y:auto;animation:fadeIn .2s ease';
+    modal.addEventListener('click', function(e){ if(e.target===modal) modal.remove(); });
+
+    var factors = [
+      { icon:'🎯', name:'Beslenme tutarlılığı', range:'±3 yıl', detail:'Günlük kalori hedefini ±%15 dahilinde tutturduğun gün oranı. Tutturma %\'si arttıkça yaşın gençleşir, sürekli sapma yaşlandırır.', tip:'30 günün en az 20\'sini hedefin ±%15 aralığında tut.' },
+      { icon:'🥬', name:'Mikro besin kapsama', range:'±2 yıl', detail:'Son 7 günün ortalama Demir, Kalsiyum, B12, Folat, C Vitamini ve Lif kapsama yüzdesi (TÜBER 2022 DV).', tip:'Yeşillik, baklagil, yumurta, süt ve turunçgil çeşitlendir.' },
+      { icon:'💪', name:'Protein dengesi', range:'±1.5 yıl', detail:'Günlük ortalama protein alımı, hedefin %90-120\'si arasında olmalı. Eksik veya aşırı protein dengeyi bozar.', tip:'Hedef yoksa kg×1.6g protein iyi bir başlangıç.' },
+      { icon:'💧', name:'Su tüketimi', range:'±1 yıl', detail:'Günlük su hedefini yakalama oranın. Hedefin altı yaşlandırır, tutturmak veya hafif aşmak gençleştirir.', tip:'Sabah uyandığında 1 bardak + her öğüne 1 bardak.' },
+      { icon:'⚖️', name:'Kilo trendi', range:'±2 yıl', detail:'Hedef yönüne (vermek/koruma/almak) doğru ilerleyişin. Doğru yönde değişim gençleştirir, ters yön yaşlandırır.', tip:'Tartı kayıtlarını düzenli tut — haftada 1-2 kez yeterli.' },
+      { icon:'🏃', name:'Egzersiz (son 7 gün)', range:'±1.5 yıl', detail:'Son 7 gün içinde egzersiz logladığın gün sayısı. 5+ gün gençleştirir, sıfır gün yaşlandırır.', tip:'Günlük 30dk yürüyüş bile pozitif katkı yapar.' },
+      { icon:'🔥', name:'Tutarlılık serisi (streak)', range:'±1 yıl', detail:'Üst üste log tuttuğun gün sayısı. Habit oluştuğunda gençleştirici etki en yüksek (30+ gün).', tip:'Bugün loglamayı atlamak serini sıfırlar — 1 yemek bile yeterli.' }
+    ];
+
+    var rowsHtml = factors.map(function(f){
+      return '<div style="background:var(--glass);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:8px">'+
+        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">'+
+          '<span style="font-size:1.2rem">'+f.icon+'</span>'+
+          '<div style="flex:1"><div style="font-size:.84rem;font-weight:800">'+f.name+'</div></div>'+
+          '<span style="font-size:.65rem;font-weight:700;color:var(--accent);background:var(--accent-glow);padding:2px 8px;border-radius:6px">'+f.range+'</span>'+
+        '</div>'+
+        '<div style="font-size:.72rem;color:var(--text2);line-height:1.5;margin-bottom:4px">'+f.detail+'</div>'+
+        '<div style="font-size:.68rem;color:var(--text);background:rgba(61,214,140,.06);border-left:2px solid var(--green);padding:5px 8px;border-radius:4px;line-height:1.4">💡 '+f.tip+'</div>'+
+      '</div>';
+    }).join('');
+
+    modal.innerHTML =
+      '<div style="background:var(--card);border:1.5px solid var(--border);border-radius:16px;max-width:480px;width:100%;padding:18px;box-shadow:0 20px 60px rgba(0,0,0,.4);margin-top:20px;margin-bottom:20px">'+
+        '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:14px">'+
+          '<div><h2 style="margin:0;font-size:1.05rem;font-weight:800;display:flex;align-items:center;gap:6px">🧬 Sağlık Yaşı Nasıl Hesaplanır?</h2><div style="font-size:.7rem;color:var(--text2);margin-top:3px">Kronolojik yaşına 7 etken üzerinden ±8 yıl uygulanır.</div></div>'+
+          '<button onclick="document.getElementById(\'healthAgeInfoModal\').remove()" style="background:var(--glass);border:1px solid var(--border);border-radius:8px;padding:5px 11px;font-family:var(--font,system-ui);font-size:.78rem;font-weight:700;color:var(--text2);cursor:pointer">Kapat</button>'+
+        '</div>'+
+        rowsHtml+
+        '<div style="margin-top:8px;padding:10px 12px;background:rgba(255,193,7,.06);border:1px solid rgba(255,193,7,.25);border-radius:10px;font-size:.7rem;color:var(--text2);line-height:1.5">'+
+          '⚠️ <strong style="color:var(--text)">Bu klinik bir teşhis değildir.</strong> Beslenme alışkanlıklarından türetilen motivasyon amaçlı bir göstergedir. Sağlık kararları için uzman desteği al.'+
+        '</div>'+
+      '</div>';
+
+    document.body.appendChild(modal);
+  }
+
   window.HealthAge = {
     compute: compute,
     renderCard: renderCard,
     snapshotToday: snapshotToday,
-    trendHistory: trendHistory
+    trendHistory: trendHistory,
+    showInfo: showInfo
   };
 
 })();

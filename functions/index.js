@@ -2010,6 +2010,37 @@ exports.scheduledNotifications = functions
     return null;
   });
 
+// Test bildirim — kendi UID'ye anında push gönderir (debug için)
+exports.testServerNotification = functions.https.onCall(async (data, context) => {
+  const uid = requireAuth(context);
+  rateLimit(uid, 'testServerNotification', 5);
+
+  const userDoc = await admin.firestore().collection('users').doc(uid).get();
+  if (!userDoc.exists) {
+    throw new functions.https.HttpsError('failed-precondition', 'Kullanıcı belgesi yok');
+  }
+  const u = userDoc.data() || {};
+  if (!u.fcmToken) {
+    throw new functions.https.HttpsError('failed-precondition',
+      'FCM token kayıtlı değil. Tarayıcıdan bildirim izni verdiğinden emin ol.');
+  }
+
+  const sent = await _sendPushToToken(u.fcmToken, {
+    type: 'test',
+    title: '✅ Sunucu Test Bildirimi',
+    body: 'FitSofra sunucu push çalışıyor! Bu bildirim Cloud Functions tarafından gönderildi.',
+    link: 'https://fitsofra-51176.web.app/'
+  });
+
+  return {
+    success: sent,
+    sentAt: new Date().toISOString(),
+    hasToken: !!u.fcmToken,
+    notifEnabled: u.notifSettings && u.notifSettings.enabled !== false,
+    timezone: u.timezone || 'Europe/Istanbul'
+  };
+});
+
 // 30+ günden eski notif_log belgelerini temizle (haftada bir)
 exports.cleanupNotifLogs = functions
   .runWith({ timeoutSeconds: 540, memory: '256MB' })
