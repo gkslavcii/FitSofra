@@ -565,6 +565,82 @@ if(typeof auth !== 'undefined'){
     }
   });
 }
+
+// ── Sunucu test bildirimi (debug) ────────────────────────────────────────
+async function testServerPush(){
+  if(typeof currentUser==='undefined' || !currentUser){
+    showToast('⚠️ Önce giriş yapmalısın');
+    return;
+  }
+  if(typeof firebase==='undefined' || !firebase.functions){
+    showToast('⚠️ Firebase Functions yüklenmedi');
+    return;
+  }
+  showToast('☁️ Sunucu test isteği gönderiliyor...');
+  try{
+    const fn = firebase.functions().httpsCallable('testServerNotification');
+    const res = await fn({});
+    const d = (res && res.data) || {};
+    if(d.success){
+      showToast('✅ Sunucu push gönderildi! Birkaç saniye içinde gelmeli.');
+    } else {
+      showToast('⚠️ Push başarısız. Sebep: token geçersiz veya FCM hatası.');
+    }
+    console.log('[testServerPush]', d);
+  }catch(e){
+    showToast('⚠️ '+(e.message||e));
+  }
+}
+window.testServerPush = testServerPush;
+
+// ── Bildirim durumu debug paneli ─────────────────────────────────────────
+function renderNotifDebugPanel(){
+  const el = document.getElementById('notifDebugPanel');
+  if(!el) return;
+  if(el.style.display === 'block'){ el.style.display = 'none'; return; }
+
+  const perm = (typeof Notification !== 'undefined') ? Notification.permission : 'desteklenmiyor';
+  const swReg = !!window._swRegistration;
+  const fcmReady = !!(window.firebase && firebase.messaging);
+  const userIn = (typeof currentUser !== 'undefined' && !!currentUser);
+  const settings = (typeof getNotifSettings === 'function') ? getNotifSettings() : null;
+  const tz = (typeof Intl !== 'undefined') ? (Intl.DateTimeFormat().resolvedOptions().timeZone || '?') : '?';
+  const vapidSet = (typeof VAPID_KEY !== 'undefined') && VAPID_KEY && VAPID_KEY.length > 20;
+
+  const row = function(label, val, ok){
+    const color = ok===true?'var(--green)':ok===false?'var(--red)':'var(--text2)';
+    const icon = ok===true?'✅':ok===false?'❌':'•';
+    return '<div style="display:flex;justify-content:space-between;gap:6px"><span style="color:var(--text2)">'+icon+' '+label+'</span><span style="color:'+color+';font-weight:700;font-family:monospace;font-size:.66rem">'+val+'</span></div>';
+  };
+
+  let html = '<div style="font-weight:800;color:var(--accent);margin-bottom:6px">🔍 Bildirim Durumu</div>';
+  html += row('Tarayıcı izni', perm, perm==='granted');
+  html += row('Bildirim açık', settings && settings.enabled ? 'evet' : 'hayır', !!(settings && settings.enabled));
+  html += row('FCM destekli', fcmReady ? 'evet' : 'hayır', fcmReady);
+  html += row('Service Worker', swReg ? 'kayıtlı' : 'yok', swReg);
+  html += row('VAPID anahtar', vapidSet ? 'var' : 'eksik', vapidSet);
+  html += row('Giriş yapılmış', userIn ? 'evet' : 'hayır', userIn);
+  html += row('Timezone', tz, true);
+  if(settings){
+    html += '<div style="margin-top:6px;padding-top:6px;border-top:1px dashed var(--border)">';
+    html += row('Kahvaltı', settings.kahvalti||'—');
+    html += row('Öğle', settings.ogle||'—');
+    html += row('Akşam', settings.aksam||'—');
+    html += row('Özet', settings.summary||'—');
+    html += row('Haftalık', settings.weekly>0 ? settings.weekly+' / '+(settings.weeklyTime||'?') : 'kapalı');
+    html += '</div>';
+  }
+  if(perm !== 'granted'){
+    html += '<div style="margin-top:8px;padding:6px 8px;background:rgba(255,92,92,.08);border:1px solid rgba(255,92,92,.3);border-radius:6px;color:var(--red);font-size:.66rem;line-height:1.4">⚠️ Tarayıcı izni yok — "Aktifleştir" butonuna tıkla, izin pencereci çıksın.</div>';
+  } else if(!userIn){
+    html += '<div style="margin-top:8px;padding:6px 8px;background:rgba(255,193,7,.08);border:1px solid rgba(255,193,7,.3);border-radius:6px;color:#d4a017;font-size:.66rem;line-height:1.4">ℹ️ Sunucu bildirimi için giriş gerekli (FCM token kullanıcıya bağlı).</div>';
+  } else if(!swReg){
+    html += '<div style="margin-top:8px;padding:6px 8px;background:rgba(255,193,7,.08);border:1px solid rgba(255,193,7,.3);border-radius:6px;color:#d4a017;font-size:.66rem;line-height:1.4">⚠️ Service worker kayıt olmamış — sayfayı yenile.</div>';
+  }
+  el.innerHTML = html;
+  el.style.display = 'block';
+}
+window.renderNotifDebugPanel = renderNotifDebugPanel;
 function loadTheme(){
   const saved=localStorage.getItem('fs_theme');
   if(saved==='light'){document.documentElement.setAttribute('data-theme','light');document.getElementById('themeBtn').textContent='☀️'}
